@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>О сайте · Информатика</title>
+<meta name="description" content="Как устроен сайт учителя информатики, как добавить урок и как разместить его на GitHub Pages.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">К содержанию</a>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="index.html"><span class="logo">I</span> Информатика · кабинет 21</a>
+    <button class="burger" aria-label="Меню">☰</button>
+    <div class="nav-links">
+      <a href="index.html">Главная</a>
+      <a href="lessons.html">Уроки</a>
+      <a href="materials.html">Материалы</a>
+      <a href="tests.html">Тесты</a>
+      <a href="about.html" class="active">О сайте</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap" id="main">
+
+  <header class="hero small">
+    <svg class="deco" width="180" height="180" viewBox="0 0 200 200" aria-hidden="true">
+      <circle cx="70" cy="66" r="38" fill="#fff" opacity=".7"/>
+      <rect x="108" y="72" width="62" height="62" rx="16" fill="#fff" opacity=".55"/>
+    </svg>
+    <h1>О сайте</h1>
+    <p>Учебный сайт по информатике: конспекты, тренажёры, тесты и файлы для скачивания.
+      Сделан на чистом HTML, CSS и JavaScript — без баз данных и сборки.</p>
+  </header>
+
+  <section class="card">
+    <h2><span class="num">1</span> Кто и зачем</h2>
+    <p>Сайт ведёт учитель информатики. Здесь собрано то, что разбирается на уроках:
+      теория с формулами, задачи с пошаговым решением, домашние задания разных уровней
+      и тесты с автоматической проверкой.</p>
+    <p class="mb0">Главная идея — <b>всё работает офлайн и без регистрации</b>.
+      Ученик открывает ссылку с телефона, решает задачи, видит результат. Учитель
+      обновляет контент правкой HTML-файлов в репозитории.</p>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">2</span> Структура проекта</h2>
+    <table class="data">
+      <thead><tr><th>Путь</th><th>Что внутри</th></tr></thead>
+      <tbody>
+        <tr><td><code>index.html</code></td><td>Главная: объявления, свежие уроки</td></tr>
+        <tr><td><code>lessons.html</code></td><td>Каталог уроков с фильтром по классу и поиском</td></tr>
+        <tr><td><code>lessons/</code></td><td>Страницы отдельных уроков</td></tr>
+        <tr><td><code>materials.html</code></td><td>Список файлов для скачивания</td></tr>
+        <tr><td><code>tests.html</code></td><td>Тест с паролем, таймером и оценкой</td></tr>
+        <tr><td><code>assets/css/style.css</code></td><td>Вся дизайн-система: цвета, карточки, кнопки</td></tr>
+        <tr><td><code>assets/js/main.js</code></td><td>Меню, тосты, сохранение имени ученика</td></tr>
+        <tr><td><code>assets/files/</code></td><td>PDF, DOCX, PPTX, ZIP — всё, что скачивают</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">3</span> Как добавить урок</h2>
+    <ol class="steps">
+      <li>Скопируйте <code>lessons/urok-inform-volume.html</code> и переименуйте файл,
+        например в <code>urok-cikly.html</code>.</li>
+      <li>Поменяйте заголовок в <code>&lt;title&gt;</code>, в шапке и тексты задач.</li>
+      <li>В <code>lessons.html</code> добавьте карточку-ссылку с атрибутами
+        <code>data-cls</code> и <code>data-title</code> — по ним работает фильтр.</li>
+      <li>Ответы в задачах задаются атрибутом <code>data-answer="2048"</code> —
+        поменяйте число, и проверка сразу заработает для новой задачи.</li>
+    </ol>
+    <div class="note tip mb0">Формулы пишутся в LaTeX между знаками <code>$ … $</code>.
+      Подключён MathJax, поэтому $\frac{I}{i}$ и $2^{10}$ отрисуются сами.</div>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">4</span> Размещение на GitHub Pages</h2>
+    <p>Сайт статический, поэтому публикуется бесплатно за пару минут:</p>
+    <ol class="steps">
+      <li>Создайте репозиторий, например <code>informatika</code>, и загрузите файлы
+        в ветку <code>main</code>.</li>
+      <li><b>Settings → Pages → Source:</b> «Deploy from a branch», ветка
+        <code>main</code>, папка <code>/ (root)</code>. Сохраните.</li>
+      <li>Через 1–2 минуты сайт откроется по адресу
+        <code>https://имя-пользователя.github.io/informatika/</code>.</li>
+    </ol>
+    <div class="note info mb0">
+      Хотите короткий адрес без названия репозитория? Назовите репозиторий
+      <code>имя-пользователя.github.io</code> — тогда сайт будет на
+      <code>https://имя-пользователя.github.io/</code>.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">5</span> Контакты</h2>
+    <p>Вопросы по материалам, ошибки в задачах, пожелания:</p>
+    <div class="controls">
+      <a class="btn b-purple" href="mailto:teacher@example.ru">✉ Написать письмо</a>
+      <a class="btn b-ghost" href="https://github.com" target="_blank" rel="noopener">Репозиторий на GitHub</a>
+    </div>
+    <p class="muted mb0">Заменяйте адрес почты и ссылку на репозиторий в подвале всех
+      страниц — поиск по проекту по строке <code>example.ru</code>.</p>
+  </section>
+
+</div>
+
+<footer class="foot">
+  <span>© <span data-year>2026</span> · Учитель информатики · <a href="mailto:teacher@example.ru">teacher@example.ru</a></span>
+  <span class="foot-links">
+    <a href="lessons.html">Уроки</a>
+    <a href="materials.html">Материалы</a>
+  </span>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

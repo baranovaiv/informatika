@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тесты · Информатика</title>
+<meta name="description" content="Тесты по информатике с автоматической проверкой и выставлением оценки.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">К содержанию</a>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="index.html"><span class="logo">I</span> Информатика · кабинет 21</a>
+    <button class="burger" aria-label="Меню">☰</button>
+    <div class="nav-links">
+      <a href="index.html">Главная</a>
+      <a href="lessons.html">Уроки</a>
+      <a href="materials.html">Материалы</a>
+      <a href="tests.html" class="active">Тесты</a>
+      <a href="about.html">О сайте</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap" id="main">
+
+  <header class="hero small">
+    <svg class="deco" width="180" height="180" viewBox="0 0 200 200" aria-hidden="true">
+      <circle cx="70" cy="66" r="38" fill="#fff" opacity=".7"/>
+      <rect x="108" y="72" width="62" height="62" rx="16" fill="#fff" opacity=".55"/>
+    </svg>
+    <h1>Тесты</h1>
+    <p>Проверка знаний с автоматической оценкой. Тест открывается по паролю учителя —
+      так его нельзя пройти заранее.</p>
+  </header>
+
+  <!-- ЗАМОК -->
+  <section class="card" id="gate">
+    <h2><span class="num">🔒</span> Введите пароль</h2>
+    <p class="muted">Пароль сообщается на уроке. Раскладка клавиатуры не важна —
+      можно набирать русскими или английскими буквами.</p>
+    <div class="controls">
+      <input type="password" id="pwd" placeholder="Пароль" autocomplete="off" style="max-width:260px">
+      <button class="btn b-purple" id="unlockBtn">🔓 Открыть тест</button>
+    </div>
+    <p class="pmsg" id="pmsg" style="color:#ef4444;font-weight:700;min-height:22px"></p>
+  </section>
+
+  <!-- ТЕСТ -->
+  <section class="card" id="quiz" hidden>
+    <h2><span class="num">1</span> Измерение информации <span class="badge">10 вопросов</span></h2>
+
+    <div class="hud">
+      <div class="chip">👤 <span id="who">Ученик не указан</span></div>
+      <div class="chip level">⏱ <span id="timer">15:00</span></div>
+      <div class="chip score">✅ Верно: <span id="rightCount">0</span></div>
+    </div>
+
+    <div id="questions">
+
+      <div class="task q" data-answer="6">
+        <p><b>1.</b> Алфавит содержит 64 символа. Каков информационный вес одного символа
+          (в битах)?</p>
+        <div class="ans">
+          <input type="text" class="qin" inputmode="numeric" placeholder="Ответ, бит">
+        </div>
+        <div class="fb"></div>
+      </div>
+
+      <div class="task q" data-answer="1024">
+        <p><b>2.</b> Сообщение из 128 символов записано алфавитом мощностью 256.
+          Каков его объём в битах?</p>
+        <div class="ans">
+          <input type="text" class="qin" inputmode="numeric" placeholder="Ответ, бит">
+        </div>
+        <div class="fb"></div>
+      </div>
+
+      <div class="task q" data-answer="2">
+        <p><b>3.</b> Сколько байт занимает сообщение из 16 символов в 8-битной кодировке?</p>
+        <div class="ans">
+          <input type="text" class="qin" inputmode="numeric" placeholder="Ответ, байт">
+        </div>
+        <div class="fb"></div>
+      </div>
+
+      <div class="task q" data-answer="5">
+        <p><b>4.</b> Объём сообщения — 640 бит, алфавит содержит 32 символа.
+          Сколько символов в сообщении?</p>
+        <div class="ans">
+          <input type="text" class="qin" inputmode="numeric" placeholder="Ответ, символов">
+        </div>
+        <div class="fb"></div>
+      </div>
+
+      <div class="task q" data-answer="1">
+        <p><b>5.</b> 8192 бита — это сколько килобайт?</p>
+        <div class="ans">
+          <input type="text" class="qin" inputmode="numeric" placeholder="Ответ, Кбайт">
+        </div>
+        <div class="fb"></div>
+      </div>
+
+      <div class="task q" data-answer="2048">
+        <p><b>6.</b> Текст занимает 2 Кбайт, вес одного символа — 8 бит.
+          Сколько символов в тексте?</p>
+        <div class="ans">
+          <input type="text" class="qin" inputmode="numeric" placeholder="Ответ">
+        </div>
+        <div class="fb"></div>
+      </div>
+
+    </div>
+
+    <div class="controls">
+      <button class="btn b-green" id="checkBtn">📊 Проверить тест</button>
+      <button class="btn b-ghost" onclick="window.print()">🖨 Печать теста</button>
+      <button class="btn b-ghost" id="resetBtn">🔄 Сбросить</button>
+    </div>
+
+    <div class="res" id="result">
+      <h3>🎓 Результат тестирования</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Верных ответов</div>
+          <div class="val" id="resRight">—</div></div>
+        <div class="mcard"><div class="lbl">Оценка</div>
+          <div class="val" id="resMark">—</div></div>
+        <div class="mcard"><div class="lbl">Время</div>
+          <div class="val" id="resTime">—</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">2</span> Варианты тестов</h2>
+    <div class="grid three">
+      <div class="lesson">
+        <div class="tags"><span class="tag t7">7 класс</span></div>
+        <h3>Измерение информации</h3>
+        <p>6 вопросов с числовым ответом.</p>
+        <span class="go">Вариант 1 · открыт</span>
+      </div>
+      <div class="lesson">
+        <div class="tags"><span class="tag t8">8 класс</span></div>
+        <h3>Системы счисления</h3>
+        <p>Перевод чисел, арифметика.</p>
+        <span class="go">Скоро</span>
+      </div>
+      <div class="lesson">
+        <div class="tags"><span class="tag t9">9 класс</span></div>
+        <h3>Алгоритмы</h3>
+        <p>Трассировка и блок-схемы.</p>
+        <span class="go">Скоро</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="foot">
+  <span>© 2026 · Учитель информатики · <a href="mailto:teacher@example.ru">teacher@example.ru</a></span>
+  <span class="foot-links">
+    <a href="about.html">О сайте</a>
+    <a href="lessons.html">Уроки</a>
+  </span>
+</footer>
+
+<div class="toast" id="toast"></div>
+<script src="assets/js/main.js"></script>
+<script>
+/* ===== ПАРОЛЬ ТЕСТА =====
+   ЗАМЕНИТЕ на свой. Важно понимать: это защита «от случайного входа»,
+   а не криптография — пароль виден в исходном коде страницы. */
+const TEST_PASSWORD = 'informatika7';
+
+/* Нормализация: латинские двойники русских букв */
+const HOMOGLYPHS = {
+  'а':'a','е':'e','о':'o','р':'p','с':'c','у':'y','х':'x','к':'k','м':'m','т':'t','в':'b','н':'h'
+};
+function normalize(s){
+  return s.toLowerCase().trim()
+    .split('').map(ch => HOMOGLYPHS[ch] || ch).join('');
+}
+
+const gate = document.getElementById('gate');
+const quiz = document.getElementById('quiz');
+const pmsg = document.getElementById('pmsg');
+
+document.getElementById('unlockBtn').addEventListener('click', () => {
+  const val = normalize(document.getElementById('pwd').value);
+  if (val === normalize(TEST_PASSWORD)) {
+    gate.hidden = true;
+    quiz.hidden = false;
+    startTimer();
+    quiz.scrollIntoView({behavior:'smooth'});
+  } else {
+    pmsg.textContent = 'Неверный пароль. Попробуйте ещё раз.';
+  }
+});
+document.getElementById('pwd').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('unlockBtn').click();
+});
+
+/* ===== ТАЙМЕР ===== */
+let seconds = 15 * 60, timerId = null;
+function startTimer(){
+  if (timerId) return;
+  const el = document.getElementById('timer');
+  timerId = setInterval(() => {
+    seconds--;
+    const m = String(Math.floor(seconds / 60)).padStart(2,'0');
+    const s = String(seconds % 60).padStart(2,'0');
+    el.textContent = `${m}:${s}`;
+    if (seconds <= 60) el.parentElement.style.background = 'var(--yellow)';
+    if (seconds <= 0) { clearInterval(timerId); check(); }
+  }, 1000);
+}
+
+/* ===== ПРОВЕРКА ===== */
+function check(){
+  let right = 0, total = 0;
+  document.querySelectorAll('#questions .task').forEach(t => {
+    total++;
+    const inp = t.querySelector('.qin');
+    const fb = t.querySelector('.fb');
+    const correct = t.dataset.answer.trim();
+    const got = inp.value.trim().replace(',', '.');
+    const ok = got !== '' && Number(got) === Number(correct);
+    if (ok) right++;
+    fb.className = 'fb show ' + (ok ? 'ok' : 'no');
+    fb.textContent = ok
+      ? '✅ Верно!'
+      : `❌ Неверно. Правильный ответ: ${correct}. Проверьте перевод единиц и степень двойки.`;
+  });
+
+  const mark = right >= total * 0.9 ? 5
+             : right >= total * 0.7 ? 4
+             : right >= total * 0.5 ? 3 : 2;
+
+  document.getElementById('rightCount').textContent = right;
+  document.getElementById('resRight').textContent = `${right}/${total}`;
+  document.getElementById('resMark').textContent = mark;
+  document.getElementById('resTime').textContent = document.getElementById('timer').textContent;
+  document.getElementById('result').classList.add('show');
+  document.getElementById('result').scrollIntoView({behavior:'smooth'});
+  toast(`Проверено: ${right} из ${total} · оценка ${mark}`);
+}
+
+document.getElementById('checkBtn').addEventListener('click', check);
+document.getElementById('resetBtn').addEventListener('click', () => location.reload());
+
+/* подпись ученика из localStorage */
+const who = localStorage.getItem('info-student');
+if (who) document.getElementById('who').textContent = who;
+</script>
+</body>
+</html>

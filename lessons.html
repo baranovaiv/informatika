@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Уроки · Информатика</title>
+<meta name="description" content="Каталог уроков по информатике для 7–11 классов: теория, задачи, тренажёры.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">К содержанию</a>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="index.html"><span class="logo">I</span> Информатика · кабинет 21</a>
+    <button class="burger" aria-label="Меню">☰</button>
+    <div class="nav-links">
+      <a href="index.html">Главная</a>
+      <a href="lessons.html" class="active">Уроки</a>
+      <a href="materials.html">Материалы</a>
+      <a href="tests.html">Тесты</a>
+      <a href="about.html">О сайте</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap" id="main">
+
+  <header class="hero small">
+    <svg class="deco" width="180" height="180" viewBox="0 0 200 200" aria-hidden="true">
+      <circle cx="70" cy="66" r="38" fill="#fff" opacity=".7"/>
+      <rect x="108" y="72" width="62" height="62" rx="16" fill="#fff" opacity=".55"/>
+    </svg>
+    <h1>Уроки</h1>
+    <p>Выберите класс и найдите нужную тему. Внутри — теория, разобранные примеры
+      и задания с моментальной проверкой.</p>
+  </header>
+
+  <section class="card">
+    <!-- ФИЛЬТРЫ -->
+    <div class="filters no-print">
+      <button class="chipbtn on" data-cls="all">Все классы</button>
+      <button class="chipbtn" data-cls="7">7 класс</button>
+      <button class="chipbtn" data-cls="8">8 класс</button>
+      <button class="chipbtn" data-cls="9">9 класс</button>
+      <button class="chipbtn" data-cls="10">10 класс</button>
+      <button class="chipbtn" data-cls="11">11 класс</button>
+      <input type="search" class="search" id="lessonSearch" placeholder="Поиск по теме…" autocomplete="off">
+      <span class="counter" id="lessonCounter"></span>
+    </div>
+
+    <!-- СПИСОК УРОКОВ -->
+    <div class="grid" id="lessonList">
+
+      <a class="lesson" href="lessons/urok-inform-volume.html" data-cls="7" data-title="информационный объём сообщения измерение информации биты байты">
+        <div class="tags"><span class="tag t7">7 класс</span><span class="tag t-extra">интерактив</span></div>
+        <h3>Информационный объём сообщения</h3>
+        <p>N = 2ⁱ, I = K · i, единицы измерения, задачи с полным решением.</p>
+        <span class="go">Открыть урок →</span>
+      </a>
+
+      <a class="lesson" href="#" data-cls="7" data-title="количество информации алфавитный подход мощность алфавита">
+        <div class="tags"><span class="tag t7">7 класс</span></div>
+        <h3>Количество информации</h3>
+        <p>Алфавитный и содержательный подходы, равновероятные события.</p>
+        <span class="go">Открыть урок →</span>
+      </a>
+
+      <a class="lesson" href="#" data-cls="8" data-title="системы счисления двоичная перевод">
+        <div class="tags"><span class="tag t8">8 класс</span><span class="tag t-extra">тренажёр</span></div>
+        <h3>Системы счисления</h3>
+        <p>Перевод из десятичной в двоичную и обратно, восьмеричная и шестнадцатеричная.</p>
+        <span class="go">Открыть урок →</span>
+      </a>
+
+      <a class="lesson" href="#" data-cls="8" data-title="логика алгебра логики таблица истинности">
+        <div class="tags"><span class="tag t8">8 класс</span></div>
+        <h3>Алгебра логики</h3>
+        <p>И, ИЛИ, НЕ. Построение таблиц истинности для высказываний.</p>
+        <span class="go">Открыть урок →</span>
+      </a>
+
+      <a class="lesson" href="#" data-cls="9" data-title="алгоритмы блок-схемы ветвление цикл">
+        <div class="tags"><span class="tag t9">9 класс</span></div>
+        <h3>Алгоритмы и блок-схемы</h3>
+        <p>Линейные алгоритмы, ветвление, циклы. Трассировка и отладка.</p>
+        <span class="go">Открыть урок →</span>
+      </a>
+
+      <a class="lesson" href="#" data-cls="9" data-title="программирование python циклы списки">
+        <div class="tags"><span class="tag t9">9 класс</span><span class="tag t-extra">практика</span></div>
+        <h3>Программирование на Python</h3>
+        <p>Ввод-вывод, условия, циклы, списки. Разбор задач ОГЭ.</p>
+        <span class="go">Открыть урок →</span>
+      </a>
+
+      <a class="lesson" href="#" data-cls="9" data-title="электронные таблицы excel формулы диаграммы">
+        <div class="tags"><span class="tag t9">9 класс</span></div>
+        <h3>Электронные таблицы</h3>
+        <p>Формулы, относительные и абсолютные ссылки, построение диаграмм.</p>
+        <span class="go">Открыть урок →</span>
+      </a>
+
+      <a class="lesson" href="#" data-cls="10" data-title="моделирование информационные модели графы">
+        <div class="tags"><span class="tag t10">10 класс</span></div>
+        <h3>Информационное моделирование</h3>
+        <p>Модели, графы, деревья, табличные модели и их применение.</p>
+        <span class="go">Открыть урок →</span>
+      </a>
+
+      <a class="lesson" href="#" data-cls="10" data-title="кодирование текста изображения звук">
+        <div class="tags"><span class="tag t10">10 класс</span></div>
+        <h3>Кодирование информации</h3>
+        <p>Текстовые кодировки, растровая графика, звук. Объём файлов.</p>
+        <span class="go">Открыть урок →</span>
+      </a>
+
+      <a class="lesson" href="#" data-cls="11" data-title="базы данных sql таблицы запросы">
+        <div class="tags"><span class="tag t11">11 класс</span></div>
+        <h3>Базы данных и SQL</h3>
+        <p>Реляционная модель, ключи, выборка, простые запросы.</p>
+        <span class="go">Открыть урок →</span>
+      </a>
+
+      <a class="lesson" href="#" data-cls="11" data-title="сети интернет протоколы адресация">
+        <div class="tags"><span class="tag t11">11 класс</span></div>
+        <h3>Компьютерные сети</h3>
+        <p>IP-адресация, протоколы, маски подсети. Разбор заданий ЕГЭ.</p>
+        <span class="go">Открыть урок →</span>
+      </a>
+
+      <a class="lesson" href="#" data-cls="11" data-title="безопасность пароли фишинг защита">
+        <div class="tags"><span class="tag t11">11 класс</span><span class="tag t-extra">жизнь</span></div>
+        <h3>Безопасность в сети</h3>
+        <p>Пароли, фишинг, двухфакторная аутентификация, цифровая гигиена.</p>
+        <span class="go">Открыть урок →</span>
+      </a>
+
+    </div>
+
+    <p class="muted mb0" id="lessonEmpty" hidden>Ничего не найдено — попробуйте другой запрос.</p>
+  </section>
+
+</div>
+
+<footer class="foot">
+  <span>© 2026 · Учитель информатики · <a href="mailto:teacher@example.ru">teacher@example.ru</a></span>
+  <span class="foot-links">
+    <a href="about.html">О сайте</a>
+    <a href="materials.html">Материалы</a>
+  </span>
+</footer>
+
+<script src="assets/js/main.js"></script>
+<script>
+  // фильтрация уроков
+  const cards = [...document.querySelectorAll('#lessonList .lesson')];
+  const counter = document.getElementById('lessonCounter');
+  const empty = document.getElementById('lessonEmpty');
+  const search = document.getElementById('lessonSearch');
+  let cls = 'all';
+
+  function render(){
+    const q = search.value.trim().toLowerCase();
+    let shown = 0;
+    cards.forEach(c => {
+      const okCls = cls === 'all' || c.dataset.cls === cls;
+      const okQ = !q || (c.dataset.title + ' ' + c.textContent.toLowerCase()).includes(q);
+      const vis = okCls && okQ;
+      c.hidden = !vis;
+      if (vis) shown++;
+    });
+    counter.textContent = `Найдено: ${shown} из ${cards.length}`;
+    empty.hidden = shown > 0;
+  }
+
+  document.querySelectorAll('.chipbtn').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.chipbtn').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      cls = b.dataset.cls;
+      render();
+    });
+  });
+  search.addEventListener('input', render);
+  render();
+</script>
+</body>
+</html>
