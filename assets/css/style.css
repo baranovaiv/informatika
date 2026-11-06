@@ -1,0 +1,336 @@
+/* ============================================================
+   Сайт учителя информатики — единая дизайн-система
+   Стиль взят из урока «Информационный объём сообщения» (v3)
+   ============================================================ */
+
+:root{
+  --pink:#fde2e4;  --blue:#dbeafe;  --green:#d1fae5;  --yellow:#fef9c3;
+  --purple:#ede9fe; --pd:#c4b5fd;   --orange:#ffedd5; --od:#fdba74;
+  --gd:#6ee7b7;    --yd:#fde68a;
+  --ink:#39364a;   --muted:#807b93; --ok:#10b981;     --bad:#ef4444;
+  --r:18px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; padding:0 0 90px; font-size:16px; line-height:1.65; color:var(--ink);
+  font-family:"Segoe UI",system-ui,-apple-system,sans-serif; min-height:100vh;
+  background-attachment:fixed;
+  background:
+    radial-gradient(circle at 8% 0,#fff1f5 0,transparent 38%),
+    radial-gradient(circle at 92% 6%,#eef4ff 0,transparent 38%),
+    linear-gradient(165deg,#fbfaff,#f4fbff 50%,#f7fff9);
+}
+a{color:#6d28d9;text-decoration:none}
+a:hover{text-decoration:underline}
+img{max-width:100%;height:auto}
+.wrap{max-width:1040px;margin:0 auto;padding:24px 16px}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:12px;top:12px;z-index:999;background:#fff;padding:10px 16px;border-radius:10px}
+
+/* ---------- НАВИГАЦИЯ ---------- */
+.nav{
+  position:sticky;top:0;z-index:90;background:rgba(255,255,255,.86);
+  backdrop-filter:blur(12px);border-bottom:1px solid #f0eef8;
+}
+.nav-in{
+  max-width:1040px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;
+  gap:14px;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;color:#4c1d95;font-size:1.02rem}
+.brand:hover{text-decoration:none}
+.brand .logo{
+  width:36px;height:36px;border-radius:12px;display:grid;place-items:center;flex:0 0 auto;
+  background:linear-gradient(135deg,var(--purple),var(--blue));color:#6d28d9;
+  font-family:Cambria,Georgia,serif;font-weight:900;font-size:1.05rem;
+}
+.nav-links{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+.nav-links a{
+  padding:7px 13px;border-radius:10px;font-weight:700;font-size:.9rem;color:#5b4b8a;
+}
+.nav-links a:hover{background:#f5f3ff;text-decoration:none}
+.nav-links a.active{background:var(--purple);color:#4c1d95}
+.burger{display:none;margin-left:auto;border:none;background:var(--purple);color:#4c1d95;
+  border-radius:10px;padding:8px 12px;font-size:1.1rem;cursor:pointer;font-family:inherit}
+
+/* ---------- ШАПКА-ГЕРОЙ ---------- */
+.hero{
+  background:linear-gradient(135deg,var(--purple) 0,var(--blue) 55%,var(--green) 100%);
+  border-radius:26px;padding:30px;position:relative;overflow:hidden;
+  box-shadow:0 12px 40px rgba(140,130,190,.18);
+}
+.hero h1{margin:0 0 8px;font-size:1.9rem;line-height:1.25;position:relative;z-index:2}
+.hero>p,.hero .lead{margin:0;color:#4c4660;font-weight:500;position:relative;z-index:2;max-width:640px}
+.hero.small h1{font-size:1.5rem}
+.deco{position:absolute;right:-20px;top:-24px;opacity:.4;z-index:1}
+.hero-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:2}
+.hero-tags span{
+  background:rgba(255,255,255,.85);border-radius:999px;padding:5px 14px;
+  font-size:.82rem;font-weight:800;color:#4c4660;
+}
+
+/* ---------- КАРТОЧКИ ---------- */
+.card{
+  background:#fff;border-radius:var(--r);padding:24px;margin:20px 0;
+  box-shadow:0 6px 22px rgba(120,110,160,.1);border:1px solid #f2f0fa;
+}
+.card h2{margin:0 0 14px;font-size:1.32rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card h3{margin:20px 0 10px;font-size:1.08rem;color:#5b4b8a}
+.card> :last-child{margin-bottom:0}
+.num{
+  width:34px;height:34px;border-radius:50%;flex:0 0 auto;font-weight:800;font-size:.95rem;
+  display:inline-flex;align-items:center;justify-content:center;color:#4c1d95;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+}
+.badge{
+  font-size:.72rem;background:var(--purple);color:#6d28d9;padding:3px 11px;
+  border-radius:999px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;
+}
+.formula{
+  background:linear-gradient(135deg,#f5f3ff,#eef2ff);border-left:4px solid var(--pd);
+  padding:14px 18px;border-radius:12px;margin:16px 0;text-align:center;overflow-x:auto;
+}
+
+/* ---------- СЕТКИ ---------- */
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid.three{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+
+/* ---------- КАРТОЧКА УРОКА ---------- */
+.lesson{
+  background:#fff;border-radius:16px;padding:18px;border:2px solid #f0eef8;
+  display:flex;flex-direction:column;gap:8px;transition:.18s;position:relative;
+}
+.lesson:hover{transform:translateY(-3px);border-color:var(--pd);
+  box-shadow:0 10px 24px rgba(120,110,160,.16);text-decoration:none}
+.lesson .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lesson h3{margin:0;font-size:1.02rem;color:#39364a;line-height:1.35}
+.lesson p{margin:0;font-size:.88rem;color:var(--muted)}
+.lesson .go{margin-top:auto;font-size:.85rem;font-weight:800;color:#6d28d9}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:2px}
+.tag{font-size:.7rem;font-weight:800;padding:2px 9px;border-radius:999px;
+  letter-spacing:.3px;text-transform:uppercase}
+.t7{background:var(--green);color:#047857}
+.t8{background:var(--blue);color:#1d4ed8}
+.t9{background:var(--orange);color:#c2410c}
+.t10{background:var(--purple);color:#6d28d9}
+.t11{background:var(--pink);color:#9d174d}
+.t-extra{background:var(--yellow);color:#b45309}
+
+/* ---------- ФИЛЬТРЫ ---------- */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px;align-items:center}
+.chipbtn{
+  border:2px solid #eeeaf8;background:#fff;border-radius:999px;padding:7px 16px;
+  font-family:inherit;font-weight:800;font-size:.85rem;color:#5b4b8a;cursor:pointer;transition:.15s;
+}
+.chipbtn:hover{border-color:var(--pd);background:#faf8ff}
+.chipbtn.on{background:var(--purple);border-color:var(--pd);color:#4c1d95}
+.search{
+  border:2px solid #e6e3f1;border-radius:999px;padding:9px 18px;font-size:.92rem;
+  font-family:inherit;outline:none;flex:1 1 220px;min-width:180px;background:#fff;color:var(--ink);
+}
+.search:focus{border-color:var(--pd);box-shadow:0 0 0 4px #ede9fe}
+.counter{font-size:.84rem;color:var(--muted);margin-left:auto}
+
+/* ---------- ЗАДАЧИ ---------- */
+.task{
+  background:#fffdfa;border:2px solid var(--od);border-radius:16px;
+  padding:20px 20px 16px;margin:24px 0 16px;position:relative;
+}
+.task::before{
+  content:"ЗАДАЧА";position:absolute;top:-11px;left:18px;background:var(--orange);
+  color:#b45309;font-size:.7rem;font-weight:800;padding:3px 12px;border-radius:999px;
+  letter-spacing:.6px;
+}
+.task.q::before{content:"ВОПРОС";background:var(--blue);color:#1d4ed8}
+.tgrid{display:grid;grid-template-columns:100px 1fr;gap:3px 10px;margin:8px 0;
+  font-family:Cambria,Georgia,serif;font-size:1.02rem}
+.tgrid .k{color:#7c3aed;font-weight:800}
+.step{margin:9px 0 9px 4px;padding-left:14px;border-left:2px solid var(--gd);color:#4b5563}
+.answer-line{border-top:2px dashed var(--gd);margin-top:14px;padding-top:10px;
+  font-weight:800;color:#047857}
+.ans{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.ans label{font-size:.9rem;color:var(--muted);font-weight:600}
+
+/* ---------- ФОРМЫ ---------- */
+input[type=text],input[type=password],input[type=search],textarea,select{
+  border:2px solid #e6e3f1;border-radius:10px;padding:9px 12px;font-size:.98rem;
+  font-family:inherit;outline:none;transition:.2s;color:var(--ink);background:#fff;
+}
+input[type=text]{max-width:280px;width:100%}
+textarea{width:100%;min-height:90px;resize:vertical;font-family:Cambria,Georgia,serif}
+input:focus,textarea:focus,select:focus{border-color:var(--pd);box-shadow:0 0 0 4px #ede9fe}
+
+/* ---------- КНОПКИ ---------- */
+.btn{
+  border:none;border-radius:12px;padding:11px 18px;font-size:.94rem;font-weight:700;
+  cursor:pointer;transition:.18s;display:inline-flex;align-items:center;gap:7px;
+  font-family:inherit;box-shadow:0 4px 12px rgba(120,110,160,.15);text-decoration:none;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(120,110,160,.22);text-decoration:none}
+.btn:active{transform:translateY(0) scale(.98)}
+.b-pink{background:var(--pink);color:#9d174d}
+.b-blue{background:var(--blue);color:#1d4ed8}
+.b-green{background:var(--green);color:#047857}
+.b-yellow{background:var(--yellow);color:#b45309}
+.b-purple{background:var(--purple);color:#6d28d9}
+.b-orange{background:var(--orange);color:#c2410c}
+.b-red{background:#fee2e2;color:#b91c1c}
+.b-teal{background:#ccfbf1;color:#0f766e}
+.b-ghost{background:#fff;color:#5b4b8a;border:2px solid #eeeaf8;box-shadow:none}
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+
+/* ---------- ОТВЕТЫ ---------- */
+.fb{margin-top:10px;font-weight:600;font-size:.94rem;display:none;padding:10px 14px;
+  border-radius:10px;line-height:1.6}
+.fb.show{display:block}
+.fb.ok{background:var(--green);color:#047857}
+.fb.no{background:#fee2e2;color:#b91c1c}
+.fb.hint{background:var(--yellow);color:#b45309}
+
+/* ---------- ФАЙЛЫ / МАТЕРИАЛЫ ---------- */
+.file{
+  display:flex;gap:14px;align-items:flex-start;background:#fff;border-radius:16px;
+  padding:16px 18px;border:2px solid #f0eef8;transition:.16s;
+}
+.file:hover{border-color:var(--pd);box-shadow:0 8px 20px rgba(120,110,160,.14)}
+.file .ico{
+  width:46px;height:46px;border-radius:12px;flex:0 0 auto;display:grid;place-items:center;
+  font-size:.72rem;font-weight:900;color:#fff;letter-spacing:.5px;
+}
+.pdf{background:linear-gradient(135deg,#fca5a5,#ef4444)}
+.doc{background:linear-gradient(135deg,#93c5fd,#3b82f6)}
+.xls{background:linear-gradient(135deg,#6ee7b7,#10b981)}
+.ppt{background:linear-gradient(135deg,#fdba74,#f97316)}
+.zip{background:linear-gradient(135deg,#c4b5fd,#8b5cf6)}
+.img{background:linear-gradient(135deg,#f9a8d4,#ec4899)}
+.code{background:linear-gradient(135deg,#a5b4fc,#6366f1)}
+.file .body{min-width:0;flex:1}
+.file h3{margin:0 0 3px;font-size:.99rem;color:#39364a;line-height:1.35}
+.file p{margin:0;font-size:.85rem;color:var(--muted)}
+.file .meta{display:flex;gap:10px;flex-wrap:wrap;font-size:.75rem;color:var(--muted);
+  font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-top:6px}
+.file .dl{
+  align-self:center;background:var(--purple);color:#6d28d9;border-radius:10px;
+  padding:8px 14px;font-weight:800;font-size:.85rem;white-space:nowrap;
+}
+.file .dl:hover{background:var(--pd);text-decoration:none;color:#4c1d95}
+
+/* ---------- ТАБЛИЦЫ ---------- */
+table.pow{border-collapse:collapse;width:100%;margin:12px 0;font-size:.92rem;
+  display:block;overflow-x:auto}
+table.pow td,table.pow th{border:1px solid #e6e3f1;padding:6px 8px;text-align:center;background:#fdfcff}
+table.pow tr:first-child td,table.pow thead th{background:var(--blue);font-weight:700;color:#1d4ed8}
+table.data{border-collapse:collapse;width:100%;font-size:.92rem;display:block;overflow-x:auto}
+table.data td,table.data th{border:1px solid #e6e3f1;padding:8px 10px;text-align:left}
+table.data th{background:var(--purple);color:#4c1d95}
+
+/* ---------- ИНФО-БЛОКИ ---------- */
+.note{
+  background:var(--yellow);border-left:4px solid var(--yd);border-radius:12px;
+  padding:12px 16px;margin:16px 0;font-size:.92rem;font-weight:600;color:#b45309;
+}
+.note.tip{background:#f6fffb;border-left-color:var(--gd);color:#047857;font-weight:600}
+.note.info{background:#f5f7ff;border-left-color:#93c5fd;color:#1d4ed8}
+blockquote{margin:16px 0;padding:12px 18px;background:#fbfaff;border-left:4px solid var(--pd);
+  border-radius:0 12px 12px 0;color:#5b4b8a;font-style:italic}
+ul,ol{padding-left:22px}
+li{margin:4px 0}
+details{background:#fdfcff;border:2px solid #f0eef8;border-radius:12px;padding:12px 16px;margin:12px 0}
+details summary{cursor:pointer;font-weight:800;color:#6d28d9}
+details[open] summary{margin-bottom:10px}
+
+/* ---------- ТАЙМЛАЙН / ШАГИ ---------- */
+.steps{counter-reset:st;list-style:none;padding:0;margin:14px 0}
+.steps li{counter-increment:st;position:relative;padding-left:44px;margin:14px 0}
+.steps li::before{
+  content:counter(st);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--blue));color:#4c1d95;font-weight:800;
+  display:grid;place-items:center;font-size:.85rem;
+}
+
+/* ---------- ДОМАШНЕЕ ЗАДАНИЕ ---------- */
+.hw{background:#fdfcff;border-radius:14px;padding:16px 18px;margin:12px 0;
+  border-left:4px solid #f8b4c4}
+.lvl{display:inline-block;font-size:.72rem;font-weight:800;padding:2px 10px;
+  border-radius:999px;margin-bottom:8px;letter-spacing:.3px}
+.l1{background:var(--green);color:#047857}
+.l2{background:var(--blue);color:#1d4ed8}
+.l3{background:var(--orange);color:#c2410c}
+.hw p{margin:0}
+.hw details{margin-top:8px;background:#fff;padding:10px 14px}
+
+/* ---------- ПАРОЛЬ / СООБЩЕНИЯ ---------- */
+.pmsg{min-height:22px;font-weight:700;color:var(--bad);margin:10px 0 0}
+.qin{max-width:200px}
+
+/* ---------- ИТОГИ / HUD ---------- */.hud{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 8px}
+.chip{
+  background:#fff;border-radius:14px;padding:8px 14px;font-weight:700;font-size:.9rem;
+  box-shadow:0 4px 14px rgba(120,110,160,.12);display:flex;align-items:center;gap:6px;
+  border:1px solid #f0eef8;
+}
+.chip.score{background:var(--green)}
+.chip.streak{background:var(--orange)}
+.chip.level{background:var(--yellow)}
+.res{background:linear-gradient(135deg,var(--green),var(--blue));border-radius:var(--r);
+  padding:22px;margin:18px 0}
+.marks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.mcard{background:#fff;border-radius:16px;padding:16px;text-align:center;
+  box-shadow:0 4px 16px rgba(6,95,70,.1)}
+.mcard .lbl{font-size:.75rem;font-weight:800;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.5px;margin-bottom:8px}
+.mcard .val{font-size:2.3rem;font-weight:900;line-height:1;color:#6d28d9}
+
+/* ---------- ПОДВАЛ ---------- */
+.foot{
+  max-width:1040px;margin:40px auto 0;padding:22px 16px;border-top:1px solid #eae7f5;
+  color:var(--muted);font-size:.85rem;display:flex;gap:14px;flex-wrap:wrap;
+  justify-content:space-between;align-items:center;
+}
+.foot a{color:#6d28d9;font-weight:700}
+.foot-links{display:flex;gap:14px;flex-wrap:wrap}
+
+/* ---------- МОДАЛКА ---------- */
+.mbg{display:none;position:fixed;inset:0;background:rgba(60,55,90,.48);z-index:200;
+  align-items:center;justify-content:center;padding:16px}
+.mbg.open{display:flex}
+.modal{background:#fff;border-radius:22px;max-width:620px;width:100%;max-height:88vh;
+  overflow:auto;padding:24px;box-shadow:0 24px 70px rgba(60,55,90,.4)}
+.modal h3{margin:0 0 10px;font-size:1.12rem}
+
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(140px);
+  background:#39364a;color:#fff;padding:12px 24px;border-radius:14px;font-weight:700;
+  font-size:.92rem;transition:.35s;z-index:300;box-shadow:0 12px 34px rgba(0,0,0,.28);
+  max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+.center{text-align:center}
+.muted{color:var(--muted)}
+.mt0{margin-top:0}
+.mb0{margin-bottom:0}
+
+/* ---------- АДАПТИВ ---------- */
+@media(max-width:760px){
+  .hero{padding:22px 18px}
+  .hero h1{font-size:1.45rem}
+  .hero.small h1{font-size:1.25rem}
+  .card{padding:18px 16px}
+  .tgrid{grid-template-columns:84px 1fr;font-size:.97rem}
+  .burger{display:block}
+  .nav-links{display:none;width:100%;flex-direction:column;gap:2px;margin:6px 0 0}
+  .nav-links.open{display:flex}
+  .nav-links a{padding:10px 14px}
+  input[type=text]{max-width:100%}
+  .marks{grid-template-columns:1fr}
+  .file{flex-wrap:wrap}
+  .file .dl{width:100%;text-align:center}
+}
+@media print{
+  .nav,.foot,.no-print,.burger{display:none !important}
+  body{background:#fff;padding:0;font-size:11.5pt}
+  .card{box-shadow:none;border:none;padding:0;margin:0 0 12pt}
+  .task{break-inside:avoid}
+  a{color:#000;text-decoration:none}
+}
