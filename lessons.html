@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Уроки · Информатика</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23ede9fe'/><text x='16' y='23' font-size='17' font-family='Georgia' font-weight='bold' fill='%236d28d9' text-anchor='middle'>I</text></svg>">
+<style>
+/* ---- Стили для списка уроков ---- */
+.lesson-group{margin:24px 0}
+.lesson-group h2{
+  font-size:1.2rem;margin:0 0 12px;padding-bottom:6px;
+  border-bottom:2px solid var(--purple);color:#4c1d95;
+  display:flex;align-items:center;gap:8px;
+}
+.lesson-list{display:flex;flex-direction:column;gap:8px}
+.lesson-row{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  background:#fff;border-radius:12px;padding:12px 16px;
+  border:2px solid #f0eef8;transition:.15s;text-decoration:none;color:inherit;
+}
+.lesson-row:hover{border-color:var(--pd);background:#faf8ff;text-decoration:none}
+.lesson-row .lnum{
+  font-size:.75rem;font-weight:800;color:#6d28d9;background:var(--purple);
+  padding:3px 9px;border-radius:999px;white-space:nowrap;
+}
+.lesson-row h3{margin:0;font-size:.97rem;font-weight:700;flex:1;min-width:200px}
+.lesson-row .tags{display:flex;gap:5px;flex-wrap:wrap}
+.lesson-row .go{font-size:.82rem;font-weight:800;color:#6d28d9;white-space:nowrap}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">К содержанию</a>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="index.html"><span class="logo">I</span> Информатика · кабинет 318А</a>
+    <button class="burger" aria-label="Меню">☰</button>
+    <div class="nav-links">
+      <a href="index.html">Главная</a>
+      <a href="lessons.html" class="active">Уроки</a>
+      <a href="materials.html">Материалы</a>
+      <a href="tests.html">Тесты</a>
+      <a href="oge.html">ОГЭ</a>
+      <a href="about.html">О сайте</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap" id="main">
+  <header class="hero small">
+    <h1>Все уроки</h1>
+    <p class="lead">Материалы по классам и направлениям. Выберите тему — откроется страница урока.</p>
+  </header>
+
+  <!-- 7 КЛАСС -->
+  <section class="card lesson-group">
+    <h2>📘 7 класс</h2>
+    <div class="lesson-list">
+      <a class="lesson-row" href="lessons/urok-inform-volume.html">
+        <span class="lnum">01</span>
+        <h3>Информационный объём сообщения</h3>
+        <div class="tags"><span class="tag t7">7 класс</span></div>
+        <span class="go">→</span>
+      </a>
+      <a class="lesson-row" href="lessons/urok-encoding.html">
+        <span class="lnum">02</span>
+        <h3>Измерение информации. Кодировки</h3>
+        <div class="tags"><span class="tag t7">7 класс</span></div>
+        <span class="go">→</span>
+      </a>
+      <a class="lesson-row" href="lessons/urok-text-volume.html">
+        <span class="lnum">03</span>
+        <h3>Информационный объём текста. Решение задач</h3>
+        <div class="tags"><span class="tag t7">7 класс</span></div>
+        <span class="go">→</span>
+      </a>
+      <a class="lesson-row" href="lessons/urok-01.html">
+        <span class="lnum">04</span>
+        <h3>урок</h3>
+        <div class="tags"><span class="tag t7">7 класс</span></div>
+        <span class="go">→</span>
+      </a>
+      <a class="lesson-row" href="lessons/urok-02.html">
+        <span class="lnum">05</span>
+        <h3>урок</h3>
+        <div class="tags"><span class="tag t7">7 класс</span></div>
+        <span class="go">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- 8 КЛАСС -->
+  <section class="card lesson-group">
+    <h2>📗 8 класс</h2>
+    <div class="lesson-list">
+      <a class="lesson-row" href="lessons/urok-08-01.html">
+        <span class="lnum">01</span>
+        <h3>урок</h3>
+        <div class="tags"><span class="tag t8">8 класс</span></div>
+        <span class="go">→</span>
+      </a>
+      <a class="lesson-row" href="lessons/urok-08-02.html">
+        <span class="lnum">02</span>
+        <h3>урок</h3>
+        <div class="tags"><span class="tag t8">8 класс</span></div>
+        <span class="go">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- 9 КЛАСС -->
+  <section class="card lesson-group">
+    <h2>📙 9 класс</h2>
+    <div class="lesson-list">
+      <a class="lesson-row" href="lessons/urok-09-01.html">
+        <span class="lnum">01</span>
+        <h3>урок</h3>
+        <div class="tags"><span class="tag t9">9 класс</span></div>
+        <span class="go">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ПРОГРАММИРОВАНИЕ -->
+  <section class="card lesson-group">
+    <h2>💻 Программирование</h2>
+    <div class="lesson-list">
+      <a class="lesson-row" href="lessons/prog-01.html">
+        <span class="lnum">01</span>
+        <h3>Введение в Python</h3>
+        <div class="tags"><span class="tag t10">программирование</span></div>
+        <span class="go">→</span>
+      </a>
+      <a class="lesson-row" href="lessons/prog-02.html">
+        <span class="lnum">02</span>
+        <h3>Переменные и типы данных</h3>
+        <div class="tags"><span class="tag t10">программирование</span></div>
+        <span class="go">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ТЕХНОЛОГИЯ -->
+  <section class="card lesson-group">
+    <h2>🛠 Технология</h2>
+    <div class="lesson-list">
+      <a class="lesson-row" href="lessons/tech-01.html">
+        <span class="lnum">01</span>
+        <h3>урок</h3>
+        <div class="tags"><span class="tag t11">технология</span></div>
+        <span class="go">→</span>
+      </a>
+      <a class="lesson-row" href="lessons/tech-02.html">
+        <span class="lnum">02</span>
+        <h3>урок</h3>
+        <div class="tags"><span class="tag t11">технология</span></div>
+        <span class="go">→</span>
+      </a>
+    </div>
+  </section>
+</div>
+
+<footer class="foot">
+  <span>© 2026 · Учитель информатики · <a href="mailto:baranovaiv@sch1363.ru">baranovaiv@sch1363.ru</a></span>
+  <span class="foot-links">
+    <a href="about.html">О сайте</a>
+    <a href="materials.html">Материалы</a>
+    <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+  </span>
+</footer>
+
+<div class="toast" id="toast"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
