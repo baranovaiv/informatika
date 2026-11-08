@@ -522,18 +522,36 @@ function calcWorkbook(){
    ========================================================= */
 var pracDone = false;
 function unlockPractice(){
+  async function unlockPractice() {
   var inp = document.getElementById('pracPass');
   var msg = document.getElementById('pracMsg');
-  if (!passwordMatches(inp.value, 'малинадеревня624')){
-    msg.textContent = '❌ Неверный пароль.';
-    return;
+  
+  try {
+    var response = await fetch('https://script.google.com/macros/s/AKfycbx7NlRlGjYj5vR7FVH0PLr3Hw7nmE2Cp1pWmSaKIqfkOa3Tzky-I19sxKIFOyhXsA6V/exec', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        password: inp.value,
+        resource: 'practice'
+      })
+    });
+    var data = await response.json();
+
+    if (data.ok) {
+      msg.textContent = '';
+      inp.value = '';
+      document.getElementById('practiceLock').style.display = 'none';
+      document.getElementById('practiceBody').style.display = 'block';
+      renderPractice();
+      toast('🔓 Практика открыта');
+    } else {
+      msg.textContent = '❌ Неверный пароль.';
+      inp.value = '';
+    }
+  } catch (error) {
+    msg.textContent = '⚠️ Ошибка соединения. Попробуйте позже.';
+    console.error(error);
   }
-  msg.textContent = '';
-  inp.value = '';
-  document.getElementById('practiceLock').style.display = 'none';
-  document.getElementById('practiceBody').style.display = 'block';
-  renderPractice();
-  toast('🔓 Практика открыта');
 }
 
 function renderPractice(){
@@ -611,19 +629,39 @@ function scrollToGate(){
 }
 
 function unlockStandalone(){
+  async function unlockStandalone() {
   if (!getSurname() || !getFirstname() || !getKlass()){
     document.getElementById('saMsg').textContent = 'Заполните ФИО и класс.';
     return;
   }
+  
   var inp = document.getElementById('saPass');
   var msg = document.getElementById('saMsg');
-  if (!passwordMatches(inp.value, 'виннимед254')){
-    msg.textContent = '❌ Неверный пароль.';
-    inp.value=''; inp.focus();
-    return;
+  
+  try {
+    var response = await fetch('https://script.google.com/macros/s/AKfycbx7NlRlGjYj5vR7FVH0PLr3Hw7nmE2Cp1pWmSaKIqfkOa3Tzky-I19sxKIFOyhXsA6V/exec', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        password: inp.value,
+        resource: 'standalone'
+      })
+    });
+    var data = await response.json();
+
+    if (data.ok) {
+      msg.textContent = '';
+      inp.value = '';
+      startStandalone();
+    } else {
+      msg.textContent = '❌ Неверный пароль.';
+      inp.value = '';
+    }
+  } catch (error) {
+    msg.textContent = '⚠️ Ошибка соединения. Попробуйте позже.';
+    console.error(error);
   }
-  msg.textContent=''; inp.value='';
-  startStandalone();
+}
 }
 
 function startStandalone(){
