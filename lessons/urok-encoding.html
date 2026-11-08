@@ -33,6 +33,7 @@ window.MathJax = {
 .lock p{color:var(--muted);margin:0 0 16px;font-size:.94rem}
 .lockrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .pmsg{min-height:22px;font-weight:600;color:var(--bad);margin-top:10px}
+.pmsg.info{color:var(--muted)}
 
 .vbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
 .res{background:linear-gradient(135deg,var(--green),var(--blue));border-radius:var(--r);padding:22px;margin:18px 0;display:none}
@@ -154,7 +155,6 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
 
 <div class="wrap" id="main">
 
-  <!-- ШАПКА УРОКА -->
   <header class="hero">
     <h1>Измерение информации. Кодировки</h1>
     <p class="lead">Урок информатики · 7 класс · Алфавитный подход, ASCII, Windows-1251, UTF-8</p>
@@ -168,7 +168,6 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
     </div>
   </header>
 
-  <!-- 1. ТЕОРИЯ -->
   <section class="card" id="theory">
     <h2><span class="num">1</span> Теоретический материал</h2>
 
@@ -197,61 +196,15 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
 
     <table class="codes">
       <tr>
-        <th>Символ</th>
-        <th>ASCII (dec)</th>
-        <th>Windows-1251 (hex)</th>
-        <th>UTF-8 (hex)</th>
-        <th>Байт в UTF-8</th>
+        <th>Символ</th><th>ASCII (dec)</th><th>Windows-1251 (hex)</th><th>UTF-8 (hex)</th><th>Байт в UTF-8</th>
       </tr>
-      <tr>
-        <td class="sym">A</td>
-        <td class="code">65</td>
-        <td class="code">41</td>
-        <td class="code">41</td>
-        <td>1</td>
-      </tr>
-      <tr>
-        <td class="sym">a</td>
-        <td class="code">97</td>
-        <td class="code">61</td>
-        <td class="code">61</td>
-        <td>1</td>
-      </tr>
-      <tr>
-        <td class="sym">0</td>
-        <td class="code">48</td>
-        <td class="code">30</td>
-        <td class="code">30</td>
-        <td>1</td>
-      </tr>
-      <tr>
-        <td class="sym">П</td>
-        <td class="code">—</td>
-        <td class="code">CF (207)</td>
-        <td class="code">D0 9F</td>
-        <td>2</td>
-      </tr>
-      <tr>
-        <td class="sym">р</td>
-        <td class="code">—</td>
-        <td class="code">F0 (240)</td>
-        <td class="code">D1 80</td>
-        <td>2</td>
-      </tr>
-      <tr>
-        <td class="sym">А</td>
-        <td class="code">—</td>
-        <td class="code">C0 (192)</td>
-        <td class="code">D0 90</td>
-        <td>2</td>
-      </tr>
-      <tr>
-        <td class="sym">я</td>
-        <td class="code">—</td>
-        <td class="code">FF (255)</td>
-        <td class="code">D1 8F</td>
-        <td>2</td>
-      </tr>
+      <tr><td class="sym">A</td><td class="code">65</td><td class="code">41</td><td class="code">41</td><td>1</td></tr>
+      <tr><td class="sym">a</td><td class="code">97</td><td class="code">61</td><td class="code">61</td><td>1</td></tr>
+      <tr><td class="sym">0</td><td class="code">48</td><td class="code">30</td><td class="code">30</td><td>1</td></tr>
+      <tr><td class="sym">П</td><td class="code">—</td><td class="code">CF (207)</td><td class="code">D0 9F</td><td>2</td></tr>
+      <tr><td class="sym">р</td><td class="code">—</td><td class="code">F0 (240)</td><td class="code">D1 80</td><td>2</td></tr>
+      <tr><td class="sym">А</td><td class="code">—</td><td class="code">C0 (192)</td><td class="code">D0 90</td><td>2</td></tr>
+      <tr><td class="sym">я</td><td class="code">—</td><td class="code">FF (255)</td><td class="code">D1 8F</td><td>2</td></tr>
     </table>
 
     <div class="note info">
@@ -262,7 +215,6 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
     <p>В LibreOffice Writer или MS Word: наберите символ, поставьте курсор после него и нажмите <b>Alt + X</b>. Символ превратится в шестнадцатеричный код Unicode. Нажмите <b>Ctrl + Z</b>, чтобы вернуть.</p>
   </section>
 
-  <!-- 2. РАБОЧАЯ ТЕТРАДЬ -->
   <section class="card" id="workbook">
     <h2><span class="num">2</span> Рабочая тетрадь</h2>
     <p class="muted">Задания с подсказками. Вводите только число или код.</p>
@@ -329,10 +281,8 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
       <h3>Результат рабочей тетради</h3>
       <p style="margin:0;font-weight:700">Верно: <span id="wbCorrect">0</span> из 5 · Оценка: <span id="wbMark" style="font-size:1.4rem">—</span></p>
     </div>
-    
   </section>
 
-  <!-- 3. ПРАКТИЧЕСКАЯ РАБОТА -->
   <section class="card" id="practice">
     <h2><span class="num">3</span> Практическая работа <span class="badge">по паролю</span></h2>
 
@@ -342,7 +292,7 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
       <div class="lockrow">
         <input type="password" id="pracPass" placeholder="Пароль" autocomplete="off"
                onkeydown="if(event.key==='Enter')unlockPractice()">
-        <button class="btn b-purple" onclick="unlockPractice()">Открыть</button>
+        <button class="btn b-purple" id="pracBtn" onclick="unlockPractice()">Открыть</button>
       </div>
       <div class="pmsg" id="pracMsg"></div>
     </div>
@@ -358,7 +308,7 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
         </select>
       </div>
       <div id="pracArea"></div>
-      <button class="btn b-green" onclick="gradePractice()" style="margin-top:14px">📊 Проверить практику</button>
+      <button class="btn b-green" id="pracCheckBtn" onclick="gradePractice()" style="margin-top:14px">📊 Проверить практику</button>
       <div class="res" id="pracResult">
         <h3>Результат практической работы</h3>
         <p style="margin:0;font-weight:700">Верно: <span id="pracCorrect">0</span> из 5 · Оценка: <span id="pracMark" style="font-size:1.4rem">—</span></p>
@@ -366,7 +316,6 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
     </div>
   </section>
 
-  <!-- 4. ИТОГ -->
   <section class="card" id="final">
     <h2><span class="num">4</span> Итоговая оценка за урок</h2>
     <p class="muted">Складывается из рабочей тетради и практической работы.<br>
@@ -385,7 +334,6 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
     </div>
   </section>
 
-  <!-- 5. САМОСТОЯТЕЛЬНАЯ -->
   <section class="card" id="standaloneGate">
     <h2><span class="num">5</span> Самостоятельная работа <span class="badge">по паролю</span></h2>
     <p>Пять задач на 15 минут. Теория и таблицы во время работы недоступны.
@@ -393,12 +341,11 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
     <div class="lockrow" style="justify-content:flex-start">
       <input type="password" id="saPass" placeholder="Пароль учителя" autocomplete="off"
              onkeydown="if(event.key==='Enter')unlockStandalone()">
-      <button class="btn b-blue" onclick="unlockStandalone()">🔓 Начать работу</button>
+      <button class="btn b-blue" id="saBtn" onclick="unlockStandalone()">🔓 Начать работу</button>
     </div>
     <div class="pmsg" id="saMsg"></div>
   </section>
 
-  <!-- 6. ДОМАШНЕЕ ЗАДАНИЕ -->
   <section class="card" id="homework">
     <h2><span class="num">6</span> Домашнее задание</h2>
     <button class="btn b-orange no-print" onclick="printHomework()">🖨 Печать только ДЗ</button>
@@ -425,7 +372,6 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
 
 </div><!-- /wrap -->
 
-<!-- ================= НИЖНЯЯ ПАНЕЛЬ ================= -->
 <div class="bar no-print">
   <button class="btn b-purple" onclick="openMath()">⌨ Математическая раскладка</button>
   <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
@@ -433,7 +379,6 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
   <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
 </div>
 
-<!-- ================= САМОСТОЯТЕЛЬНАЯ РАБОТА ================= -->
 <section id="standalone">
   <div class="exam-head">
     <div>
@@ -477,7 +422,6 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
   </div>
 </section>
 
-<!-- ================= МАТЕМАТИЧЕСКАЯ РАСКЛАДКА ================= -->
 <div class="mbg" id="mathModal">
   <div class="modal" role="dialog">
     <h3>⌨ Математическая раскладка</h3>
@@ -509,7 +453,6 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
   </div>
 </div>
 
-<!-- ================= КАЛЬКУЛЯТОР ================= -->
 <div class="mbg" id="calcModal">
   <div class="modal calc" role="dialog">
     <h3 style="margin-bottom:12px">🧮 Калькулятор</h3>
@@ -550,99 +493,45 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
 
 <script>
 /* =========================================================
-   1. КОНСТАНТЫ
+   0. НАСТРОЙКИ GOOGLE APPS SCRIPT
    ========================================================= */
-var PRACTICE_PASSWORD = 'мышкатанцует01';
-var SA_PASSWORD = 'клавишапрыг02';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbx7NlRlGjYj5vR7FVH0PLr3Hw7nmE2Cp1pWmSaKIqfkOa3Tzky-I19sxKIFOyhXsA6V/exec';
+var RESOURCE_ID = 'urok-encoding';
 var SA_MINUTES = 15;
 
+/* =========================================================
+   1. ПРОВЕРКА ПАРОЛЯ ЧЕРЕЗ GOOGLE APPS SCRIPT
+   ========================================================= */
+async function checkPasswordRemote(resourceId, type, password){
+  try {
+    var response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        resource: resourceId,
+        type: type,
+        password: password
+      })
+    });
+    var data = await response.json();
+    return data;
+  } catch (error) {
+    return { ok: false, error: 'network' };
+  }
+}
+
+/* =========================================================
+   2. СОСТОЯНИЕ
+   ========================================================= */
 var lessonState = {
-  wb: { w1:false, w2:false, w3:false, w4:false },
+  wb: { w1:false, w2:false, w3:false, w4:false, w5:false },
   wbCorrect: 0, wbMark: 0,
   pracDone: false, pracCorrect: 0, pracMark: 0
 };
 var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
 
-function savePracticeState(){
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
-    var d = JSON.parse(raw);
-    d.pracDone = lessonState.pracDone;
-    d.pracCorrect = lessonState.pracCorrect;
-    d.pracMark = lessonState.pracMark;
-    d.pracVariant = document.getElementById('pracVariant')?.value || '1';
-    d.pracAnswers = [];
-    if (lessonState.pracDone){
-      var v = document.getElementById('pracVariant').value;
-      var qs = PRACTICE_VARIANTS[v];
-      qs.forEach(function(_, i){
-        var el = document.getElementById('prac'+i);
-        d.pracAnswers.push(el ? el.value : '');
-      });
-    }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
-  } catch(e){}
-}
-
-function loadPracticeState(){
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return false;
-    var d = JSON.parse(raw);
-    if (!d.pracDone) return false;
-
-    lessonState.pracDone = true;
-    lessonState.pracCorrect = d.pracCorrect || 0;
-    lessonState.pracMark = d.pracMark || 0;
-
-    /* показываем результат вместо формы */
-    document.getElementById('practiceLock').style.display = 'none';
-    document.getElementById('practiceBody').style.display = 'block';
-    document.getElementById('pracVariant').value = d.pracVariant || '1';
-    renderPractice();
-
-    /* восстанавливаем ответы и блокируем поля */
-    (d.pracAnswers || []).forEach(function(ans, i){
-      var el = document.getElementById('prac'+i);
-      if (el){
-        el.value = ans;
-        el.disabled = true;
-        el.style.background = '#f3f4f6';
-      }
-    });
-
-    /* показываем результат */
-    document.getElementById('pracCorrect').textContent = d.pracCorrect;
-    document.getElementById('pracMark').textContent = d.pracMark;
-    document.getElementById('pracResult').classList.add('show');
-
-    /* прячем кнопку «Проверить» и меняем заголовок */
-    var checkBtn = document.querySelector('#practiceBody > button.b-green');
-    if (checkBtn) checkBtn.style.display = 'none';
-    var h2 = document.querySelector('#practice h2');
-    if (h2) h2.innerHTML = h2.innerHTML + ' <span class="badge" style="background:#fee2e2;color:#b91c1c">сдано</span>';
-
-    return true;
-  } catch(e){ return false; }
-}
-/* ---------- Ученик ---------- */
-function getSurname(){ return (document.getElementById('surname')?.value || '').trim(); }
-function getFirstname(){ return (document.getElementById('firstname')?.value || '').trim(); }
-function getKlass(){ return (document.getElementById('klass')?.value || '').trim(); }
-function getFullName(){ return [getSurname(), getFirstname()].filter(Boolean).join(' '); }
-function getFileName(){
-  var parts = [getSurname(), getFirstname(), getKlass()].filter(Boolean);
-  return (parts.length ? parts.join('_') : 'Ученик').replace(/[\\/:*?"<>|\s]+/g,'_');
-}
-function percentToMark(pct){
-  if (pct >= 90) return 5;
-  if (pct >= 70) return 4;
-  if (pct >= 50) return 3;
-  return 2;
-}
-
 /* =========================================================
-   2. РАБОЧАЯ ТЕТРАДЬ
+   3. РАБОЧАЯ ТЕТРАДЬ
    ========================================================= */
 function checkW(inputId, answer, fbId){
   if (lessonState.wb[inputId]){ showFb(fbId,'✔ Уже решено.','hint'); return; }
@@ -683,7 +572,7 @@ function calcWorkbook(){
 }
 
 /* =========================================================
-   3. ПРАКТИЧЕСКАЯ РАБОТА
+   4. ПРАКТИЧЕСКАЯ РАБОТА
    ========================================================= */
 var PRACTICE_VARIANTS = {
   1: [
@@ -716,13 +605,39 @@ var PRACTICE_VARIANTS = {
   ]
 };
 
-function unlockPractice(){
+async function unlockPractice(){
   var inp = document.getElementById('pracPass');
   var msg = document.getElementById('pracMsg');
-  if (!passwordMatches(inp.value, PRACTICE_PASSWORD)){
-    msg.textContent = '❌ Неверный пароль.';
+  var btn = document.getElementById('pracBtn');
+  var pass = inp.value.trim();
+
+  if (!pass){
+    msg.className = 'pmsg';
+    msg.textContent = 'Введите пароль.';
     return;
   }
+
+  msg.className = 'pmsg info';
+  msg.textContent = 'Проверка…';
+  btn.disabled = true;
+
+  var data = await checkPasswordRemote(RESOURCE_ID, 'practice', pass);
+
+  btn.disabled = false;
+
+  if (data.error === 'network'){
+    msg.className = 'pmsg';
+    msg.textContent = '⚠️ Ошибка соединения. Проверьте интернет.';
+    return;
+  }
+  if (!data.ok){
+    msg.className = 'pmsg';
+    msg.textContent = '❌ Неверный пароль.';
+    inp.value = '';
+    inp.focus();
+    return;
+  }
+
   msg.textContent = '';
   inp.value = '';
   document.getElementById('practiceLock').style.display = 'none';
@@ -755,7 +670,7 @@ function gradePractice(){
   qs.forEach(function(q, i){
     var el = document.getElementById('prac'+i);
     var val = (el.value||'').trim();
-    var ok = (val||'').trim().replace(/\s+/g,' ').toLowerCase()
+    var ok = val.replace(/\s+/g,' ').toLowerCase()
              === String(q.ans).trim().replace(/\s+/g,' ').toLowerCase();
     if (ok) correct++;
     el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
@@ -768,20 +683,79 @@ function gradePractice(){
   document.getElementById('pracCorrect').textContent = correct;
   document.getElementById('pracMark').textContent = lessonState.pracMark;
   document.getElementById('pracResult').classList.add('show');
-    /* блокируем поля и кнопку после сдачи */
+
   qs.forEach(function(_, i){
     var el = document.getElementById('prac'+i);
     if (el){ el.disabled = true; el.style.background = '#f3f4f6'; }
   });
-  var checkBtn = document.querySelector('#practiceBody > button.b-green');
+  var checkBtn = document.getElementById('pracCheckBtn');
   if (checkBtn) checkBtn.style.display = 'none';
 
   savePracticeState();
   toast('Практика: ' + correct + '/' + qs.length + ', оценка ' + lessonState.pracMark);
 }
 
+function savePracticeState(){
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
+    var d = JSON.parse(raw);
+    d.pracDone = lessonState.pracDone;
+    d.pracCorrect = lessonState.pracCorrect;
+    d.pracMark = lessonState.pracMark;
+    d.pracVariant = document.getElementById('pracVariant')?.value || '1';
+    d.pracAnswers = [];
+    if (lessonState.pracDone){
+      var v = document.getElementById('pracVariant').value;
+      var qs = PRACTICE_VARIANTS[v];
+      qs.forEach(function(_, i){
+        var el = document.getElementById('prac'+i);
+        d.pracAnswers.push(el ? el.value : '');
+      });
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  } catch(e){}
+}
+
+function loadPracticeState(){
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    var d = JSON.parse(raw);
+    if (!d.pracDone) return false;
+
+    lessonState.pracDone = true;
+    lessonState.pracCorrect = d.pracCorrect || 0;
+    lessonState.pracMark = d.pracMark || 0;
+
+    document.getElementById('practiceLock').style.display = 'none';
+    document.getElementById('practiceBody').style.display = 'block';
+    document.getElementById('pracVariant').value = d.pracVariant || '1';
+    renderPractice();
+
+    (d.pracAnswers || []).forEach(function(ans, i){
+      var el = document.getElementById('prac'+i);
+      if (el){
+        el.value = ans;
+        el.disabled = true;
+        el.style.background = '#f3f4f6';
+      }
+    });
+
+    document.getElementById('pracCorrect').textContent = d.pracCorrect;
+    document.getElementById('pracMark').textContent = d.pracMark;
+    document.getElementById('pracResult').classList.add('show');
+
+    var checkBtn = document.getElementById('pracCheckBtn');
+    if (checkBtn) checkBtn.style.display = 'none';
+    var h2 = document.querySelector('#practice h2');
+    if (h2) h2.innerHTML = h2.innerHTML + ' <span class="badge" style="background:#fee2e2;color:#b91c1c">сдано</span>';
+
+    return true;
+  } catch(e){ return false; }
+}
+
 /* =========================================================
-   4. ИТОГ
+   5. ИТОГ
    ========================================================= */
 function calcFinalMark(){
   if (!lessonState.wbMark && !lessonState.pracDone){
@@ -803,7 +777,7 @@ function calcFinalMark(){
 }
 
 /* =========================================================
-   5. САМОСТОЯТЕЛЬНАЯ
+   6. САМОСТОЯТЕЛЬНАЯ
    ========================================================= */
 var saTimer = null, saLeft = 0, saTasks = [], saStarted = false, saDone = false;
 
@@ -852,19 +826,47 @@ function scrollToGate(){
   document.getElementById('saPass').focus();
 }
 
-function unlockStandalone(){
+async function unlockStandalone(){
   if (!getSurname() || !getFirstname() || !getKlass()){
+    document.getElementById('saMsg').className = 'pmsg';
     document.getElementById('saMsg').textContent = 'Сначала заполните фамилию, имя и класс в шапке.';
     return;
   }
+
   var inp = document.getElementById('saPass');
   var msg = document.getElementById('saMsg');
-  if (!passwordMatches(inp.value, SA_PASSWORD)){
-    msg.textContent = '❌ Неверный пароль учителя.';
-    inp.value=''; inp.focus();
+  var btn = document.getElementById('saBtn');
+  var pass = inp.value.trim();
+
+  if (!pass){
+    msg.className = 'pmsg';
+    msg.textContent = 'Введите пароль.';
     return;
   }
-  msg.textContent=''; inp.value='';
+
+  msg.className = 'pmsg info';
+  msg.textContent = 'Проверка…';
+  btn.disabled = true;
+
+  var data = await checkPasswordRemote(RESOURCE_ID, 'standalone', pass);
+
+  btn.disabled = false;
+
+  if (data.error === 'network'){
+    msg.className = 'pmsg';
+    msg.textContent = '⚠️ Ошибка соединения. Проверьте интернет.';
+    return;
+  }
+  if (!data.ok){
+    msg.className = 'pmsg';
+    msg.textContent = '❌ Неверный пароль учителя.';
+    inp.value = '';
+    inp.focus();
+    return;
+  }
+
+  msg.textContent = '';
+  inp.value = '';
   startStandalone();
 }
 
@@ -961,7 +963,6 @@ function exitStandalone(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-/* ---------- PDF ---------- */
 function saveStandalonePDF(){
   if (!saDone){ toast('Сначала сдайте работу'); return; }
   if (!(window.jspdf && window.jspdf.jsPDF)){ toast('jsPDF не загрузился'); return; }
@@ -999,7 +1000,6 @@ function saveStandalonePDF(){
   toast('📄 PDF сохранён');
 }
 
-/* ---------- JPG ---------- */
 function buildResultHTML(){
   var fio = getFullName() || 'Ученик не указан';
   var klass = getKlass() || '—';
@@ -1071,7 +1071,7 @@ function saveStandaloneJPG(){
 }
 
 /* =========================================================
-   6. ПЕЧАТЬ ДЗ
+   7. ПЕЧАТЬ ДЗ
    ========================================================= */
 function printHomework(){
   var fio = getFullName() + (getKlass() ? ', ' + getKlass() : '');
@@ -1097,7 +1097,7 @@ function printHomework(){
 }
 
 /* =========================================================
-   7. МАТЕМАТИЧЕСКАЯ РАСКЛАДКА
+   8. МАТЕМАТИЧЕСКАЯ РАСКЛАДКА
    ========================================================= */
 var activeField = null;
 function openMath(){ document.getElementById('mathModal').classList.add('open'); }
@@ -1117,9 +1117,7 @@ document.addEventListener('focusin', function(e){
   if (e.target.matches('input[type=text],input[type=password],textarea')){
     activeField = e.target;
   }
-}
-)
-  loadPracticeState();;
+});
 document.querySelectorAll('.key[data-tex]').forEach(function(b){
   b.addEventListener('click', function(){ insertMath(b.dataset.tex); });
 });
@@ -1137,7 +1135,7 @@ document.getElementById('mathModal').addEventListener('click', function(e){
 });
 
 /* =========================================================
-   8. КАЛЬКУЛЯТОР
+   9. КАЛЬКУЛЯТОР
    ========================================================= */
 var calcBuf = '';
 function openCalc(){ document.getElementById('calcModal').classList.add('open'); calcRender(); }
@@ -1172,27 +1170,22 @@ document.getElementById('calcModal').addEventListener('click', function(e){
 });
 
 /* =========================================================
-   9. ПАРОЛИ
-   ========================================================= */
-var LAT2CYR = {q:'й',w:'ц',e:'у',r:'к',t:'е',y:'н',u:'г',i:'ш',o:'щ',p:'з','[':'х',']':'ъ',
-  a:'ф',s:'ы',d:'в',f:'а',g:'п',h:'р',j:'о',k:'л',l:'д',';':'ж',"'":'э',
-  z:'я',x:'ч',c:'с',v:'м',b:'и',n:'т',m:'ь',',':'б','.':'ю'};
-var CYR2LAT = {};
-Object.keys(LAT2CYR).forEach(function(k){ CYR2LAT[LAT2CYR[k]] = k; });
-function mapKeys(s, table){
-  return String(s).toLowerCase().split('').map(function(c){ return table[c]||c; }).join('');
-}
-function passwordMatches(t, e){
-  t = String(t||'').trim().toLowerCase();
-  e = String(e||'').trim().toLowerCase();
-  if (!t) return false;
-  return t === e || mapKeys(t,LAT2CYR) === e || mapKeys(t,CYR2LAT) === e
-      || t === mapKeys(e,LAT2CYR) || t === mapKeys(e,CYR2LAT);
-}
-
-/* =========================================================
    10. ПОМОЩНИКИ
    ========================================================= */
+function getSurname(){ return (document.getElementById('surname')?.value || '').trim(); }
+function getFirstname(){ return (document.getElementById('firstname')?.value || '').trim(); }
+function getKlass(){ return (document.getElementById('klass')?.value || '').trim(); }
+function getFullName(){ return [getSurname(), getFirstname()].filter(Boolean).join(' '); }
+function getFileName(){
+  var parts = [getSurname(), getFirstname(), getKlass()].filter(Boolean);
+  return (parts.length ? parts.join('_') : 'Ученик').replace(/[\\/:*?"<>|\s]+/g,'_');
+}
+function percentToMark(pct){
+  if (pct >= 90) return 5;
+  if (pct >= 70) return 4;
+  if (pct >= 50) return 3;
+  return 2;
+}
 function showFb(id, html, kind){
   var el = document.getElementById(id);
   if (!el) return;
@@ -1203,6 +1196,7 @@ function renderMath(el){
   if (!el || !window.MathJax) return;
   if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){});
 }
+
 window.addEventListener('load', function(){
   setTimeout(function(){ renderMath(document.body); }, 600);
 });
