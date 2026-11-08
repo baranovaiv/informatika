@@ -294,7 +294,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
 <span class="kw">print</span>(s[<span class="num">0</span>], s[-<span class="num">1</span>], <span class="kw">len</span>(s))</pre>
       <details><summary>Подсказка</summary>Индексация с 0, отрицательный индекс — с конца. <code>len</code> — длина строки.</details>
       <div class="ans">
-        <input type="text" id="w1" placeholder="например: P n 6" autocomplete="off">
+        <input type="text" id="w1" placeholder="ответ через пробел" autocomplete="off">
         <button class="btn b-green" onclick="checkW('w1','P n 6','w1fb')">Проверить</button>
       </div>
       <div class="fb" id="w1fb"></div>
@@ -307,7 +307,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
 <span class="kw">print</span>(s[:<span class="num">4</span>])</pre>
       <details><summary>Подсказка</summary><code>s[:4]</code> — первые 4 символа, индекс 4 не включается.</details>
       <div class="ans">
-        <input type="text" id="w2" placeholder="например: Инфо" autocomplete="off">
+        <input type="text" id="w2" placeholder="часть строки" autocomplete="off">
         <button class="btn b-green" onclick="checkW('w2','Инфо','w2fb')">Проверить</button>
       </div>
       <div class="fb" id="w2fb"></div>
@@ -331,7 +331,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
 <span class="kw">print</span>(s[::<span class="num">2</span>])</pre>
       <details><summary>Подсказка</summary><code>[::2]</code> — каждый второй символ, начиная с индекса 0.</details>
       <div class="ans">
-        <input type="text" id="w4" placeholder="например: Пграмрвне" autocomplete="off">
+        <input type="text" id="w4" placeholder="буквы без пробелов" autocomplete="off">
         <button class="btn b-green" onclick="checkW('w4','Пграмрвне','w4fb')">Проверить</button>
       </div>
       <div class="fb" id="w4fb"></div>
@@ -344,7 +344,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
 <span class="kw">print</span>(s.strip().upper().replace(<span class="str">"WORLD"</span>, <span class="str">"PYTHON"</span>))</pre>
       <details><summary>Подсказка</summary>Методы применяются по цепочке. <code>strip</code> убирает пробелы, <code>upper</code> — в верхний регистр, <code>replace</code> — заменяет.</details>
       <div class="ans">
-        <input type="text" id="w5" placeholder="например: HELLO, PYTHON!" autocomplete="off">
+        <input type="text" id="w5" placeholder="строка" autocomplete="off">
         <button class="btn b-green" onclick="checkW('w5','HELLO, PYTHON!','w5fb')">Проверить</button>
       </div>
       <div class="fb" id="w5fb"></div>
@@ -357,7 +357,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
 <span class="kw">print</span>(s[::-<span class="num">1</span>])</pre>
       <details><summary>Подсказка</summary><code>[::-1]</code> — разворот строки.</details>
       <div class="ans">
-        <input type="text" id="w6" placeholder="например: акитамрофнИ" autocomplete="off">
+        <input type="text" id="w6" placeholder="слово" autocomplete="off">
         <button class="btn b-green" onclick="checkW('w6','акитамрофнИ','w6fb')">Проверить</button>
       </div>
       <div class="fb" id="w6fb"></div>
@@ -393,7 +393,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
       <pre class="code"><span class="kw">print</span>(<span class="str">"a,b,c"</span>.split(<span class="str">","</span>))</pre>
       <details><summary>Подсказка</summary><code>split</code> разбивает строку по разделителю и возвращает список.</details>
       <div class="ans">
-        <input type="text" id="w9" placeholder="например: ['a', 'b', 'c']" autocomplete="off">
+        <input type="text" id="w9" placeholder="например: ['P', 'y', 't']" autocomplete="off">
         <button class="btn b-green" onclick="checkW('w9','[\'a\', \'b\', \'c\']','w9fb')">Проверить</button>
       </div>
       <div class="fb" id="w9fb"></div>
@@ -405,7 +405,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
       <pre class="code"><span class="kw">print</span>(<span class="str">"123"</span>.isdigit(), <span class="str">"12a"</span>.isdigit())</pre>
       <details><summary>Подсказка</summary><code>isdigit</code> возвращает <code>True</code>, только если <b>все</b> символы — цифры.</details>
       <div class="ans">
-        <input type="text" id="w10" placeholder="например: True False" autocomplete="off">
+        <input type="text" id="w10" placeholder="два значения через пробел" autocomplete="off">
         <button class="btn b-green" onclick="checkW('w10','True False','w10fb')">Проверить</button>
       </div>
       <div class="fb" id="w10fb"></div>
@@ -417,7 +417,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
       <pre class="code"><span class="kw">print</span>(<span class="str">"***hello***"</span>.strip(<span class="str">"*"</span>))</pre>
       <details><summary>Подсказка</summary><code>strip("x")</code> убирает указанные символы по краям, а не только пробелы.</details>
       <div class="ans">
-        <input type="text" id="w11" placeholder="например: hello" autocomplete="off">
+        <input type="text" id="w11" placeholder="слово" autocomplete="off">
         <button class="btn b-green" onclick="checkW('w11','hello','w11fb')">Проверить</button>
       </div>
       <div class="fb" id="w11fb"></div>
@@ -441,7 +441,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
       <pre class="code"><span class="kw">print</span>(<span class="kw">ord</span>(<span class="str">'A'</span>), <span class="kw">chr</span>(<span class="num">98</span>))</pre>
       <details><summary>Подсказка</summary><code>ord</code> — код символа, <code>chr</code> — символ по коду. Код 'A' = 65, код 'b' = 98.</details>
       <div class="ans">
-        <input type="text" id="w13" placeholder="например: 65 b" autocomplete="off">
+        <input type="text" id="w13" placeholder="число и символ" autocomplete="off">
         <button class="btn b-green" onclick="checkW('w13','65 b','w13fb')">Проверить</button>
       </div>
       <div class="fb" id="w13fb"></div>
@@ -464,7 +464,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
       <span class="lvl l3">повышенный · напиши код</span>
       <p><b>Задание 15.</b> Напишите программу, которая запрашивает строку и выводит её в обратном порядке.</p>
       <details><summary>Подсказка</summary>Используйте срез <code>[::-1]</code> и <code>input()</code>.</details>
-      <textarea class="code-editor" id="w15" placeholder="s = input()&#10;print(s[::-1])"></textarea>
+      <textarea class="code-editor" id="w15" placeholder="ваш код"></textarea>
       <div class="controls" style="margin-top:10px">
         <button class="btn b-green" onclick="checkCode('w15','reverse','w15fb')">▶ Запустить и проверить</button>
       </div>
