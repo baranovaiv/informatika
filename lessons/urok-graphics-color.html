@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Кодирование графической информации · 7 класс</title>
+<title>Объём графических данных · 7 класс</title>
 
 <script>
 window.MathJax = {
@@ -27,25 +27,10 @@ window.MathJax = {
 .student input:focus{background:#fff;border-color:#a78bfa;box-shadow:0 0 0 4px rgba(255,255,255,.55)}
 #surname{width:200px} #firstname{width:180px} #klass{width:90px}
 
-/* --- Цветовой микшер --- */
-.color-mixer{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;margin:16px 0}
-.color-preview{width:100px;height:100px;border-radius:16px;border:3px solid #e6e3f1;
-  box-shadow:inset 0 0 10px rgba(0,0,0,0.1);flex-shrink:0}
-.color-controls{flex:1;min-width:250px;display:flex;flex-direction:column;gap:12px}
-.slider-row{display:flex;align-items:center;gap:10px}
-.slider-row label{width:20px;font-weight:900;font-size:1.1rem;text-align:center}
-.slider-row input[type=range]{flex:1;accent-color:#6d28d9;cursor:pointer}
-.slider-row .val{width:40px;text-align:right;font-family:Consolas,monospace;font-weight:700}
-.color-code{font-family:Consolas,monospace;font-size:1rem;font-weight:800;
-  background:#f5f3ff;padding:8px 14px;border-radius:12px;display:inline-block;
-  border:2px dashed var(--pd);color:#4c1d95;margin-top:10px;letter-spacing:1px;}
-
-/* --- Оформление задачи ДАНО/НАЙТИ/РЕШЕНИЕ --- */
 .task-header{font-weight:800;font-size:1.05rem;margin-bottom:12px;color:#4c1d95}
 .tgrid{display:grid;grid-template-columns:100px 1fr;gap:6px 12px;margin:10px 0;font-family:Cambria,Georgia,serif;font-size:.98rem}
 .tgrid .k{font-weight:800;color:#6d28d9}
 .step-line{background:#f6fffb;border-left:3px solid var(--gd);padding:8px 14px;margin:6px 0;border-radius:0 8px 8px 0;font-family:Cambria,Georgia,serif;font-size:.95rem}
-.step-line b{color:#047857}
 .answer-line{font-weight:800;color:#047857;margin-top:10px;font-size:1rem;border-top:2px dashed var(--gd);padding-top:8px}
 
 .calc-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
@@ -112,9 +97,35 @@ table.laws th{background:var(--blue);color:#1d4ed8;font-weight:800;font-size:.86
 table.laws tr:nth-child(even) td{background:#fbfaff}
 table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
 
+.mbg{display:none;position:fixed;inset:0;background:rgba(60,55,90,.48);z-index:200;
+  align-items:center;justify-content:center;padding:16px}
+.mbg.open{display:flex}
+.modal{background:#fff;border-radius:22px;max-width:660px;width:100%;max-height:88vh;
+  overflow:auto;padding:24px;box-shadow:0 24px 70px rgba(60,55,90,.4)}
+.modal h3{margin:0 0 4px;font-size:1.12rem}
+
+/* Калькулятор из скриншота */
+.calc{max-width:340px}
+.calc-screen{
+  background:#1e1b2e;color:#e9e6f5;border-radius:14px;padding:14px 16px;margin-bottom:12px;
+  text-align:right;font-family:Consolas,monospace;overflow:hidden;
+}
+.calc-expr{font-size:.82rem;color:#a9a3c4;min-height:18px;word-break:break-all}
+.calc-out{font-size:1.9rem;font-weight:700;word-break:break-all;line-height:1.2}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cbtn{
+  border:none;border-radius:12px;padding:15px 0;font-size:1.05rem;font-weight:700;
+  font-family:inherit;cursor:pointer;background:#f5f3ff;color:#4c1d95;transition:.12s;
+}
+.cbtn:hover{background:#ede9fe}
+.cbtn:active{transform:scale(.96)}
+.cbtn.op{background:var(--purple);color:#5b21b6}
+.cbtn.eq{background:var(--green);color:#047857;grid-column:span 2}
+.cbtn.del{background:var(--orange);color:#c2410c}
+.cbtn.clr{background:#fee2e2;color:#b91c1c}
+
 @media(max-width:720px){
   #surname,#firstname,#klass{width:100%}
-  .color-mixer{flex-direction:column;align-items:center}
   .marks{grid-template-columns:1fr}
   .exam-head{flex-direction:column;align-items:flex-start}
   .match-select{max-width:100%;}
@@ -150,8 +161,8 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
 <div class="wrap" id="main">
 
   <header class="hero">
-    <h1>Кодирование графической информации</h1>
-    <p class="lead">Урок информатики · 7 класс · RGB, глубина кодирования, объём изображения</p>
+    <h1>Оценка информационного объёма графических данных</h1>
+    <p class="lead">Урок информатики · 7 класс · Растровые изображения, форматы файлов</p>
     <div class="student">
       <div class="f"><label for="surname">Фамилия</label>
         <input type="text" id="surname" placeholder="Иванов" autocomplete="off"></div>
@@ -166,176 +177,143 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
   <section class="card" id="theory">
     <h2><span class="num">1</span> Теоретический материал</h2>
 
-    <h3>Как компьютер хранит картинку</h3>
-    <p>Изображение на экране — это сетка из точек (<b>пикселей</b>). Каждый пиксель имеет свой цвет, и этот цвет закодирован числами.</p>
-    
-    <h3>Цветовая модель RGB</h3>
-    <p>В экранах используется модель <b>RGB</b> (Red, Green, Blue). Каждый канал принимает значение от <b>0 до 255</b>.</p>
-    <table class="laws">
-      <tr><th>Цвет</th><th>R</th><th>G</th><th>B</th><th>Код #RRGGBB</th></tr>
-      <tr><td>Чёрный</td><td>0</td><td>0</td><td>0</td><td>#000000</td></tr>
-      <tr><td>Белый</td><td>255</td><td>255</td><td>255</td><td>#FFFFFF</td></tr>
-      <tr><td>Красный</td><td>255</td><td>0</td><td>0</td><td>#FF0000</td></tr>
-      <tr><td>Зелёный</td><td>0</td><td>255</td><td>0</td><td>#00FF00</td></tr>
-      <tr><td>Синий</td><td>0</td><td>0</td><td>255</td><td>#0000FF</td></tr>
-    </table>
+    <h3>Как считать объём изображения</h3>
+    <p>Изображение — это сетка пикселей. Чем больше пикселей и чем больше цветов, тем больше места нужно для хранения.</p>
+    <div class="formula">$$K = \text{ширина} \cdot \text{высота} \qquad I = K \cdot i$$</div>
+    <p>Где <b>K</b> — количество пикселей, <b>i</b> — глубина цвета (бит на пиксель), <b>I</b> — информационный объём в битах.</p>
+    <p>Связь глубины и количества цветов: <b>N = 2<sup>i</sup></b>.</p>
 
-    <h3>Глубина кодирования и информационный объём</h3>
-    <div class="formula">$$N = 2^i \qquad\qquad I = K \cdot i$$</div>
-    <p><b>Глубина (i)</b> — сколько бит на один пиксель. <b>Объём (I)</b> — сколько всего бит в картинке. <b>K</b> — количество пикселей (ширина × высота).</p>
+    <h3>Перевод единиц</h3>
+    <div class="tgrid" style="grid-template-columns:150px 1fr">
+      <span class="k">1 байт</span><span>= 8 бит</span>
+      <span class="k">1 Кбайт</span><span>= 1024 байта</span>
+      <span class="k">1 Мбайт</span><span>= 1024 Кбайта</span>
+    </div>
+    <p><b>Правило:</b> биты ÷ 8 = байты; байты ÷ 1024 = Кбайты; Кбайты ÷ 1024 = Мбайты.</p>
 
     <h3>Пример оформления задачи</h3>
     <div class="task" style="border-color:#d1d5db;background:#f9fafb;padding:16px">
-      <p style="margin-top:0"><b>Условие:</b> Изображение 200 × 150 пикселей. Глубина цвета — 24 бита. Найдите информационный объём в байтах.</p>
+      <p style="margin-top:0"><b>Условие:</b> Изображение 800 × 600 пикселей, глубина 24 бита. Найдите объём в Кбайтах.</p>
       
       <div class="tgrid">
-        <span class="k">ДАНО:</span><span>Ширина = 200, Высота = 150, $i = 24$ бита</span>
-        <span class="k">НАЙТИ:</span><span>$I$ — ? (в байтах)</span>
-        <span class="k">СИ:</span><span>—</span>
+        <span class="k">ДАНО:</span><span>Ширина = 800, Высота = 600, $i = 24$ бита</span>
+        <span class="k">НАЙТИ:</span><span>$I$ — ? (в Кбайтах)</span>
       </div>
 
       <div class="step-line"><b>Решение:</b></div>
-      <div class="step-line">1. Найдём количество пикселей: $K = 200 \cdot 150 = 30\,000$.</div>
-      <div class="step-line">2. Найдём объём в битах: $I = K \cdot i = 30\,000 \cdot 24 = 720\,000$ бит.</div>
-      <div class="step-line">3. Переведём в байты: $720\,000 : 8 = 90\,000$ байт.</div>
+      <div class="step-line">1. $K = 800 \cdot 600 = 480\,000$ пикселей.</div>
+      <div class="step-line">2. $I = 480\,000 \cdot 24 = 11\,520\,000$ бит.</div>
+      <div class="step-line">3. $11\,520\,000 : 8 = 1\,440\,000$ байт.</div>
+      <div class="step-line">4. $1\,440\,000 : 1024 \approx 1406$ Кбайт.</div>
       
-      <div class="answer-line">ОТВЕТ: 90 000 байт</div>
+      <div class="answer-line">ОТВЕТ: 1406 Кбайт</div>
     </div>
+
+    <h3>Почему файлы на диске меньше?</h3>
+    <p>Расчётный объём — это размер <b>несжатого</b> изображения (BMP). Реальные форматы используют сжатие:</p>
+    <table class="laws">
+      <tr><th>Формат</th><th>Сжатие</th><th>Потери качества</th><th>Когда использовать</th></tr>
+      <tr><td>BMP</td><td>нет</td><td>нет</td><td>максимальное качество без сжатия</td></tr>
+      <tr><td>PNG</td><td>без потерь</td><td>нет</td><td>рисунки, текст, скриншоты</td></tr>
+      <tr><td>JPEG</td><td>с потерями</td><td>есть</td><td>фотографии</td></tr>
+      <tr><td>GIF</td><td>без потерь</td><td>нет (до 256 цветов)</td><td>простые анимации</td></tr>
+    </table>
   </section>
 
   <!-- 2. РАБОЧАЯ ТЕТРАДЬ -->
   <section class="card" id="workbook">
     <h2><span class="num">2</span> Рабочая тетрадь</h2>
-    <p class="muted">В задачах на расчёт оформляйте решение в тетради (ДАНО / НАЙТИ / РЕШЕНИЕ / ОТВЕТ), а в поле вводите только итоговый ответ.</p>
+    <p class="muted">В задачах на расчёт оформляйте решение в тетради, а в поле вводите только итоговый ответ.</p>
 
-    <!-- Задание 1 -->
     <div class="task">
-      <span class="lvl l1">базовый · RGB</span>
-      <p><b>Задание 1.</b> Подберите любой цвет с помощью ползунков и запишите его HEX-код.</p>
-      <div class="color-mixer">
-        <div class="color-preview" id="previewBox"></div>
-        <div class="color-controls">
-          <div class="slider-row"><label>R</label><input type="range" id="sliderR" min="0" max="255" value="0" oninput="updateColor()"><span class="val" id="valR">0</span></div>
-          <div class="slider-row"><label>G</label><input type="range" id="sliderG" min="0" max="255" value="0" oninput="updateColor()"><span class="val" id="valG">0</span></div>
-          <div class="slider-row"><label>B</label><input type="range" id="sliderB" min="0" max="255" value="0" oninput="updateColor()"><span class="val" id="valB">0</span></div>
-          <div class="color-code" id="hexCode">#000000</div>
-        </div>
+      <span class="lvl l1">базовый · формула</span>
+      <p><b>Задание 1.</b> Изображение 1024 × 768 пикселей, глубина 16 бит. Найдите объём в Кбайтах.</p>
+      <div class="tgrid">
+        <span class="k">ДАНО:</span><span>Ширина = 1024, Высота = 768, $i = 16$</span>
+        <span class="k">НАЙТИ:</span><span>$I$ — ? (Кбайт)</span>
       </div>
-      <p style="margin-top:12px">Сколько бит нужно для хранения этого цвета? (если используете все 3 канала)</p>
       <div class="calc-row">
+        <span>Ответ в Кбайтах:</span>
         <input type="text" id="q1ans" placeholder="число">
         <button class="btn b-green" onclick="checkQ1()">Проверить</button>
       </div>
       <div class="fb" id="q1fb"></div>
     </div>
 
-    <!-- Задание 2 -->
-    <div class="task q">
-      <span class="lvl l1">базовый · выбор</span>
-      <p><b>Задание 2.</b> Сколько бит отводится на один пиксель в режиме True Color?</p>
-      <label class="opt"><input type="radio" name="q2" value="a"> 8 бит</label>
-      <label class="opt"><input type="radio" name="q2" value="b"> 16 бит</label>
-      <label class="opt"><input type="radio" name="q2" value="c"> 24 бита</label>
-      <label class="opt"><input type="radio" name="q2" value="d"> 32 бита</label>
-      <button class="btn b-green" onclick="checkQ2()" style="margin-top:10px">Проверить</button>
+    <div class="task">
+      <span class="lvl l1">базовый · объём</span>
+      <p><b>Задание 2.</b> Изображение 640 × 480 пикселей, глубина 24 бита. Найдите объём в Кбайтах.</p>
+      <div class="calc-row">
+        <span>Ответ в Кбайтах:</span>
+        <input type="text" id="q2ans" placeholder="число">
+        <button class="btn b-green" onclick="checkQ2()">Проверить</button>
+      </div>
       <div class="fb" id="q2fb"></div>
     </div>
 
-    <!-- Задание 3 -->
-    <div class="task">
-      <span class="lvl l2">средний · соответствие</span>
-      <p><b>Задание 3.</b> Установите соответствие между глубиной цвета и количеством цветов.</p>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;">
-        <div>1 бит → <select class="match-select" id="q3m1"><option value="">--</option><option value="2">2</option><option value="16">16</option><option value="256">256</option></select></div>
-        <div>4 бита → <select class="match-select" id="q3m2"><option value="">--</option><option value="2">2</option><option value="16">16</option><option value="256">256</option></select></div>
-        <div>8 бит → <select class="match-select" id="q3m3"><option value="">--</option><option value="2">2</option><option value="16">16</option><option value="256">256</option></select></div>
-      </div>
+    <div class="task q">
+      <span class="lvl l1">базовый · выбор</span>
+      <p><b>Задание 3.</b> Какой формат хранит изображение <b>без сжатия</b>?</p>
+      <label class="opt"><input type="radio" name="q3" value="a"> JPEG</label>
+      <label class="opt"><input type="radio" name="q3" value="b"> PNG</label>
+      <label class="opt"><input type="radio" name="q3" value="c"> BMP</label>
+      <label class="opt"><input type="radio" name="q3" value="d"> GIF</label>
       <button class="btn b-green" onclick="checkQ3()" style="margin-top:10px">Проверить</button>
       <div class="fb" id="q3fb"></div>
     </div>
 
-    <!-- Задание 4 -->
-    <div class="task">
-      <span class="lvl l2">средний · расчёт</span>
-      <p class="task-header">Задание 4. Оформите решение в тетради.</p>
-      <div class="tgrid">
-        <span class="k">УСЛОВИЕ:</span><span>Изображение 200 × 150 пикселей. Глубина цвета — 24 бита.</span>
-        <span class="k">НАЙТИ:</span><span>$I$ — информационный объём в байтах.</span>
-      </div>
-      <div class="calc-row">
-        <span>Ответ в байтах:</span>
-        <input type="text" id="q4ans" placeholder="число">
-        <button class="btn b-green" onclick="checkQ4()">Проверить</button>
-      </div>
+    <div class="task q">
+      <span class="lvl l1">базовый · выбор</span>
+      <p><b>Задание 4.</b> В каком формате сжатие идёт <b>с потерями</b> качества?</p>
+      <label class="opt"><input type="radio" name="q4" value="a"> BMP</label>
+      <label class="opt"><input type="radio" name="q4" value="b"> PNG</label>
+      <label class="opt"><input type="radio" name="q4" value="c"> JPEG</label>
+      <label class="opt"><input type="radio" name="q4" value="d"> GIF</label>
+      <button class="btn b-green" onclick="checkQ4()" style="margin-top:10px">Проверить</button>
       <div class="fb" id="q4fb"></div>
     </div>
 
-    <!-- Задание 5 -->
     <div class="task">
-      <span class="lvl l2">средний · расчёт</span>
-      <p class="task-header">Задание 5. Оформите решение в тетради.</p>
-      <div class="tgrid">
-        <span class="k">УСЛОВИЕ:</span><span>Объём изображения — 10 000 байт. Размер — 100 × 50 пикселей.</span>
-        <span class="k">НАЙТИ:</span><span>Глубину кодирования $i$ (в битах).</span>
+      <span class="lvl l2">средний · соответствие</span>
+      <p><b>Задание 5.</b> Установите соответствие между форматом и его характеристикой.</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;">
+        <div>BMP → <select class="match-select" id="q5m1"><option value="">--</option><option value="no">Без сжатия</option><option value="lossy">Сжатие с потерями</option><option value="lossless">Сжатие без потерь</option></select></div>
+        <div>PNG → <select class="match-select" id="q5m2"><option value="">--</option><option value="no">Без сжатия</option><option value="lossy">Сжатие с потерями</option><option value="lossless">Сжатие без потерь</option></select></div>
+        <div>JPEG → <select class="match-select" id="q5m3"><option value="">--</option><option value="no">Без сжатия</option><option value="lossy">Сжатие с потерями</option><option value="lossless">Сжатие без потерь</option></select></div>
       </div>
-      <div class="calc-row">
-        <span>Ответ в битах:</span>
-        <input type="text" id="q5ans" placeholder="число">
-        <button class="btn b-green" onclick="checkQ5()">Проверить</button>
-      </div>
+      <button class="btn b-green" onclick="checkQ5()" style="margin-top:10px">Проверить</button>
       <div class="fb" id="q5fb"></div>
     </div>
 
-    <!-- Задание 6 -->
     <div class="task">
-      <span class="lvl l2">средний · HEX → RGB</span>
-      <p><b>Задание 6.</b> Переведите шестнадцатеричный код цвета <code>#FFA500</code> в значения R, G, B.</p>
-      
-      <!-- Второй микшер для проверки HEX -->
-      <p class="muted" style="font-size:.85rem;margin-top:0">Введите код в микшер ниже, чтобы увидеть значения.</p>
-      <div class="color-mixer" style="margin-bottom:16px">
-        <div class="color-preview" id="previewBox2" style="background:#000"></div>
-        <div class="color-controls">
-          <div class="calc-row" style="margin-bottom:10px">
-            <span>Введите HEX:</span>
-            <input type="text" id="hexInput" placeholder="#FFA500" maxlength="7" style="max-width:120px;font-family:Consolas,monospace;font-weight:700">
-            <button class="btn b-purple" onclick="applyHex()">Применить</button>
-          </div>
-          <div class="slider-row"><label>R</label><input type="range" id="slider2R" min="0" max="255" value="0" disabled><span class="val" id="val2R">0</span></div>
-          <div class="slider-row"><label>G</label><input type="range" id="slider2G" min="0" max="255" value="0" disabled><span class="val" id="val2G">0</span></div>
-          <div class="slider-row"><label>B</label><input type="range" id="slider2B" min="0" max="255" value="0" disabled><span class="val" id="val2B">0</span></div>
-        </div>
+      <span class="lvl l2">средний · глубина</span>
+      <p><b>Задание 6.</b> Изображение 640 × 480 пикселей имеет объём 900 Кбайт. Определите глубину кодирования цвета (в битах).</p>
+      <div class="tgrid">
+        <span class="k">ДАНО:</span><span>Ширина = 640, Высота = 480, $I = 900$ Кбайт</span>
+        <span class="k">НАЙТИ:</span><span>$i$ — ? (бит)</span>
       </div>
-
       <div class="calc-row">
-        R: <input type="text" id="q6r" placeholder="0-255" style="max-width:80px">
-        G: <input type="text" id="q6g" placeholder="0-255" style="max-width:80px">
-        B: <input type="text" id="q6b" placeholder="0-255" style="max-width:80px">
+        <span>Ответ в битах:</span>
+        <input type="text" id="q6ans" placeholder="число">
         <button class="btn b-green" onclick="checkQ6()">Проверить</button>
       </div>
       <div class="fb" id="q6fb"></div>
     </div>
 
-    <!-- Задание 7 -->
-    <div class="task q">
-      <span class="lvl l3">повышенный · выбор</span>
-      <p><b>Задание 7.</b> Сколько бит памяти потребуется для хранения одной точки изображения, использующего палитру из 128 цветов?</p>
-      <label class="opt"><input type="radio" name="q7" value="a"> 6 бит</label>
-      <label class="opt"><input type="radio" name="q7" value="b"> 7 бит</label>
-      <label class="opt"><input type="radio" name="q7" value="c"> 8 бит</label>
-      <label class="opt"><input type="radio" name="q7" value="d"> 128 бит</label>
-      <button class="btn b-green" onclick="checkQ7()" style="margin-top:10px">Проверить</button>
+    <div class="task">
+      <span class="lvl l2">средний · объём в Мбайтах</span>
+      <p><b>Задание 7.</b> Изображение 3000 × 2000 пикселей, глубина 24 бита. Найдите объём в Мбайтах (округлите до целого).</p>
+      <div class="calc-row">
+        <span>Ответ в Мбайтах:</span>
+        <input type="text" id="q7ans" placeholder="число">
+        <button class="btn b-green" onclick="checkQ7()">Проверить</button>
+      </div>
       <div class="fb" id="q7fb"></div>
     </div>
 
-    <!-- Задание 8 -->
     <div class="task">
-      <span class="lvl l3">повышенный · расчёт</span>
-      <p class="task-header">Задание 8. Оформите решение в тетради.</p>
-      <div class="tgrid">
-        <span class="k">УСЛОВИЕ:</span><span>Изображение 64 × 64 пикселей имеет объём 4096 байт.</span>
-        <span class="k">НАЙТИ:</span><span>Сколько цветов содержит палитра изображения?</span>
-      </div>
+      <span class="lvl l3">повышенный · количество цветов</span>
+      <p><b>Задание 8.</b> Изображение 200 × 200 пикселей сохранено с глубиной 8 бит. Сколько цветов в палитре?</p>
       <div class="calc-row">
         <span>Ответ (число цветов):</span>
         <input type="text" id="q8ans" placeholder="число">
@@ -344,41 +322,34 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
       <div class="fb" id="q8fb"></div>
     </div>
 
-    <!-- Задание 9 -->
     <div class="task">
-      <span class="lvl l3">повышенный · расчёт с палитрой</span>
-      <p class="task-header">Задание 9. Оформите решение в тетради.</p>
-      <div class="tgrid">
-        <span class="k">УСЛОВИЕ:</span><span>Рисунок 10 × 10 пикселей. Палитра содержит 16 цветов.</span>
-        <span class="k">НАЙТИ:</span><span>Информационный объём $I$ в байтах.</span>
-      </div>
+      <span class="lvl l3">повышенный · подбор степени</span>
+      <p><b>Задание 9.</b> Палитра содержит 64 цвета. Какова глубина кодирования (в битах)? <br><span class="muted" style="font-size:.9rem">Подсказка: вспомните, в какую степень нужно возвести 2, чтобы получить 64.</span></p>
       <div class="calc-row">
-        <span>Ответ в байтах:</span>
+        <span>Ответ в битах:</span>
         <input type="text" id="q9ans" placeholder="число">
         <button class="btn b-green" onclick="checkQ9()">Проверить</button>
       </div>
       <div class="fb" id="q9fb"></div>
     </div>
 
-    <!-- Задание 10 -->
     <div class="task q">
-      <span class="lvl l2">средний · код цвета</span>
-      <p><b>Задание 10.</b> Какой цвет закодирован шестнадцатеричным числом <code>#008000</code>?</p>
-      <label class="opt"><input type="radio" name="q10" value="a"> Ярко-зелёный</label>
-      <label class="opt"><input type="radio" name="q10" value="b"> Тёмно-зелёный</label>
-      <label class="opt"><input type="radio" name="q10" value="c"> Синий</label>
-      <label class="opt"><input type="radio" name="q10" value="d"> Серый</label>
+      <span class="lvl l3">повышенный · выбор</span>
+      <p><b>Задание 10.</b> Вы хотите разместить фотографию на сайте так, чтобы она занимала <b>как можно меньше места</b>, но качество было приемлемым. Какой формат выбрать?</p>
+      <label class="opt"><input type="radio" name="q10" value="a"> BMP</label>
+      <label class="opt"><input type="radio" name="q10" value="b"> PNG</label>
+      <label class="opt"><input type="radio" name="q10" value="c"> JPEG</label>
+      <label class="opt"><input type="radio" name="q10" value="d"> GIF</label>
       <button class="btn b-green" onclick="checkQ10()" style="margin-top:10px">Проверить</button>
       <div class="fb" id="q10fb"></div>
     </div>
 
-    <!-- Задание 11 -->
     <div class="task">
-      <span class="lvl l3">повышенный · RGB → HEX</span>
-      <p><b>Задание 11.</b> Переведите значения <code>R=128, G=128, B=0</code> в шестнадцатеричный код.</p>
+      <span class="lvl l3">повышенный · расчёт с переводом</span>
+      <p><b>Задание 11.</b> Изображение 512 × 512 пикселей, глубина 8 бит. Найдите объём в байтах.</p>
       <div class="calc-row">
-        <span>Код:</span>
-        <input type="text" id="q11ans" placeholder="#XXXXXX">
+        <span>Ответ в байтах:</span>
+        <input type="text" id="q11ans" placeholder="число">
         <button class="btn b-green" onclick="checkQ11()">Проверить</button>
       </div>
       <div class="fb" id="q11fb"></div>
@@ -465,13 +436,13 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
 
     <div id="hwBlock">
       <div class="hw"><span class="lvl l1">обязательная часть (на «4»)</span>
-        <p><b>№ 1.</b> Запишите в тетради значения R, G, B и шестнадцатеричные коды для цветов: оранжевый, фиолетовый, серый.</p></div>
+        <p><b>№ 1.</b> Изображение 1024 × 768 пикселей, глубина 16 бит. Найдите информационный объём в Кбайтах.</p></div>
       <div class="hw"><span class="lvl l1">обязательная часть (на «4»)</span>
-        <p><b>№ 2.</b> Изображение 320 × 240 пикселей, глубина 16 бит. Найдите информационный объём в Кбайтах.</p></div>
+        <p><b>№ 2.</b> Изображение 640 × 480 пикселей имеет объём 900 Кбайт. Определите глубину кодирования цвета.</p></div>
       <div class="hw"><span class="lvl l3">дополнительная часть (на «5»)</span>
-        <p><b>№ 3.</b> Изображение 1024 × 768 пикселей, глубина 24 бита. Сколько таких изображений поместится на флешку объёмом 16 Мбайт?</p></div>
+        <p><b>№ 3.</b> Фотография 3000 × 2000 пикселей, глубина 24 бита. Поместится ли она на флешку 16 Мбайт в формате BMP? Сколько таких фото поместится в формате JPEG, если сжатие уменьшает объём в 10 раз?</p></div>
       <div class="hw"><span class="lvl l3">дополнительная часть (на «5»)</span>
-        <p><b>№ 4.</b> Придумайте свой цвет и запишите его код в трёх форматах: RGB (три числа), шестнадцатеричный <code>#RRGGBB</code>, и объясните, сколько бит нужно для его хранения.</p></div>
+        <p><b>№ 4.</b> Изображение 200 × 200 пикселей сохранено с глубиной 8 бит. Сколько цветов в палитре? Найдите объём файла в байтах.</p></div>
     </div>
   </section>
 
@@ -520,31 +491,38 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
   </div>
 </section>
 
-<!-- КАЛЬКУЛЯТОР -->
+<!-- КАЛЬКУЛЯТОР (из скриншота) -->
 <div class="mbg" id="calcModal">
-  <div class="modal" style="max-width:340px">
+  <div class="modal calc" role="dialog" aria-label="Калькулятор">
     <h3>🧮 Калькулятор</h3>
-    <div id="calcDisp" style="background:#f8f7ff;border-radius:14px;padding:14px;
-         text-align:right;font-family:Consolas,monospace;font-size:1.5rem;
-         font-weight:700;margin-bottom:12px;color:#4c1d95;word-break:break-all">0</div>
-    <div class="calc-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+    <div class="calc-screen">
+      <div class="calc-expr" id="calcExpr"></div>
+      <div class="calc-out" id="calcOut">0</div>
+    </div>
+    <div class="calc-grid">
       <button class="cbtn clr" onclick="calcClear()">C</button>
       <button class="cbtn del" onclick="calcBack()">⌫</button>
+      <button class="cbtn op" onclick="calcOp('^')">xʸ</button>
       <button class="cbtn op" onclick="calcOp('/')">÷</button>
-      <button class="cbtn op" onclick="calcOp('*')">×</button>
+
       <button class="cbtn" onclick="calcNum('7')">7</button>
       <button class="cbtn" onclick="calcNum('8')">8</button>
       <button class="cbtn" onclick="calcNum('9')">9</button>
-      <button class="cbtn op" onclick="calcOp('-')">−</button>
+      <button class="cbtn op" onclick="calcOp('*')">×</button>
+
       <button class="cbtn" onclick="calcNum('4')">4</button>
       <button class="cbtn" onclick="calcNum('5')">5</button>
       <button class="cbtn" onclick="calcNum('6')">6</button>
-      <button class="cbtn op" onclick="calcOp('+')">+</button>
+      <button class="cbtn op" onclick="calcOp('-')">−</button>
+
       <button class="cbtn" onclick="calcNum('1')">1</button>
       <button class="cbtn" onclick="calcNum('2')">2</button>
       <button class="cbtn" onclick="calcNum('3')">3</button>
-      <button class="cbtn eq" onclick="calcEquals()" style="grid-row:span 2">=</button>
-      <button class="cbtn" onclick="calcNum('0')" style="grid-column:span 3">0</button>
+      <button class="cbtn op" onclick="calcOp('+')">+</button>
+
+      <button class="cbtn" onclick="calcNum('0')">0</button>
+      <button class="cbtn" onclick="calcNum('00')">00</button>
+      <button class="cbtn eq" onclick="calcEquals()">=</button>
     </div>
     <div style="text-align:right;margin-top:16px">
       <button class="btn b-red" onclick="closeCalc()">Закрыть</button>
@@ -588,160 +566,121 @@ function percentToMark(pct){
 }
 
 /* =========================================================
-   2. МИКШЕР ЦВЕТОВ (RGB -> HEX)
+   2. УТИЛИТЫ
    ========================================================= */
-function updateColor(){
-  var r = document.getElementById('sliderR').value;
-  var g = document.getElementById('sliderG').value;
-  var b = document.getElementById('sliderB').value;
-  
-  document.getElementById('valR').textContent = r;
-  document.getElementById('valG').textContent = g;
-  document.getElementById('valB').textContent = b;
-  
-  var hex = '#' + 
-    parseInt(r).toString(16).padStart(2, '0').toUpperCase() +
-    parseInt(g).toString(16).padStart(2, '0').toUpperCase() +
-    parseInt(b).toString(16).padStart(2, '0').toUpperCase();
-    
-  document.getElementById('previewBox').style.background = hex;
-  document.getElementById('hexCode').textContent = hex;
+function showFb(id, html, kind){
+  var el = document.getElementById(id);
+  el.innerHTML = html;
+  el.className = 'fb show ' + kind;
+}
+function renderMath(el){
+  if (!el || !window.MathJax) return;
+  if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){});
 }
 
 /* =========================================================
-   3. МИКШЕР ЦВЕТОВ (HEX -> RGB)
-   ========================================================= */
-function applyHex(){
-  var inp = document.getElementById('hexInput').value.trim();
-  var hex = inp.replace('#', '');
-  if (!/^[0-9A-Fa-f]{6}$/.test(hex)){
-    toast('⚠️ Введите код в формате #RRGGBB (например, #FFA500)');
-    return;
-  }
-  
-  var r = parseInt(hex.slice(0, 2), 16);
-  var g = parseInt(hex.slice(2, 4), 16);
-  var b = parseInt(hex.slice(4, 6), 16);
-
-  document.getElementById('slider2R').value = r;
-  document.getElementById('slider2G').value = g;
-  document.getElementById('slider2B').value = b;
-  document.getElementById('val2R').textContent = r;
-  document.getElementById('val2G').textContent = g;
-  document.getElementById('val2B').textContent = b;
-  
-  document.getElementById('previewBox2').style.background = '#' + hex;
-}
-
-/* =========================================================
-   4. РАБОЧАЯ ТЕТРАДЬ
+   3. РАБОЧАЯ ТЕТРАДЬ
    ========================================================= */
 function checkQ1(){
   if (lessonState.wb.q1) return;
-  var v = document.getElementById('q1ans').value.trim();
-  if (v === '24') {
+  var v = document.getElementById('q1ans').value.trim().replace(/\s+/g, '');
+  if (v === '1536') {
     lessonState.wb.q1 = true;
-    showFb('q1fb', '✅ Верно! В RGB три канала по 8 бит: 8 + 8 + 8 = 24.', 'ok');
+    showFb('q1fb', '✅ Верно! $1024 \cdot 768 \cdot 16 = 12\,582\,912$ бит $= 1536$ Кбайт.', 'ok');
   } else {
-    showFb('q1fb', '❌ Неверно. В RGB на каждый канал отводится 8 бит. Сколько всего?', 'no');
+    showFb('q1fb', '❌ Неверно. $I = 1024 \cdot 768 \cdot 16$ бит. Переведите в Кбайты (÷8, ÷1024).', 'no');
   }
 }
 
 function checkQ2(){
   if (lessonState.wb.q2) return;
-  var sel = document.querySelector('input[name="q2"]:checked');
-  if (!sel) return;
-  if (sel.value === 'c') {
+  var v = document.getElementById('q2ans').value.trim().replace(/\s+/g, '');
+  if (v === '900') {
     lessonState.wb.q2 = true;
-    showFb('q2fb', '✅ Верно! True Color — это 24 бита на пиксель.', 'ok');
+    showFb('q2fb', '✅ Верно! $640 \cdot 480 \cdot 24 = 7\,372\,800$ бит $= 900$ Кбайт.', 'ok');
   } else {
-    showFb('q2fb', '❌ Неверно. True Color подразумевает 16,7 млн цветов.', 'no');
+    showFb('q2fb', '❌ Неверно. Проверьте перевод: биты ÷ 8 = байты, байты ÷ 1024 = Кбайты.', 'no');
   }
 }
 
 function checkQ3(){
   if (lessonState.wb.q3) return;
-  var m1 = document.getElementById('q3m1').value;
-  var m2 = document.getElementById('q3m2').value;
-  var m3 = document.getElementById('q3m3').value;
-  if (m1 === '2' && m2 === '16' && m3 === '256') {
+  var sel = document.querySelector('input[name="q3"]:checked');
+  if (!sel) return;
+  if (sel.value === 'c') {
     lessonState.wb.q3 = true;
-    showFb('q3fb', '✅ Верно! $2^1=2$, $2^4=16$, $2^8=256$.', 'ok');
+    showFb('q3fb', '✅ Верно! BMP хранит изображение без сжатия.', 'ok');
   } else {
-    showFb('q3fb', '❌ Неверно. Вспомните степени двойки.', 'no');
+    showFb('q3fb', '❌ Неверно. Без сжатия хранится только один формат из списка.', 'no');
   }
 }
 
 function checkQ4(){
   if (lessonState.wb.q4) return;
-  var v = document.getElementById('q4ans').value.trim().replace(/\s+/g, '');
-  if (v === '90000') {
+  var sel = document.querySelector('input[name="q4"]:checked');
+  if (!sel) return;
+  if (sel.value === 'c') {
     lessonState.wb.q4 = true;
-    showFb('q4fb', '✅ Верно! $200 \cdot 150 \cdot 24 = 720\,000$ бит $= 90\,000$ байт.', 'ok');
+    showFb('q4fb', '✅ Верно! JPEG использует сжатие с потерями.', 'ok');
   } else {
-    showFb('q4fb', '❌ Неверно. Проверьте формулу $I = K \cdot i$ и перевод в байты.', 'no');
+    showFb('q4fb', '❌ Неверно. Сжатие с потерями — это когда часть данных отбрасывается.', 'no');
   }
 }
 
 function checkQ5(){
   if (lessonState.wb.q5) return;
-  var v = document.getElementById('q5ans').value.trim().replace(/\s+/g, '');
-  // 10000 байт * 8 = 80000 бит. K = 100*50 = 5000. i = 80000 / 5000 = 16.
-  if (v === '16') {
+  var m1 = document.getElementById('q5m1').value;
+  var m2 = document.getElementById('q5m2').value;
+  var m3 = document.getElementById('q5m3').value;
+  if (m1 === 'no' && m2 === 'lossless' && m3 === 'lossy') {
     lessonState.wb.q5 = true;
-    showFb('q5fb', '✅ Верно! $10\,000 \cdot 8 = 80\,000$ бит. $K = 5000$. $i = 80\,000 / 5000 = 16$ бит.', 'ok');
+    showFb('q5fb', '✅ Верно! BMP — без сжатия, PNG — без потерь, JPEG — с потерями.', 'ok');
   } else {
-    showFb('q5fb', '❌ Неверно. Переведите объём в биты, затем разделите на количество пикселей.', 'no');
+    showFb('q5fb', '❌ Неверно. Вспомните таблицу форматов в теории.', 'no');
   }
 }
 
 function checkQ6(){
   if (lessonState.wb.q6) return;
-  var r = document.getElementById('q6r').value.trim();
-  var g = document.getElementById('q6g').value.trim();
-  var b = document.getElementById('q6b').value.trim();
-  // #FFA500 = 255, 165, 0
-  if (r === '255' && g === '165' && b === '0') {
+  var v = document.getElementById('q6ans').value.trim().replace(/\s+/g, '');
+  if (v === '24') {
     lessonState.wb.q6 = true;
-    showFb('q6fb', '✅ Верно! FF = 255, A5 = 165, 00 = 0.', 'ok');
+    showFb('q6fb', '✅ Верно! $900 \cdot 1024 \cdot 8 = 7\,372\,800$ бит. $K = 307\,200$. $i = 24$.', 'ok');
   } else {
-    showFb('q6fb', '❌ Неверно. FF в шестнадцатеричной системе — это 255.', 'no');
+    showFb('q6fb', '❌ Неверно. Переведите Кбайты в биты, затем разделите на количество пикселей.', 'no');
   }
 }
 
 function checkQ7(){
   if (lessonState.wb.q7) return;
-  var sel = document.querySelector('input[name="q7"]:checked');
-  if (!sel) return;
-  if (sel.value === 'b') {
+  var v = document.getElementById('q7ans').value.trim().replace(/\s+/g, '');
+  if (v === '17') {
     lessonState.wb.q7 = true;
-    showFb('q7fb', '✅ Верно! $2^7 = 128$, значит $i = 7$ бит.', 'ok');
+    showFb('q7fb', '✅ Верно! Объём ≈ 17,17 Мбайт. Округляем до целого — 17 Мбайт.', 'ok');
   } else {
-    showFb('q7fb', '❌ Неверно. Найдите степень, в которую нужно возвести 2, чтобы получить 128.', 'no');
+    showFb('q7fb', '❌ Неверно. $I = 3000 \cdot 2000 \cdot 24$ бит. Переведите в Мбайты (÷8, ÷1024, ÷1024).', 'no');
   }
 }
 
 function checkQ8(){
   if (lessonState.wb.q8) return;
   var v = document.getElementById('q8ans').value.trim().replace(/\s+/g, '');
-  // 4096 байт * 8 = 32768 бит. K = 64*64 = 4096. i = 32768 / 4096 = 8. N = 2^8 = 256.
   if (v === '256') {
     lessonState.wb.q8 = true;
-    showFb('q8fb', '✅ Верно! $4096 \cdot 8 = 32\,768$ бит. $K = 4096$. $i = 8$. $N = 2^8 = 256$ цветов.', 'ok');
+    showFb('q8fb', '✅ Верно! $N = 2^8 = 256$ цветов.', 'ok');
   } else {
-    showFb('q8fb', '❌ Неверно. Сначала найдите $i$, затем подставьте в $N = 2^i$.', 'no');
+    showFb('q8fb', '❌ Неверно. Подставьте глубину в формулу $N = 2^i$.', 'no');
   }
 }
 
 function checkQ9(){
   if (lessonState.wb.q9) return;
   var v = document.getElementById('q9ans').value.trim().replace(/\s+/g, '');
-  // 10*10=100 пикс. N=16, i=4 бита. I = 100*4 = 400 бит = 50 байт.
-  if (v === '50') {
+  if (v === '6') {
     lessonState.wb.q9 = true;
-    showFb('q9fb', '✅ Верно! $N=16 \Rightarrow i=4$. $K=100$. $I = 100 \cdot 4 = 400$ бит $= 50$ байт.', 'ok');
+    showFb('q9fb', '✅ Верно! $2^6 = 64$, значит $i = 6$ бит.', 'ok');
   } else {
-    showFb('q9fb', '❌ Неверно. Сначала найдите $i$ по формуле $N=2^i$, затем объём.', 'no');
+    showFb('q9fb', '❌ Неверно. Найдите, в какую степень возвести 2, чтобы получить 64.', 'no');
   }
 }
 
@@ -749,22 +688,22 @@ function checkQ10(){
   if (lessonState.wb.q10) return;
   var sel = document.querySelector('input[name="q10"]:checked');
   if (!sel) return;
-  if (sel.value === 'b') {
+  if (sel.value === 'c') {
     lessonState.wb.q10 = true;
-    showFb('q10fb', '✅ Верно! `#008000` — тёмно-зелёный (R=0, G=128, B=0).', 'ok');
+    showFb('q10fb', '✅ Верно! JPEG даёт маленький файл при приемлемом качестве.', 'ok');
   } else {
-    showFb('q10fb', '❌ Неверно. Разберите код по парам: 00, 80, 00.', 'no');
+    showFb('q10fb', '❌ Неверно. Для сайта из фотографий обычно выбирают JPEG.', 'no');
   }
 }
 
 function checkQ11(){
   if (lessonState.wb.q11) return;
-  var v = document.getElementById('q11ans').value.trim().toUpperCase();
-  if (v === '#808000') {
+  var v = document.getElementById('q11ans').value.trim().replace(/\s+/g, '');
+  if (v === '262144') {
     lessonState.wb.q11 = true;
-    showFb('q11fb', '✅ Верно! 128 = 80 в шестнадцатеричной. Ответ: `#808000`.', 'ok');
+    showFb('q11fb', '✅ Верно! $512 \cdot 512 \cdot 8 = 2\,097\,152$ бит $= 262\,144$ байт.', 'ok');
   } else {
-    showFb('q11fb', '❌ Неверно. 128 в HEX — это 80. Соберите код из трёх пар.', 'no');
+    showFb('q11fb', '❌ Неверно. $I = 512 \cdot 512 \cdot 8$ бит. Переведите в байты (÷8).', 'no');
   }
 }
 
@@ -781,32 +720,32 @@ function calcWorkbook(){
 }
 
 /* =========================================================
-   5. ПРАКТИКА
+   4. ПРАКТИКА
    ========================================================= */
 var PRACTICE_VARIANTS = {
   1: [
-    {type:'input', text:'Сколько бит нужно для кодирования 16 цветов?', ans:'4'},
-    {type:'input', text:'Найдите объём (в байтах) для изображения 100×100 пикселей при глубине 8 бит.', ans:'10000'},
-    {type:'select', text:'Установите соответствие: 24 бита — это...', opts:['256 цветов', '65 536 цветов', '16 777 216 цветов'], ans:'16 777 216 цветов'},
-    {type:'input', text:'Переведите цвет #FF0000 в RGB (через запятую).', ans:'255,0,0'}
+    {type:'input', text:'Изображение 100 × 100 пикселей, глубина 8 бит. Найдите объём в байтах.', ans:'10000'},
+    {type:'input', text:'Сколько цветов в палитре, если глубина цвета 4 бита?', ans:'16'},
+    {type:'select', text:'Какой формат использует сжатие без потерь?', opts:['JPEG', 'PNG', 'BMP'], ans:'PNG'},
+    {type:'input', text:'Изображение 200 × 200 пикселей, глубина 24 бита. Найдите объём в байтах.', ans:'120000'}
   ],
   2: [
-    {type:'input', text:'Сколько цветов можно закодировать при глубине 5 бит?', ans:'32'},
-    {type:'input', text:'Найдите объём (в байтах) для изображения 50×40 пикселей при глубине 24 бита.', ans:'6000'},
-    {type:'select', text:'Какой цвет получится при R=255, G=255, B=255?', opts:['Чёрный', 'Красный', 'Белый'], ans:'Белый'},
-    {type:'input', text:'Переведите цвет #00FF00 в RGB (через запятую).', ans:'0,255,0'}
+    {type:'input', text:'Изображение 50 × 40 пикселей, глубина 24 бита. Найдите объём в байтах.', ans:'6000'},
+    {type:'input', text:'Сколько бит нужно для 128 цветов?', ans:'7'},
+    {type:'select', text:'Какой формат использует сжатие с потерями?', opts:['JPEG', 'PNG', 'BMP'], ans:'JPEG'},
+    {type:'input', text:'Изображение 100 × 50 пикселей, глубина 16 бит. Найдите объём в байтах.', ans:'10000'}
   ],
   3: [
-    {type:'input', text:'Сколько бит нужно для кодирования 1024 цветов?', ans:'10'},
-    {type:'input', text:'Найдите объём (в байтах) для изображения 20×30 пикселей при глубине 16 бит.', ans:'1200'},
-    {type:'select', text:'Установите соответствие: 8 бит — это...', opts:['2 цвета', '16 цветов', '256 цветов'], ans:'256 цветов'},
-    {type:'input', text:'Переведите цвет #0000FF в RGB (через запятую).', ans:'0,0,255'}
+    {type:'input', text:'Изображение 20 × 30 пикселей, глубина 16 бит. Найдите объём в байтах.', ans:'1200'},
+    {type:'input', text:'Сколько цветов при глубине 5 бит?', ans:'32'},
+    {type:'select', text:'Какой формат не использует сжатие?', opts:['JPEG', 'PNG', 'BMP'], ans:'BMP'},
+    {type:'input', text:'Изображение 64 × 64 пикселей, глубина 8 бит. Найдите объём в байтах.', ans:'4096'}
   ],
   4: [
-    {type:'input', text:'Сколько цветов можно закодировать при глубине 2 бита?', ans:'4'},
-    {type:'input', text:'Найдите объём (в байтах) для изображения 80×50 пикселей при глубине 32 бита.', ans:'16000'},
-    {type:'select', text:'Установите соответствие: 1 бит — это...', opts:['2 цвета', '16 цветов', '256 цветов'], ans:'2 цвета'},
-    {type:'input', text:'Переведите цвет #FFA500 в RGB (через запятую).', ans:'255,165,0'}
+    {type:'input', text:'Изображение 80 × 50 пикселей, глубина 32 бита. Найдите объём в байтах.', ans:'16000'},
+    {type:'input', text:'Сколько бит нужно для 256 цветов?', ans:'8'},
+    {type:'select', text:'Какой формат лучше для фотографии на сайте?', opts:['BMP', 'JPEG', 'GIF'], ans:'JPEG'},
+    {type:'input', text:'Изображение 10 × 10 пикселей, глубина 24 бита. Найдите объём в байтах.', ans:'300'}
   ]
 };
 
@@ -920,7 +859,7 @@ function resetPractice(){
 }
 
 /* =========================================================
-   6. ИТОГ
+   5. ИТОГ
    ========================================================= */
 function calcFinalMark(){
   if (!lessonState.wbMark && !lessonState.pracDone){
@@ -941,7 +880,7 @@ function calcFinalMark(){
 }
 
 /* =========================================================
-   7. САМОСТОЯТЕЛЬНАЯ
+   6. САМОСТОЯТЕЛЬНАЯ
    ========================================================= */
 var saTimer = null, saLeft = 0, saTasks = [], saStarted = false, saDone = false;
 
@@ -959,14 +898,12 @@ function genStandalone(){
   var pool = [
     {q:'Сколько бит нужно для кодирования 32 цветов?', ans:'5'},
     {q:'Сколько цветов можно закодировать при глубине 3 бита?', ans:'8'},
-    {q:'Сколько бит отводится на один канал в модели RGB?', ans:'8'},
-    {q:'Сколько бит в режиме True Color?', ans:'24'},
-    {q:'Переведите цвет #FF0000 в RGB (через запятую).', ans:'255,0,0'},
-    {q:'Переведите цвет #00FF00 в RGB (через запятую).', ans:'0,255,0'},
-    {q:'Найдите объём в байтах: 10×10 пикселей, 24 бита.', ans:'300'},
-    {q:'Найдите объём в байтах: 20×20 пикселей, 8 бит.', ans:'400'},
+    {q:'Изображение 10×10 пикселей, глубина 24 бита. Найдите объём в байтах.', ans:'300'},
+    {q:'Изображение 20×20 пикселей, глубина 8 бит. Найдите объём в байтах.', ans:'400'},
     {q:'Сколько цветов при глубине 1 бит?', ans:'2'},
-    {q:'Сколько бит нужно для 64 цветов?', ans:'6'}
+    {q:'Сколько бит нужно для 64 цветов?', ans:'6'},
+    {q:'Изображение 100×100 пикселей, глубина 16 бит. Найдите объём в Кбайтах.', ans:'20'},
+    {q:'Изображение 50×50 пикселей, глубина 24 бита. Найдите объём в байтах.', ans:'7500'}
   ];
 
   var selected = pickN(pool, 5);
@@ -1077,7 +1014,7 @@ function exitStandalone(){
 }
 
 /* =========================================================
-   8. ПЕЧАТЬ ДЗ
+   7. ПЕЧАТЬ ДЗ
    ========================================================= */
 function printHomework(){
   var fio = getFullName() + (getKlass() ? ', ' + getKlass() : '');
@@ -1098,30 +1035,104 @@ function printHomework(){
 }
 
 /* =========================================================
-   9. КАЛЬКУЛЯТОР
+   8. КАЛЬКУЛЯТОР
    ========================================================= */
 var calcBuf = '';
-function openCalc(){ document.getElementById('calcModal').classList.add('open'); }
+function openCalc(){ document.getElementById('calcModal').classList.add('open'); calcRender(); }
 function closeCalc(){ document.getElementById('calcModal').classList.remove('open'); }
-function calcNum(d){ if (calcBuf === '0' && d !== '0') calcBuf = ''; calcBuf += d; calcRender(); }
+function calcNum(d){
+  if (calcBuf === '0' && d !== '0') calcBuf = '';
+  calcBuf += d; calcRender();
+}
 function calcOp(op){
-  if (!calcBuf){ if (op === '-'){ calcBuf = '-'; calcRender(); } return; }
-  if ('+-*/'.indexOf(calcBuf.slice(-1)) !== -1) calcBuf = calcBuf.slice(0,-1);
+  if (!calcBuf){
+    if (op === '-'){ calcBuf = '-'; calcRender(); }
+    return;
+  }
+  var last = calcBuf.slice(-1);
+  if ('+-*/^'.indexOf(last) !== -1) calcBuf = calcBuf.slice(0,-1);
   calcBuf += op; calcRender();
 }
 function calcClear(){ calcBuf = ''; calcRender(); }
 function calcBack(){ calcBuf = calcBuf.slice(0,-1); calcRender(); }
-function calcRender(){ document.getElementById('calcDisp').textContent = calcBuf || '0'; }
-function calcEquals(){
+
+function calcRender(){
+  document.getElementById('calcExpr').textContent = calcBuf || '';
+  document.getElementById('calcOut').textContent = calcPreview();
+}
+
+function calcPreview(){
+  if (!calcBuf) return '0';
   try {
-    var v = Function('"use strict";return (' + calcBuf + ')')();
-    document.getElementById('calcDisp').textContent = String(v);
-    calcBuf = String(v);
-  } catch(e){ document.getElementById('calcDisp').textContent = 'Ошибка'; calcBuf = ''; }
+    var v = calcEval(calcBuf);
+    if (v === null) return '…';
+    if (!isFinite(v)) return '∞';
+    return (Math.round(v*1e10)/1e10).toString();
+  } catch(e){ return '…'; }
+}
+
+/* Безопасный парсер (без eval) */
+function calcEval(str){
+  var s = str.replace(/\s+/g,'');
+  if (!/^[0-9+\-*/^]+$/.test(s)) return null;
+
+  var pos = 0;
+  function peek(){ return s[pos]; }
+  function parseExpr(){
+    var v = parseTerm();
+    while (peek()==='+' || peek()==='-'){
+      var op = s[pos++];
+      var r = parseTerm();
+      v = op==='+' ? v+r : v-r;
+    }
+    return v;
+  }
+  function parseTerm(){
+    var v = parsePow();
+    while (peek()==='*' || peek()==='/'){
+      var op = s[pos++];
+      var r = parsePow();
+      v = op==='*' ? v*r : v/r;
+    }
+    return v;
+  }
+  function parsePow(){
+    var v = parseUnary();
+    if (peek()==='^'){
+      pos++;
+      var e = parsePow();
+      return Math.pow(v,e);
+    }
+    return v;
+  }
+  function parseUnary(){
+    if (peek()==='-'){ pos++; return -parseUnary(); }
+    if (peek()==='+'){ pos++; return parseUnary(); }
+    return parseAtom();
+  }
+  function parseAtom(){
+    var start = pos;
+    while (pos<s.length && /[0-9]/.test(s[pos])) pos++;
+    if (start===pos) throw new Error('bad');
+    return parseFloat(s.slice(start,pos));
+  }
+
+  try{
+    var res = parseExpr();
+    if (pos !== s.length) return null;
+    return res;
+  } catch(e){ return null; }
+}
+
+function calcEquals(){
+  var v = calcEval(calcBuf);
+  if (v === null || !isFinite(v)){ toast('Проверьте выражение'); return; }
+  calcBuf = (Math.round(v*1e10)/1e10).toString();
+  calcRender();
 }
 
 /* =========================================================
-   10. ПАРОЛИ
+   9. ПАРОЛИ
    ========================================================= */
 var LAT2CYR = {q:'й',w:'ц',e:'у',r:'к',t:'е',y:'н',u:'г',i:'ш',o:'щ',p:'з','[':'х',']':'ъ',
   a:'ф',s:'ы',d:'в',f:'а',g:'п',h:'р',j:'о',k:'л',l:'д',';':'ж',"'":'э',
@@ -1140,25 +1151,10 @@ function passwordMatches(t, e){
 }
 
 /* =========================================================
-   11. УТИЛИТЫ
+   10. СТАРТ
    ========================================================= */
-function showFb(id, html, kind){
-  var el = document.getElementById(id);
-  el.innerHTML = html;
-  el.className = 'fb show ' + kind;
-}
-function renderMath(el){
-  if (!el || !window.MathJax) return;
-  if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){});
-}
-
 document.addEventListener('DOMContentLoaded', function(){
-  updateColor();
   loadPracticeState();
-  
-  // Инициализация второго микшера для Задания 6
-  document.getElementById('hexInput').value = '#FFA500';
-  applyHex();
 });
 </script>
 </body>
