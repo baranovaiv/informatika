@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Информационный объём сообщения · 7 класс</title>
+
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$']] },
+  svg: { fontCache: 'global' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23ede9fe'/><text x='16' y='23' font-size='17' font-family='Georgia' font-weight='bold' fill='%236d28d9' text-anchor='middle'>I</text></svg>">
+
+<style>
+/* ---------- Дополнительные стили только для этого урока ---------- */
+.student{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:16px;position:relative;z-index:2}
+.student .f{display:flex;flex-direction:column;gap:4px}
+.student label{font-size:.78rem;font-weight:800;color:#4c4660;text-transform:uppercase;letter-spacing:.4px}
+.student input{border:2px solid rgba(255,255,255,.85);border-radius:10px;padding:8px 13px;
+  font-size:.95rem;font-family:inherit;background:rgba(255,255,255,.92);color:var(--ink);outline:none}
+.student input:focus{background:#fff;border-color:#a78bfa;box-shadow:0 0 0 4px rgba(255,255,255,.55)}
+#surname{width:200px} #firstname{width:180px} #klass{width:90px}
+
+.lock{text-align:center;padding:32px 18px;border-radius:16px;
+  background:linear-gradient(135deg,#fff7ed,#fef2f2);border:2px dashed var(--od)}
+.lock h3{margin:10px 0 4px}
+.lock p{color:var(--muted);margin:0 0 16px;font-size:.94rem}
+.lockrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.pmsg{min-height:22px;font-weight:600;color:var(--bad);margin-top:10px}
+
+.vbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.res{background:linear-gradient(135deg,var(--green),var(--blue));border-radius:var(--r);padding:22px;margin:18px 0;display:none}
+.res.show{display:block}
+.res h3{margin:0 0 14px;color:#065f46}
+.marks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.mcard{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:0 4px 16px rgba(6,95,70,.1)}
+.mcard .lbl{font-size:.75rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.mcard .val{font-size:2.3rem;font-weight:900;line-height:1;color:#6d28d9}
+.mcard.total .val{color:#047857}
+
+#standalone{display:none}
+body.exam{padding-bottom:20px}
+body.exam #theory, body.exam #workbook, body.exam #practice,
+body.exam #final, body.exam #homework, body.exam #standaloneGate,
+body.exam .bar, body.exam .hero{display:none !important}
+body.exam #standalone{display:block}
+
+.exam-head{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.97);
+  backdrop-filter:blur(10px);border-radius:0 0 20px 20px;padding:14px 20px;margin:-24px -16px 18px;
+  box-shadow:0 6px 24px rgba(120,110,160,.18);display:flex;flex-wrap:wrap;gap:14px;
+  align-items:center;justify-content:space-between}
+.exam-title{font-weight:800;font-size:1.05rem}
+.exam-who{font-size:.86rem;color:var(--muted)}
+.timer{font-family:Consolas,monospace;font-size:1.5rem;font-weight:800;color:#047857;
+  background:var(--green);padding:6px 18px;border-radius:12px;min-width:110px;text-align:center}
+.timer.warn{background:var(--yellow);color:#b45309}
+.timer.danger{background:#fee2e2;color:#b91c1c;animation:pulseT 1s infinite}
+@keyframes pulseT{0%,100%{opacity:1}50%{opacity:.55}}
+
+.s-task{background:#fff;border-radius:18px;padding:18px 20px;margin:14px 0;
+  border:2px solid #e8e3f5;box-shadow:0 4px 18px rgba(120,110,160,.09)}
+.s-task .sn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;
+  border-radius:50%;background:var(--purple);color:#5b21b6;font-weight:800;font-size:.85rem;margin-right:8px}
+.s-task .stext{margin:0 0 12px;font-size:1rem;line-height:1.65}
+.s-task input[type=text]{max-width:200px}
+.s-flag{font-size:.78rem;font-weight:800;padding:2px 10px;border-radius:999px;
+  background:var(--blue);color:#1d4ed8;margin-left:6px}
+
+.no-calc-warn{background:var(--yellow);border-left:4px solid var(--yd);border-radius:12px;
+  padding:12px 16px;margin:0 0 16px;font-size:.92rem;font-weight:600;color:#b45309}
+
+.mbg{display:none;position:fixed;inset:0;background:rgba(60,55,90,.48);z-index:200;
+  align-items:center;justify-content:center;padding:16px}
+.mbg.open{display:flex}
+.modal{background:#fff;border-radius:22px;max-width:660px;width:100%;max-height:88vh;
+  overflow:auto;padding:24px;box-shadow:0 24px 70px rgba(60,55,90,.4)}
+.modal h3{margin:0 0 4px;font-size:1.12rem}
+.mhint{color:var(--muted);font-size:.87rem;margin:0 0 14px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tab{background:#f5f3ff;border:none;border-radius:10px;padding:7px 14px;cursor:pointer;
+  font-weight:700;color:#6d28d9;font-family:inherit;font-size:.86rem}
+.tab.on{background:var(--purple);color:#4c1d95}
+.pane{display:none}
+.pane.on{display:block}
+.keys{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}
+.key{background:#fbfaff;border:1.5px solid #ece8f8;border-radius:10px;padding:10px 6px;
+  cursor:pointer;font-size:1rem;font-weight:700;color:#5b4b8a;font-family:Cambria,Georgia,serif;
+  line-height:1.3;transition:.15s}
+.key:hover{background:var(--purple);border-color:var(--pd);transform:translateY(-1px)}
+.key small{display:block;font-size:.6rem;color:var(--muted);font-weight:600;margin-top:3px;
+  font-family:Consolas,monospace}
+
+.calc{max-width:340px}
+.calc-screen{background:#1e1b2e;color:#e9e6f5;border-radius:14px;padding:14px 16px;margin-bottom:12px;
+  text-align:right;font-family:Consolas,monospace;overflow:hidden}
+.calc-expr{font-size:.82rem;color:#a9a3c4;min-height:18px;word-break:break-all}
+.calc-out{font-size:1.9rem;font-weight:700;word-break:break-all;line-height:1.2}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cbtn{border:none;border-radius:12px;padding:15px 0;font-size:1.05rem;font-weight:700;
+  font-family:inherit;cursor:pointer;background:#f5f3ff;color:#4c1d95;transition:.12s}
+.cbtn:hover{background:#ede9fe}
+.cbtn:active{transform:scale(.96)}
+.cbtn.op{background:var(--purple);color:#5b21b6}
+.cbtn.eq{background:var(--green);color:#047857;grid-column:span 2}
+.cbtn.del{background:var(--orange);color:#c2410c}
+.cbtn.clr{background:#fee2e2;color:#b91c1c}
+
+.bar{background:#fff;border-radius:var(--r);padding:16px;border:1px solid #f2f0fa;
+  box-shadow:0 -4px 24px rgba(120,110,160,.16);display:flex;flex-wrap:wrap;gap:10px;
+  position:sticky;bottom:10px;z-index:30;margin-top:24px}
+
+@media(max-width:720px){
+  #surname,#firstname,#klass{width:100%}
+  .marks{grid-template-columns:1fr}
+}
+@media print{
+  .no-print{display:none !important}
+  body{background:#fff;padding:0;font-size:11.5pt}
+  .card{box-shadow:none;border:none;padding:0;margin:0}
+  .task{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">К содержанию</a>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="../index.html"><span class="logo">I</span> Информатика · кабинет 318А</a>
+    <button class="burger" aria-label="Меню">☰</button>
+    <div class="nav-links">
+      <a href="../index.html">Главная</a>
+      <a href="../lessons.html" class="active">Уроки</a>
+      <a href="../materials.html">Материалы</a>
+      <a href="../tests.html">Тесты</a>
+      <a href="../oge.html">ОГЭ</a>
+      <a href="../about.html">О сайте</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap" id="main">
+
+  <!-- ШАПКА УРОКА -->
+  <header class="hero">
+    <h1>Информационный объём сообщения</h1>
+    <p class="lead">Урок информатики · 7 класс · Измерение информации</p>
+    <div class="student">
+      <div class="f"><label for="surname">Фамилия</label>
+        <input type="text" id="surname" placeholder="Иванов" autocomplete="off"></div>
+      <div class="f"><label for="firstname">Имя</label>
+        <input type="text" id="firstname" placeholder="Иван" autocomplete="off"></div>
+      <div class="f"><label for="klass">Класс</label>
+        <input type="text" id="klass" placeholder="7А" autocomplete="off"></div>
+    </div>
+  </header>
+
+  <!-- 1. ТЕОРИЯ -->
+  <section class="card" id="theory">
+    <h2><span class="num">1</span> Теоретический материал</h2>
+    <p><b>Информационный объём сообщения</b> — это количество информации, которое несёт сообщение. Измеряется в битах, байтах, килобайтах.</p>
+    <div class="formula">$$N = 2^{i} \qquad\qquad I = K \cdot i$$</div>
+    <ul>
+      <li>$N$ — мощность алфавита;</li>
+      <li>$i$ — вес одного символа в битах;</li>
+      <li>$K$ — количество символов;</li>
+      <li>$I$ — информационный объём.</li>
+    </ul>
+    <h3>Как найти вес символа</h3>
+    <p>Вес символа $i$ — показатель степени, в которую нужно возвести 2, чтобы получить $N$:</p>
+    <div class="formula">
+      $N = 16 \;\Rightarrow\; 2^{4} = 16 \;\Rightarrow\; i = 4$ бита<br><br>
+      $N = 64 \;\Rightarrow\; 2^{6} = 64 \;\Rightarrow\; i = 6$ бит
+    </div>
+    <h3>Таблица степеней двойки</h3>
+    <table class="pow">
+      <tr><td>2¹</td><td>2²</td><td>2³</td><td>2⁴</td><td>2⁵</td><td>2⁶</td><td>2⁷</td><td>2⁸</td><td>2⁹</td><td>2¹⁰</td><td>2¹⁶</td></tr>
+      <tr><td>2</td><td>4</td><td>8</td><td>16</td><td>32</td><td>64</td><td>128</td><td>256</td><td>512</td><td>1024</td><td>65536</td></tr>
+    </table>
+    <h3>Единицы измерения</h3>
+    <div class="tgrid" style="grid-template-columns:130px 1fr">
+      <span class="k">1 байт</span><span>$= 8$ бит</span>
+      <span class="k">1 Кбайт</span><span>$= 1024$ байт $= 2^{10}$ байт</span>
+      <span class="k">1 Мбайт</span><span>$= 1024$ Кбайт</span>
+      <span class="k">1 Гбайт</span><span>$= 1024$ Мбайт</span>
+    </div>
+    <h3>Разобранный пример</h3>
+    <div class="task">
+      <div class="tgrid">
+        <span class="k">ДАНО:</span><span>$K = 512$ символов, $i = 16$ бит</span>
+        <span class="k">НАЙТИ:</span><span>$I$ — ?</span>
+      </div>
+      <div class="step"><b>1.</b> $I = K \cdot i$</div>
+      <div class="step"><b>2.</b> $I = 512 \cdot 16 = 8192$ бит</div>
+      <div class="step"><b>3.</b> В байты: $8192 : 8 = 1024$ байт</div>
+      <div class="step"><b>4.</b> В килобайты: $1024 : 1024 = 1$ Кбайт</div>
+      <div class="answer-line">ОТВЕТ: $I = 1$ Кбайт</div>
+    </div>
+  </section>
+
+  <!-- 2. РАБОЧАЯ ТЕТРАДЬ -->
+  <section class="card" id="workbook">
+    <h2><span class="num">2</span> Рабочая тетрадь</h2>
+    <p class="muted">Задания с подсказками. Вводите только число — без единиц измерения.</p>
+
+    <div class="task">
+      <p><b>Задание 1.</b> Сообщение записано буквами 64-символьного алфавита
+      и содержит 256 символов. Какой информационный объём оно несёт?
+      Ответ дайте в битах.</p>
+      <details><summary>Подсказка</summary>
+        Найдите вес одного символа: $2^? = 64$. Затем умножьте вес символа
+        на количество символов: $I = K \cdot i$.
+      </details>
+      <div class="ans">
+        <input type="text" id="w1" placeholder="число" inputmode="numeric">
+        <button class="btn b-green" onclick="checkW('w1','1536','w1fb')">Проверить</button>
+      </div>
+      <div class="fb" id="w1fb"></div>
+    </div>
+
+    <div class="task">
+      <p><b>Задание 2.</b> Информационный объём сообщения равен 4 Кбайт,
+      информационный вес одного символа — 8 бит. Сколько символов
+      содержит сообщение?</p>
+      <details><summary>Подсказка</summary>
+        Сначала переведите объём в биты: $4 \cdot 1024 \cdot 8$.
+        Затем разделите объём на вес символа: $K = I / i$.
+      </details>
+      <div class="ans">
+        <input type="text" id="w2" placeholder="число" inputmode="numeric">
+        <button class="btn b-green" onclick="checkW('w2','4096','w2fb')">Проверить</button>
+      </div>
+      <div class="fb" id="w2fb"></div>
+    </div>
+
+    <div class="task q">
+      <p><b>Задание 3.</b> Слово <b>«Информатика»</b> записано в кодировке,
+      где каждый символ занимает 8 бит. Каков информационный объём слова?</p>
+      <details><summary>Подсказка</summary>
+        Посчитайте количество букв в слове. Умножьте на 8 бит.
+        Не забудьте: 1 байт = 8 бит.
+      </details>
+      <label class="opt"><input type="radio" name="w3" value="a"> 8 бит</label>
+      <label class="opt"><input type="radio" name="w3" value="b"> 11 байт = 88 бит</label>
+      <label class="opt"><input type="radio" name="w3" value="c"> 16 бит</label>
+      <label class="opt"><input type="radio" name="w3" value="d"> 11 бит</label>
+      <button class="btn b-green" onclick="checkWRadio('w3','b','w3fb')" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="w3fb"></div>
+    </div>
+
+    <div class="task">
+      <p><b>Задание 4.</b> Сообщение записано алфавитом мощностью 32 символа.
+      Информационный объём сообщения равен 640 бит. Сколько символов
+      содержит сообщение?</p>
+      <details><summary>Подсказка</summary>
+        Найдите вес символа: $2^? = 32$. Затем разделите объём на вес:
+        $K = I / i$.
+      </details>
+      <div class="ans">
+        <input type="text" id="w4" placeholder="число" inputmode="numeric">
+        <button class="btn b-green" onclick="checkW('w4','128','w4fb')">Проверить</button>
+      </div>
+      <div class="fb" id="w4fb"></div>
+    </div>
+
+    <div class="controls">
+      <button class="btn b-purple" onclick="calcWorkbook()">📊 Оценить рабочую тетрадь</button>
+    </div>
+    <div class="res" id="wbResult">
+      <h3>Результат рабочей тетради</h3>
+      <p style="margin:0;font-weight:700">Верно: <span id="wbCorrect">0</span> из 4 · Оценка: <span id="wbMark" style="font-size:1.4rem">—</span></p>
+    </div>
+  </section>
+
+  <!-- 3. ПРАКТИЧЕСКАЯ РАБОТА -->
+  <section class="card" id="practice">
+    <h2><span class="num">3</span> Практическая работа <span class="badge">по паролю</span></h2>
+
+    <div id="practiceLock" class="lock">
+      <h3>🔒 Практическая работа закрыта</h3>
+      <p>Введите пароль учителя. После этого откроются 4 варианта.</p>
+      <div class="lockrow">
+        <input type="password" id="pracPass" placeholder="Пароль" autocomplete="off"
+               onkeydown="if(event.key==='Enter')unlockPractice()">
+        <button class="btn b-purple" onclick="unlockPractice()">Открыть</button>
+      </div>
+      <div class="pmsg" id="pracMsg"></div>
+    </div>
+
+    <div id="practiceBody" style="display:none">
+      <div class="vbar">
+        <label for="pracVariant"><b>Вариант:</b></label>
+        <select id="pracVariant" onchange="renderPractice()">
+          <option value="1">Вариант 1</option>
+          <option value="2">Вариант 2</option>
+          <option value="3">Вариант 3</option>
+          <option value="4">Вариант 4</option>
+        </select>
+      </div>
+      <div id="pracArea"></div>
+      <button class="btn b-green" onclick="gradePractice()" style="margin-top:14px">📊 Проверить практику</button>
+      <div class="res" id="pracResult">
+        <h3>Результат практической работы</h3>
+        <p style="margin:0;font-weight:700">Верно: <span id="pracCorrect">0</span> из 5 · Оценка: <span id="pracMark" style="font-size:1.4rem">—</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. ИТОГ -->
+  <section class="card" id="final">
+    <h2><span class="num">4</span> Итоговая оценка за урок</h2>
+    <p class="muted">Складывается из рабочей тетради и практической работы.<br>
+      Шкала: 90–100 → 5, 70–89 → 4, 50–69 → 3, 0–49 → 2.</p>
+    <div class="controls">
+      <button class="btn b-purple" onclick="calcFinalMark()">🎯 Подвести итог</button>
+    </div>
+    <div class="res" id="finalResult">
+      <h3>Итог урока</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Тетрадь</div><div class="val" id="fWb">—</div></div>
+        <div class="mcard"><div class="lbl">Практика</div><div class="val" id="fPrac">—</div></div>
+        <div class="mcard total"><div class="lbl">Итог</div><div class="val" id="fTotal">—</div></div>
+      </div>
+      <p id="finalMsg" style="margin:12px 0 0;font-weight:600;color:#065f46"></p>
+    </div>
+  </section>
+
+  <!-- 5. САМОСТОЯТЕЛЬНАЯ -->
+  <section class="card" id="standaloneGate">
+    <h2><span class="num">5</span> Самостоятельная работа <span class="badge">по паролю</span></h2>
+    <p>Пять задач на 15 минут. Каждая задача — в несколько действий с переводом единиц.
+      Теория и формулы во время работы недоступны. Открывается по паролю учителя.</p>
+    <p style="font-size:.85rem;color:var(--muted);margin-top:-4px">
+      Пароль принимается в любой раскладке — можно набирать, не переключая язык.</p>
+    <div class="lockrow" style="justify-content:flex-start">
+      <input type="password" id="saPass" placeholder="Пароль учителя" autocomplete="off"
+             onkeydown="if(event.key==='Enter')unlockStandalone()">
+      <button class="btn b-blue" onclick="unlockStandalone()">🔓 Начать работу</button>
+    </div>
+    <div class="pmsg" id="saMsg"></div>
+  </section>
+
+  <!-- 6. ДОМАШНЕЕ ЗАДАНИЕ -->
+  <section class="card" id="homework">
+    <h2><span class="num">6</span> Домашнее задание</h2>
+    <button class="btn b-orange no-print" onclick="printHomework()">🖨 Печать только ДЗ</button>
+
+    <div id="hwBlock">
+      <div class="hw">
+        <span class="lvl l1">базовый</span>
+        <p><b>№ 1.</b> Сообщение записано буквами 32-символьного алфавита
+        и содержит 80 символов. Какой объём информации оно несёт?</p>
+      </div>
+      <div class="hw">
+        <span class="lvl l1">базовый</span>
+        <p><b>№ 2.</b> Текст набран в 16-битной кодировке и содержит 250 символов.
+        Найдите его объём в байтах.</p>
+      </div>
+      <div class="hw">
+        <span class="lvl l2">средний</span>
+        <p><b>№ 3.</b> Информационный объём сообщения равен 2 Кбайт.
+        Вес одного символа — 16 бит. Сколько символов в сообщении?</p>
+      </div>
+      <div class="hw">
+        <span class="lvl l2">средний</span>
+        <p><b>№ 4.</b> Использовали 64-символьный алфавит. Объём сообщения — 600 бит.
+        Найдите количество символов.</p>
+      </div>
+      <div class="hw">
+        <span class="lvl l3">повышенный</span>
+        <p><b>№ 5.</b> Текст из 128 символов занимает 256 байт.
+        Какова мощность алфавита?<br><em>Подсказка: получится 65536 — это $2^{16}$.</em></p>
+      </div>
+      <div class="hw">
+        <span class="lvl l3">повышенный</span>
+        <p><b>№ 6.</b> Два текста содержат одинаковое количество символов.
+        Первый записан в 16-битной кодировке, второй — в 8-битной.
+        Во сколько раз объём первого больше?</p>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /wrap -->
+
+<!-- ================= НИЖНЯЯ ПАНЕЛЬ ================= -->
+<div class="bar no-print">
+  <button class="btn b-purple" onclick="openMath()">⌨ Математическая раскладка</button>
+  <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
+  <button class="btn b-yellow" onclick="scrollToGate()">📝 Самостоятельная</button>
+  <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
+</div>
+
+<!-- ================= САМОСТОЯТЕЛЬНАЯ РАБОТА ================= -->
+<section id="standalone">
+  <div class="exam-head">
+    <div>
+      <div class="exam-title">📝 Самостоятельная работа</div>
+      <div class="exam-who" id="examWho">Ученик не указан</div>
+    </div>
+    <div class="timer" id="examTimer">15:00</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
+      <button class="btn b-green" onclick="finishStandalone()">✅ Сдать работу</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:0">
+    <h2 style="margin-bottom:10px"><span class="num">5</span> Самостоятельная работа</h2>
+    <div class="no-calc-warn">
+      ⚠️ Во время работы теория, формулы и таблица степеней недоступны.
+      Каждая задача решается в несколько действий и требует перевода единиц измерения.
+      Решение записывайте на черновике, в поле вводите только итоговый ответ.
+    </div>
+
+    <div id="examTasks"></div>
+
+    <div class="res" id="examResult">
+      <h3>📊 Результат работы</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Верно решено</div><div class="val" id="exCorrect">0</div></div>
+        <div class="mcard total"><div class="lbl">Оценка</div><div class="val" id="exMark">—</div></div>
+        <div class="mcard"><div class="lbl">Время</div><div class="val" id="exTime" style="font-size:1.5rem">—</div></div>
+      </div>
+      <p id="exMsg" style="margin:12px 0 0;font-weight:600;color:#065f46"></p>
+    </div>
+
+    <div class="controls no-print" style="margin-top:16px">
+      <button class="btn b-orange" onclick="saveStandalonePDF()">📄 Сохранить PDF</button>
+      <button class="btn b-teal" onclick="saveStandaloneJPG()">🖼 Сохранить JPG</button>
+      <button class="btn b-red" onclick="exitStandalone()">← Выйти из работы</button>
+    </div>
+    <p style="color:var(--muted);font-size:.85rem;margin:10px 0 0">
+      Файл сохраняется как <b id="filePreview">Фамилия_Имя_Класс_самостоятельная</b> в папку загрузок браузера.
+    </p>
+  </div>
+</section>
+
+<!-- ================= МАТЕМАТИЧЕСКАЯ РАСКЛАДКА ================= -->
+<div class="mbg" id="mathModal">
+  <div class="modal" role="dialog" aria-label="Математическая раскладка">
+    <h3>⌨ Математическая раскладка</h3>
+    <p class="mhint">Щёлкните в нужное поле — оно подсветится зелёным, — затем нажмите символ.
+    Формула вставится в позицию курсора.</p>
+    <div class="tabs">
+      <button class="tab on" data-tab="frac">Дроби</button>
+      <button class="tab" data-tab="pow">Степени</button>
+      <button class="tab" data-tab="sub">Индексы</button>
+      <button class="tab" data-tab="logic">Алгебра логики</button>
+      <button class="tab" data-tab="ops">Операции</button>
+    </div>
+    <div class="pane on" id="pane-frac"><div class="keys">
+      <button class="key" data-tex="\frac{1}{2}">½<small>\frac{1}{2}</small></button>
+      <button class="key" data-tex="\frac{1}{3}">⅓<small>\frac{1}{3}</small></button>
+      <button class="key" data-tex="\frac{1}{4}">¼<small>\frac{1}{4}</small></button>
+      <button class="key" data-tex="\frac{3}{4}">¾<small>\frac{3}{4}</small></button>
+      <button class="key" data-tex="\frac{a}{b}">a⁄b<small>своя</small></button>
+      <button class="key" data-tex="\frac{I}{K}">I⁄K<small>дробь</small></button>
+      <button class="key" data-tex="\frac{I}{i}">I⁄i<small>дробь</small></button>
+      <button class="key" data-tex="\dfrac{8192}{8}">8192⁄8<small>перевод</small></button>
+    </div></div>
+    <div class="pane" id="pane-pow"><div class="keys">
+      <button class="key" data-tex="2^{i}">2ⁱ<small>N = 2^i</small></button>
+      <button class="key" data-tex="2^{2}">2²<small>4</small></button>
+      <button class="key" data-tex="2^{3}">2³<small>8</small></button>
+      <button class="key" data-tex="2^{4}">2⁴<small>16</small></button>
+      <button class="key" data-tex="2^{5}">2⁵<small>32</small></button>
+      <button class="key" data-tex="2^{6}">2⁶<small>64</small></button>
+      <button class="key" data-tex="2^{7}">2⁷<small>128</small></button>
+      <button class="key" data-tex="2^{8}">2⁸<small>256</small></button>
+      <button class="key" data-tex="2^{9}">2⁹<small>512</small></button>
+      <button class="key" data-tex="2^{10}">2¹⁰<small>1024</small></button>
+      <button class="key" data-tex="2^{16}">2¹⁶<small>65536</small></button>
+      <button class="key" data-tex="65536">65536<small>ответ</small></button>
+    </div></div>
+    <div class="pane" id="pane-sub"><div class="keys">
+      <button class="key" data-tex="N_{1}">N₁<small>N_{1}</small></button>
+      <button class="key" data-tex="K_{1}">K₁<small>K_{1}</small></button>
+      <button class="key" data-tex="I_{1}">I₁<small>I_{1}</small></button>
+      <button class="key" data-tex="i_{1}">i₁<small>i_{1}</small></button>
+      <button class="key" data-tex="x_{n}">xₙ<small>своя</small></button>
+    </div></div>
+    <div class="pane" id="pane-logic"><div class="keys">
+      <button class="key" data-tex="\land">∧<small>И (AND)</small></button>
+      <button class="key" data-tex="\lor">∨<small>ИЛИ (OR)</small></button>
+      <button class="key" data-tex="\lnot">¬<small>НЕ (NOT)</small></button>
+      <button class="key" data-tex="\to">→<small>следует</small></button>
+      <button class="key" data-tex="\leftrightarrow">↔<small>равносильно</small></button>
+      <button class="key" data-tex="\oplus">⊕<small>искл. ИЛИ</small></button>
+      <button class="key" data-tex="\equiv">≡<small>тождество</small></button>
+      <button class="key" data-tex="\forall">∀<small>для всех</small></button>
+      <button class="key" data-tex="\exists">∃<small>существует</small></button>
+      <button class="key" data-tex="\in">∈<small>принадлежит</small></button>
+      <button class="key" data-tex="\notin">∉<small>не принадлежит</small></button>
+      <button class="key" data-tex="\subset">⊂<small>подмножество</small></button>
+    </div></div>
+    <div class="pane" id="pane-ops"><div class="keys">
+      <button class="key" data-tex="=">=</button>
+      <button class="key" data-tex="\cdot">·<small>умножить</small></button>
+      <button class="key" data-tex="\times">×</button>
+      <button class="key" data-tex="\div">÷</button>
+      <button class="key" data-tex="+">+</button>
+      <button class="key" data-tex="-">−</button>
+      <button class="key" data-tex="\pm">±</button>
+      <button class="key" data-tex="\sqrt{x}">√<small>корень</small></button>
+      <button class="key" data-tex="\approx">≈</button>
+      <button class="key" data-tex="\neq">≠</button>
+      <button class="key" data-tex="\leq">≤</button>
+      <button class="key" data-tex="\geq">≥</button>
+    </div></div>
+    <div style="text-align:right;margin-top:18px">
+      <button class="btn b-green" onclick="closeMath()">Готово</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= КАЛЬКУЛЯТОР ================= -->
+<div class="mbg" id="calcModal">
+  <div class="modal calc" role="dialog" aria-label="Калькулятор">
+    <h3 style="margin-bottom:12px">🧮 Калькулятор</h3>
+    <div class="calc-screen">
+      <div class="calc-expr" id="calcExpr"></div>
+      <div class="calc-out" id="calcOut">0</div>
+    </div>
+    <div class="calc-grid">
+      <button class="cbtn clr" onclick="calcClear()">C</button>
+      <button class="cbtn del" onclick="calcBack()">⌫</button>
+      <button class="cbtn op" onclick="calcOp('^')">xʸ</button>
+      <button class="cbtn op" onclick="calcOp('/')">÷</button>
+      <button class="cbtn" onclick="calcNum('7')">7</button>
+      <button class="cbtn" onclick="calcNum('8')">8</button>
+      <button class="cbtn" onclick="calcNum('9')">9</button>
+      <button class="cbtn op" onclick="calcOp('*')">×</button>
+      <button class="cbtn" onclick="calcNum('4')">4</button>
+      <button class="cbtn" onclick="calcNum('5')">5</button>
+      <button class="cbtn" onclick="calcNum('6')">6</button>
+      <button class="cbtn op" onclick="calcOp('-')">−</button>
+      <button class="cbtn" onclick="calcNum('1')">1</button>
+      <button class="cbtn" onclick="calcNum('2')">2</button>
+      <button class="cbtn" onclick="calcNum('3')">3</button>
+      <button class="cbtn op" onclick="calcOp('+')">+</button>
+      <button class="cbtn" onclick="calcNum('0')">0</button>
+      <button class="cbtn" onclick="calcNum('00')">00</button>
+      <button class="cbtn eq" onclick="calcEquals()">=</button>
+    </div>
+    <div style="text-align:right;margin-top:16px">
+      <button class="btn b-red" onclick="closeCalc()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="../assets/js/main.js"></script>
+
+<script>
+/* =========================================================
+   1. КОНСТАНТЫ УРОКА
+   ========================================================= */
+var PRACTICE_PASSWORD = 'малинадеревня624';
+var SA_PASSWORD = 'виннимед254';
+var SA_MINUTES = 15;
+
+var lessonState = {
+  wb: { w1:false, w2:false, w3:false, w4:false },
+  wbCorrect: 0, wbMark: 0,
+  pracDone: false, pracCorrect: 0, pracMark: 0
+};
+
+/* ---------- Ученик ---------- */
+function getSurname(){ return (document.getElementById('surname')?.value || '').trim(); }
+function getFirstname(){ return (document.getElementById('firstname')?.value || '').trim(); }
+function getKlass(){ return (document.getElementById('klass')?.value || '').trim(); }
+function getFullName(){ return [getSurname(), getFirstname()].filter(Boolean).join(' '); }
+function getFileName(){
+  var parts = [getSurname(), getFirstname(), getKlass()].filter(Boolean);
+  return (parts.length ? parts.join('_') : 'Ученик').replace(/[\\/:*?"<>|\s]+/g,'_');
+}
+
+function percentToMark(pct){
+  if (pct >= 90) return 5;
+  if (pct >= 70) return 4;
+  if (pct >= 50) return 3;
+  return 2;
+}
+
+/* =========================================================
+   2. РАБОЧАЯ ТЕТРАДЬ
+   ========================================================= */
+function checkW(inputId, answer, fbId){
+  if (lessonState.wb[inputId]){ showFb(fbId,'✔ Уже решено.','hint'); return; }
+  var v = (document.getElementById(inputId).value||'').trim();
+  if (v === answer){
+    lessonState.wb[inputId] = true;
+    showFb(fbId,'✅ Верно!','ok');
+  } else {
+    showFb(fbId,'❌ Неверно. Смотрите подсказку.','no');
+  }
+}
+function checkWRadio(name, answer, fbId){
+  if (lessonState.wb[name]){ showFb(fbId,'✔ Уже решено.','hint'); return; }
+  var sel = document.querySelector('input[name="'+name+'"]:checked');
+  if (!sel){ showFb(fbId,'Выберите вариант.','hint'); return; }
+  document.querySelectorAll('input[name="'+name+'"]').forEach(function(r){
+    var lab = r.closest('.opt');
+    lab.classList.remove('correct','wrong');
+    if (r.value === answer) lab.classList.add('correct');
+    if (r.checked && r.value !== answer) lab.classList.add('wrong');
+  });
+  if (sel.value === answer){
+    lessonState.wb[name] = true;
+    showFb(fbId,'✅ Верно!','ok');
+  } else {
+    showFb(fbId,'❌ Неверно.','no');
+  }
+}
+function calcWorkbook(){
+  var correct = ['w1','w2','w3','w4'].filter(function(k){ return lessonState.wb[k]; }).length;
+  var pct = Math.round(correct / 4 * 100);
+  lessonState.wbCorrect = correct;
+  lessonState.wbMark = percentToMark(pct);
+  document.getElementById('wbCorrect').textContent = correct;
+  document.getElementById('wbMark').textContent = lessonState.wbMark;
+  document.getElementById('wbResult').classList.add('show');
+  toast('Тетрадь: ' + correct + '/4, оценка ' + lessonState.wbMark);
+}
+
+/* =========================================================
+   3. ПРАКТИЧЕСКАЯ РАБОТА — 4 варианта по 5 заданий, полные тексты
+   ========================================================= */
+var PRACTICE_VARIANTS = {
+  1: [
+    {q:'Сообщение записано буквами 16-символьного алфавита и содержит 200 символов. Найдите информационный объём сообщения в битах.',
+     ans:'800'},
+    {q:'Информационный объём сообщения равен 2 Кбайт, вес одного символа — 8 бит. Сколько символов содержит сообщение?',
+     ans:'2048'},
+    {q:'Сообщение записано алфавитом мощностью 128 символов и содержит 64 символа. Найдите объём сообщения в байтах.',
+     ans:'56'},
+    {q:'Информационный объём сообщения равен 1 Кбайт. Сообщение содержит 512 символов. Найдите вес одного символа в битах.',
+     ans:'16'},
+    {q:'Сколько байт в 4 Кбайтах?', ans:'4096'}
+  ],
+  2: [
+    {q:'Сообщение записано буквами 32-символьного алфавита и содержит 100 символов. Найдите информационный объём сообщения в битах.',
+     ans:'500'},
+    {q:'Информационный объём сообщения равен 3 Кбайт, вес одного символа — 16 бит. Сколько символов содержит сообщение?',
+     ans:'1536'},
+    {q:'Сообщение записано алфавитом мощностью 256 символов и содержит 128 символов. Найдите объём сообщения в байтах.',
+     ans:'128'},
+    {q:'Информационный объём сообщения равен 2 Кбайт. Сообщение содержит 1024 символа. Найдите вес одного символа в битах.',
+     ans:'16'},
+    {q:'Сколько бит в 2 байтах?', ans:'16'}
+  ],
+  3: [
+    {q:'Сообщение записано буквами 8-символьного алфавита и содержит 400 символов. Найдите информационный объём сообщения в битах.',
+     ans:'1200'},
+    {q:'Информационный объём сообщения равен 5 Кбайт, вес одного символа — 8 бит. Сколько символов содержит сообщение?',
+     ans:'5120'},
+    {q:'Сообщение записано алфавитом мощностью 64 символа и содержит 256 символов. Найдите объём сообщения в байтах.',
+     ans:'192'},
+    {q:'Информационный объём сообщения равен 4 Кбайт. Сообщение содержит 2048 символов. Найдите вес одного символа в битах.',
+     ans:'16'},
+    {q:'Сколько килобайт в 2 мегабайтах?', ans:'2048'}
+  ],
+  4: [
+    {q:'Сообщение записано буквами 4-символьного алфавита и содержит 600 символов. Найдите информационный объём сообщения в битах.',
+     ans:'1200'},
+    {q:'Информационный объём сообщения равен 6 Кбайт, вес одного символа — 16 бит. Сколько символов содержит сообщение?',
+     ans:'3072'},
+    {q:'Сообщение записано алфавитом мощностью 512 символов и содержит 32 символа. Найдите объём сообщения в байтах.',
+     ans:'36'},
+    {q:'Информационный объём сообщения равен 3 Кбайт. Сообщение содержит 1536 символов. Найдите вес одного символа в битах.',
+     ans:'16'},
+    {q:'Сколько байт в 1 мегабайте?', ans:'1048576'}
+  ]
+};
+
+function unlockPractice(){
+  var inp = document.getElementById('pracPass');
+  var msg = document.getElementById('pracMsg');
+  if (!passwordMatches(inp.value, PRACTICE_PASSWORD)){
+    msg.textContent = '❌ Неверный пароль.';
+    return;
+  }
+  msg.textContent = '';
+  inp.value = '';
+  document.getElementById('practiceLock').style.display = 'none';
+  document.getElementById('practiceBody').style.display = 'block';
+  renderPractice();
+  toast('🔓 Практика открыта');
+}
+
+function renderPractice(){
+  var v = document.getElementById('pracVariant').value;
+  var qs = PRACTICE_VARIANTS[v];
+  var html = '';
+  qs.forEach(function(q, i){
+    html += '<div class="task"><p><b>'+(i+1)+'.</b> '+q.q+'</p>'+
+      '<input type="text" id="prac'+i+'" placeholder="ответ" inputmode="numeric">'+
+      '</div>';
+  });
+  document.getElementById('pracArea').innerHTML = html;
+  renderMath(document.getElementById('pracArea'));
+}
+
+function gradePractice(){
+  var v = document.getElementById('pracVariant').value;
+  var qs = PRACTICE_VARIANTS[v];
+  var correct = 0;
+  qs.forEach(function(q, i){
+    var el = document.getElementById('prac'+i);
+    var val = (el.value||'').trim();
+    var ok = val === q.ans;
+    if (ok) correct++;
+    el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
+    el.style.background = ok ? '#f0fdf4' : '#fef2f2';
+  });
+  var pct = Math.round(correct / qs.length * 100);
+  lessonState.pracCorrect = correct;
+  lessonState.pracMark = percentToMark(pct);
+  lessonState.pracDone = true;
+  document.getElementById('pracCorrect').textContent = correct;
+  document.getElementById('pracMark').textContent = lessonState.pracMark;
+  document.getElementById('pracResult').classList.add('show');
+  toast('Практика: ' + correct + '/' + qs.length + ', оценка ' + lessonState.pracMark);
+}
+
+/* =========================================================
+   4. ИТОГ
+   ========================================================= */
+function calcFinalMark(){
+  if (!lessonState.wbMark && !lessonState.pracDone){
+    toast('Сначала выполните тетрадь и практику');
+    return;
+  }
+  var wb = lessonState.wbMark || 0;
+  var pr = lessonState.pracMark || 0;
+  var total = Math.round((wb + pr) / 2);
+  document.getElementById('fWb').textContent = wb || '—';
+  document.getElementById('fPrac').textContent = pr || '—';
+  document.getElementById('fTotal').textContent = total;
+  document.getElementById('finalResult').classList.add('show');
+  document.getElementById('finalMsg').textContent =
+    total === 5 ? '🌟 Отличная работа!' :
+    total === 4 ? '👏 Хорошо, но есть над чем поработать.' :
+    total === 3 ? '📖 Удовлетворительно. Повторите формулы.' :
+                  '📚 Стоит вернуться к теории.';
+}
+
+/* =========================================================
+   5. САМОСТОЯТЕЛЬНАЯ — генератор, таймер, PDF, JPG
+   ========================================================= */
+var saTimer = null, saLeft = 0, saTasks = [], saStarted = false, saDone = false;
+
+function genStandalone(){
+  function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+  function pick(arr){ return arr[rnd(0,arr.length-1)]; }
+  var pows = [2,3,4,5,6,7,8];
+  var Ks   = [8,16,24,32,40,48,56,64,72,80,96,120];
+  var tasks = [];
+
+  var i1 = pick(pows), N1 = Math.pow(2, i1), K1 = pick(Ks) * 8;
+  tasks.push({
+    type:'I',
+    text:'Сообщение записано в алфавите мощностью $N = ' + N1 +
+         '$ символов и содержит $K = ' + K1 +
+         '$ символов. Найдите информационный объём сообщения <b>в байтах</b>.',
+    ans: (K1 * i1) / 8, unit:'байт'
+  });
+
+  var i2 = pick(pows), K2 = pick(Ks) * 8, I2 = (K2 * i2) / 8;
+  tasks.push({
+    type:'i',
+    text:'Информационный объём сообщения равен $I = ' + I2 +
+         '$ байт. Сообщение содержит $K = ' + K2 +
+         '$ символов. Найдите информационный вес одного символа <b>в битах</b>.',
+    ans: i2, unit:'бит'
+  });
+
+  var i3 = pick([2,4,8,16]), kb3 = pick([1,2,3,4,5]);
+  tasks.push({
+    type:'K',
+    text:'Информационный объём сообщения равен $I = ' + kb3 +
+         '$ Кбайт, информационный вес одного символа $i = ' + i3 +
+         '$ бит. Найдите количество символов в сообщении.',
+    ans: (kb3 * 1024 * 8) / i3, unit:'символов'
+  });
+
+  var kb4 = pick([2,3,4,5,6,8,10,12]);
+  tasks.push({
+    type:'unit',
+    text:'Объём файла равен $' + kb4 + '$ Кбайт. Сначала переведите его в байты, ' +
+         'затем полученное значение — в биты. В ответе укажите объём <b>в битах</b>.',
+    ans: kb4 * 1024 * 8, unit:'бит'
+  });
+
+  var kb5 = pick([2,3,4,5,6,8]);
+  tasks.push({
+    type:'unit',
+    text:'Сообщение занимает $' + (kb5 * 1024 * 8) +
+         '$ бит. Переведите объём в байты, а затем — в килобайты. ' +
+         'В ответе укажите объём <b>в килобайтах</b>.',
+    ans: kb5, unit:'Кбайт'
+  });
+
+  return tasks;
+}
+
+function scrollToGate(){
+  document.getElementById('standaloneGate')
+    .scrollIntoView({behavior:'smooth', block:'center'});
+  document.getElementById('saPass').focus();
+}
+
+function unlockStandalone(){
+  if (!getSurname() || !getFirstname() || !getKlass()){
+    document.getElementById('saMsg').textContent = 'Сначала заполните фамилию, имя и класс в шапке.';
+    return;
+  }
+  var inp = document.getElementById('saPass');
+  var msg = document.getElementById('saMsg');
+  if (!passwordMatches(inp.value, SA_PASSWORD)){
+    msg.textContent = '❌ Неверный пароль учителя.';
+    inp.value=''; inp.focus();
+    return;
+  }
+  msg.textContent=''; inp.value='';
+  startStandalone();
+}
+
+function startStandalone(){
+  saTasks = genStandalone();
+  saDone = false; saStarted = true; saLeft = SA_MINUTES*60;
+
+  document.body.classList.add('exam');
+  var who = getFullName() + (getKlass() ? ', ' + getKlass() : '');
+  document.getElementById('examWho').textContent = who || 'Ученик не указан';
+  document.getElementById('filePreview').textContent = getFileName() + '_самостоятельная';
+
+  var host = document.getElementById('examTasks');
+  var html = '';
+  saTasks.forEach(function(t, i){
+    html += '<div class="s-task" id="st'+i+'">';
+    html += '<p class="stext"><span class="sn">'+(i+1)+'</span>'+t.text+
+            '<span class="s-flag">'+t.unit+'</span></p>';
+    html += '<input type="text" inputmode="numeric" id="sa'+i+
+            '" placeholder="ответ" autocomplete="off">';
+    html += '</div>';
+  });
+  host.innerHTML = html;
+  renderMath(host);
+
+  document.getElementById('examResult').classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  if (saTimer) clearInterval(saTimer);
+  updateTimer();
+  saTimer = setInterval(function(){
+    saLeft--;
+    updateTimer();
+    if (saLeft <= 0){
+      clearInterval(saTimer); saTimer=null;
+      toast('⏰ Время вышло! Работа сдаётся автоматически.');
+      finishStandalone(true);
+    }
+  }, 1000);
+
+  toast('📝 Работа началась. 15 минут пошли!');
+}
+
+function updateTimer(){
+  var m = Math.floor(saLeft/60), s = saLeft % 60;
+  var el = document.getElementById('examTimer');
+  el.textContent = (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  el.className = 'timer' + (saLeft<=60?' danger' : saLeft<=300?' warn':'');
+}
+
+function finishStandalone(auto){
+  if (!saStarted) return;
+  if (!auto && !confirm('Сдать работу? Изменить ответы будет нельзя.')) return;
+  if (saTimer){ clearInterval(saTimer); saTimer=null; }
+  saDone = true;
+
+  var correct = 0;
+  saTasks.forEach(function(t,i){
+    var el = document.getElementById('sa'+i);
+    var v = (el ? el.value : '').trim();
+    var ok = v !== '' && Number(v) === t.ans;
+    if (ok) correct++;
+    if (el){
+      el.disabled = true;
+      el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
+      el.style.background  = ok ? '#f0fdf4' : '#fef2f2';
+    }
+    var card = document.getElementById('st'+i);
+    if (card) card.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
+  });
+
+  var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
+  var used = SA_MINUTES*60 - Math.max(saLeft,0);
+  var um = Math.floor(used/60), us = used%60;
+
+  document.getElementById('exCorrect').textContent = correct + ' / 5';
+  document.getElementById('exMark').textContent = mark;
+  document.getElementById('exTime').textContent = um+' мин '+(us<10?'0':'')+us+' с';
+  document.getElementById('exMsg').textContent =
+    correct>=5 ? '🌟 Отлично! Все пять задач решены верно.' :
+    correct===4 ? '👏 Хорошо! Одна задача с ошибкой.' :
+    correct===3 ? '📖 Удовлетворительно. Повторите формулы.' :
+                  '📚 Стоит ещё раз разобрать теорию.';
+  document.getElementById('examResult').classList.add('show');
+  document.getElementById('examResult').scrollIntoView({behavior:'smooth'});
+  toast('Работа сдана: '+correct+' из 5, оценка '+mark);
+}
+
+function exitStandalone(){
+  if (saStarted && !saDone && !confirm('Выйти без сохранения результата?')) return;
+  if (saTimer){ clearInterval(saTimer); saTimer=null; }
+  document.body.classList.remove('exam');
+  saStarted = false;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- PDF ---------- */
+function saveStandalonePDF(){
+  if (!saDone){ toast('Сначала сдайте работу'); return; }
+  if (!(window.jspdf && window.jspdf.jsPDF)){ toast('jsPDF не загрузился'); return; }
+
+  var doc = new window.jspdf.jsPDF({unit:'mm', format:'a4'});
+  var fio = getFullName() || 'Ученик';
+  var correct = 0;
+  saTasks.forEach(function(t,i){
+    var el = document.getElementById('sa'+i);
+    var g = el ? el.value.trim() : '';
+    if (Number(g) === t.ans) correct++;
+  });
+  var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
+
+  doc.setFontSize(16);
+  doc.text('Samostoyatelnaya rabota', 105, 18, {align:'center'});
+  doc.setFontSize(11);
+  doc.text('Informacionnyj ob`em soobshheniya, 7 klass', 105, 25, {align:'center'});
+  doc.text('Uchenik: ' + fio + '   Klass: ' + (getKlass()||'-'), 20, 36);
+  doc.text('Data: ' + new Date().toLocaleDateString('ru-RU'), 20, 43);
+
+  var y = 55;
+  saTasks.forEach(function(t,i){
+    var el = document.getElementById('sa'+i);
+    var g = el ? el.value.trim() : '';
+    doc.setFontSize(10);
+    doc.text((i+1) + '. ' + t.text.replace(/\$/g,'').replace(/[^\x00-\x7F]/g,'?'), 20, y);
+    y += 6;
+    doc.text('   Otvet: ' + (g||'-') + '   Pravilno: ' + t.ans + ' ' + t.unit, 22, y);
+    y += 9;
+  });
+
+  doc.setFontSize(13);
+  doc.text('Verno: ' + correct + ' iz 5.   Ocenka: ' + mark, 20, y+6);
+  doc.save(getFileName() + '_samostoyatelnaya.pdf');
+  toast('📄 PDF сохранён');
+}
+
+/* ---------- JPG ---------- */
+function buildResultHTML(){
+  var fio = getFullName() || 'Ученик не указан';
+  var klass = getKlass() || '—';
+  var rows = '';
+  var correct = 0;
+
+  saTasks.forEach(function(t,i){
+    var el = document.getElementById('sa'+i);
+    var given = el ? el.value.trim() : '';
+    var ok = Number(given) === t.ans;
+    if (ok) correct++;
+    rows += '<tr>' +
+      '<td style="padding:6px 8px;border:1px solid #ccc;text-align:center">'+(i+1)+'</td>' +
+      '<td style="padding:6px 8px;border:1px solid #ccc">'+t.text.replace(/\$/g,'')+'</td>' +
+      '<td style="padding:6px 8px;border:1px solid #ccc;text-align:center">'+(given||'—')+'</td>' +
+      '<td style="padding:6px 8px;border:1px solid #ccc;text-align:center">'+t.ans+' '+t.unit+'</td>' +
+      '<td style="padding:6px 8px;border:1px solid #ccc;text-align:center">'+(ok?'✅':'❌')+'</td>' +
+      '</tr>';
+  });
+
+  var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
+  var used = SA_MINUTES*60 - Math.max(saLeft,0);
+  var um = Math.floor(used/60), us = used%60;
+
+  return '<div style="font-family:Georgia,serif;color:#222;padding:8px">' +
+    '<h1 style="text-align:center;font-size:20px;margin:0 0 4px">Самостоятельная работа</h1>' +
+    '<p style="text-align:center;margin:0 0 14px;font-size:13px">Информационный объём сообщения · 7 класс</p>' +
+    '<table style="width:100%;font-size:14px;margin-bottom:14px">' +
+    '<tr><td><b>Ученик:</b> '+fio+'</td><td><b>Класс:</b> '+klass+'</td></tr>' +
+    '<tr><td><b>Дата:</b> '+new Date().toLocaleDateString('ru-RU')+'</td>' +
+    '<td><b>Время:</b> '+um+' мин '+(us<10?'0':'')+us+' с</td></tr>' +
+    '</table>' +
+    '<table style="width:100%;border-collapse:collapse;font-size:12px">' +
+    '<tr style="background:#ede9fe">' +
+    '<th style="padding:8px;border:1px solid #ccc">№</th>' +
+    '<th style="padding:8px;border:1px solid #ccc">Задание</th>' +
+    '<th style="padding:8px;border:1px solid #ccc">Ответ</th>' +
+    '<th style="padding:8px;border:1px solid #ccc">Верно</th>' +
+    '<th style="padding:8px;border:1px solid #ccc">✓</th></tr>' +
+    rows + '</table>' +
+    '<p style="margin-top:16px;font-size:16px"><b>Верно решено:</b> '+correct+' из 5</p>' +
+    '<p style="font-size:20px;margin:6px 0"><b>Оценка: '+mark+'</b></p>' +
+    '</div>';
+}
+
+function saveStandaloneJPG(){
+  if (!saDone){ toast('Сначала сдайте работу'); return; }
+  var holder = document.createElement('div');
+  holder.style.cssText = 'position:fixed;left:-99999px;top:0;width:900px;background:#fff';
+  holder.innerHTML = buildResultHTML();
+  document.body.appendChild(holder);
+
+  if (!window.html2canvas){
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    s.onload = shot;
+    s.onerror = function(){ holder.remove(); toast('html2canvas не загрузился'); };
+    document.head.appendChild(s);
+  } else { shot(); }
+
+  function shot(){
+    window.html2canvas(holder, {backgroundColor:'#ffffff', scale:2})
+      .then(function(canvas){
+        var a = document.createElement('a');
+        a.download = getFileName() + '_самостоятельная.jpg';
+        a.href = canvas.toDataURL('image/jpeg', 0.93);
+        a.click();
+        holder.remove();
+        toast('🖼 JPG сохранён');
+      })
+      .catch(function(){ holder.remove(); toast('Не удалось создать JPG'); });
+  }
+}
+
+/* =========================================================
+   6. ПЕЧАТЬ ДЗ
+   ========================================================= */
+function printHomework(){
+  var fio = getFullName() + (getKlass() ? ', ' + getKlass() : '');
+  var hw = document.getElementById('hwBlock').innerHTML;
+  var w = window.open('', '_blank');
+  if (!w){ alert('Разрешите всплывающие окна.'); return; }
+  w.document.write(
+    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Домашнее задание</title>'+
+    '<script>window.MathJax={tex:{inlineMath:[["$","$"]]}};<\/script>'+
+    '<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>'+
+    '<style>body{font-family:Georgia,serif;padding:14mm;font-size:12pt;line-height:1.6;max-width:190mm;margin:0 auto}'+
+    'h1{text-align:center;font-size:16pt}.hw{border:1pt solid #bbb;padding:3mm 4mm;margin:4mm 0;page-break-inside:avoid}'+
+    '.lvl{font-weight:800;font-size:10pt;display:block;margin-bottom:2mm}'+
+    '@page{margin:14mm}</style></head><body>'+
+    '<h1>Домашнее задание</h1>'+
+    '<p style="text-align:center;margin:0 0 1mm;font-size:11pt">Информационный объём сообщения · 7 класс</p>'+
+    '<p style="text-align:center;margin:0 0 6mm">'+
+    (fio ? 'Ученик: <b>'+fio+'</b>' : 'Ученик: ____________________')+'</p>'+
+    hw + '</body></html>'
+  );
+  w.document.close();
+  setTimeout(function(){ try{ w.print(); }catch(e){} }, 600);
+}
+
+/* =========================================================
+   7. МАТЕМАТИЧЕСКАЯ РАСКЛАДКА
+   ========================================================= */
+var activeField = null;
+function openMath(){ document.getElementById('mathModal').classList.add('open'); }
+function closeMath(){ document.getElementById('mathModal').classList.remove('open'); }
+function insertMath(tex){
+  var t = activeField || document.querySelector('input[type=text]');
+  if (!t){ toast('Сначала щёлкните в поле'); return; }
+  var snip = '$' + tex + '$';
+  var s = t.selectionStart || 0, e = t.selectionEnd || 0;
+  t.value = t.value.slice(0,s) + snip + t.value.slice(e);
+  t.focus();
+  var p = s + snip.length;
+  try{ t.setSelectionRange(p,p); }catch(err){}
+  t.dispatchEvent(new Event('input',{bubbles:true}));
+}
+document.addEventListener('focusin', function(e){
+  if (e.target.matches('input[type=text],input[type=password],textarea')){
+    activeField = e.target;
+  }
+});
+document.querySelectorAll('.key[data-tex]').forEach(function(b){
+  b.addEventListener('click', function(){ insertMath(b.dataset.tex); });
+});
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click', function(){
+    document.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('on'); });
+    document.querySelectorAll('.pane').forEach(function(x){ x.classList.remove('on'); });
+    t.classList.add('on');
+    var p = document.getElementById('pane-'+t.dataset.tab);
+    if (p) p.classList.add('on');
+  });
+});
+document.getElementById('mathModal').addEventListener('click', function(e){
+  if (e.target === this) closeMath();
+});
+
+/* =========================================================
+   8. КАЛЬКУЛЯТОР
+   ========================================================= */
+var calcBuf = '';
+function openCalc(){ document.getElementById('calcModal').classList.add('open'); calcRender(); }
+function closeCalc(){ document.getElementById('calcModal').classList.remove('open'); }
+function calcNum(d){
+  if (calcBuf === '0' && d !== '0') calcBuf = '';
+  calcBuf += d; calcRender();
+}
+function calcOp(op){
+  if (!calcBuf){ if (op === '-'){ calcBuf = '-'; calcRender(); } return; }
+  if ('+-*/^'.indexOf(calcBuf.slice(-1)) !== -1) calcBuf = calcBuf.slice(0,-1);
+  calcBuf += op; calcRender();
+}
+function calcClear(){ calcBuf = ''; calcRender(); }
+function calcBack(){ calcBuf = calcBuf.slice(0,-1); calcRender(); }
+function calcRender(){
+  document.getElementById('calcExpr').textContent = calcBuf;
+  document.getElementById('calcOut').textContent = calcEval(calcBuf) ?? '0';
+}
+function calcEval(s){
+  if (!s) return 0;
+  try { return Function('"use strict";return (' + s.replace(/\^/g,'**') + ')')(); }
+  catch(e){ return '…'; }
+}
+function calcEquals(){
+  var v = calcEval(calcBuf);
+  calcBuf = String(v);
+  calcRender();
+}
+document.getElementById('calcModal').addEventListener('click', function(e){
+  if (e.target === this) closeCalc();
+});
+
+/* =========================================================
+   9. ПАРОЛИ В ЛЮБОЙ РАСКЛАДКЕ
+   ========================================================= */
+var LAT2CYR = {q:'й',w:'ц',e:'у',r:'к',t:'е',y:'н',u:'г',i:'ш',o:'щ',p:'з','[':'х',']':'ъ',
+  a:'ф',s:'ы',d:'в',f:'а',g:'п',h:'р',j:'о',k:'л',l:'д',';':'ж',"'":'э',
+  z:'я',x:'ч',c:'с',v:'м',b:'и',n:'т',m:'ь',',':'б','.':'ю'};
+var CYR2LAT = {};
+Object.keys(LAT2CYR).forEach(function(k){ CYR2LAT[LAT2CYR[k]] = k; });
+function mapKeys(s, table){
+  return String(s).toLowerCase().split('').map(function(c){ return table[c]||c; }).join('');
+}
+function passwordMatches(t, e){
+  t = String(t||'').trim().toLowerCase();
+  e = String(e||'').trim().toLowerCase();
+  if (!t) return false;
+  return t === e || mapKeys(t,LAT2CYR) === e || mapKeys(t,CYR2LAT) === e
+      || t === mapKeys(e,LAT2CYR) || t === mapKeys(e,CYR2LAT);
+}
+
+/* =========================================================
+   10. ОБЩИЕ ПОМОЩНИКИ
+   ========================================================= */
+function showFb(id, html, kind){
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = html;
+  el.className = 'fb show ' + kind;
+}
+function renderMath(el){
+  if (!el || !window.MathJax) return;
+  if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){});
+}
+window.addEventListener('load', function(){
+  setTimeout(function(){ renderMath(document.body); }, 600);
+});
+</script>
+</body>
+</html>
