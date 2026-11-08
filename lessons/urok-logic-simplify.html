@@ -1,0 +1,142 @@
+function genStandalone(){
+  function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+  function pick(arr){ return arr[rnd(0,arr.length-1)]; }
+
+  /* =========================================================
+     ПУЛЫ ЗАДАЧ ПО УРОВНЯМ
+     ========================================================= */
+
+  /* ---------- БАЗОВЫЙ (3 закона), 2 переменные ---------- */
+  var basic = [
+    {q:'(A \\land B) \\lor (A \\land \\neg B)',
+     canon:'A', hint:'Распределительный → исключённое третье → константа'},
+
+    {q:'\\neg(\\neg A \\land B) \\land \\neg A',
+     canon:'¬A', hint:'Двойное отрицание → де Морган → противоречие → константа'},
+
+    {q:'(A \\land \\neg B) \\lor (A \\land B)',
+     canon:'A', hint:'Распределительный → исключённое третье → константа'},
+
+    {q:'\\neg(A \\lor B) \\lor (A \\land \\neg B)',
+     canon:'¬A ∧ ¬B ∨ A ∧ ¬B', hint:'Де Морган → распределительный → противоречие'},
+
+    {q:'(A \\lor B) \\land \\neg A',
+     canon:'¬A ∧ B', hint:'Распределительный → противоречие → константа'},
+
+    {q:'\\neg(\\neg A \\lor \\neg A) \\lor B',
+     canon:'A ∨ B', hint:'Идемпотентность → двойное отрицание → …'},
+
+    {q:'\\neg(A \\land \\neg B) \\lor A',
+     canon:'1', hint:'Де Морган → двойное отрицание → распределительный → исключённое третье'},
+
+    {q:'\\neg(\\neg A \\land \\neg B) \\land B',
+     canon:'B', hint:'Двойное отрицание → де Морган → распределительный → поглощение'}
+  ];
+
+  /* ---------- СРЕДНИЙ (4 закона), 3 переменные ---------- */
+  var medium = [
+    {q:'(A \\land B) \\lor (A \\land \\neg B) \\lor (A \\land C)',
+     canon:'A', hint:'Распределительный → исключённое третье → константа → поглощение'},
+
+    {q:'(A \\lor B) \\land (A \\lor \\neg B) \\land (A \\lor C)',
+     canon:'A', hint:'Распределительный → склеивание → поглощение'},
+
+    {q:'(A \\land \\neg B) \\lor (A \\land B) \\lor (\\neg A \\land B)',
+     canon:'A ∨ B', hint:'Склеивание → распределительный → исключённое третье'},
+
+    {q:'\\neg(A \\land \\neg B) \\lor (A \\land \\neg B)',
+     canon:'1', hint:'Де Морган → двойное отрицание → распределительный → исключённое третье'},
+
+    {q:'(A \\land B) \\lor (\\neg A \\land C) \\lor (B \\land C)',
+     canon:'(A ∧ B) ∨ (¬A ∧ C)', hint:'Распределительный → склеивание → поглощение'},
+
+    {q:'\\neg(\\neg A \\land \\neg B) \\land (A \\lor B)',
+     canon:'A ∨ B', hint:'Двойное отрицание → де Морган → распределительный → исключённое третье'},
+
+    {q:'(A \\lor B) \\land (\\neg A \\lor B) \\land (A \\lor \\neg B)',
+     canon:'A ∧ B', hint:'Распределительный → противоречие → склеивание → константа'},
+
+    {q:'\\neg(A \\land B) \\land (A \\lor B)',
+     canon:'(¬A ∧ B) ∨ (A ∧ ¬B)', hint:'Де Морган → распределительный → противоречие → константа'},
+
+    {q:'(A \\lor B) \\land (\\neg A \\lor B) \\lor (A \\land \\neg B)',
+     canon:'A ∨ B', hint:'Распределительный → противоречие → склеивание → исключённое третье'},
+
+    {q:'\\neg(\\neg A \\lor B) \\lor (A \\land \\neg B)',
+     canon:'¬B', hint:'Двойное отрицание → де Морган → склеивание → противоречие'},
+
+    {q:'(A \\land B \\land C) \\lor (A \\land B \\land \\neg C) \\lor (A \\land \\neg B \\land C)',
+     canon:'A ∧ (B ∨ C)', hint:'Склеивание → распределительный → склеивание → распределительный'},
+
+    {q:'(A \\land \\neg B \\land C) \\lor (A \\land B \\land C) \\lor (\\neg A \\land B)',
+     canon:'(A ∧ C) ∨ (¬A ∧ B)', hint:'Склеивание → распределительный → поглощение → константа'},
+
+    {q:'(A \\lor B \\lor C) \\land (A \\lor B \\lor \\neg C) \\land \\neg A',
+     canon:'B', hint:'Склеивание → де Морган → распределительный → противоречие'},
+
+    {q:'\\neg(A \\lor \\neg B) \\lor (\\neg A \\land B)',
+     canon:'¬A', hint:'Де Морган → двойное отрицание → распределительный → поглощение'}
+  ];
+
+  /* ---------- ПОВЫШЕННЫЙ (5 законов), сложные скобки ---------- */
+  var advanced = [
+    {q:'((A \\land B) \\lor (A \\land \\neg B)) \\land ((\\neg A \\land C) \\lor (A \\land C))',
+     canon:'A ∧ C',
+     hint:'Склеивание → константа → распределительный → исключённое третье → константа'},
+
+    {q:'\\neg((A \\lor B) \\land (\\neg A \\lor B)) \\lor (A \\land B)',
+     canon:'A ∨ B',
+     hint:'Распределительный → противоречие → де Морган → склеивание → поглощение'},
+
+    {q:'((A \\land B) \\lor (\\neg A \\land B)) \\land ((A \\land \\neg B) \\lor (A \\land B))',
+     canon:'A ∧ B',
+     hint:'Склеивание → склеивание → распределительный → поглощение → константа'},
+
+    {q:'\\neg(\\neg A \\land \\neg B) \\lor (\\neg A \\land B) \\lor (A \\land \\neg B)',
+     canon:'1',
+     hint:'Двойное отрицание → де Морган → склеивание → распределительный → исключённое третье'},
+
+    {q:'((A \\lor B) \\land (\\neg A \\lor B)) \\lor ((A \\lor \\neg B) \\land (\\neg A \\lor \\neg B))',
+     canon:'1',
+     hint:'Распределительный → противоречие → склеивание → исключённое третье → константа'},
+
+    {q:'(A \\land (B \\lor C)) \\lor (\\neg A \\land (B \\lor C))',
+     canon:'B ∨ C',
+     hint:'Распределительный → исключённое третье → константа → склеивание → константа'},
+
+    {q:'((A \\land B) \\lor C) \\land (\\neg A \\lor C) \\land (\\neg B \\lor C)',
+     canon:'C',
+     hint:'Распределительный → распределительный → противоречие → склеивание → поглощение'},
+
+    {q:'\\neg((A \\lor B) \\land C) \\land (A \\lor B)',
+     canon:'(A ∨ B) ∧ ¬C',
+     hint:'Де Морган → распределительный → распределительный → противоречие → константа'}
+  ];
+
+  /* =========================================================
+     СБОРКА: 2 базовых + 2 средних + 1 повышенная
+     ========================================================= */
+  function pickN(pool, n){
+    var chosen = [], used = {};
+    while (chosen.length < n){
+      var idx = rnd(0, pool.length-1);
+      if (used[idx]) continue;
+      used[idx] = true;
+      chosen.push(pool[idx]);
+    }
+    return chosen;
+  }
+
+  var chosen = []
+    .concat(pickN(basic, 2))
+    .concat(pickN(medium, 2))
+    .concat(pickN(advanced, 1));
+
+  /* перемешиваем, чтобы порядок был случайным,
+     но уровни сохраняются в подсказках */
+  chosen.sort(function(){ return Math.random() - 0.5; });
+
+  return chosen.map(function(t){
+    return { text:'Упростите выражение:', tex:t.q, canon:t.canon, hint:t.hint, unit:'выражение' };
+  });
+}
