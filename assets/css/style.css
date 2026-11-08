@@ -334,3 +334,11 @@ details[open] summary{margin-bottom:10px}
   .task{break-inside:avoid}
   a{color:#000;text-decoration:none}
 }
+.preview{
+  margin-top:8px;padding:10px 14px;border-left:3px solid var(--gd);
+  border-radius:0 10px 10px 0;background:#f6fffb;
+  font-family:Cambria,Georgia,serif;font-size:1.02rem;
+  min-height:0;word-break:break-word;
+}
+.preview:empty{display:none}
+.preview .err{color:var(--bad);font-weight:600;font-size:.9rem}
