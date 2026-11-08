@@ -246,7 +246,7 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
       <div class="formula">$$(A \land B) \lor (A \land \neg B)$$</div>
       <details><summary>Подсказка</summary>Распределительный → исключённое третье → константа.</details>
       <div class="ans">
-        <input type="text" id="w1" placeholder="например: A" autocomplete="off"
+        <input type="text" id="w1" placeholder="ваш ответ" autocomplete="off"
                oninput="previewAns('w1','w1prev')">
         <button class="btn b-green" onclick="checkW('w1','A','w1fb')">Проверить</button>
       </div>
@@ -260,7 +260,7 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
       <div class="formula">$$\neg(\neg A \land B) \land \neg A$$</div>
       <details><summary>Подсказка</summary>Двойное отрицание → де Морган → противоречие → константа.</details>
       <div class="ans">
-        <input type="text" id="w2" placeholder="например: ¬A" autocomplete="off"
+        <input type="text" id="w2" placeholder="ваш ответ" autocomplete="off"
                oninput="previewAns('w2','w2prev')">
         <button class="btn b-green" onclick="checkW('w2','¬A','w2fb')">Проверить</button>
       </div>
@@ -286,7 +286,7 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
       <div class="formula">$$(A \land B) \lor (A \land \neg B) \lor (A \land C)$$</div>
       <details><summary>Подсказка</summary>Распределительный → исключённое третье → константа → поглощение.</details>
       <div class="ans">
-        <input type="text" id="w4" placeholder="например: A" autocomplete="off"
+        <input type="text" id="w4" placeholder="ваш ответ" autocomplete="off"
                oninput="previewAns('w4','w4prev')">
         <button class="btn b-green" onclick="checkW('w4','A','w4fb')">Проверить</button>
       </div>
@@ -300,7 +300,7 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
       <div class="formula">$$\neg(\neg A \lor B) \lor (A \land \neg B)$$</div>
       <details><summary>Подсказка</summary>Двойное отрицание → де Морган → склеивание → противоречие.</details>
       <div class="ans">
-        <input type="text" id="w5" placeholder="например: ¬B" autocomplete="off"
+        <input type="text" id="w5" placeholder="ваш ответ" autocomplete="off"
                oninput="previewAns('w5','w5prev')">
         <button class="btn b-green" onclick="checkW('w5','¬B','w5fb')">Проверить</button>
       </div>
@@ -314,7 +314,7 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
       <div class="formula">$$((A \land B) \lor (A \land \neg B)) \land ((\neg A \land C) \lor (A \land C))$$</div>
       <details><summary>Подсказка</summary>Склеивание → константа → распределительный → исключённое третье → константа.</details>
       <div class="ans">
-        <input type="text" id="w6" placeholder="например: A ∧ C" autocomplete="off"
+        <input type="text" id="w6" placeholder="ваш ответ" autocomplete="off"
                oninput="previewAns('w6','w6prev')">
         <button class="btn b-green" onclick="checkW('w6','A ∧ C','w6fb')">Проверить</button>
       </div>
@@ -585,8 +585,10 @@ var lessonState = {
   wbCorrect: 0, wbMark: 0,
   pracDone: false, pracCorrect: 0, pracMark: 0
 };
-var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
 
+/* =========================================================
+   СОХРАНЕНИЕ ПРАКТИКИ
+   ========================================================= */
 function savePracticeState(){
   try {
     var raw = localStorage.getItem(STORAGE_KEY) || '{}';
@@ -619,36 +621,46 @@ function loadPracticeState(){
     lessonState.pracCorrect = d.pracCorrect || 0;
     lessonState.pracMark = d.pracMark || 0;
 
-    /* показываем результат вместо формы */
     document.getElementById('practiceLock').style.display = 'none';
     document.getElementById('practiceBody').style.display = 'block';
     document.getElementById('pracVariant').value = d.pracVariant || '1';
     renderPractice();
 
-    /* восстанавливаем ответы и блокируем поля */
     (d.pracAnswers || []).forEach(function(ans, i){
       var el = document.getElementById('prac'+i);
       if (el){
         el.value = ans;
         el.disabled = true;
         el.style.background = '#f3f4f6';
+        previewAns('prac'+i, 'prac'+i+'prev');
       }
     });
 
-    /* показываем результат */
     document.getElementById('pracCorrect').textContent = d.pracCorrect;
     document.getElementById('pracMark').textContent = d.pracMark;
     document.getElementById('pracResult').classList.add('show');
 
-    /* прячем кнопку «Проверить» и меняем заголовок */
-    var checkBtn = document.querySelector('#practiceBody > button.b-green');
+    var checkBtn = document.getElementById('pracCheckBtn');
     if (checkBtn) checkBtn.style.display = 'none';
-    var h2 = document.querySelector('#practice h2');
-    if (h2) h2.innerHTML = h2.innerHTML + ' <span class="badge" style="background:#fee2e2;color:#b91c1c">сдано</span>';
 
     return true;
   } catch(e){ return false; }
 }
+
+function resetPractice(){
+  if (!confirm('Сбросить результат практической работы? Ученик сможет сдать заново.')) return;
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
+    var d = JSON.parse(raw);
+    delete d.pracDone;
+    delete d.pracCorrect;
+    delete d.pracMark;
+    delete d.pracAnswers;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  } catch(e){}
+  location.reload();
+}
+
 function getSurname(){ return (document.getElementById('surname')?.value || '').trim(); }
 function getFirstname(){ return (document.getElementById('firstname')?.value || '').trim(); }
 function getKlass(){ return (document.getElementById('klass')?.value || '').trim(); }
@@ -769,6 +781,8 @@ function countOps(node){
 
 function analyseAnswer(userRaw, canonRaw, tolerance){
   var u = String(userRaw).trim();
+  /* убираем $, которые могли попасть из предпросмотра */
+  u = u.replace(/\$/g, '');
   var low = u.toLowerCase();
   if (CONST_WORDS[low] !== undefined) u = CONST_WORDS[low];
 
@@ -803,26 +817,44 @@ function answerToTex(raw){
   var s = String(raw).trim();
   if (!s) return '';
 
-  /* если уже LaTeX-команды — оставляем как есть */
-  if (/\\[a-zA-Z]+/.test(s)) return s;
+  /* 1. Убираем все $, которые ученик мог ввести вручную */
+  s = s.replace(/\$/g, '');
 
-  /* слова → символы */
-  s = s.replace(/\bnot\b/gi,'¬')
-       .replace(/\band\b/gi,'∧')
-       .replace(/\bor\b/gi,'∨')
-       .replace(/\bне\b/gi,'¬')
-       .replace(/\bи\b/gi,'∧')
-       .replace(/\bили\b/gi,'∨');
+  /* 2. Заменяем LaTeX-команды на символы */
+  s = s.replace(/\\land/g, '∧')
+       .replace(/\\lor/g, '∨')
+       .replace(/\\neg/g, '¬')
+       .replace(/\\lnot/g, '¬')
+       .replace(/\\to/g, '→')
+       .replace(/\\rightarrow/g, '→')
+       .replace(/\\leftrightarrow/g, '↔')
+       .replace(/\\oplus/g, '⊕');
 
-  /* операторы → LaTeX-команды */
-  s = s.replace(/∧/g,'\\land ')
-       .replace(/∨/g,'\\lor ')
-       .replace(/¬/g,'\\neg ')
-       .replace(/→/g,'\\to ')
-       .replace(/↔/g,'\\leftrightarrow ')
-       .replace(/⊕/g,'\\oplus ');
+  /* 3. Заменяем слова на символы */
+  s = s.replace(/\bnot\b/gi, '¬')
+       .replace(/\band\b/gi, '∧')
+       .replace(/\bor\b/gi, '∨')
+       .replace(/\bне\b/gi, '¬')
+       .replace(/\bи\b/gi, '∧')
+       .replace(/\bили\b/gi, '∨');
 
-  return s.replace(/\s+/g,' ').trim();
+  /* 4. Заменяем операторы */
+  s = s.replace(/\*/g, '∧')
+       .replace(/\+/g, '∨')
+       .replace(/!/g, '¬')
+       .replace(/~/g, '¬')
+       .replace(/&/g, '∧')
+       .replace(/\|/g, '∨');
+
+  /* 5. Заменяем символы на LaTeX-команды для MathJax */
+  s = s.replace(/∧/g, '\\land ')
+       .replace(/∨/g, '\\lor ')
+       .replace(/¬/g, '\\neg ')
+       .replace(/→/g, '\\to ')
+       .replace(/↔/g, '\\leftrightarrow ')
+       .replace(/⊕/g, '\\oplus ');
+
+  return s.replace(/\s+/g, ' ').trim();
 }
 
 function previewAns(inputId, previewId){
@@ -834,7 +866,7 @@ function previewAns(inputId, previewId){
   if (!raw){ box.innerHTML = ''; return; }
 
   var tex = answerToTex(raw);
-  box.innerHTML = '$$' + tex + '$$';
+  box.innerHTML = '$$ ' + tex + ' $$';
   if (window.MathJax && MathJax.typesetPromise){
     MathJax.typesetPromise([box]).catch(function(){});
   }
@@ -890,7 +922,7 @@ function calcWorkbook(){
 }
 
 /* =========================================================
-   5. ПРАКТИЧЕСКАЯ РАБОТА — 4 варианта × 5 заданий
+   5. ПРАКТИЧЕСКАЯ РАБОТА
    ========================================================= */
 var PRACTICE_VARIANTS = {
   1: [
@@ -947,7 +979,7 @@ function renderPractice(){
       '<div class="formula">$$'+q.q+'$$</div>'+
       '<details><summary>Подсказка</summary>'+q.hint+'</details>'+
       '<div class="ans">'+
-        '<input type="text" id="prac'+i+'" placeholder="например: A ∨ B" autocomplete="off" '+
+        '<input type="text" id="prac'+i+'" placeholder="ваш ответ" autocomplete="off" '+
         'oninput="previewAns(\'prac'+i+'\',\'prac'+i+'prev\')">'+
       '</div>'+
       '<div class="preview" id="prac'+i+'prev"></div>'+
@@ -993,79 +1025,6 @@ function gradePractice(){
 
   savePracticeState();
   toast('Практика: ' + correct + '/' + qs.length + ', оценка ' + lessonState.pracMark);
-}
-
-/* ---------- сохранение состояния практики ---------- */
-function savePracticeState(){
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
-    var d = JSON.parse(raw);
-    d.pracDone = lessonState.pracDone;
-    d.pracCorrect = lessonState.pracCorrect;
-    d.pracMark = lessonState.pracMark;
-    d.pracVariant = document.getElementById('pracVariant')?.value || '1';
-    d.pracAnswers = [];
-    if (lessonState.pracDone){
-      var v = document.getElementById('pracVariant').value;
-      var qs = PRACTICE_VARIANTS[v];
-      qs.forEach(function(_, i){
-        var el = document.getElementById('prac'+i);
-        d.pracAnswers.push(el ? el.value : '');
-      });
-    }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
-  } catch(e){}
-}
-
-function loadPracticeState(){
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return false;
-    var d = JSON.parse(raw);
-    if (!d.pracDone) return false;
-
-    lessonState.pracDone = true;
-    lessonState.pracCorrect = d.pracCorrect || 0;
-    lessonState.pracMark = d.pracMark || 0;
-
-    document.getElementById('practiceLock').style.display = 'none';
-    document.getElementById('practiceBody').style.display = 'block';
-    document.getElementById('pracVariant').value = d.pracVariant || '1';
-    renderPractice();
-
-    (d.pracAnswers || []).forEach(function(ans, i){
-      var el = document.getElementById('prac'+i);
-      if (el){
-        el.value = ans;
-        el.disabled = true;
-        el.style.background = '#f3f4f6';
-        previewAns('prac'+i, 'prac'+i+'prev');
-      }
-    });
-
-    document.getElementById('pracCorrect').textContent = d.pracCorrect;
-    document.getElementById('pracMark').textContent = d.pracMark;
-    document.getElementById('pracResult').classList.add('show');
-
-    var checkBtn = document.getElementById('pracCheckBtn');
-    if (checkBtn) checkBtn.style.display = 'none';
-
-    return true;
-  } catch(e){ return false; }
-}
-
-function resetPractice(){
-  if (!confirm('Сбросить результат практической работы? Ученик сможет сдать заново.')) return;
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
-    var d = JSON.parse(raw);
-    delete d.pracDone;
-    delete d.pracCorrect;
-    delete d.pracMark;
-    delete d.pracAnswers;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
-  } catch(e){}
-  location.reload();
 }
 
 /* =========================================================
@@ -1234,7 +1193,7 @@ function startStandalone(){
     html += '<div class="s-task" id="st'+i+'">';
     html += '<p class="stext"><span class="sn">'+(i+1)+'</span>'+t.text+'</p>';
     html += '<div class="formula">$$'+t.tex+'$$</div>';
-    html += '<input type="text" id="sa'+i+'" placeholder="например: A ∨ B" autocomplete="off" '+
+    html += '<input type="text" id="sa'+i+'" placeholder="ваш ответ" autocomplete="off" '+
             'oninput="previewAns(\'sa'+i+'\',\'sa'+i+'prev\')">';
     html += '<div class="preview" id="sa'+i+'prev"></div>';
     html += '</div>';
