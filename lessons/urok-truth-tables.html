@@ -59,8 +59,6 @@ table.tt th.final,table.tt td.final{background:#fef9c3;border-color:#fde047;colo
 .mcard .lbl{font-size:.75rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
 .mcard .val{font-size:2.3rem;font-weight:900;line-height:1;color:#6d28d9}
 .mcard.total .val{color:#047857}
-.mcard.lesson .val{color:#9d174d}
-.mcard.test .val{color:#1d4ed8}
 
 .bar{background:#fff;border-radius:var(--r);padding:16px;border:1px solid #f2f0fa;
   box-shadow:0 -4px 24px rgba(120,110,160,.16);display:flex;flex-wrap:wrap;gap:10px;
@@ -740,6 +738,13 @@ function resetPractice(){
   document.getElementById('pracResult').classList.remove('show');
   document.getElementById('pracCheckBtn').style.display = 'inline-flex';
   toast('Практика сброшена');
+}
+
+function passwordMatches(t, e){
+  t = String(t||'').trim().toLowerCase();
+  e = String(e||'').trim().toLowerCase();
+  if (!t) return false;
+  return t === e;
 }
 
 /* =========================================================
