@@ -518,18 +518,21 @@ function calcWorkbook(){
 }
 
 /* =========================================================
-   3. ПРАКТИКА
+   3. ПРАКТИКА (ЗАПРОС К GOOGLE SCRIPT)
    ========================================================= */
 var pracDone = false;
-function unlockPractice(){
-  async function unlockPractice() {
+
+async function unlockPractice() {
   var inp = document.getElementById('pracPass');
   var msg = document.getElementById('pracMsg');
   
   try {
-    var response = await fetch('https://script.google.com/macros/s/AKfycbx7NlRlGjYj5vR7FVH0PLr3Hw7nmE2Cp1pWmSaKIqfkOa3Tzky-I19sxKIFOyhXsA6V/exec', {
+    // ВАЖНО: Замените эту ссылку на ваш URL из Google Apps Script (заканчивается на /exec)
+    var url = 'https://script.google.com/macros/s/AKfycbx7NlRlGjYj5vR7FVH0PLr3Hw7nmE2Cp1pWmSaKIqfkOa3Tzky-I19sxKIFOyhXsA6V/exec';
+
+    var response = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
+      headers: { 'Content-Type': 'text/plain' }, // text/plain важен для Google Script
       body: JSON.stringify({
         password: inp.value,
         resource: 'practice'
@@ -549,8 +552,8 @@ function unlockPractice(){
       inp.value = '';
     }
   } catch (error) {
-    msg.textContent = '⚠️ Ошибка соединения. Попробуйте позже.';
-    console.error(error);
+    msg.textContent = '⚠️ Ошибка соединения. Проверьте интернет.';
+    console.error('Ошибка:', error);
   }
 }
 
@@ -603,33 +606,11 @@ function gradePractice(){
 }
 
 /* =========================================================
-   4. САМОСТОЯТЕЛЬНАЯ
+   4. САМОСТОЯТЕЛЬНАЯ (ЗАПРОС К GOOGLE SCRIPT)
    ========================================================= */
 var saTimer = null, saLeft = 0, saTasks = [], saStarted = false, saDone = false;
 
-function genStandalone(){
-  var pool = [
-    {q:'Чему равно A ∧ B, если A=1, B=0?', ans:'0'},
-    {q:'Чему равно A ∨ B, если A=0, B=1?', ans:'1'},
-    {q:'Чему равно ¬A, если A=1?', ans:'0'},
-    {q:'Чему равно A → B, если A=1, B=0?', ans:'0'},
-    {q:'Чему равно A → B, если A=0, B=0?', ans:'1'},
-    {q:'Сколько строк (без заголовка) в таблице для 2 переменных?', ans:'4'},
-    {q:'Сколько строк (без заголовка) в таблице для 3 переменных?', ans:'8'},
-    {q:'Чему равно A ↔ B, если A=1, B=0?', ans:'0'},
-    {q:'Чему равно A ∧ B, если A=0, B=0?', ans:'0'},
-    {q:'Чему равно A ∨ B, если A=0, B=0?', ans:'0'}
-  ];
-  return pool.sort(function(){ return 0.5 - Math.random(); }).slice(0, 5);
-}
-
-function scrollToGate(){
-  document.getElementById('standaloneGate').scrollIntoView({behavior:'smooth', block:'center'});
-  document.getElementById('saPass').focus();
-}
-
-function unlockStandalone(){
-  async function unlockStandalone() {
+async function unlockStandalone() {
   if (!getSurname() || !getFirstname() || !getKlass()){
     document.getElementById('saMsg').textContent = 'Заполните ФИО и класс.';
     return;
@@ -639,7 +620,10 @@ function unlockStandalone(){
   var msg = document.getElementById('saMsg');
   
   try {
-    var response = await fetch('hhttps://script.google.com/macros/s/AKfycbx7NlRlGjYj5vR7FVH0PLr3Hw7nmE2Cp1pWmSaKIqfkOa3Tzky-I19sxKIFOyhXsA6V/exec', {
+    // ВАЖНО: Замените эту ссылку на ваш URL из Google Apps Script (заканчивается на /exec)
+    var url = 'https://script.google.com/macros/s/AKfycbx7NlRlGjYj5vR7FVH0PLr3Hw7nmE2Cp1pWmSaKIqfkOa3Tzky-I19sxKIFOyhXsA6V/exec';
+
+    var response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
@@ -659,9 +643,8 @@ function unlockStandalone(){
     }
   } catch (error) {
     msg.textContent = '⚠️ Ошибка соединения. Попробуйте позже.';
-    console.error(error);
+    console.error('Ошибка:', error);
   }
-}
 }
 
 function startStandalone(){
@@ -692,6 +675,27 @@ function startStandalone(){
       finishStandalone(true);
     }
   }, 1000);
+}
+
+function genStandalone(){
+  var pool = [
+    {q:'Чему равно A ∧ B, если A=1, B=0?', ans:'0'},
+    {q:'Чему равно A ∨ B, если A=0, B=1?', ans:'1'},
+    {q:'Чему равно ¬A, если A=1?', ans:'0'},
+    {q:'Чему равно A → B, если A=1, B=0?', ans:'0'},
+    {q:'Чему равно A → B, если A=0, B=0?', ans:'1'},
+    {q:'Сколько строк (без заголовка) в таблице для 2 переменных?', ans:'4'},
+    {q:'Сколько строк (без заголовка) в таблице для 3 переменных?', ans:'8'},
+    {q:'Чему равно A ↔ B, если A=1, B=0?', ans:'0'},
+    {q:'Чему равно A ∧ B, если A=0, B=0?', ans:'0'},
+    {q:'Чему равно A ∨ B, если A=0, B=0?', ans:'0'}
+  ];
+  return pool.sort(function(){ return 0.5 - Math.random(); }).slice(0, 5);
+}
+
+function scrollToGate(){
+  document.getElementById('standaloneGate').scrollIntoView({behavior:'smooth', block:'center'});
+  document.getElementById('saPass').focus();
 }
 
 function updateTimer(){
@@ -738,25 +742,16 @@ function resetPractice(){
   toast('Практика сброшена');
 }
 
-function passwordMatches(t, e){
-  t = String(t||'').trim().toLowerCase();
-  e = String(e||'').trim().toLowerCase();
-  if (!t) return false;
-  return t === e;
-}
-
 /* =========================================================
    5. ИТОГ, ДЗ, КАЛЬКУЛЯТОР
    ========================================================= */
 function calcFinalMark(){
-  // Считаем оценку тетради (по 11 заданиям)
   var totalWb = TASKS.length;
   var solvedWb = Object.keys(state.solved).length;
   var pctWb = Math.round(solvedWb / totalWb * 100);
   var markWb = pctWb >= 90 ? 5 : pctWb >= 70 ? 4 : pctWb >= 50 ? 3 : 2;
   if (solvedWb === 0) markWb = 2;
 
-  // Получаем оценку практики (если она не сдана, ставим 2)
   var markPrac = 2;
   var pracCorrect = document.getElementById('pracCorrect').textContent;
   if (pracDone) {
@@ -764,7 +759,6 @@ function calcFinalMark(){
     markPrac = pctPrac >= 90 ? 5 : pctPrac >= 60 ? 4 : pctPrac >= 30 ? 3 : 2;
   }
 
-  // Итоговая оценка (среднее)
   var total = Math.round((markWb + markPrac) / 2);
 
   document.getElementById('fWb').textContent = markWb;
