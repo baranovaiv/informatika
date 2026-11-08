@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кодирование графической информации · 7 класс</title>
+
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$']] },
+  svg: { fontCache: 'global' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23ede9fe'/><text x='16' y='23' font-size='17' font-family='Georgia' font-weight='bold' fill='%236d28d9' text-anchor='middle'>I</text></svg>">
+
+<style>
+.student{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:16px;position:relative;z-index:2}
+.student .f{display:flex;flex-direction:column;gap:4px}
+.student label{font-size:.78rem;font-weight:800;color:#4c4660;text-transform:uppercase;letter-spacing:.4px}
+.student input{border:2px solid rgba(255,255,255,.85);border-radius:10px;padding:8px 13px;
+  font-size:.95rem;font-family:inherit;background:rgba(255,255,255,.92);color:var(--ink);outline:none}
+.student input:focus{background:#fff;border-color:#a78bfa;box-shadow:0 0 0 4px rgba(255,255,255,.55)}
+#surname{width:200px} #firstname{width:180px} #klass{width:90px}
+
+/* --- Цветовой микшер --- */
+.color-mixer{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;margin:16px 0}
+.color-preview{width:100px;height:100px;border-radius:16px;border:3px solid #e6e3f1;
+  box-shadow:inset 0 0 10px rgba(0,0,0,0.1);flex-shrink:0}
+.color-controls{flex:1;min-width:250px;display:flex;flex-direction:column;gap:12px}
+.slider-row{display:flex;align-items:center;gap:10px}
+.slider-row label{width:20px;font-weight:900;font-size:1.1rem;text-align:center}
+.slider-row input[type=range]{flex:1;accent-color:#6d28d9;cursor:pointer}
+.slider-row .val{width:40px;text-align:right;font-family:Consolas,monospace;font-weight:700}
+.color-code{font-family:Consolas,monospace;font-size:1rem;font-weight:800;
+  background:#f5f3ff;padding:8px 14px;border-radius:12px;display:inline-block;
+  border:2px dashed var(--pd);color:#4c1d95;margin-top:10px;letter-spacing:1px;}
+
+/* --- Оформление задачи ДАНО/НАЙТИ/РЕШЕНИЕ --- */
+.task-header{font-weight:800;font-size:1.05rem;margin-bottom:12px;color:#4c1d95}
+.tgrid{display:grid;grid-template-columns:100px 1fr;gap:6px 12px;margin:10px 0;font-family:Cambria,Georgia,serif;font-size:.98rem}
+.tgrid .k{font-weight:800;color:#6d28d9}
+.step-line{background:#f6fffb;border-left:3px solid var(--gd);padding:8px 14px;margin:6px 0;border-radius:0 8px 8px 0;font-family:Cambria,Georgia,serif;font-size:.95rem}
+.step-line b{color:#047857}
+.answer-line{font-weight:800;color:#047857;margin-top:10px;font-size:1rem;border-top:2px dashed var(--gd);padding-top:8px}
+
+.calc-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.calc-row input{max-width:150px;border:2px solid #e6e3f1;border-radius:8px;padding:6px 10px;
+  font-family:Consolas,monospace;font-size:.95rem;}
+.calc-row span{font-weight:700;color:#5b4b8a}
+
+.match-select{width:100%;max-width:250px;border:2px solid #e6e3f1;border-radius:8px;padding:6px 10px;
+  font-family:inherit;font-size:.9rem;background:#fff;color:var(--ink);outline:none;}
+.match-select:focus{border-color:var(--pd);}
+
+.lock{text-align:center;padding:32px 18px;border-radius:16px;
+  background:linear-gradient(135deg,#fff7ed,#fef2f2);border:2px dashed var(--od)}
+.lock h3{margin:10px 0 4px}
+.lock p{color:var(--muted);margin:0 0 16px;font-size:.94rem}
+.lockrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.pmsg{min-height:22px;font-weight:600;color:var(--bad);margin-top:10px}
+
+.vbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.res{background:linear-gradient(135deg,var(--green),var(--blue));border-radius:var(--r);padding:22px;margin:18px 0;display:none}
+.res.show{display:block}
+.res h3{margin:0 0 14px;color:#065f46}
+.marks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.mcard{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:0 4px 16px rgba(6,95,70,.1)}
+.mcard .lbl{font-size:.75rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.mcard .val{font-size:2.3rem;font-weight:900;line-height:1;color:#6d28d9}
+.mcard.total .val{color:#047857}
+
+#standalone{display:none}
+body.exam{padding-bottom:20px}
+body.exam #theory, body.exam #workbook, body.exam #practice,
+body.exam #final, body.exam #homework, body.exam #standaloneGate,
+body.exam .bar, body.exam .hero{display:none !important}
+body.exam #standalone{display:block}
+
+.exam-head{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.97);
+  backdrop-filter:blur(10px);border-radius:0 0 20px 20px;padding:14px 20px;margin:-24px -16px 18px;
+  box-shadow:0 6px 24px rgba(120,110,160,.18);display:flex;flex-wrap:wrap;gap:14px;
+  align-items:center;justify-content:space-between}
+.exam-title{font-weight:800;font-size:1.05rem}
+.exam-who{font-size:.86rem;color:var(--muted)}
+.timer{font-family:Consolas,monospace;font-size:1.5rem;font-weight:800;color:#047857;
+  background:var(--green);padding:6px 18px;border-radius:12px;min-width:110px;text-align:center}
+.timer.warn{background:var(--yellow);color:#b45309}
+.timer.danger{background:#fee2e2;color:#b91c1c;animation:pulseT 1s infinite}
+@keyframes pulseT{0%,100%{opacity:1}50%{opacity:.55}}
+
+.s-task{background:#fff;border-radius:18px;padding:18px 20px;margin:14px 0;
+  border:2px solid #e8e3f5;box-shadow:0 4px 18px rgba(120,110,160,.09)}
+.s-task .sn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;
+  border-radius:50%;background:var(--purple);color:#5b21b6;font-weight:800;font-size:.85rem;margin-right:8px}
+.s-task .stext{margin:0 0 12px;font-size:1rem;line-height:1.65}
+
+.no-calc-warn{background:var(--yellow);border-left:4px solid var(--yd);border-radius:12px;
+  padding:12px 16px;margin:0 0 16px;font-size:.92rem;font-weight:600;color:#b45309}
+
+.bar{background:#fff;border-radius:var(--r);padding:16px;border:1px solid #f2f0fa;
+  box-shadow:0 -4px 24px rgba(120,110,160,.16);display:flex;flex-wrap:wrap;gap:10px;
+  position:sticky;bottom:10px;z-index:30;margin-top:24px}
+
+table.laws{border-collapse:collapse;width:100%;margin:14px 0;font-size:.92rem;display:block;overflow-x:auto}
+table.laws th,table.laws td{border:1px solid #e6e3f1;padding:8px 10px;text-align:left;vertical-align:top;background:#fdfcff}
+table.laws th{background:var(--blue);color:#1d4ed8;font-weight:800;font-size:.86rem}
+table.laws tr:nth-child(even) td{background:#fbfaff}
+table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
+
+@media(max-width:720px){
+  #surname,#firstname,#klass{width:100%}
+  .color-mixer{flex-direction:column;align-items:center}
+  .marks{grid-template-columns:1fr}
+  .exam-head{flex-direction:column;align-items:flex-start}
+  .match-select{max-width:100%;}
+  .tgrid{grid-template-columns:1fr}
+}
+@media print{
+  .no-print{display:none !important}
+  body{background:#fff;padding:0;font-size:11.5pt}
+  .card{box-shadow:none;border:none;padding:0;margin:0}
+  .task{break-inside:avoid}
+  .btn, .controls, .bar, .nav {display:none !important;}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">К содержанию</a>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="../index.html"><span class="logo">I</span> Информатика · кабинет 318А</a>
+    <button class="burger" aria-label="Меню">☰</button>
+    <div class="nav-links">
+      <a href="../index.html">Главная</a>
+      <a href="../lessons.html" class="active">Уроки</a>
+      <a href="../materials.html">Материалы</a>
+      <a href="../tests.html">Тесты</a>
+      <a href="../oge.html">ОГЭ</a>
+      <a href="../about.html">О сайте</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap" id="main">
+
+  <header class="hero">
+    <h1>Кодирование графической информации</h1>
+    <p class="lead">Урок информатики · 7 класс · RGB, глубина кодирования, объём изображения</p>
+    <div class="student">
+      <div class="f"><label for="surname">Фамилия</label>
+        <input type="text" id="surname" placeholder="Иванов" autocomplete="off"></div>
+      <div class="f"><label for="firstname">Имя</label>
+        <input type="text" id="firstname" placeholder="Пётр" autocomplete="off"></div>
+      <div class="f"><label for="klass">Класс</label>
+        <input type="text" id="klass" placeholder="7А" autocomplete="off"></div>
+    </div>
+  </header>
+
+  <!-- 1. ТЕОРИЯ -->
+  <section class="card" id="theory">
+    <h2><span class="num">1</span> Теоретический материал</h2>
+
+    <h3>Как компьютер хранит картинку</h3>
+    <p>Изображение на экране — это сетка из точек (<b>пикселей</b>). Каждый пиксель имеет свой цвет, и этот цвет закодирован числами.</p>
+    
+    <h3>Цветовая модель RGB</h3>
+    <p>В экранах используется модель <b>RGB</b> (Red, Green, Blue). Каждый канал принимает значение от <b>0 до 255</b>.</p>
+    <table class="laws">
+      <tr><th>Цвет</th><th>R</th><th>G</th><th>B</th><th>Код #RRGGBB</th></tr>
+      <tr><td>Чёрный</td><td>0</td><td>0</td><td>0</td><td>#000000</td></tr>
+      <tr><td>Белый</td><td>255</td><td>255</td><td>255</td><td>#FFFFFF</td></tr>
+      <tr><td>Красный</td><td>255</td><td>0</td><td>0</td><td>#FF0000</td></tr>
+      <tr><td>Зелёный</td><td>0</td><td>255</td><td>0</td><td>#00FF00</td></tr>
+      <tr><td>Синий</td><td>0</td><td>0</td><td>255</td><td>#0000FF</td></tr>
+    </table>
+
+    <h3>Глубина кодирования и информационный объём</h3>
+    <div class="formula">$$N = 2^i \qquad\qquad I = K \cdot i$$</div>
+    <p><b>Глубина (i)</b> — сколько бит на один пиксель. <b>Объём (I)</b> — сколько всего бит в картинке. <b>K</b> — количество пикселей (ширина × высота).</p>
+
+    <h3>Пример оформления задачи</h3>
+    <div class="task" style="border-color:#d1d5db;background:#f9fafb;padding:16px">
+      <p style="margin-top:0"><b>Условие:</b> Изображение 200 × 150 пикселей. Глубина цвета — 24 бита. Найдите информационный объём в байтах.</p>
+      
+      <div class="tgrid">
+        <span class="k">ДАНО:</span><span>Ширина = 200, Высота = 150, $i = 24$ бита</span>
+        <span class="k">НАЙТИ:</span><span>$I$ — ? (в байтах)</span>
+        <span class="k">СИ:</span><span>—</span>
+      </div>
+
+      <div class="step-line"><b>Решение:</b></div>
+      <div class="step-line">1. Найдём количество пикселей: $K = 200 \cdot 150 = 30\,000$.</div>
+      <div class="step-line">2. Найдём объём в битах: $I = K \cdot i = 30\,000 \cdot 24 = 720\,000$ бит.</div>
+      <div class="step-line">3. Переведём в байты: $720\,000 : 8 = 90\,000$ байт.</div>
+      
+      <div class="answer-line">ОТВЕТ: 90 000 байт</div>
+    </div>
+  </section>
+
+  <!-- 2. РАБОЧАЯ ТЕТРАДЬ -->
+  <section class="card" id="workbook">
+    <h2><span class="num">2</span> Рабочая тетрадь</h2>
+    <p class="muted">В задачах на расчёт оформляйте решение в тетради (ДАНО / НАЙТИ / РЕШЕНИЕ / ОТВЕТ), а в поле вводите только итоговый ответ.</p>
+
+    <!-- Задание 1 -->
+    <div class="task">
+      <span class="lvl l1">базовый · RGB</span>
+      <p><b>Задание 1.</b> Подберите любой цвет с помощью ползунков и запишите его HEX-код.</p>
+      <div class="color-mixer">
+        <div class="color-preview" id="previewBox"></div>
+        <div class="color-controls">
+          <div class="slider-row"><label>R</label><input type="range" id="sliderR" min="0" max="255" value="0" oninput="updateColor()"><span class="val" id="valR">0</span></div>
+          <div class="slider-row"><label>G</label><input type="range" id="sliderG" min="0" max="255" value="0" oninput="updateColor()"><span class="val" id="valG">0</span></div>
+          <div class="slider-row"><label>B</label><input type="range" id="sliderB" min="0" max="255" value="0" oninput="updateColor()"><span class="val" id="valB">0</span></div>
+          <div class="color-code" id="hexCode">#000000</div>
+        </div>
+      </div>
+      <p style="margin-top:12px">Сколько бит нужно для хранения этого цвета? (если используете все 3 канала)</p>
+      <div class="calc-row">
+        <input type="text" id="q1ans" placeholder="число">
+        <button class="btn b-green" onclick="checkQ1()">Проверить</button>
+      </div>
+      <div class="fb" id="q1fb"></div>
+    </div>
+
+    <!-- Задание 2 -->
+    <div class="task q">
+      <span class="lvl l1">базовый · выбор</span>
+      <p><b>Задание 2.</b> Сколько бит отводится на один пиксель в режиме True Color?</p>
+      <label class="opt"><input type="radio" name="q2" value="a"> 8 бит</label>
+      <label class="opt"><input type="radio" name="q2" value="b"> 16 бит</label>
+      <label class="opt"><input type="radio" name="q2" value="c"> 24 бита</label>
+      <label class="opt"><input type="radio" name="q2" value="d"> 32 бита</label>
+      <button class="btn b-green" onclick="checkQ2()" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="q2fb"></div>
+    </div>
+
+    <!-- Задание 3 -->
+    <div class="task">
+      <span class="lvl l2">средний · соответствие</span>
+      <p><b>Задание 3.</b> Установите соответствие между глубиной цвета и количеством цветов.</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;">
+        <div>1 бит → <select class="match-select" id="q3m1"><option value="">--</option><option value="2">2</option><option value="16">16</option><option value="256">256</option></select></div>
+        <div>4 бита → <select class="match-select" id="q3m2"><option value="">--</option><option value="2">2</option><option value="16">16</option><option value="256">256</option></select></div>
+        <div>8 бит → <select class="match-select" id="q3m3"><option value="">--</option><option value="2">2</option><option value="16">16</option><option value="256">256</option></select></div>
+      </div>
+      <button class="btn b-green" onclick="checkQ3()" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="q3fb"></div>
+    </div>
+
+    <!-- Задание 4 -->
+    <div class="task">
+      <span class="lvl l2">средний · расчёт</span>
+      <p class="task-header">Задание 4. Оформите решение в тетради.</p>
+      <div class="tgrid">
+        <span class="k">УСЛОВИЕ:</span><span>Изображение 200 × 150 пикселей. Глубина цвета — 24 бита.</span>
+        <span class="k">НАЙТИ:</span><span>$I$ — информационный объём в байтах.</span>
+      </div>
+      <div class="calc-row">
+        <span>Ответ в байтах:</span>
+        <input type="text" id="q4ans" placeholder="число">
+        <button class="btn b-green" onclick="checkQ4()">Проверить</button>
+      </div>
+      <div class="fb" id="q4fb"></div>
+    </div>
+
+    <!-- Задание 5 -->
+    <div class="task">
+      <span class="lvl l2">средний · расчёт</span>
+      <p class="task-header">Задание 5. Оформите решение в тетради.</p>
+      <div class="tgrid">
+        <span class="k">УСЛОВИЕ:</span><span>Объём изображения — 10 000 байт. Размер — 100 × 50 пикселей.</span>
+        <span class="k">НАЙТИ:</span><span>Глубину кодирования $i$ (в битах).</span>
+      </div>
+      <div class="calc-row">
+        <span>Ответ в битах:</span>
+        <input type="text" id="q5ans" placeholder="число">
+        <button class="btn b-green" onclick="checkQ5()">Проверить</button>
+      </div>
+      <div class="fb" id="q5fb"></div>
+    </div>
+
+    <!-- Задание 6 -->
+    <div class="task">
+      <span class="lvl l2">средний · HEX → RGB</span>
+      <p><b>Задание 6.</b> Переведите шестнадцатеричный код цвета <code>#FFA500</code> в значения R, G, B.</p>
+      
+      <!-- Второй микшер для проверки HEX -->
+      <p class="muted" style="font-size:.85rem;margin-top:0">Введите код в микшер ниже, чтобы увидеть значения.</p>
+      <div class="color-mixer" style="margin-bottom:16px">
+        <div class="color-preview" id="previewBox2" style="background:#000"></div>
+        <div class="color-controls">
+          <div class="calc-row" style="margin-bottom:10px">
+            <span>Введите HEX:</span>
+            <input type="text" id="hexInput" placeholder="#FFA500" maxlength="7" style="max-width:120px;font-family:Consolas,monospace;font-weight:700">
+            <button class="btn b-purple" onclick="applyHex()">Применить</button>
+          </div>
+          <div class="slider-row"><label>R</label><input type="range" id="slider2R" min="0" max="255" value="0" disabled><span class="val" id="val2R">0</span></div>
+          <div class="slider-row"><label>G</label><input type="range" id="slider2G" min="0" max="255" value="0" disabled><span class="val" id="val2G">0</span></div>
+          <div class="slider-row"><label>B</label><input type="range" id="slider2B" min="0" max="255" value="0" disabled><span class="val" id="val2B">0</span></div>
+        </div>
+      </div>
+
+      <div class="calc-row">
+        R: <input type="text" id="q6r" placeholder="0-255" style="max-width:80px">
+        G: <input type="text" id="q6g" placeholder="0-255" style="max-width:80px">
+        B: <input type="text" id="q6b" placeholder="0-255" style="max-width:80px">
+        <button class="btn b-green" onclick="checkQ6()">Проверить</button>
+      </div>
+      <div class="fb" id="q6fb"></div>
+    </div>
+
+    <!-- Задание 7 -->
+    <div class="task q">
+      <span class="lvl l3">повышенный · выбор</span>
+      <p><b>Задание 7.</b> Сколько бит памяти потребуется для хранения одной точки изображения, использующего палитру из 128 цветов?</p>
+      <label class="opt"><input type="radio" name="q7" value="a"> 6 бит</label>
+      <label class="opt"><input type="radio" name="q7" value="b"> 7 бит</label>
+      <label class="opt"><input type="radio" name="q7" value="c"> 8 бит</label>
+      <label class="opt"><input type="radio" name="q7" value="d"> 128 бит</label>
+      <button class="btn b-green" onclick="checkQ7()" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="q7fb"></div>
+    </div>
+
+    <!-- Задание 8 -->
+    <div class="task">
+      <span class="lvl l3">повышенный · расчёт</span>
+      <p class="task-header">Задание 8. Оформите решение в тетради.</p>
+      <div class="tgrid">
+        <span class="k">УСЛОВИЕ:</span><span>Изображение 64 × 64 пикселей имеет объём 4096 байт.</span>
+        <span class="k">НАЙТИ:</span><span>Сколько цветов содержит палитра изображения?</span>
+      </div>
+      <div class="calc-row">
+        <span>Ответ (число цветов):</span>
+        <input type="text" id="q8ans" placeholder="число">
+        <button class="btn b-green" onclick="checkQ8()">Проверить</button>
+      </div>
+      <div class="fb" id="q8fb"></div>
+    </div>
+
+    <!-- Задание 9 -->
+    <div class="task">
+      <span class="lvl l3">повышенный · расчёт с палитрой</span>
+      <p class="task-header">Задание 9. Оформите решение в тетради.</p>
+      <div class="tgrid">
+        <span class="k">УСЛОВИЕ:</span><span>Рисунок 10 × 10 пикселей. Палитра содержит 16 цветов.</span>
+        <span class="k">НАЙТИ:</span><span>Информационный объём $I$ в байтах.</span>
+      </div>
+      <div class="calc-row">
+        <span>Ответ в байтах:</span>
+        <input type="text" id="q9ans" placeholder="число">
+        <button class="btn b-green" onclick="checkQ9()">Проверить</button>
+      </div>
+      <div class="fb" id="q9fb"></div>
+    </div>
+
+    <!-- Задание 10 -->
+    <div class="task q">
+      <span class="lvl l2">средний · код цвета</span>
+      <p><b>Задание 10.</b> Какой цвет закодирован шестнадцатеричным числом <code>#008000</code>?</p>
+      <label class="opt"><input type="radio" name="q10" value="a"> Ярко-зелёный</label>
+      <label class="opt"><input type="radio" name="q10" value="b"> Тёмно-зелёный</label>
+      <label class="opt"><input type="radio" name="q10" value="c"> Синий</label>
+      <label class="opt"><input type="radio" name="q10" value="d"> Серый</label>
+      <button class="btn b-green" onclick="checkQ10()" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="q10fb"></div>
+    </div>
+
+    <!-- Задание 11 -->
+    <div class="task">
+      <span class="lvl l3">повышенный · RGB → HEX</span>
+      <p><b>Задание 11.</b> Переведите значения <code>R=128, G=128, B=0</code> в шестнадцатеричный код.</p>
+      <div class="calc-row">
+        <span>Код:</span>
+        <input type="text" id="q11ans" placeholder="#XXXXXX">
+        <button class="btn b-green" onclick="checkQ11()">Проверить</button>
+      </div>
+      <div class="fb" id="q11fb"></div>
+    </div>
+
+    <div class="controls">
+      <button class="btn b-purple" onclick="calcWorkbook()">📊 Оценить рабочую тетрадь</button>
+    </div>
+    <div class="res" id="wbResult">
+      <h3>Результат рабочей тетради</h3>
+      <p style="margin:0;font-weight:700">Верно: <span id="wbCorrect">0</span> из 11 · Оценка: <span id="wbMark" style="font-size:1.4rem">—</span></p>
+    </div>
+  </section>
+
+  <!-- 3. ПРАКТИКА -->
+  <section class="card" id="practice">
+    <h2><span class="num">3</span> Практическая работа <span class="badge">по паролю</span></h2>
+
+    <div id="practiceLock" class="lock">
+      <h3>🔒 Практическая работа закрыта</h3>
+      <p>Введите пароль учителя. После этого откроются 4 варианта.</p>
+      <div class="lockrow">
+        <input type="password" id="pracPass" placeholder="Пароль" autocomplete="off"
+               onkeydown="if(event.key==='Enter')unlockPractice()">
+        <button class="btn b-purple" onclick="unlockPractice()">Открыть</button>
+      </div>
+      <div class="pmsg" id="pracMsg"></div>
+    </div>
+
+    <div id="practiceBody" style="display:none">
+      <div class="vbar">
+        <label for="pracVariant"><b>Вариант:</b></label>
+        <select id="pracVariant" onchange="renderPractice()">
+          <option value="1">Вариант 1</option>
+          <option value="2">Вариант 2</option>
+          <option value="3">Вариант 3</option>
+          <option value="4">Вариант 4</option>
+        </select>
+      </div>
+      <div id="pracArea"></div>
+      <button class="btn b-green" id="pracCheckBtn" onclick="gradePractice()" style="margin-top:14px">📊 Проверить практику</button>
+      <div class="res" id="pracResult">
+        <h3>Результат практической работы</h3>
+        <p style="margin:0;font-weight:700">Верно: <span id="pracCorrect">0</span> из 4 · Оценка: <span id="pracMark" style="font-size:1.4rem">—</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. ИТОГ -->
+  <section class="card" id="final">
+    <h2><span class="num">4</span> Итоговая оценка за урок</h2>
+    <p class="muted">Складывается из рабочей тетради и практической работы.</p>
+    <div class="controls">
+      <button class="btn b-purple" onclick="calcFinalMark()">🎯 Подвести итог</button>
+      <button class="btn b-red" onclick="resetPractice()">🔄 Сбросить практику</button>
+    </div>
+    <div class="res" id="finalResult">
+      <h3>Итог урока</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Тетрадь</div><div class="val" id="fWb">—</div></div>
+        <div class="mcard"><div class="lbl">Практика</div><div class="val" id="fPrac">—</div></div>
+        <div class="mcard total"><div class="lbl">Итог</div><div class="val" id="fTotal">—</div></div>
+      </div>
+      <p id="finalMsg" style="margin:12px 0 0;font-weight:600;color:#065f46"></p>
+    </div>
+  </section>
+
+  <!-- 5. САМОСТОЯТЕЛЬНАЯ -->
+  <section class="card" id="standaloneGate">
+    <h2><span class="num">5</span> Самостоятельная работа <span class="badge">по паролю</span></h2>
+    <p>5 задач на 15 минут. Открывается по паролю учителя.</p>
+    <div class="lockrow" style="justify-content:flex-start">
+      <input type="password" id="saPass" placeholder="Пароль учителя" autocomplete="off"
+             onkeydown="if(event.key==='Enter')unlockStandalone()">
+      <button class="btn b-blue" onclick="unlockStandalone()">🔓 Начать работу</button>
+    </div>
+    <div class="pmsg" id="saMsg"></div>
+  </section>
+
+  <!-- 6. ДОМАШНЕЕ ЗАДАНИЕ -->
+  <section class="card" id="homework">
+    <h2><span class="num">6</span> Домашнее задание</h2>
+    <button class="btn b-orange no-print" onclick="printHomework()">🖨 Печать только ДЗ</button>
+
+    <div id="hwBlock">
+      <div class="hw"><span class="lvl l1">обязательная часть (на «4»)</span>
+        <p><b>№ 1.</b> Запишите в тетради значения R, G, B и шестнадцатеричные коды для цветов: оранжевый, фиолетовый, серый.</p></div>
+      <div class="hw"><span class="lvl l1">обязательная часть (на «4»)</span>
+        <p><b>№ 2.</b> Изображение 320 × 240 пикселей, глубина 16 бит. Найдите информационный объём в Кбайтах.</p></div>
+      <div class="hw"><span class="lvl l3">дополнительная часть (на «5»)</span>
+        <p><b>№ 3.</b> Изображение 1024 × 768 пикселей, глубина 24 бита. Сколько таких изображений поместится на флешку объёмом 16 Мбайт?</p></div>
+      <div class="hw"><span class="lvl l3">дополнительная часть (на «5»)</span>
+        <p><b>№ 4.</b> Придумайте свой цвет и запишите его код в трёх форматах: RGB (три числа), шестнадцатеричный <code>#RRGGBB</code>, и объясните, сколько бит нужно для его хранения.</p></div>
+    </div>
+  </section>
+
+</div><!-- /wrap -->
+
+<div class="bar no-print">
+  <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
+  <button class="btn b-yellow" onclick="scrollToGate()">📝 Самостоятельная</button>
+  <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
+</div>
+
+<!-- САМОСТОЯТЕЛЬНАЯ -->
+<section id="standalone">
+  <div class="exam-head">
+    <div>
+      <div class="exam-title">📝 Самостоятельная работа</div>
+      <div class="exam-who" id="examWho">Ученик не указан</div>
+    </div>
+    <div class="timer" id="examTimer">15:00</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn b-green" onclick="finishStandalone()">✅ Сдать работу</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:0">
+    <h2 style="margin-bottom:10px"><span class="num">5</span> Самостоятельная работа</h2>
+    <div class="no-calc-warn">
+      ⚠️ Во время работы теория и примеры недоступны. Вводите только итоговые ответы (числа).
+    </div>
+
+    <div id="examTasks"></div>
+
+    <div class="res" id="examResult">
+      <h3>📊 Результат работы</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Верно решено</div><div class="val" id="exCorrect">0</div></div>
+        <div class="mcard total"><div class="lbl">Оценка</div><div class="val" id="exMark">—</div></div>
+        <div class="mcard"><div class="lbl">Время</div><div class="val" id="exTime" style="font-size:1.5rem">—</div></div>
+      </div>
+      <p id="exMsg" style="margin:12px 0 0;font-weight:600;color:#065f46"></p>
+    </div>
+
+    <div class="controls no-print" style="margin-top:16px">
+      <button class="btn b-red" onclick="exitStandalone()">← Выйти из работы</button>
+    </div>
+  </div>
+</section>
+
+<!-- КАЛЬКУЛЯТОР -->
+<div class="mbg" id="calcModal">
+  <div class="modal" style="max-width:340px">
+    <h3>🧮 Калькулятор</h3>
+    <div id="calcDisp" style="background:#f8f7ff;border-radius:14px;padding:14px;
+         text-align:right;font-family:Consolas,monospace;font-size:1.5rem;
+         font-weight:700;margin-bottom:12px;color:#4c1d95;word-break:break-all">0</div>
+    <div class="calc-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <button class="cbtn clr" onclick="calcClear()">C</button>
+      <button class="cbtn del" onclick="calcBack()">⌫</button>
+      <button class="cbtn op" onclick="calcOp('/')">÷</button>
+      <button class="cbtn op" onclick="calcOp('*')">×</button>
+      <button class="cbtn" onclick="calcNum('7')">7</button>
+      <button class="cbtn" onclick="calcNum('8')">8</button>
+      <button class="cbtn" onclick="calcNum('9')">9</button>
+      <button class="cbtn op" onclick="calcOp('-')">−</button>
+      <button class="cbtn" onclick="calcNum('4')">4</button>
+      <button class="cbtn" onclick="calcNum('5')">5</button>
+      <button class="cbtn" onclick="calcNum('6')">6</button>
+      <button class="cbtn op" onclick="calcOp('+')">+</button>
+      <button class="cbtn" onclick="calcNum('1')">1</button>
+      <button class="cbtn" onclick="calcNum('2')">2</button>
+      <button class="cbtn" onclick="calcNum('3')">3</button>
+      <button class="cbtn eq" onclick="calcEquals()" style="grid-row:span 2">=</button>
+      <button class="cbtn" onclick="calcNum('0')" style="grid-column:span 3">0</button>
+    </div>
+    <div style="text-align:right;margin-top:16px">
+      <button class="btn b-red" onclick="closeCalc()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="../assets/js/main.js"></script>
+
+<script>
+/* =========================================================
+   1. КОНСТАНТЫ
+   ========================================================= */
+var PRACTICE_PASSWORD = 'малинадеревня624';
+var SA_PASSWORD = 'виннимед254';
+var SA_MINUTES = 15;
+var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
+
+var lessonState = {
+  wb: { q1:false, q2:false, q3:false, q4:false, q5:false, q6:false, q7:false, q8:false, q9:false, q10:false, q11:false },
+  wbCorrect: 0, wbMark: 0,
+  pracDone: false, pracCorrect: 0, pracMark: 0
+};
+
+/* ---------- ФИО ---------- */
+function getSurname(){ return (document.getElementById('surname')?.value || '').trim(); }
+function getFirstname(){ return (document.getElementById('firstname')?.value || '').trim(); }
+function getKlass(){ return (document.getElementById('klass')?.value || '').trim(); }
+function getFullName(){ return [getSurname(), getFirstname()].filter(Boolean).join(' '); }
+function getFileName(){
+  var parts = [getSurname(), getFirstname(), getKlass()].filter(Boolean);
+  return (parts.length ? parts.join('_') : 'Ученик').replace(/[\\/:*?"<>|\s]+/g,'_');
+}
+function percentToMark(pct){
+  if (pct >= 90) return 5;
+  if (pct >= 70) return 4;
+  if (pct >= 50) return 3;
+  return 2;
+}
+
+/* =========================================================
+   2. МИКШЕР ЦВЕТОВ (RGB -> HEX)
+   ========================================================= */
+function updateColor(){
+  var r = document.getElementById('sliderR').value;
+  var g = document.getElementById('sliderG').value;
+  var b = document.getElementById('sliderB').value;
+  
+  document.getElementById('valR').textContent = r;
+  document.getElementById('valG').textContent = g;
+  document.getElementById('valB').textContent = b;
+  
+  var hex = '#' + 
+    parseInt(r).toString(16).padStart(2, '0').toUpperCase() +
+    parseInt(g).toString(16).padStart(2, '0').toUpperCase() +
+    parseInt(b).toString(16).padStart(2, '0').toUpperCase();
+    
+  document.getElementById('previewBox').style.background = hex;
+  document.getElementById('hexCode').textContent = hex;
+}
+
+/* =========================================================
+   3. МИКШЕР ЦВЕТОВ (HEX -> RGB)
+   ========================================================= */
+function applyHex(){
+  var inp = document.getElementById('hexInput').value.trim();
+  var hex = inp.replace('#', '');
+  if (!/^[0-9A-Fa-f]{6}$/.test(hex)){
+    toast('⚠️ Введите код в формате #RRGGBB (например, #FFA500)');
+    return;
+  }
+  
+  var r = parseInt(hex.slice(0, 2), 16);
+  var g = parseInt(hex.slice(2, 4), 16);
+  var b = parseInt(hex.slice(4, 6), 16);
+
+  document.getElementById('slider2R').value = r;
+  document.getElementById('slider2G').value = g;
+  document.getElementById('slider2B').value = b;
+  document.getElementById('val2R').textContent = r;
+  document.getElementById('val2G').textContent = g;
+  document.getElementById('val2B').textContent = b;
+  
+  document.getElementById('previewBox2').style.background = '#' + hex;
+}
+
+/* =========================================================
+   4. РАБОЧАЯ ТЕТРАДЬ
+   ========================================================= */
+function checkQ1(){
+  if (lessonState.wb.q1) return;
+  var v = document.getElementById('q1ans').value.trim();
+  if (v === '24') {
+    lessonState.wb.q1 = true;
+    showFb('q1fb', '✅ Верно! В RGB три канала по 8 бит: 8 + 8 + 8 = 24.', 'ok');
+  } else {
+    showFb('q1fb', '❌ Неверно. В RGB на каждый канал отводится 8 бит. Сколько всего?', 'no');
+  }
+}
+
+function checkQ2(){
+  if (lessonState.wb.q2) return;
+  var sel = document.querySelector('input[name="q2"]:checked');
+  if (!sel) return;
+  if (sel.value === 'c') {
+    lessonState.wb.q2 = true;
+    showFb('q2fb', '✅ Верно! True Color — это 24 бита на пиксель.', 'ok');
+  } else {
+    showFb('q2fb', '❌ Неверно. True Color подразумевает 16,7 млн цветов.', 'no');
+  }
+}
+
+function checkQ3(){
+  if (lessonState.wb.q3) return;
+  var m1 = document.getElementById('q3m1').value;
+  var m2 = document.getElementById('q3m2').value;
+  var m3 = document.getElementById('q3m3').value;
+  if (m1 === '2' && m2 === '16' && m3 === '256') {
+    lessonState.wb.q3 = true;
+    showFb('q3fb', '✅ Верно! $2^1=2$, $2^4=16$, $2^8=256$.', 'ok');
+  } else {
+    showFb('q3fb', '❌ Неверно. Вспомните степени двойки.', 'no');
+  }
+}
+
+function checkQ4(){
+  if (lessonState.wb.q4) return;
+  var v = document.getElementById('q4ans').value.trim().replace(/\s+/g, '');
+  if (v === '90000') {
+    lessonState.wb.q4 = true;
+    showFb('q4fb', '✅ Верно! $200 \cdot 150 \cdot 24 = 720\,000$ бит $= 90\,000$ байт.', 'ok');
+  } else {
+    showFb('q4fb', '❌ Неверно. Проверьте формулу $I = K \cdot i$ и перевод в байты.', 'no');
+  }
+}
+
+function checkQ5(){
+  if (lessonState.wb.q5) return;
+  var v = document.getElementById('q5ans').value.trim().replace(/\s+/g, '');
+  // 10000 байт * 8 = 80000 бит. K = 100*50 = 5000. i = 80000 / 5000 = 16.
+  if (v === '16') {
+    lessonState.wb.q5 = true;
+    showFb('q5fb', '✅ Верно! $10\,000 \cdot 8 = 80\,000$ бит. $K = 5000$. $i = 80\,000 / 5000 = 16$ бит.', 'ok');
+  } else {
+    showFb('q5fb', '❌ Неверно. Переведите объём в биты, затем разделите на количество пикселей.', 'no');
+  }
+}
+
+function checkQ6(){
+  if (lessonState.wb.q6) return;
+  var r = document.getElementById('q6r').value.trim();
+  var g = document.getElementById('q6g').value.trim();
+  var b = document.getElementById('q6b').value.trim();
+  // #FFA500 = 255, 165, 0
+  if (r === '255' && g === '165' && b === '0') {
+    lessonState.wb.q6 = true;
+    showFb('q6fb', '✅ Верно! FF = 255, A5 = 165, 00 = 0.', 'ok');
+  } else {
+    showFb('q6fb', '❌ Неверно. FF в шестнадцатеричной системе — это 255.', 'no');
+  }
+}
+
+function checkQ7(){
+  if (lessonState.wb.q7) return;
+  var sel = document.querySelector('input[name="q7"]:checked');
+  if (!sel) return;
+  if (sel.value === 'b') {
+    lessonState.wb.q7 = true;
+    showFb('q7fb', '✅ Верно! $2^7 = 128$, значит $i = 7$ бит.', 'ok');
+  } else {
+    showFb('q7fb', '❌ Неверно. Найдите степень, в которую нужно возвести 2, чтобы получить 128.', 'no');
+  }
+}
+
+function checkQ8(){
+  if (lessonState.wb.q8) return;
+  var v = document.getElementById('q8ans').value.trim().replace(/\s+/g, '');
+  // 4096 байт * 8 = 32768 бит. K = 64*64 = 4096. i = 32768 / 4096 = 8. N = 2^8 = 256.
+  if (v === '256') {
+    lessonState.wb.q8 = true;
+    showFb('q8fb', '✅ Верно! $4096 \cdot 8 = 32\,768$ бит. $K = 4096$. $i = 8$. $N = 2^8 = 256$ цветов.', 'ok');
+  } else {
+    showFb('q8fb', '❌ Неверно. Сначала найдите $i$, затем подставьте в $N = 2^i$.', 'no');
+  }
+}
+
+function checkQ9(){
+  if (lessonState.wb.q9) return;
+  var v = document.getElementById('q9ans').value.trim().replace(/\s+/g, '');
+  // 10*10=100 пикс. N=16, i=4 бита. I = 100*4 = 400 бит = 50 байт.
+  if (v === '50') {
+    lessonState.wb.q9 = true;
+    showFb('q9fb', '✅ Верно! $N=16 \Rightarrow i=4$. $K=100$. $I = 100 \cdot 4 = 400$ бит $= 50$ байт.', 'ok');
+  } else {
+    showFb('q9fb', '❌ Неверно. Сначала найдите $i$ по формуле $N=2^i$, затем объём.', 'no');
+  }
+}
+
+function checkQ10(){
+  if (lessonState.wb.q10) return;
+  var sel = document.querySelector('input[name="q10"]:checked');
+  if (!sel) return;
+  if (sel.value === 'b') {
+    lessonState.wb.q10 = true;
+    showFb('q10fb', '✅ Верно! `#008000` — тёмно-зелёный (R=0, G=128, B=0).', 'ok');
+  } else {
+    showFb('q10fb', '❌ Неверно. Разберите код по парам: 00, 80, 00.', 'no');
+  }
+}
+
+function checkQ11(){
+  if (lessonState.wb.q11) return;
+  var v = document.getElementById('q11ans').value.trim().toUpperCase();
+  if (v === '#808000') {
+    lessonState.wb.q11 = true;
+    showFb('q11fb', '✅ Верно! 128 = 80 в шестнадцатеричной. Ответ: `#808000`.', 'ok');
+  } else {
+    showFb('q11fb', '❌ Неверно. 128 в HEX — это 80. Соберите код из трёх пар.', 'no');
+  }
+}
+
+function calcWorkbook(){
+  var keys = ['q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','q11'];
+  var correct = keys.filter(function(k){ return lessonState.wb[k]; }).length;
+  var pct = Math.round(correct / keys.length * 100);
+  lessonState.wbCorrect = correct;
+  lessonState.wbMark = percentToMark(pct);
+  document.getElementById('wbCorrect').textContent = correct;
+  document.getElementById('wbMark').textContent = lessonState.wbMark;
+  document.getElementById('wbResult').classList.add('show');
+  toast('Тетрадь: ' + correct + '/11, оценка ' + lessonState.wbMark);
+}
+
+/* =========================================================
+   5. ПРАКТИКА
+   ========================================================= */
+var PRACTICE_VARIANTS = {
+  1: [
+    {type:'input', text:'Сколько бит нужно для кодирования 16 цветов?', ans:'4'},
+    {type:'input', text:'Найдите объём (в байтах) для изображения 100×100 пикселей при глубине 8 бит.', ans:'10000'},
+    {type:'select', text:'Установите соответствие: 24 бита — это...', opts:['256 цветов', '65 536 цветов', '16 777 216 цветов'], ans:'16 777 216 цветов'},
+    {type:'input', text:'Переведите цвет #FF0000 в RGB (через запятую).', ans:'255,0,0'}
+  ],
+  2: [
+    {type:'input', text:'Сколько цветов можно закодировать при глубине 5 бит?', ans:'32'},
+    {type:'input', text:'Найдите объём (в байтах) для изображения 50×40 пикселей при глубине 24 бита.', ans:'6000'},
+    {type:'select', text:'Какой цвет получится при R=255, G=255, B=255?', opts:['Чёрный', 'Красный', 'Белый'], ans:'Белый'},
+    {type:'input', text:'Переведите цвет #00FF00 в RGB (через запятую).', ans:'0,255,0'}
+  ],
+  3: [
+    {type:'input', text:'Сколько бит нужно для кодирования 1024 цветов?', ans:'10'},
+    {type:'input', text:'Найдите объём (в байтах) для изображения 20×30 пикселей при глубине 16 бит.', ans:'1200'},
+    {type:'select', text:'Установите соответствие: 8 бит — это...', opts:['2 цвета', '16 цветов', '256 цветов'], ans:'256 цветов'},
+    {type:'input', text:'Переведите цвет #0000FF в RGB (через запятую).', ans:'0,0,255'}
+  ],
+  4: [
+    {type:'input', text:'Сколько цветов можно закодировать при глубине 2 бита?', ans:'4'},
+    {type:'input', text:'Найдите объём (в байтах) для изображения 80×50 пикселей при глубине 32 бита.', ans:'16000'},
+    {type:'select', text:'Установите соответствие: 1 бит — это...', opts:['2 цвета', '16 цветов', '256 цветов'], ans:'2 цвета'},
+    {type:'input', text:'Переведите цвет #FFA500 в RGB (через запятую).', ans:'255,165,0'}
+  ]
+};
+
+function unlockPractice(){
+  var inp = document.getElementById('pracPass');
+  var msg = document.getElementById('pracMsg');
+  if (!passwordMatches(inp.value, PRACTICE_PASSWORD)){
+    msg.textContent = '❌ Неверный пароль.';
+    return;
+  }
+  msg.textContent = '';
+  inp.value = '';
+  document.getElementById('practiceLock').style.display = 'none';
+  document.getElementById('practiceBody').style.display = 'block';
+  renderPractice();
+  toast('🔓 Практика открыта');
+}
+
+function renderPractice(){
+  var v = document.getElementById('pracVariant').value;
+  var qs = PRACTICE_VARIANTS[v];
+  var html = '';
+  qs.forEach(function(q, i){
+    html += '<div class="task"><p><b>'+(i+1)+'.</b> '+q.text+'</p>';
+    if (q.type === 'select'){
+      html += '<div class="calc-row"><select class="match-select" id="prac'+i+'">';
+      html += '<option value="">-- выберите --</option>';
+      q.opts.forEach(function(o){ html += '<option value="'+o+'">'+o+'</option>'; });
+      html += '</select></div>';
+    } else {
+      html += '<div class="calc-row"><input type="text" id="prac'+i+'" placeholder="ваш ответ" style="max-width:100%"></div>';
+    }
+    html += '</div>';
+  });
+  document.getElementById('pracArea').innerHTML = html;
+}
+
+function gradePractice(){
+  if (lessonState.pracDone){
+    toast('⚠️ Практическая работа уже сдана.');
+    return;
+  }
+  var v = document.getElementById('pracVariant').value;
+  var qs = PRACTICE_VARIANTS[v];
+  var correct = 0;
+  
+  qs.forEach(function(q, i){
+    var el = document.getElementById('prac'+i);
+    var val = (el.value||'').trim().toLowerCase();
+    var ok = val === q.ans.toLowerCase();
+    if (ok) correct++;
+    el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
+    el.style.background = ok ? '#f0fdf4' : '#fef2f2';
+  });
+
+  var pct = Math.round(correct / qs.length * 100);
+  lessonState.pracCorrect = correct;
+  lessonState.pracMark = percentToMark(pct);
+  lessonState.pracDone = true;
+  
+  document.getElementById('pracCorrect').textContent = correct;
+  document.getElementById('pracMark').textContent = lessonState.pracMark;
+  document.getElementById('pracResult').classList.add('show');
+
+  document.querySelectorAll('#pracArea input, #pracArea select').forEach(function(el){ el.disabled = true; });
+  var checkBtn = document.getElementById('pracCheckBtn');
+  if (checkBtn) checkBtn.style.display = 'none';
+
+  savePracticeState();
+  toast('Практика: ' + correct + '/' + qs.length + ', оценка ' + lessonState.pracMark);
+}
+
+function savePracticeState(){
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
+    var d = JSON.parse(raw);
+    d.pracDone = lessonState.pracDone;
+    d.pracCorrect = lessonState.pracCorrect;
+    d.pracMark = lessonState.pracMark;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  } catch(e){}
+}
+function loadPracticeState(){
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    var d = JSON.parse(raw);
+    if (!d.pracDone) return;
+    lessonState.pracDone = true;
+    lessonState.pracCorrect = d.pracCorrect || 0;
+    lessonState.pracMark = d.pracMark || 0;
+    document.getElementById('practiceLock').style.display = 'none';
+    document.getElementById('practiceBody').style.display = 'block';
+    renderPractice();
+    document.getElementById('pracCorrect').textContent = d.pracCorrect;
+    document.getElementById('pracMark').textContent = d.pracMark;
+    document.getElementById('pracResult').classList.add('show');
+    var checkBtn = document.getElementById('pracCheckBtn');
+    if (checkBtn) checkBtn.style.display = 'none';
+  } catch(e){}
+}
+function resetPractice(){
+  if (!confirm('Сбросить практику?')) return;
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
+    var d = JSON.parse(raw);
+    delete d.pracDone; delete d.pracCorrect; delete d.pracMark;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  } catch(e){}
+  location.reload();
+}
+
+/* =========================================================
+   6. ИТОГ
+   ========================================================= */
+function calcFinalMark(){
+  if (!lessonState.wbMark && !lessonState.pracDone){
+    toast('Сначала выполните тетрадь и практику');
+    return;
+  }
+  var wb = lessonState.wbMark || 0;
+  var pr = lessonState.pracMark || 0;
+  var total = Math.round((wb + pr) / 2);
+  document.getElementById('fWb').textContent = wb || '—';
+  document.getElementById('fPrac').textContent = pr || '—';
+  document.getElementById('fTotal').textContent = total;
+  document.getElementById('finalResult').classList.add('show');
+  document.getElementById('finalMsg').textContent =
+    total === 5 ? '🌟 Отличная работа!' :
+    total === 4 ? '👏 Хорошо!' :
+    total === 3 ? '📖 Удовлетворительно.' : '📚 Стоит повторить тему.';
+}
+
+/* =========================================================
+   7. САМОСТОЯТЕЛЬНАЯ
+   ========================================================= */
+var saTimer = null, saLeft = 0, saTasks = [], saStarted = false, saDone = false;
+
+function genStandalone(){
+  function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+  function pickN(arr, n){
+    var copy = arr.slice(), res = [];
+    for (var i = 0; i < n && copy.length; i++){
+      var idx = rnd(0, copy.length-1);
+      res.push(copy.splice(idx, 1)[0]);
+    }
+    return res;
+  }
+
+  var pool = [
+    {q:'Сколько бит нужно для кодирования 32 цветов?', ans:'5'},
+    {q:'Сколько цветов можно закодировать при глубине 3 бита?', ans:'8'},
+    {q:'Сколько бит отводится на один канал в модели RGB?', ans:'8'},
+    {q:'Сколько бит в режиме True Color?', ans:'24'},
+    {q:'Переведите цвет #FF0000 в RGB (через запятую).', ans:'255,0,0'},
+    {q:'Переведите цвет #00FF00 в RGB (через запятую).', ans:'0,255,0'},
+    {q:'Найдите объём в байтах: 10×10 пикселей, 24 бита.', ans:'300'},
+    {q:'Найдите объём в байтах: 20×20 пикселей, 8 бит.', ans:'400'},
+    {q:'Сколько цветов при глубине 1 бит?', ans:'2'},
+    {q:'Сколько бит нужно для 64 цветов?', ans:'6'}
+  ];
+
+  var selected = pickN(pool, 5);
+
+  return selected.map(function(t){
+    return { text: t.q, canon: t.ans };
+  });
+}
+
+function scrollToGate(){
+  document.getElementById('standaloneGate').scrollIntoView({behavior:'smooth', block:'center'});
+  document.getElementById('saPass').focus();
+}
+
+function unlockStandalone(){
+  if (!getSurname() || !getFirstname() || !getKlass()){
+    document.getElementById('saMsg').textContent = 'Заполните ФИО и класс.';
+    return;
+  }
+  var inp = document.getElementById('saPass');
+  var msg = document.getElementById('saMsg');
+  if (!passwordMatches(inp.value, SA_PASSWORD)){
+    msg.textContent = '❌ Неверный пароль.';
+    inp.value=''; inp.focus();
+    return;
+  }
+  msg.textContent=''; inp.value='';
+  startStandalone();
+}
+
+function startStandalone(){
+  saTasks = genStandalone();
+  saDone = false; saStarted = true; saLeft = SA_MINUTES*60;
+
+  document.body.classList.add('exam');
+  var who = getFullName() + (getKlass() ? ', ' + getKlass() : '');
+  document.getElementById('examWho').textContent = who || 'Ученик';
+
+  var host = document.getElementById('examTasks');
+  var html = '';
+  saTasks.forEach(function(t, i){
+    html += '<div class="s-task" id="st'+i+'">';
+    html += '<p class="stext"><span class="sn">'+(i+1)+'</span>'+t.text+'</p>';
+    html += '<input type="text" id="sa'+i+'" placeholder="ваш ответ" autocomplete="off">';
+    html += '</div>';
+  });
+  host.innerHTML = html;
+
+  document.getElementById('examResult').classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  if (saTimer) clearInterval(saTimer);
+  updateTimer();
+  saTimer = setInterval(function(){
+    saLeft--;
+    updateTimer();
+    if (saLeft <= 0){
+      clearInterval(saTimer); saTimer=null;
+      toast('⏰ Время вышло!');
+      finishStandalone(true);
+    }
+  }, 1000);
+}
+
+function updateTimer(){
+  var m = Math.floor(saLeft/60), s = saLeft % 60;
+  var el = document.getElementById('examTimer');
+  el.textContent = (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  el.className = 'timer' + (saLeft<=60?' danger' : saLeft<=300?' warn':'');
+}
+
+function finishStandalone(auto){
+  if (!saStarted) return;
+  if (!auto && !confirm('Сдать работу?')) return;
+  if (saTimer){ clearInterval(saTimer); saTimer=null; }
+  saDone = true;
+
+  var correct = 0;
+  saTasks.forEach(function(t,i){
+    var el = document.getElementById('sa'+i);
+    var v = (el ? el.value : '').trim().toLowerCase().replace(/\s+/g,'');
+    var ans = t.canon.toLowerCase().replace(/\s+/g,'');
+    var ok = v === ans;
+    if (ok) correct++;
+    if (el){
+      el.disabled = true;
+      el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
+      el.style.background  = ok ? '#f0fdf4' : '#fef2f2';
+    }
+  });
+
+  var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
+  document.getElementById('exCorrect').textContent = correct + ' / 5';
+  document.getElementById('exMark').textContent = mark;
+  document.getElementById('exTime').textContent = '—';
+  document.getElementById('exMsg').textContent =
+    correct>=5 ? '🌟 Отлично!' :
+    correct===4 ? '👏 Хорошо!' :
+    correct===3 ? '📖 Удовлетворительно.' : '📚 Стоит повторить.';
+  document.getElementById('examResult').classList.add('show');
+}
+
+function exitStandalone(){
+  if (saStarted && !saDone && !confirm('Выйти?')) return;
+  if (saTimer){ clearInterval(saTimer); saTimer=null; }
+  document.body.classList.remove('exam');
+  saStarted = false;
+}
+
+/* =========================================================
+   8. ПЕЧАТЬ ДЗ
+   ========================================================= */
+function printHomework(){
+  var fio = getFullName() + (getKlass() ? ', ' + getKlass() : '');
+  var hw = document.getElementById('hwBlock').innerHTML;
+  var w = window.open('', '_blank');
+  if (!w){ alert('Разрешите окна.'); return; }
+  w.document.write(
+    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>ДЗ</title>'+
+    '<script>window.MathJax={tex:{inlineMath:[["$","$"]]}};<\/script>'+
+    '<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>'+
+    '<style>body{font-family:Georgia,serif;padding:14mm;font-size:12pt}.hw{border:1pt solid #bbb;padding:3mm;margin:4mm 0}'+
+    '@page{margin:14mm}</style></head><body>'+
+    '<h1>Домашнее задание</h1>'+
+    '<p>'+(fio ? 'Ученик: <b>'+fio+'</b>' : 'Ученик: _______')+'</p>'+ hw +'</body></html>'
+  );
+  w.document.close();
+  setTimeout(function(){ w.print(); }, 600);
+}
+
+/* =========================================================
+   9. КАЛЬКУЛЯТОР
+   ========================================================= */
+var calcBuf = '';
+function openCalc(){ document.getElementById('calcModal').classList.add('open'); }
+function closeCalc(){ document.getElementById('calcModal').classList.remove('open'); }
+function calcNum(d){ if (calcBuf === '0' && d !== '0') calcBuf = ''; calcBuf += d; calcRender(); }
+function calcOp(op){
+  if (!calcBuf){ if (op === '-'){ calcBuf = '-'; calcRender(); } return; }
+  if ('+-*/'.indexOf(calcBuf.slice(-1)) !== -1) calcBuf = calcBuf.slice(0,-1);
+  calcBuf += op; calcRender();
+}
+function calcClear(){ calcBuf = ''; calcRender(); }
+function calcBack(){ calcBuf = calcBuf.slice(0,-1); calcRender(); }
+function calcRender(){ document.getElementById('calcDisp').textContent = calcBuf || '0'; }
+function calcEquals(){
+  try {
+    var v = Function('"use strict";return (' + calcBuf + ')')();
+    document.getElementById('calcDisp').textContent = String(v);
+    calcBuf = String(v);
+  } catch(e){ document.getElementById('calcDisp').textContent = 'Ошибка'; calcBuf = ''; }
+}
+
+/* =========================================================
+   10. ПАРОЛИ
+   ========================================================= */
+var LAT2CYR = {q:'й',w:'ц',e:'у',r:'к',t:'е',y:'н',u:'г',i:'ш',o:'щ',p:'з','[':'х',']':'ъ',
+  a:'ф',s:'ы',d:'в',f:'а',g:'п',h:'р',j:'о',k:'л',l:'д',';':'ж',"'":'э',
+  z:'я',x:'ч',c:'с',v:'м',b:'и',n:'т',m:'ь',',':'б','.':'ю'};
+var CYR2LAT = {};
+Object.keys(LAT2CYR).forEach(function(k){ CYR2LAT[LAT2CYR[k]] = k; });
+function mapKeys(s, table){
+  return String(s).toLowerCase().split('').map(function(c){ return table[c]||c; }).join('');
+}
+function passwordMatches(t, e){
+  t = String(t||'').trim().toLowerCase();
+  e = String(e||'').trim().toLowerCase();
+  if (!t) return false;
+  return t === e || mapKeys(t,LAT2CYR) === e || mapKeys(t,CYR2LAT) === e
+      || t === mapKeys(e,LAT2CYR) || t === mapKeys(e,CYR2LAT);
+}
+
+/* =========================================================
+   11. УТИЛИТЫ
+   ========================================================= */
+function showFb(id, html, kind){
+  var el = document.getElementById(id);
+  el.innerHTML = html;
+  el.className = 'fb show ' + kind;
+}
+function renderMath(el){
+  if (!el || !window.MathJax) return;
+  if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){});
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  updateColor();
+  loadPracticeState();
+  
+  // Инициализация второго микшера для Задания 6
+  document.getElementById('hexInput').value = '#FFA500';
+  applyHex();
+});
+</script>
+</body>
+</html>
