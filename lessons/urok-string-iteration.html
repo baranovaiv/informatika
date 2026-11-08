@@ -34,6 +34,7 @@ window.MathJax = {
 .lock p{color:var(--muted);margin:0 0 16px;font-size:.94rem}
 .lockrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .pmsg{min-height:22px;font-weight:600;color:var(--bad);margin-top:10px}
+.pmsg.info{color:var(--muted)}
 
 .vbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
 .res{background:linear-gradient(135deg,var(--green),var(--blue));border-radius:var(--r);padding:22px;margin:18px 0;display:none}
@@ -179,7 +180,6 @@ pre.code .com{color:#807b93;font-style:italic}
     </div>
   </header>
 
-  <!-- 1. ТЕОРИЯ -->
   <section class="card" id="theory">
     <h2><span class="num">1</span> Теоретический материал</h2>
 
@@ -266,7 +266,6 @@ result = <span class="str">""</span>
 <span class="kw">print</span>(result)</pre>
   </section>
 
-  <!-- 2. РАБОЧАЯ ТЕТРАДЬ -->
   <section class="card" id="workbook">
     <h2><span class="num">2</span> Рабочая тетрадь</h2>
     <p class="muted">В каждом задании пишите код Python. Перед запуском введите тестовые данные (если нужны). Программа выполнится прямо в браузере.</p>
@@ -358,7 +357,6 @@ result = <span class="str">""</span>
     </div>
   </section>
 
-  <!-- 3. ПРАКТИКА -->
   <section class="card" id="practice">
     <h2><span class="num">3</span> Практическая работа <span class="badge">по паролю</span></h2>
 
@@ -368,7 +366,7 @@ result = <span class="str">""</span>
       <div class="lockrow">
         <input type="password" id="pracPass" placeholder="Пароль" autocomplete="off"
                onkeydown="if(event.key==='Enter')unlockPractice()">
-        <button class="btn b-purple" onclick="unlockPractice()">Открыть</button>
+        <button class="btn b-purple" id="pracBtn" onclick="unlockPractice()">Открыть</button>
       </div>
       <div class="pmsg" id="pracMsg"></div>
     </div>
@@ -392,7 +390,6 @@ result = <span class="str">""</span>
     </div>
   </section>
 
-  <!-- 4. ИТОГ -->
   <section class="card" id="final">
     <h2><span class="num">4</span> Итоговая оценка за урок</h2>
     <p class="muted">Складывается из рабочей тетради и практической работы.</p>
@@ -411,19 +408,17 @@ result = <span class="str">""</span>
     </div>
   </section>
 
-  <!-- 5. САМОСТОЯТЕЛЬНАЯ -->
   <section class="card" id="standaloneGate">
     <h2><span class="num">5</span> Самостоятельная работа <span class="badge">по паролю</span></h2>
     <p>Четыре варианта по структуре: A — теория, B — перебор по символам, C — перебор по индексам. Время — 20 минут. Открывается по паролю учителя.</p>
     <div class="lockrow" style="justify-content:flex-start">
       <input type="password" id="saPass" placeholder="Пароль учителя" autocomplete="off"
              onkeydown="if(event.key==='Enter')unlockStandalone()">
-      <button class="btn b-blue" onclick="unlockStandalone()">🔓 Начать работу</button>
+      <button class="btn b-blue" id="saBtn" onclick="unlockStandalone()">🔓 Начать работу</button>
     </div>
     <div class="pmsg" id="saMsg"></div>
   </section>
 
-  <!-- 6. ДОМАШНЕЕ ЗАДАНИЕ -->
   <section class="card" id="homework">
     <h2><span class="num">6</span> Домашнее задание</h2>
     <button class="btn b-orange no-print" onclick="printHomework()">🖨 Печать только ДЗ</button>
@@ -448,7 +443,6 @@ result = <span class="str">""</span>
   <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
 </div>
 
-<!-- САМОСТОЯТЕЛЬНАЯ -->
 <section id="standalone">
   <div class="exam-head">
     <div>
@@ -457,6 +451,7 @@ result = <span class="str">""</span>
     </div>
     <div class="timer" id="examTimer">20:00</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
       <button class="btn b-green" onclick="finishStandalone()">✅ Сдать работу</button>
     </div>
   </div>
@@ -486,7 +481,6 @@ result = <span class="str">""</span>
   </div>
 </section>
 
-<!-- КАЛЬКУЛЯТОР -->
 <div class="mbg" id="calcModal">
   <div class="modal" style="max-width:340px">
     <h3>🧮 Калькулятор</h3>
@@ -524,21 +518,43 @@ result = <span class="str">""</span>
 
 <script>
 /* =========================================================
-   1. КОНСТАНТЫ
+   0. НАСТРОЙКИ GOOGLE APPS SCRIPT
    ========================================================= */
-var PRACTICE_PASSWORD = 'малинадеревня624';
-var SA_PASSWORD = 'виннимед254';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzRiIsJ8Sbn1HP1n9cTnVE652h1Ohrd8Q6wH3raYPLfGnIu7u-rsYG7BAp0VT7eXgs8/exec';
+var RESOURCE_ID = 'urok-string-iteration';
 var SA_MINUTES = 20;
-
 var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
 
+/* =========================================================
+   1. ПРОВЕРКА ПАРОЛЯ ЧЕРЕЗ GOOGLE APPS SCRIPT
+   ========================================================= */
+async function checkPasswordRemote(resourceId, type, password){
+  try {
+    var response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        resource: resourceId,
+        type: type,
+        password: password
+      })
+    });
+    var data = await response.json();
+    return data;
+  } catch (error) {
+    return { ok: false, error: 'network' };
+  }
+}
+
+/* =========================================================
+   2. СОСТОЯНИЕ
+   ========================================================= */
 var lessonState = {
   wb: { w1:false, w2:false, w3:false, w4:false, w5:false, w6:false },
   wbCorrect: 0, wbMark: 0,
   pracDone: false, pracCorrect: 0, pracMark: 0
 };
 
-/* ---------- ФИО ---------- */
 function getSurname(){ return (document.getElementById('surname')?.value || '').trim(); }
 function getFirstname(){ return (document.getElementById('firstname')?.value || '').trim(); }
 function getKlass(){ return (document.getElementById('klass')?.value || '').trim(); }
@@ -555,7 +571,7 @@ function percentToMark(pct){
 }
 
 /* =========================================================
-   2. PYODIDE — PYTHON В БРАУЗЕРЕ
+   3. PYODIDE
    ========================================================= */
 var pyodideReady = null;
 
@@ -574,7 +590,6 @@ async function getPyodide(){
   return pyodideReady;
 }
 
-/* Обёртка: запуск Python-кода с эмуляцией input() */
 async function runWithInputs(code, inputs){
   var py = await getPyodide();
   py.globals.set('__INPUTS__', inputs);
@@ -608,7 +623,6 @@ def input(prompt=''):
   }
 }
 
-/* Универсальный запуск задачи: код + тестовые данные + проверка */
 async function runTask(inputId, stdinId, outId, checker){
   var code = document.getElementById(inputId).value;
   var out = document.getElementById(outId);
@@ -622,22 +636,14 @@ async function runTask(inputId, stdinId, outId, checker){
 
   var res = await runWithInputs(code, inputs);
 
-  // 1. Ошибка выполнения
   if (!res.ok){
     out.className = 'code-out err';
     out.innerHTML = '<span class="lbl">Ошибка выполнения</span>' + escapeHtml(res.out);
     return;
   }
 
-  // 2. Код выполнился, теперь проверяем результат
-  var ok = false;
-  if (checker) {
-    ok = checker(res.out);
-  } else {
-    ok = true;
-  }
+  var ok = checker ? checker(res.out) : true;
 
-  // 3. Показываем вывод и статус
   if (ok) {
     out.className = 'code-out ok';
     out.innerHTML = '<span class="lbl">✅ Верно. Вывод программы:</span>' + escapeHtml(res.out);
@@ -655,52 +661,28 @@ function escapeHtml(s){
 }
 
 /* =========================================================
-   3. ПРОВЕРКИ ДЛЯ РАБОЧЕЙ ТЕТРАДИ (СВЕРХМЯГКИЕ)
+   4. ПРОВЕРКИ ТЕТРАДИ
    ========================================================= */
-
-// Убирает все пробелы (включая неразрывные), табы и переносы
 function cleanOut(s){
   return String(s).replace(/[\s\u00A0]+/g, '');
 }
 
-// Задание 1: ищем Т, ь, а и 7 (или len) в любом порядке и формате
 function w1check(out){
   var c = cleanOut(out);
   return c.includes('Т') && c.includes('ь') && c.includes('р') && c.includes('7');
 }
-
-// Задание 2: вывести символы P y t h o n
-function w2check(out){
-  return cleanOut(out) === 'Python';
-}
-
-// Задание 3: вывести "0: P", "1: y" и т.д. (индекс и символ)
-// Разрешаем пробелы, двоеточие с пробелом или без, и регистр
+function w2check(out){ return cleanOut(out) === 'Python'; }
 function w3check(out){
   var c = cleanOut(out).toLowerCase();
   return /^0:p1:y2:t3:h4:o5:n$/.test(c);
 }
-
-// Задание 4: должны быть числа 3 (количество) и 6 (сумма)
 function w4check(out){
   var nums = out.match(/\d+/g) || [];
   return nums.includes('3') && nums.includes('6');
 }
+function w5check(out){ return cleanOut(out) === 'nohtyP'; }
+function w6check(out){ return cleanOut(out) === 'Пр*в*т,м*р!'; }
 
-// Задание 5: обратный порядок nohtyP (разрешаем пробелы)
-function w5check(out){
-  return cleanOut(out) === 'nohtyP';
-}
-
-// Задание 6: Пр*в*т, м*р! (разрешаем пробелы)
-function w6check(out){
-  var c = cleanOut(out);
-  return c === 'Пр*в*т,м*р!';
-}
-
-/* =========================================================
-   4. РАБОЧАЯ ТЕТРАДЬ — ОЦЕНКА
-   ========================================================= */
 function calcWorkbook(){
   var correct = ['w1','w2','w3','w4','w5','w6'].filter(function(k){ return lessonState.wb[k]; }).length;
   var pct = Math.round(correct / 6 * 100);
@@ -774,15 +756,40 @@ var PRACTICE_VARIANTS = {
   ]
 };
 
-function unlockPractice(){
+async function unlockPractice(){
   var inp = document.getElementById('pracPass');
   var msg = document.getElementById('pracMsg');
-  if (!passwordMatches(inp.value, PRACTICE_PASSWORD)){
-    msg.textContent = '❌ Неверный пароль.';
+  var btn = document.getElementById('pracBtn');
+  var pass = inp.value.trim();
+
+  if (!pass){
+    msg.className = 'pmsg';
+    msg.textContent = 'Введите пароль.';
     return;
   }
-  msg.textContent = '';
-  inp.value = '';
+
+  msg.className = 'pmsg info';
+  msg.textContent = 'Проверка…';
+  btn.disabled = true;
+
+  var data = await checkPasswordRemote(RESOURCE_ID, 'practice', pass);
+
+  btn.disabled = false;
+
+  if (data.error === 'network'){
+    msg.className = 'pmsg';
+    msg.textContent = '⚠️ Ошибка соединения. Проверьте интернет.';
+    return;
+  }
+  if (!data.ok){
+    msg.className = 'pmsg';
+    msg.textContent = '❌ Неверный пароль.';
+    inp.value = '';
+    inp.focus();
+    return;
+  }
+
+  msg.textContent = ''; inp.value = '';
   document.getElementById('practiceLock').style.display = 'none';
   document.getElementById('practiceBody').style.display = 'block';
   renderPractice();
@@ -867,7 +874,6 @@ async function gradePractice(){
   toast('Практика: ' + correct + '/' + qs.length + ', оценка ' + lessonState.pracMark);
 }
 
-/* ---------- сохранение практики ---------- */
 function savePracticeState(){
   try {
     var raw = localStorage.getItem(STORAGE_KEY) || '{}';
@@ -990,18 +996,44 @@ function scrollToGate(){
   document.getElementById('saPass').focus();
 }
 
-function unlockStandalone(){
+async function unlockStandalone(){
   if (!getSurname() || !getFirstname() || !getKlass()){
+    document.getElementById('saMsg').className = 'pmsg';
     document.getElementById('saMsg').textContent = 'Сначала заполните ФИО и класс в шапке.';
     return;
   }
   var inp = document.getElementById('saPass');
   var msg = document.getElementById('saMsg');
-  if (!passwordMatches(inp.value, SA_PASSWORD)){
-    msg.textContent = '❌ Неверный пароль учителя.';
-    inp.value=''; inp.focus();
+  var btn = document.getElementById('saBtn');
+  var pass = inp.value.trim();
+
+  if (!pass){
+    msg.className = 'pmsg';
+    msg.textContent = 'Введите пароль.';
     return;
   }
+
+  msg.className = 'pmsg info';
+  msg.textContent = 'Проверка…';
+  btn.disabled = true;
+
+  var data = await checkPasswordRemote(RESOURCE_ID, 'standalone', pass);
+
+  btn.disabled = false;
+
+  if (data.error === 'network'){
+    msg.className = 'pmsg';
+    msg.textContent = '⚠️ Ошибка соединения. Проверьте интернет.';
+    return;
+  }
+  if (!data.ok){
+    msg.className = 'pmsg';
+    msg.textContent = '❌ Неверный пароль учителя.';
+    inp.value = '';
+    inp.focus();
+    return;
+  }
+
   msg.textContent=''; inp.value='';
   startStandalone();
 }
@@ -1189,26 +1221,7 @@ document.getElementById('calcModal').addEventListener('click', function(e){
 });
 
 /* =========================================================
-   10. ПАРОЛИ
-   ========================================================= */
-var LAT2CYR = {q:'й',w:'ц',e:'у',r:'к',t:'е',y:'н',u:'г',i:'ш',o:'щ',p:'з','[':'х',']':'ъ',
-  a:'ф',s:'ы',d:'в',f:'а',g:'п',h:'р',j:'о',k:'л',l:'д',';':'ж',"'":'э',
-  z:'я',x:'ч',c:'с',v:'м',b:'и',n:'т',m:'ь',',':'б','.':'ю'};
-var CYR2LAT = {};
-Object.keys(LAT2CYR).forEach(function(k){ CYR2LAT[LAT2CYR[k]] = k; });
-function mapKeys(s, table){
-  return String(s).toLowerCase().split('').map(function(c){ return table[c]||c; }).join('');
-}
-function passwordMatches(t, e){
-  t = String(t||'').trim().toLowerCase();
-  e = String(e||'').trim().toLowerCase();
-  if (!t) return false;
-  return t === e || mapKeys(t,LAT2CYR) === e || mapKeys(t,CYR2LAT) === e
-      || t === mapKeys(e,LAT2CYR) || t === mapKeys(e,CYR2LAT);
-}
-
-/* =========================================================
-   11. СТАРТ
+   10. СТАРТ
    ========================================================= */
 document.addEventListener('DOMContentLoaded', function(){
   loadPracticeState();

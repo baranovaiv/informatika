@@ -19,7 +19,6 @@ window.MathJax = {
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23ede9fe'/><text x='16' y='23' font-size='17' font-family='Georgia' font-weight='bold' fill='%236d28d9' text-anchor='middle'>I</text></svg>">
 
 <style>
-/* ---------- Дополнительные стили только для этого урока ---------- */
 .student{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:16px;position:relative;z-index:2}
 .student .f{display:flex;flex-direction:column;gap:4px}
 .student label{font-size:.78rem;font-weight:800;color:#4c4660;text-transform:uppercase;letter-spacing:.4px}
@@ -34,6 +33,7 @@ window.MathJax = {
 .lock p{color:var(--muted);margin:0 0 16px;font-size:.94rem}
 .lockrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .pmsg{min-height:22px;font-weight:600;color:var(--bad);margin-top:10px}
+.pmsg.info{color:var(--muted)}
 
 .vbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
 .res{background:linear-gradient(135deg,var(--green),var(--blue));border-radius:var(--r);padding:22px;margin:18px 0;display:none}
@@ -116,6 +116,10 @@ body.exam #standalone{display:block}
   box-shadow:0 -4px 24px rgba(120,110,160,.16);display:flex;flex-wrap:wrap;gap:10px;
   position:sticky;bottom:10px;z-index:30;margin-top:24px}
 
+table.pow{border-collapse:collapse;width:100%;margin:14px 0;font-size:.9rem;display:block;overflow-x:auto}
+table.pow td{border:1px solid #e6e3f1;padding:6px 10px;text-align:center;background:#fdfcff}
+table.pow tr:first-child td{background:var(--purple);color:#4c1d95;font-weight:800}
+
 @media(max-width:720px){
   #surname,#firstname,#klass{width:100%}
   .marks{grid-template-columns:1fr}
@@ -148,7 +152,6 @@ body.exam #standalone{display:block}
 
 <div class="wrap" id="main">
 
-  <!-- ШАПКА УРОКА -->
   <header class="hero">
     <h1>Информационный объём сообщения</h1>
     <p class="lead">Урок информатики · 7 класс · Измерение информации</p>
@@ -162,7 +165,6 @@ body.exam #standalone{display:block}
     </div>
   </header>
 
-  <!-- 1. ТЕОРИЯ -->
   <section class="card" id="theory">
     <h2><span class="num">1</span> Теоретический материал</h2>
     <p><b>Информационный объём сообщения</b> — это количество информации, которое несёт сообщение. Измеряется в битах, байтах, килобайтах.</p>
@@ -205,7 +207,6 @@ body.exam #standalone{display:block}
     </div>
   </section>
 
-  <!-- 2. РАБОЧАЯ ТЕТРАДЬ -->
   <section class="card" id="workbook">
     <h2><span class="num">2</span> Рабочая тетрадь</h2>
     <p class="muted">Задания с подсказками. Вводите только число — без единиц измерения.</p>
@@ -279,7 +280,6 @@ body.exam #standalone{display:block}
     </div>
   </section>
 
-  <!-- 3. ПРАКТИЧЕСКАЯ РАБОТА -->
   <section class="card" id="practice">
     <h2><span class="num">3</span> Практическая работа <span class="badge">по паролю</span></h2>
 
@@ -289,7 +289,7 @@ body.exam #standalone{display:block}
       <div class="lockrow">
         <input type="password" id="pracPass" placeholder="Пароль" autocomplete="off"
                onkeydown="if(event.key==='Enter')unlockPractice()">
-        <button class="btn b-purple" onclick="unlockPractice()">Открыть</button>
+        <button class="btn b-purple" id="pracBtn" onclick="unlockPractice()">Открыть</button>
       </div>
       <div class="pmsg" id="pracMsg"></div>
     </div>
@@ -305,7 +305,7 @@ body.exam #standalone{display:block}
         </select>
       </div>
       <div id="pracArea"></div>
-      <button class="btn b-green" onclick="gradePractice()" style="margin-top:14px">📊 Проверить практику</button>
+      <button class="btn b-green" id="pracCheckBtn" onclick="gradePractice()" style="margin-top:14px">📊 Проверить практику</button>
       <div class="res" id="pracResult">
         <h3>Результат практической работы</h3>
         <p style="margin:0;font-weight:700">Верно: <span id="pracCorrect">0</span> из 5 · Оценка: <span id="pracMark" style="font-size:1.4rem">—</span></p>
@@ -313,7 +313,6 @@ body.exam #standalone{display:block}
     </div>
   </section>
 
-  <!-- 4. ИТОГ -->
   <section class="card" id="final">
     <h2><span class="num">4</span> Итоговая оценка за урок</h2>
     <p class="muted">Складывается из рабочей тетради и практической работы.<br>
@@ -332,22 +331,18 @@ body.exam #standalone{display:block}
     </div>
   </section>
 
-  <!-- 5. САМОСТОЯТЕЛЬНАЯ -->
   <section class="card" id="standaloneGate">
     <h2><span class="num">5</span> Самостоятельная работа <span class="badge">по паролю</span></h2>
     <p>Пять задач на 15 минут. Каждая задача — в несколько действий с переводом единиц.
       Теория и формулы во время работы недоступны. Открывается по паролю учителя.</p>
-    <p style="font-size:.85rem;color:var(--muted);margin-top:-4px">
-      Пароль принимается в любой раскладке — можно набирать, не переключая язык.</p>
     <div class="lockrow" style="justify-content:flex-start">
       <input type="password" id="saPass" placeholder="Пароль учителя" autocomplete="off"
              onkeydown="if(event.key==='Enter')unlockStandalone()">
-      <button class="btn b-blue" onclick="unlockStandalone()">🔓 Начать работу</button>
+      <button class="btn b-blue" id="saBtn" onclick="unlockStandalone()">🔓 Начать работу</button>
     </div>
     <div class="pmsg" id="saMsg"></div>
   </section>
 
-  <!-- 6. ДОМАШНЕЕ ЗАДАНИЕ -->
   <section class="card" id="homework">
     <h2><span class="num">6</span> Домашнее задание</h2>
     <button class="btn b-orange no-print" onclick="printHomework()">🖨 Печать только ДЗ</button>
@@ -389,7 +384,6 @@ body.exam #standalone{display:block}
 
 </div><!-- /wrap -->
 
-<!-- ================= НИЖНЯЯ ПАНЕЛЬ ================= -->
 <div class="bar no-print">
   <button class="btn b-purple" onclick="openMath()">⌨ Математическая раскладка</button>
   <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
@@ -397,7 +391,6 @@ body.exam #standalone{display:block}
   <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
 </div>
 
-<!-- ================= САМОСТОЯТЕЛЬНАЯ РАБОТА ================= -->
 <section id="standalone">
   <div class="exam-head">
     <div>
@@ -442,7 +435,6 @@ body.exam #standalone{display:block}
   </div>
 </section>
 
-<!-- ================= МАТЕМАТИЧЕСКАЯ РАСКЛАДКА ================= -->
 <div class="mbg" id="mathModal">
   <div class="modal" role="dialog" aria-label="Математическая раскладка">
     <h3>⌨ Математическая раскладка</h3>
@@ -520,7 +512,6 @@ body.exam #standalone{display:block}
   </div>
 </div>
 
-<!-- ================= КАЛЬКУЛЯТОР ================= -->
 <div class="mbg" id="calcModal">
   <div class="modal calc" role="dialog" aria-label="Калькулятор">
     <h3 style="margin-bottom:12px">🧮 Калькулятор</h3>
@@ -561,12 +552,36 @@ body.exam #standalone{display:block}
 
 <script>
 /* =========================================================
-   1. КОНСТАНТЫ УРОКА
+   0. НАСТРОЙКИ GOOGLE APPS SCRIPT
    ========================================================= */
-var PRACTICE_PASSWORD = 'малинадеревня624';
-var SA_PASSWORD = 'виннимед254';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzRiIsJ8Sbn1HP1n9cTnVE652h1Ohrd8Q6wH3raYPLfGnIu7u-rsYG7BAp0VT7eXgs8/exec';
+var RESOURCE_ID = 'urok-inform-volume';
 var SA_MINUTES = 15;
 
+/* =========================================================
+   1. ПРОВЕРКА ПАРОЛЯ ЧЕРЕЗ GOOGLE APPS SCRIPT
+   ========================================================= */
+async function checkPasswordRemote(resourceId, type, password){
+  try {
+    var response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        resource: resourceId,
+        type: type,
+        password: password
+      })
+    });
+    var data = await response.json();
+    return data;
+  } catch (error) {
+    return { ok: false, error: 'network' };
+  }
+}
+
+/* =========================================================
+   2. СОСТОЯНИЕ
+   ========================================================= */
 var lessonState = {
   wb: { w1:false, w2:false, w3:false, w4:false },
   wbCorrect: 0, wbMark: 0,
@@ -574,68 +589,6 @@ var lessonState = {
 };
 var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
 
-function savePracticeState(){
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
-    var d = JSON.parse(raw);
-    d.pracDone = lessonState.pracDone;
-    d.pracCorrect = lessonState.pracCorrect;
-    d.pracMark = lessonState.pracMark;
-    d.pracVariant = document.getElementById('pracVariant')?.value || '1';
-    d.pracAnswers = [];
-    if (lessonState.pracDone){
-      var v = document.getElementById('pracVariant').value;
-      var qs = PRACTICE_VARIANTS[v];
-      qs.forEach(function(_, i){
-        var el = document.getElementById('prac'+i);
-        d.pracAnswers.push(el ? el.value : '');
-      });
-    }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
-  } catch(e){}
-}
-
-function loadPracticeState(){
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return false;
-    var d = JSON.parse(raw);
-    if (!d.pracDone) return false;
-
-    lessonState.pracDone = true;
-    lessonState.pracCorrect = d.pracCorrect || 0;
-    lessonState.pracMark = d.pracMark || 0;
-
-    /* показываем результат вместо формы */
-    document.getElementById('practiceLock').style.display = 'none';
-    document.getElementById('practiceBody').style.display = 'block';
-    document.getElementById('pracVariant').value = d.pracVariant || '1';
-    renderPractice();
-
-    /* восстанавливаем ответы и блокируем поля */
-    (d.pracAnswers || []).forEach(function(ans, i){
-      var el = document.getElementById('prac'+i);
-      if (el){
-        el.value = ans;
-        el.disabled = true;
-        el.style.background = '#f3f4f6';
-      }
-    });
-
-    /* показываем результат */
-    document.getElementById('pracCorrect').textContent = d.pracCorrect;
-    document.getElementById('pracMark').textContent = d.pracMark;
-    document.getElementById('pracResult').classList.add('show');
-
-    /* прячем кнопку «Проверить» и меняем заголовок */
-    var checkBtn = document.querySelector('#practiceBody > button.b-green');
-    if (checkBtn) checkBtn.style.display = 'none';
-    var h2 = document.querySelector('#practice h2');
-    if (h2) h2.innerHTML = h2.innerHTML + ' <span class="badge" style="background:#fee2e2;color:#b91c1c">сдано</span>';
-
-    return true;
-  } catch(e){ return false; }
-}
 /* ---------- Ученик ---------- */
 function getSurname(){ return (document.getElementById('surname')?.value || '').trim(); }
 function getFirstname(){ return (document.getElementById('firstname')?.value || '').trim(); }
@@ -654,7 +607,7 @@ function percentToMark(pct){
 }
 
 /* =========================================================
-   2. РАБОЧАЯ ТЕТРАДЬ
+   3. РАБОЧАЯ ТЕТРАДЬ
    ========================================================= */
 function checkW(inputId, answer, fbId){
   if (lessonState.wb[inputId]){ showFb(fbId,'✔ Уже решено.','hint'); return; }
@@ -695,7 +648,7 @@ function calcWorkbook(){
 }
 
 /* =========================================================
-   3. ПРАКТИЧЕСКАЯ РАБОТА — 4 варианта по 5 заданий, полные тексты
+   4. ПРАКТИЧЕСКАЯ РАБОТА
    ========================================================= */
 var PRACTICE_VARIANTS = {
   1: [
@@ -744,13 +697,39 @@ var PRACTICE_VARIANTS = {
   ]
 };
 
-function unlockPractice(){
+async function unlockPractice(){
   var inp = document.getElementById('pracPass');
   var msg = document.getElementById('pracMsg');
-  if (!passwordMatches(inp.value, PRACTICE_PASSWORD)){
-    msg.textContent = '❌ Неверный пароль.';
+  var btn = document.getElementById('pracBtn');
+  var pass = inp.value.trim();
+
+  if (!pass){
+    msg.className = 'pmsg';
+    msg.textContent = 'Введите пароль.';
     return;
   }
+
+  msg.className = 'pmsg info';
+  msg.textContent = 'Проверка…';
+  btn.disabled = true;
+
+  var data = await checkPasswordRemote(RESOURCE_ID, 'practice', pass);
+
+  btn.disabled = false;
+
+  if (data.error === 'network'){
+    msg.className = 'pmsg';
+    msg.textContent = '⚠️ Ошибка соединения. Проверьте интернет.';
+    return;
+  }
+  if (!data.ok){
+    msg.className = 'pmsg';
+    msg.textContent = '❌ Неверный пароль.';
+    inp.value = '';
+    inp.focus();
+    return;
+  }
+
   msg.textContent = '';
   inp.value = '';
   document.getElementById('practiceLock').style.display = 'none';
@@ -773,9 +752,10 @@ function renderPractice(){
 }
 
 function gradePractice(){
-    if (lessonState.pracDone){
+  if (lessonState.pracDone){
     toast('⚠️ Практическая работа уже сдана. Повторная сдача не разрешена.');
-    return;}
+    return;
+  }
   var v = document.getElementById('pracVariant').value;
   var qs = PRACTICE_VARIANTS[v];
   var correct = 0;
@@ -794,20 +774,79 @@ function gradePractice(){
   document.getElementById('pracCorrect').textContent = correct;
   document.getElementById('pracMark').textContent = lessonState.pracMark;
   document.getElementById('pracResult').classList.add('show');
-    /* блокируем поля и кнопку после сдачи */
+
   qs.forEach(function(_, i){
     var el = document.getElementById('prac'+i);
     if (el){ el.disabled = true; el.style.background = '#f3f4f6'; }
   });
-  var checkBtn = document.querySelector('#practiceBody > button.b-green');
+  var checkBtn = document.getElementById('pracCheckBtn');
   if (checkBtn) checkBtn.style.display = 'none';
 
   savePracticeState();
   toast('Практика: ' + correct + '/' + qs.length + ', оценка ' + lessonState.pracMark);
 }
 
+function savePracticeState(){
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
+    var d = JSON.parse(raw);
+    d.pracDone = lessonState.pracDone;
+    d.pracCorrect = lessonState.pracCorrect;
+    d.pracMark = lessonState.pracMark;
+    d.pracVariant = document.getElementById('pracVariant')?.value || '1';
+    d.pracAnswers = [];
+    if (lessonState.pracDone){
+      var v = document.getElementById('pracVariant').value;
+      var qs = PRACTICE_VARIANTS[v];
+      qs.forEach(function(_, i){
+        var el = document.getElementById('prac'+i);
+        d.pracAnswers.push(el ? el.value : '');
+      });
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  } catch(e){}
+}
+
+function loadPracticeState(){
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    var d = JSON.parse(raw);
+    if (!d.pracDone) return false;
+
+    lessonState.pracDone = true;
+    lessonState.pracCorrect = d.pracCorrect || 0;
+    lessonState.pracMark = d.pracMark || 0;
+
+    document.getElementById('practiceLock').style.display = 'none';
+    document.getElementById('practiceBody').style.display = 'block';
+    document.getElementById('pracVariant').value = d.pracVariant || '1';
+    renderPractice();
+
+    (d.pracAnswers || []).forEach(function(ans, i){
+      var el = document.getElementById('prac'+i);
+      if (el){
+        el.value = ans;
+        el.disabled = true;
+        el.style.background = '#f3f4f6';
+      }
+    });
+
+    document.getElementById('pracCorrect').textContent = d.pracCorrect;
+    document.getElementById('pracMark').textContent = d.pracMark;
+    document.getElementById('pracResult').classList.add('show');
+
+    var checkBtn = document.getElementById('pracCheckBtn');
+    if (checkBtn) checkBtn.style.display = 'none';
+    var h2 = document.querySelector('#practice h2');
+    if (h2) h2.innerHTML = h2.innerHTML + ' <span class="badge" style="background:#fee2e2;color:#b91c1c">сдано</span>';
+
+    return true;
+  } catch(e){ return false; }
+}
+
 /* =========================================================
-   4. ИТОГ
+   5. ИТОГ
    ========================================================= */
 function calcFinalMark(){
   if (!lessonState.wbMark && !lessonState.pracDone){
@@ -829,7 +868,7 @@ function calcFinalMark(){
 }
 
 /* =========================================================
-   5. САМОСТОЯТЕЛЬНАЯ — генератор, таймер, PDF, JPG
+   6. САМОСТОЯТЕЛЬНАЯ
    ========================================================= */
 var saTimer = null, saLeft = 0, saTasks = [], saStarted = false, saDone = false;
 
@@ -893,19 +932,46 @@ function scrollToGate(){
   document.getElementById('saPass').focus();
 }
 
-function unlockStandalone(){
+async function unlockStandalone(){
   if (!getSurname() || !getFirstname() || !getKlass()){
+    document.getElementById('saMsg').className = 'pmsg';
     document.getElementById('saMsg').textContent = 'Сначала заполните фамилию, имя и класс в шапке.';
     return;
   }
   var inp = document.getElementById('saPass');
   var msg = document.getElementById('saMsg');
-  if (!passwordMatches(inp.value, SA_PASSWORD)){
-    msg.textContent = '❌ Неверный пароль учителя.';
-    inp.value=''; inp.focus();
+  var btn = document.getElementById('saBtn');
+  var pass = inp.value.trim();
+
+  if (!pass){
+    msg.className = 'pmsg';
+    msg.textContent = 'Введите пароль.';
     return;
   }
-  msg.textContent=''; inp.value='';
+
+  msg.className = 'pmsg info';
+  msg.textContent = 'Проверка…';
+  btn.disabled = true;
+
+  var data = await checkPasswordRemote(RESOURCE_ID, 'standalone', pass);
+
+  btn.disabled = false;
+
+  if (data.error === 'network'){
+    msg.className = 'pmsg';
+    msg.textContent = '⚠️ Ошибка соединения. Проверьте интернет.';
+    return;
+  }
+  if (!data.ok){
+    msg.className = 'pmsg';
+    msg.textContent = '❌ Неверный пароль учителя.';
+    inp.value = '';
+    inp.focus();
+    return;
+  }
+
+  msg.textContent = '';
+  inp.value = '';
   startStandalone();
 }
 
@@ -1117,7 +1183,7 @@ function saveStandaloneJPG(){
 }
 
 /* =========================================================
-   6. ПЕЧАТЬ ДЗ
+   7. ПЕЧАТЬ ДЗ
    ========================================================= */
 function printHomework(){
   var fio = getFullName() + (getKlass() ? ', ' + getKlass() : '');
@@ -1143,7 +1209,7 @@ function printHomework(){
 }
 
 /* =========================================================
-   7. МАТЕМАТИЧЕСКАЯ РАСКЛАДКА
+   8. МАТЕМАТИЧЕСКАЯ РАСКЛАДКА
    ========================================================= */
 var activeField = null;
 function openMath(){ document.getElementById('mathModal').classList.add('open'); }
@@ -1181,7 +1247,7 @@ document.getElementById('mathModal').addEventListener('click', function(e){
 });
 
 /* =========================================================
-   8. КАЛЬКУЛЯТОР
+   9. КАЛЬКУЛЯТОР
    ========================================================= */
 var calcBuf = '';
 function openCalc(){ document.getElementById('calcModal').classList.add('open'); calcRender(); }
@@ -1216,26 +1282,7 @@ document.getElementById('calcModal').addEventListener('click', function(e){
 });
 
 /* =========================================================
-   9. ПАРОЛИ В ЛЮБОЙ РАСКЛАДКЕ
-   ========================================================= */
-var LAT2CYR = {q:'й',w:'ц',e:'у',r:'к',t:'е',y:'н',u:'г',i:'ш',o:'щ',p:'з','[':'х',']':'ъ',
-  a:'ф',s:'ы',d:'в',f:'а',g:'п',h:'р',j:'о',k:'л',l:'д',';':'ж',"'":'э',
-  z:'я',x:'ч',c:'с',v:'м',b:'и',n:'т',m:'ь',',':'б','.':'ю'};
-var CYR2LAT = {};
-Object.keys(LAT2CYR).forEach(function(k){ CYR2LAT[LAT2CYR[k]] = k; });
-function mapKeys(s, table){
-  return String(s).toLowerCase().split('').map(function(c){ return table[c]||c; }).join('');
-}
-function passwordMatches(t, e){
-  t = String(t||'').trim().toLowerCase();
-  e = String(e||'').trim().toLowerCase();
-  if (!t) return false;
-  return t === e || mapKeys(t,LAT2CYR) === e || mapKeys(t,CYR2LAT) === e
-      || t === mapKeys(e,LAT2CYR) || t === mapKeys(e,CYR2LAT);
-}
-
-/* =========================================================
-   10. ОБЩИЕ ПОМОЩНИКИ
+   10. ПОМОЩНИКИ
    ========================================================= */
 function showFb(id, html, kind){
   var el = document.getElementById(id);

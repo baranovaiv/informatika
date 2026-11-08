@@ -105,5 +105,13 @@
 
 <div class="toast" id="toast"></div>
 <script src="assets/js/main.js"></script>
+<script src="https://unpkg.com/draw-something/dist/draw.min.js"></script>
+<script>
+  // Создаём эффект падающих эмодзи на фоне
+  new Draw({
+    maxNum: 15, // Максимум 15 эмодзи на экране (чтобы не мешало)
+    iconText: "💻📁✨", // Можно заменить на другой символ, например "📁" или "✨"
+  });
+</script>
 </body>
 </html>

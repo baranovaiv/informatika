@@ -33,6 +33,7 @@ window.MathJax = {
 .lock p{color:var(--muted);margin:0 0 16px;font-size:.94rem}
 .lockrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .pmsg{min-height:22px;font-weight:600;color:var(--bad);margin-top:10px}
+.pmsg.info{color:var(--muted)}
 
 .vbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
 .res{background:linear-gradient(135deg,var(--green),var(--blue));border-radius:var(--r);padding:22px;margin:18px 0;display:none}
@@ -152,7 +153,6 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
 
 <div class="wrap" id="main">
 
-  <!-- ШАПКА УРОКА -->
   <header class="hero">
     <h1>Информационный объём текста. Решение задач</h1>
     <p class="lead">Урок информатики · 7 класс · Закрепление и систематизация</p>
@@ -166,7 +166,6 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
     </div>
   </header>
 
-  <!-- 1. ТЕОРИЯ -->
   <section class="card" id="theory">
     <h2><span class="num">1</span> Теоретический материал</h2>
 
@@ -209,7 +208,6 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
     </div>
   </section>
 
-  <!-- 2. РАБОЧАЯ ТЕТРАДЬ -->
   <section class="card" id="workbook">
     <h2><span class="num">2</span> Рабочая тетрадь</h2>
     <p class="muted">Задания с подсказками. Вводите только число — без единиц измерения.</p>
@@ -296,7 +294,6 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
     </div>
   </section>
 
-  <!-- 3. ПРАКТИЧЕСКАЯ РАБОТА -->
   <section class="card" id="practice">
     <h2><span class="num">3</span> Практическая работа <span class="badge">по паролю</span></h2>
 
@@ -306,7 +303,7 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
       <div class="lockrow">
         <input type="password" id="pracPass" placeholder="Пароль" autocomplete="off"
                onkeydown="if(event.key==='Enter')unlockPractice()">
-        <button class="btn b-purple" onclick="unlockPractice()">Открыть</button>
+        <button class="btn b-purple" id="pracBtn" onclick="unlockPractice()">Открыть</button>
       </div>
       <div class="pmsg" id="pracMsg"></div>
     </div>
@@ -322,7 +319,7 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
         </select>
       </div>
       <div id="pracArea"></div>
-      <button class="btn b-green" onclick="gradePractice()" style="margin-top:14px">📊 Проверить практику</button>
+      <button class="btn b-green" id="pracCheckBtn" onclick="gradePractice()" style="margin-top:14px">📊 Проверить практику</button>
       <div class="res" id="pracResult">
         <h3>Результат практической работы</h3>
         <p style="margin:0;font-weight:700">Верно: <span id="pracCorrect">0</span> из 5 · Оценка: <span id="pracMark" style="font-size:1.4rem">—</span></p>
@@ -330,7 +327,6 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
     </div>
   </section>
 
-  <!-- 4. ИТОГ -->
   <section class="card" id="final">
     <h2><span class="num">4</span> Итоговая оценка за урок</h2>
     <p class="muted">Складывается из рабочей тетради и практической работы.<br>
@@ -349,7 +345,6 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
     </div>
   </section>
 
-  <!-- 5. САМОСТОЯТЕЛЬНАЯ -->
   <section class="card" id="standaloneGate">
     <h2><span class="num">5</span> Самостоятельная работа <span class="badge">по паролю</span></h2>
     <p>Пять задач на 15 минут. Формулы и правила перевода во время работы недоступны.
@@ -357,12 +352,11 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
     <div class="lockrow" style="justify-content:flex-start">
       <input type="password" id="saPass" placeholder="Пароль учителя" autocomplete="off"
              onkeydown="if(event.key==='Enter')unlockStandalone()">
-      <button class="btn b-blue" onclick="unlockStandalone()">🔓 Начать работу</button>
+      <button class="btn b-blue" id="saBtn" onclick="unlockStandalone()">🔓 Начать работу</button>
     </div>
     <div class="pmsg" id="saMsg"></div>
   </section>
 
-  <!-- 6. ДОМАШНЕЕ ЗАДАНИЕ -->
   <section class="card" id="homework">
     <h2><span class="num">6</span> Домашнее задание</h2>
     <button class="btn b-orange no-print" onclick="printHomework()">🖨 Печать только ДЗ</button>
@@ -390,7 +384,6 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
 
 </div><!-- /wrap -->
 
-<!-- ================= НИЖНЯЯ ПАНЕЛЬ ================= -->
 <div class="bar no-print">
   <button class="btn b-purple" onclick="openMath()">⌨ Математическая раскладка</button>
   <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
@@ -398,7 +391,6 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
   <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
 </div>
 
-<!-- ================= САМОСТОЯТЕЛЬНАЯ РАБОТА ================= -->
 <section id="standalone">
   <div class="exam-head">
     <div>
@@ -442,7 +434,6 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
   </div>
 </section>
 
-<!-- ================= МАТЕМАТИЧЕСКАЯ РАСКЛАДКА ================= -->
 <div class="mbg" id="mathModal">
   <div class="modal" role="dialog">
     <h3>⌨ Математическая раскладка</h3>
@@ -476,7 +467,6 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
   </div>
 </div>
 
-<!-- ================= КАЛЬКУЛЯТОР ================= -->
 <div class="mbg" id="calcModal">
   <div class="modal calc" role="dialog">
     <h3 style="margin-bottom:12px">🧮 Калькулятор</h3>
@@ -517,18 +507,42 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
 
 <script>
 /* =========================================================
-   1. КОНСТАНТЫ
+   0. НАСТРОЙКИ GOOGLE APPS SCRIPT
    ========================================================= */
-var PRACTICE_PASSWORD = 'акулаархив99';
-var SA_PASSWORD = 'осьминогокно00';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzRiIsJ8Sbn1HP1n9cTnVE652h1Ohrd8Q6wH3raYPLfGnIu7u-rsYG7BAp0VT7eXgs8/exec';
+var RESOURCE_ID = 'urok-text-volume';
 var SA_MINUTES = 20;
+var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
 
+/* =========================================================
+   1. ПРОВЕРКА ПАРОЛЯ ЧЕРЕЗ GOOGLE APPS SCRIPT
+   ========================================================= */
+async function checkPasswordRemote(resourceId, type, password){
+  try {
+    var response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        resource: resourceId,
+        type: type,
+        password: password
+      })
+    });
+    var data = await response.json();
+    return data;
+  } catch (error) {
+    return { ok: false, error: 'network' };
+  }
+}
+
+/* =========================================================
+   2. СОСТОЯНИЕ
+   ========================================================= */
 var lessonState = {
   wb: { w1:false, w2:false, w3:false, w4:false, w5:false },
   wbCorrect: 0, wbMark: 0,
   pracDone: false, pracCorrect: 0, pracMark: 0
 };
-var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
 
 function savePracticeState(){
   try {
@@ -562,13 +576,11 @@ function loadPracticeState(){
     lessonState.pracCorrect = d.pracCorrect || 0;
     lessonState.pracMark = d.pracMark || 0;
 
-    /* показываем результат вместо формы */
     document.getElementById('practiceLock').style.display = 'none';
     document.getElementById('practiceBody').style.display = 'block';
     document.getElementById('pracVariant').value = d.pracVariant || '1';
     renderPractice();
 
-    /* восстанавливаем ответы и блокируем поля */
     (d.pracAnswers || []).forEach(function(ans, i){
       var el = document.getElementById('prac'+i);
       if (el){
@@ -578,13 +590,11 @@ function loadPracticeState(){
       }
     });
 
-    /* показываем результат */
     document.getElementById('pracCorrect').textContent = d.pracCorrect;
     document.getElementById('pracMark').textContent = d.pracMark;
     document.getElementById('pracResult').classList.add('show');
 
-    /* прячем кнопку «Проверить» и меняем заголовок */
-    var checkBtn = document.querySelector('#practiceBody > button.b-green');
+    var checkBtn = document.getElementById('pracCheckBtn');
     if (checkBtn) checkBtn.style.display = 'none';
     var h2 = document.querySelector('#practice h2');
     if (h2) h2.innerHTML = h2.innerHTML + ' <span class="badge" style="background:#fee2e2;color:#b91c1c">сдано</span>';
@@ -592,6 +602,7 @@ function loadPracticeState(){
     return true;
   } catch(e){ return false; }
 }
+
 function getSurname(){ return (document.getElementById('surname')?.value || '').trim(); }
 function getFirstname(){ return (document.getElementById('firstname')?.value || '').trim(); }
 function getKlass(){ return (document.getElementById('klass')?.value || '').trim(); }
@@ -608,7 +619,7 @@ function percentToMark(pct){
 }
 
 /* =========================================================
-   2. РАБОЧАЯ ТЕТРАДЬ
+   3. РАБОЧАЯ ТЕТРАДЬ
    ========================================================= */
 function checkW(inputId, answer, fbId){
   if (lessonState.wb[inputId]){ showFb(fbId,'✔ Уже решено.','hint'); return; }
@@ -649,7 +660,7 @@ function calcWorkbook(){
 }
 
 /* =========================================================
-   3. ПРАКТИЧЕСКАЯ РАБОТА
+   4. ПРАКТИКА
    ========================================================= */
 var PRACTICE_VARIANTS = {
   1: [
@@ -682,13 +693,39 @@ var PRACTICE_VARIANTS = {
   ]
 };
 
-function unlockPractice(){
+async function unlockPractice(){
   var inp = document.getElementById('pracPass');
   var msg = document.getElementById('pracMsg');
-  if (!passwordMatches(inp.value, PRACTICE_PASSWORD)){
-    msg.textContent = '❌ Неверный пароль.';
+  var btn = document.getElementById('pracBtn');
+  var pass = inp.value.trim();
+
+  if (!pass){
+    msg.className = 'pmsg';
+    msg.textContent = 'Введите пароль.';
     return;
   }
+
+  msg.className = 'pmsg info';
+  msg.textContent = 'Проверка…';
+  btn.disabled = true;
+
+  var data = await checkPasswordRemote(RESOURCE_ID, 'practice', pass);
+
+  btn.disabled = false;
+
+  if (data.error === 'network'){
+    msg.className = 'pmsg';
+    msg.textContent = '⚠️ Ошибка соединения. Проверьте интернет.';
+    return;
+  }
+  if (!data.ok){
+    msg.className = 'pmsg';
+    msg.textContent = '❌ Неверный пароль.';
+    inp.value = '';
+    inp.focus();
+    return;
+  }
+
   msg.textContent = '';
   inp.value = '';
   document.getElementById('practiceLock').style.display = 'none';
@@ -713,7 +750,8 @@ function renderPractice(){
 function gradePractice(){
   if (lessonState.pracDone){
     toast('⚠️ Практическая работа уже сдана. Повторная сдача не разрешена.');
-    return;}
+    return;
+  }
   var v = document.getElementById('pracVariant').value;
   var qs = PRACTICE_VARIANTS[v];
   var correct = 0;
@@ -732,12 +770,12 @@ function gradePractice(){
   document.getElementById('pracCorrect').textContent = correct;
   document.getElementById('pracMark').textContent = lessonState.pracMark;
   document.getElementById('pracResult').classList.add('show');
-    /* блокируем поля и кнопку после сдачи */
+
   qs.forEach(function(_, i){
     var el = document.getElementById('prac'+i);
     if (el){ el.disabled = true; el.style.background = '#f3f4f6'; }
   });
-  var checkBtn = document.querySelector('#practiceBody > button.b-green');
+  var checkBtn = document.getElementById('pracCheckBtn');
   if (checkBtn) checkBtn.style.display = 'none';
 
   savePracticeState();
@@ -745,7 +783,7 @@ function gradePractice(){
 }
 
 /* =========================================================
-   4. ИТОГ
+   5. ИТОГ
    ========================================================= */
 function calcFinalMark(){
   if (!lessonState.wbMark && !lessonState.pracDone){
@@ -767,7 +805,7 @@ function calcFinalMark(){
 }
 
 /* =========================================================
-   5. САМОСТОЯТЕЛЬНАЯ (вариант A — все ответы целые)
+   6. САМОСТОЯТЕЛЬНАЯ
    ========================================================= */
 var saTimer = null, saLeft = 0, saTasks = [], saStarted = false, saDone = false;
 
@@ -777,7 +815,6 @@ function genStandalone(){
 
   var tasks = [];
 
-  /* ---------- Тип 1: количество символов ---------- */
   var kb1 = pick([1,2,3,4,5]);
   var i1  = pick([4,8,16]);
   tasks.push({
@@ -786,9 +823,8 @@ function genStandalone(){
     ans: (kb1 * 1024 * 8) / i1, unit:'символов'
   });
 
-  /* ---------- Тип 2: мощность алфавита (целая степень двойки) ---------- */
   var kb2 = pick([1,2,3,4]);
-  var iNeeded = pick([4,8,16]);   /* делители 1024·8 → K всегда целое */
+  var iNeeded = pick([4,8,16]);
   var k2 = (kb2 * 1024 * 8) / iNeeded;
   tasks.push({
     text:'Информационный объём сообщения равен $' + kb2 +
@@ -796,7 +832,6 @@ function genStandalone(){
     ans: Math.pow(2, iNeeded), unit:'символов'
   });
 
-  /* ---------- Тип 3: объём статьи в байтах ---------- */
   var pages3 = pick([5,10,15,20]);
   var lines3 = pick([30,40,50]);
   var sym3   = pick([40,50,60]);
@@ -808,7 +843,6 @@ function genStandalone(){
     ans: pages3 * lines3 * sym3 * bytes3, unit:'байт'
   });
 
-  /* ---------- Тип 4: разница между кодировками ---------- */
   var sym4 = pick([500,800,1000,1500]);
   tasks.push({
     text:'Текст из $' + sym4 + '$ символов сохранён в Windows-1251 (1 байт на символ) ' +
@@ -816,7 +850,6 @@ function genStandalone(){
     ans: sym4, unit:'байт'
   });
 
-  /* ---------- Доп. 1: объём сообщения в байтах ---------- */
   var k5 = pick([256,512,1024,2048]);
   var i5 = pick([4,8,16]);
   tasks.push({
@@ -825,14 +858,12 @@ function genStandalone(){
     ans: (k5 * i5) / 8, unit:'байт'
   });
 
-  /* ---------- Доп. 2: перевод Кбайт → биты ---------- */
   var kb6 = pick([1,2,3,4,5,6,8]);
   tasks.push({
     text:'Объём файла равен $' + kb6 + '$ Кбайт. Переведите его в биты.',
     ans: kb6 * 1024 * 8, unit:'бит'
   });
 
-  /* ---------- Доп. 3: объём книги в Кбайтах (округление вниз) ---------- */
   var pages7 = pick([10,20,30]);
   var lines7 = pick([40,50,60]);
   var sym7   = pick([40,50,60]);
@@ -843,7 +874,6 @@ function genStandalone(){
     ans: Math.floor(pages7 * lines7 * sym7 * 2 / 1024), unit:'Кбайт'
   });
 
-  /* ---------- Доп. 4: биты в байтах ---------- */
   var b8 = pick([1,2,3,4,5,6,8]);
   tasks.push({
     text:'Сколько бит в $' + b8 + '$ байтах?',
@@ -859,18 +889,44 @@ function scrollToGate(){
   document.getElementById('saPass').focus();
 }
 
-function unlockStandalone(){
+async function unlockStandalone(){
   if (!getSurname() || !getFirstname() || !getKlass()){
+    document.getElementById('saMsg').className = 'pmsg';
     document.getElementById('saMsg').textContent = 'Сначала заполните фамилию, имя и класс в шапке.';
     return;
   }
   var inp = document.getElementById('saPass');
   var msg = document.getElementById('saMsg');
-  if (!passwordMatches(inp.value, SA_PASSWORD)){
-    msg.textContent = '❌ Неверный пароль учителя.';
-    inp.value=''; inp.focus();
+  var btn = document.getElementById('saBtn');
+  var pass = inp.value.trim();
+
+  if (!pass){
+    msg.className = 'pmsg';
+    msg.textContent = 'Введите пароль.';
     return;
   }
+
+  msg.className = 'pmsg info';
+  msg.textContent = 'Проверка…';
+  btn.disabled = true;
+
+  var data = await checkPasswordRemote(RESOURCE_ID, 'standalone', pass);
+
+  btn.disabled = false;
+
+  if (data.error === 'network'){
+    msg.className = 'pmsg';
+    msg.textContent = '⚠️ Ошибка соединения. Проверьте интернет.';
+    return;
+  }
+  if (!data.ok){
+    msg.className = 'pmsg';
+    msg.textContent = '❌ Неверный пароль учителя.';
+    inp.value = '';
+    inp.focus();
+    return;
+  }
+
   msg.textContent=''; inp.value='';
   startStandalone();
 }
@@ -1078,7 +1134,7 @@ function saveStandaloneJPG(){
 }
 
 /* =========================================================
-   6. ПЕЧАТЬ ДЗ
+   7. ПЕЧАТЬ ДЗ
    ========================================================= */
 function printHomework(){
   var fio = getFullName() + (getKlass() ? ', ' + getKlass() : '');
@@ -1104,7 +1160,7 @@ function printHomework(){
 }
 
 /* =========================================================
-   7. МАТЕМАТИЧЕСКАЯ РАСКЛАДКА
+   8. МАТЕМАТИЧЕСКАЯ РАСКЛАДКА
    ========================================================= */
 var activeField = null;
 function openMath(){ document.getElementById('mathModal').classList.add('open'); }
@@ -1124,8 +1180,7 @@ document.addEventListener('focusin', function(e){
   if (e.target.matches('input[type=text],input[type=password],textarea')){
     activeField = e.target;
   }
-}
-);
+});
 document.querySelectorAll('.key[data-tex]').forEach(function(b){
   b.addEventListener('click', function(){ insertMath(b.dataset.tex); });
 });
@@ -1143,7 +1198,7 @@ document.getElementById('mathModal').addEventListener('click', function(e){
 });
 
 /* =========================================================
-   8. КАЛЬКУЛЯТОР
+   9. КАЛЬКУЛЯТОР
    ========================================================= */
 var calcBuf = '';
 function openCalc(){ document.getElementById('calcModal').classList.add('open'); calcRender(); }
@@ -1176,25 +1231,6 @@ function calcEquals(){
 document.getElementById('calcModal').addEventListener('click', function(e){
   if (e.target === this) closeCalc();
 });
-
-/* =========================================================
-   9. ПАРОЛИ
-   ========================================================= */
-var LAT2CYR = {q:'й',w:'ц',e:'у',r:'к',t:'е',y:'н',u:'г',i:'ш',o:'щ',p:'з','[':'х',']':'ъ',
-  a:'ф',s:'ы',d:'в',f:'а',g:'п',h:'р',j:'о',k:'л',l:'д',';':'ж',"'":'э',
-  z:'я',x:'ч',c:'с',v:'м',b:'и',n:'т',m:'ь',',':'б','.':'ю'};
-var CYR2LAT = {};
-Object.keys(LAT2CYR).forEach(function(k){ CYR2LAT[LAT2CYR[k]] = k; });
-function mapKeys(s, table){
-  return String(s).toLowerCase().split('').map(function(c){ return table[c]||c; }).join('');
-}
-function passwordMatches(t, e){
-  t = String(t||'').trim().toLowerCase();
-  e = String(e||'').trim().toLowerCase();
-  if (!t) return false;
-  return t === e || mapKeys(t,LAT2CYR) === e || mapKeys(t,CYR2LAT) === e
-      || t === mapKeys(e,LAT2CYR) || t === mapKeys(e,CYR2LAT);
-}
 
 /* =========================================================
    10. ПОМОЩНИКИ
