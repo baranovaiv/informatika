@@ -448,7 +448,7 @@ result = <span class="str">""</span>
   <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
 </div>
 
-<!-- ================= САМОСТОЯТЕЛЬНАЯ ================= -->
+<!-- САМОСТОЯТЕЛЬНАЯ -->
 <section id="standalone">
   <div class="exam-head">
     <div>
@@ -487,7 +487,7 @@ result = <span class="str">""</span>
   </div>
 </section>
 
-<!-- ================= КАЛЬКУЛЯТОР ================= -->
+<!-- КАЛЬКУЛЯТОР -->
 <div class="mbg" id="calcModal">
   <div class="modal" style="max-width:340px">
     <h3>🧮 Калькулятор</h3>
@@ -576,49 +576,11 @@ async function getPyodide(){
 }
 
 /* Обёртка: запуск Python-кода с эмуляцией input() */
-async function runPython(code, stdinLines){
-  var py = await getPyodide();
-
-  var stdinList = stdinLines || [];
-  var stdout = [];
-
-  py.globals.set('__INPUTS__', stdinList);
-  py.globals.set('__INPUT_IDX__', 0);
-
-  var prelude = `
-import sys, io
-__stdout = io.StringIO()
-sys.stdout = __stdout
-sys.stderr = __stdout
-
-def input(prompt=''):
-    __i = __INPUT_IDX__
-    if __i < len(__INPUTS__):
-        val = __INPUTS__[__i]
-    else:
-        val = ''
-    __INPUT_IDX__ = __i + 1
-    return val
-`;
-
-  try {
-    await py.runPythonAsync(prelude);
-    await py.runPythonAsync(code);
-    var out = py.globals.get('__stdout').getvalue();
-    return {ok:true, out:String(out)};
-  } catch(e){
-    var msg = e.message || String(e);
-    return {ok:false, out:'Ошибка:\n' + msg};
-  }
-}
-
-/* Эмуляция __INPUT_IDX__ в глобалах через отдельный объект */
 async function runWithInputs(code, inputs){
   var py = await getPyodide();
   py.globals.set('__INPUTS__', inputs);
   py.globals.set('__INPUT_IDX__', 0);
-  /* В Python глобал __INPUT_IDX__ — это int, его нельзя изменить из input().
-     Поэтому используем список-контейнер. */
+
   var wrapped = `
 __STDIN__ = list(__INPUTS__)
 __POS__ = [0]
@@ -660,20 +622,30 @@ async function runTask(inputId, stdinId, outId, checker){
   var inputs = raw ? raw.split(',').map(function(s){ return s.trim(); }) : [];
 
   var res = await runWithInputs(code, inputs);
+
+  // 1. Ошибка выполнения
   if (!res.ok){
     out.className = 'code-out err';
     out.innerHTML = '<span class="lbl">Ошибка выполнения</span>' + escapeHtml(res.out);
     return;
   }
 
-  out.className = 'code-out ok';
-  out.innerHTML = '<span class="lbl">Вывод программы</span>' + escapeHtml(res.out);
+  // 2. Код выполнился, теперь проверяем результат
+  var ok = false;
+  if (checker) {
+    ok = checker(res.out);
+  } else {
+    ok = true;
+  }
 
-  if (checker){
-    var ok = checker(res.out);
-    if (ok){
-      lessonState.wb[inputId] = true;
-    }
+  // 3. Показываем вывод и статус
+  if (ok) {
+    out.className = 'code-out ok';
+    out.innerHTML = '<span class="lbl">✅ Верно. Вывод программы:</span>' + escapeHtml(res.out);
+    lessonState.wb[inputId] = true;
+  } else {
+    out.className = 'code-out err';
+    out.innerHTML = '<span class="lbl">❌ Неверно. Проверьте вывод:</span>' + escapeHtml(res.out);
   }
 }
 
@@ -684,34 +656,35 @@ function escapeHtml(s){
 }
 
 /* =========================================================
-   3. ПРОВЕРКИ ДЛЯ РАБОЧЕЙ ТЕТРАДИ
+   3. ПРОВЕРКИ ДЛЯ РАБОЧЕЙ ТЕТРАДИ (МЯГКИЕ)
    ========================================================= */
 function w1check(out){
-  /* Т т а 7 */
-  var lines = out.trim().split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
-  return lines.length >= 4 &&
-         lines[0] === 'Т' && lines[1] === 'т' &&
-         lines[2] === 'а' && lines[3] === '7';
+  // Ищем 'Т', 'т', 'а' и '7' в любом порядке/формате
+  var cleaned = out.replace(/[,\s]+/g, ' ').trim();
+  return cleaned.includes('Т') && cleaned.includes('т') &&
+         cleaned.includes('а') && cleaned.includes('7');
 }
 function w2check(out){
-  var expected = ['P','y','t','h','o','n'];
-  var lines = out.trim().split('\n').map(function(s){ return s.trim(); });
-  return lines.length === 6 && lines.every(function(v,i){ return v === expected[i]; });
+  // Убираем пробелы/переносы: должно быть 'Python'
+  var cleaned = out.replace(/\s+/g, '');
+  return cleaned === 'Python';
 }
 function w3check(out){
-  var expected = ['0: P','1: y','2: t','3: h','4: o','5: n'];
-  var lines = out.trim().split('\n').map(function(s){ return s.trim(); });
-  return lines.length === 6 && lines.every(function(v,i){ return v === expected[i]; });
+  // '0:P1:y2:t3:h4:o5:n' без пробелов, в нижнем регистре
+  var cleaned = out.toLowerCase().replace(/\s+/g, '');
+  return cleaned === '0:p1:y2:t3:h4:o5:n';
 }
 function w4check(out){
-  /* count=3, total=6 для a1b2c3 */
-  var nums = out.trim().match(/\d+/g) || [];
-  return nums.length >= 2 && nums[0] === '3' && nums[1] === '6';
+  // Ищем числа 3 и 6 где угодно
+  var nums = out.match(/\d+/g) || [];
+  return nums.includes('3') && nums.includes('6');
 }
 function w5check(out){
-  return out.trim() === 'nohtyP';
+  // 'nohtyP' без пробелов
+  return out.replace(/\s+/g, '') === 'nohtyP';
 }
 function w6check(out){
+  // 'Пр*в*т, м*р!' с любыми пробелами
   return out.trim() === 'Пр*в*т, м*р!';
 }
 
@@ -730,7 +703,7 @@ function calcWorkbook(){
 }
 
 /* =========================================================
-   5. ПРАКТИКА — 4 варианта × 3 задания
+   5. ПРАКТИКА
    ========================================================= */
 var PRACTICE_VARIANTS = {
   1: [
@@ -770,7 +743,7 @@ var PRACTICE_VARIANTS = {
        return lines[0]==='ф' && lines[1]==='а' && lines[2]==='к' && lines[3]==='а';
      }},
     {text:'С помощью for выведите строку s = "Python" в обратном порядке (без среза [::-1]).',
-     stdin:'', checker:function(out){ return out.trim() === 'nohtyP'; }},
+     stdin:'', checker:function(out){ return out.replace(/\s+/g,'') === 'nohtyP'; }},
     {text:'Запросите строку. С помощью перебора посчитайте, сколько в ней цифр.',
      stdin:'a1b2c3', checker:function(out){ return out.trim() === '3'; }}
   ],
@@ -980,13 +953,13 @@ var SA_CODE = {
     {text:'Запросите строку. С помощью for ch in s найдите количество заглавных букв (ch.isupper()).',
      stdin:'HeLLo', checker:function(out){ return out.trim() === '3'; }},
     {text:'Запросите строку. С помощью for i in range(...) выведите все символы на нечётных позициях (1, 3, 5, ...) в одну строку.',
-     stdin:'abcdef', checker:function(out){ return out.trim() === 'bdf'; }}
+     stdin:'abcdef', checker:function(out){ return out.replace(/\s+/g,'') === 'bdf'; }}
   ],
   2: [
     {text:'Запросите строку. С помощью for ch in s найдите количество строчных букв (ch.islower()).',
      stdin:'HeLLo', checker:function(out){ return out.trim() === '2'; }},
     {text:'Запросите строку. С помощью for i in range(...) выведите все символы на чётных позициях (0, 2, 4, ...) в одну строку.',
-     stdin:'abcdef', checker:function(out){ return out.trim() === 'ace'; }}
+     stdin:'abcdef', checker:function(out){ return out.replace(/\s+/g,'') === 'ace'; }}
   ],
   3: [
     {text:'Запросите строку. С помощью for ch in s найдите количество пробелов.',
@@ -1233,7 +1206,6 @@ function passwordMatches(t, e){
    ========================================================= */
 document.addEventListener('DOMContentLoaded', function(){
   loadPracticeState();
-  /* подгружаем Pyodide в фоне */
   getPyodide().catch(function(){ /* тихо */ });
 });
 </script>
