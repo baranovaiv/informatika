@@ -124,12 +124,11 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
 .ans-in{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
 .ans-in input[type=text]{max-width:360px;font-family:Cambria,Georgia,serif;font-size:1.02rem}
 
-/* ---------- Предпросмотр ответа как формулы ---------- */
 .preview{
   margin-top:8px;padding:10px 14px;border-left:3px solid var(--gd);
   border-radius:0 10px 10px 0;background:#f6fffb;
   font-family:Cambria,Georgia,serif;font-size:1.02rem;
-  word-break:break-word;
+  word-break:break-word;min-height:20px;
 }
 .preview:empty{display:none}
 .preview mjx-container{font-size:1.05rem !important}
@@ -169,7 +168,6 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
 
 <div class="wrap" id="main">
 
-  <!-- ШАПКА УРОКА -->
   <header class="hero">
     <h1>Упрощение логических выражений</h1>
     <p class="lead">Урок информатики · 8 класс · Законы алгебры логики</p>
@@ -186,8 +184,7 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
   <!-- 1. ТЕОРИЯ -->
   <section class="card" id="theory">
     <h2><span class="num">1</span> Теоретический материал</h2>
-
-    <p><b>Упрощение логического выражения</b> — это замена его на равносильное выражение с меньшим числом операций. Равносильные выражения имеют одинаковую таблицу истинности. Каждый шаг преобразования принято подписывать названием использованного закона.</p>
+    <p><b>Упрощение логического выражения</b> — это замена его на равносильное выражение с меньшим числом операций. Равносильные выражения имеют одинаковую таблицу истинности.</p>
 
     <h3>Таблица законов алгебры логики</h3>
     <table class="laws">
@@ -216,38 +213,29 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
       5. Свернуть по законам склеивания, поглощения и констант.
     </div>
 
-    <h3>Разобранный пример (4 закона)</h3>
-    <p><b>Упростить:</b> $(A \land B) \lor (A \land \neg B) \lor (A \land C)$</p>
+    <h3>Разобранный пример</h3>
+    <p><b>Упростить:</b> \(\neg(\neg A \land B) \land \neg A\)</p>
     <div class="task">
-      <div class="step"><b>1.</b> Вынесем $A$ из первых двух слагаемых: $A \land (B \lor \neg B) \lor (A \land C)$ — <i>распределительный закон</i>.</div>
-      <div class="step"><b>2.</b> $B \lor \neg B = 1$ — <i>исключённое третье</i>.</div>
-      <div class="step"><b>3.</b> $A \land 1 = A$ — <i>свойство константы</i>.</div>
-      <div class="step"><b>4.</b> $A \lor (A \land C) = A$ — <i>поглощение</i>.</div>
-      <div class="answer-line">Ответ: $A$</div>
+      <div class="step"><b>1.</b> Внутреннее отрицание (де Морган): \(\neg(\neg A \land B) = A \lor \neg B\)</div>
+      <div class="step"><b>2.</b> Получили: \((A \lor \neg B) \land \neg A\)</div>
+      <div class="step"><b>3.</b> Распределительный: \((A \land \neg A) \lor (\neg B \land \neg A)\)</div>
+      <div class="step"><b>4.</b> Противоречие: \(0 \lor (\neg A \land \neg B)\)</div>
+      <div class="step"><b>5.</b> Константа: \(\neg A \land \neg B\)</div>
+      <div class="answer-line">Ответ: \(\neg A \land \neg B\)</div>
     </div>
-
-    <h3>Типичные ошибки</h3>
-    <table class="laws">
-      <tr><th>Неверно</th><th>Верно и почему</th></tr>
-      <tr><td>$\neg(A \land B) = \neg A \land \neg B$</td><td>$\neg(A \land B) = \neg A \lor \neg B$ — при де Моргане И меняется на ИЛИ</td></tr>
-      <tr><td>$A \lor (A \land B) = A \land B$</td><td>$A \lor (A \land B) = A$ — поглощение убирает «лишнее» слагаемое</td></tr>
-      <tr><td>$A \lor \neg A = 0$</td><td>$A \lor \neg A = 1$ — одно из двух утверждений всегда истинно</td></tr>
-    </table>
   </section>
 
   <!-- 2. РАБОЧАЯ ТЕТРАДЬ -->
   <section class="card" id="workbook">
     <h2><span class="num">2</span> Рабочая тетрадь</h2>
-    <p class="muted">Вводите упрощённое выражение. Под полем сразу отображается формула — можно проверить, как выглядит ответ. Принимаются символы ∧, ∨, ¬, →, ↔ или слова and, or, not.</p>
+    <p class="muted">Вводите упрощённое выражение. Под полем отображается формула. Принимаются символы ∧, ∨, ¬ или слова and, or, not.</p>
 
     <div class="task">
-      <span class="lvl l1">базовый · 3 закона</span>
-      <p><b>Задание 1.</b> Упростите выражение:</p>
-      <div class="formula">$$(A \land B) \lor (A \land \neg B)$$</div>
-      <details><summary>Подсказка</summary>Распределительный → исключённое третье → константа.</details>
+      <span class="lvl l1">базовый</span>
+      <p><b>Задание 1.</b> Упростите: \((A \land B) \lor (A \land \neg B)\)</p>
+      <details><summary>Подсказка</summary>Вынесите A за скобку.</details>
       <div class="ans">
-        <input type="text" id="w1" placeholder="ваш ответ" autocomplete="off"
-               oninput="previewAns('w1','w1prev')">
+        <input type="text" id="w1" placeholder="ваш ответ" autocomplete="off" oninput="previewAns('w1','w1prev')">
         <button class="btn b-green" onclick="checkW('w1','A','w1fb')">Проверить</button>
       </div>
       <div class="preview" id="w1prev"></div>
@@ -255,13 +243,11 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
     </div>
 
     <div class="task">
-      <span class="lvl l1">базовый · 3 закона</span>
-      <p><b>Задание 2.</b> Упростите выражение:</p>
-      <div class="formula">$$\neg(\neg A \land B) \land \neg A$$</div>
-      <details><summary>Подсказка</summary>Двойное отрицание → де Морган → противоречие → константа.</details>
+      <span class="lvl l1">базовый</span>
+      <p><b>Задание 2.</b> Упростите: \(\neg(\neg A \land B) \land \neg A\)</p>
+      <details><summary>Подсказка</summary>Де Морган → распределительный → противоречие.</details>
       <div class="ans">
-        <input type="text" id="w2" placeholder="ваш ответ" autocomplete="off"
-               oninput="previewAns('w2','w2prev')">
+        <input type="text" id="w2" placeholder="ваш ответ" autocomplete="off" oninput="previewAns('w2','w2prev')">
         <button class="btn b-green" onclick="checkW('w2','¬A ∧ ¬B','w2fb')">Проверить</button>
       </div>
       <div class="preview" id="w2prev"></div>
@@ -269,25 +255,22 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
     </div>
 
     <div class="task q">
-      <span class="lvl l1">базовый · 3 закона</span>
-      <p><b>Задание 3.</b> Чему равносильно выражение $(A \land \neg B) \lor (A \land B)$?</p>
-      <details><summary>Подсказка</summary>Распределительный → исключённое третье → константа.</details>
-      <label class="opt"><input type="radio" name="w3" value="a"> $A \land B$</label>
-      <label class="opt"><input type="radio" name="w3" value="b"> $A$</label>
-      <label class="opt"><input type="radio" name="w3" value="c"> $B$</label>
-      <label class="opt"><input type="radio" name="w3" value="d"> $A \lor B$</label>
+      <span class="lvl l1">базовый</span>
+      <p><b>Задание 3.</b> Чему равносильно \((A \land \neg B) \lor (A \land B)\)?</p>
+      <label class="opt"><input type="radio" name="w3" value="a"> \(A \land B\)</label>
+      <label class="opt"><input type="radio" name="w3" value="b"> \(A\)</label>
+      <label class="opt"><input type="radio" name="w3" value="c"> \(B\)</label>
+      <label class="opt"><input type="radio" name="w3" value="d"> \(A \lor B\)</label>
       <button class="btn b-green" onclick="checkWRadio('w3','b','w3fb')" style="margin-top:10px">Проверить</button>
       <div class="fb" id="w3fb"></div>
     </div>
 
     <div class="task">
-      <span class="lvl l2">средний · 4 закона</span>
-      <p><b>Задание 4.</b> Упростите выражение:</p>
-      <div class="formula">$$(A \land B) \lor (A \land \neg B) \lor (A \land C)$$</div>
-      <details><summary>Подсказка</summary>Распределительный → исключённое третье → константа → поглощение.</details>
+      <span class="lvl l2">средний</span>
+      <p><b>Задание 4.</b> Упростите: \((A \land B) \lor (A \land \neg B) \lor (A \land C)\)</p>
+      <details><summary>Подсказка</summary>Распределительный → исключённое третье → поглощение.</details>
       <div class="ans">
-        <input type="text" id="w4" placeholder="ваш ответ" autocomplete="off"
-               oninput="previewAns('w4','w4prev')">
+        <input type="text" id="w4" placeholder="ваш ответ" autocomplete="off" oninput="previewAns('w4','w4prev')">
         <button class="btn b-green" onclick="checkW('w4','A','w4fb')">Проверить</button>
       </div>
       <div class="preview" id="w4prev"></div>
@@ -295,13 +278,11 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
     </div>
 
     <div class="task">
-      <span class="lvl l2">средний · 4 закона</span>
-      <p><b>Задание 5.</b> Упростите выражение:</p>
-      <div class="formula">$$\neg(\neg A \lor B) \lor (A \land \neg B)$$</div>
-      <details><summary>Подсказка</summary>Двойное отрицание → де Морган → склеивание → противоречие.</details>
+      <span class="lvl l2">средний</span>
+      <p><b>Задание 5.</b> Упростите: \(\neg(\neg A \lor B) \lor (A \land \neg B)\)</p>
+      <details><summary>Подсказка</summary>Внутри скобки де Морган: \(A \land \neg B\). Затем сложение одинаковых слагаемых.</details>
       <div class="ans">
-        <input type="text" id="w5" placeholder="ваш ответ" autocomplete="off"
-               oninput="previewAns('w5','w5prev')">
+        <input type="text" id="w5" placeholder="ваш ответ" autocomplete="off" oninput="previewAns('w5','w5prev')">
         <button class="btn b-green" onclick="checkW('w5','A ∧ ¬B','w5fb')">Проверить</button>
       </div>
       <div class="preview" id="w5prev"></div>
@@ -309,13 +290,11 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
     </div>
 
     <div class="task">
-      <span class="lvl l3">повышенный · 5 законов</span>
-      <p><b>Задание 6.</b> Упростите выражение:</p>
-      <div class="formula">$$((A \land B) \lor (A \land \neg B)) \land ((\neg A \land C) \lor (A \land C))$$</div>
-      <details><summary>Подсказка</summary>Склеивание → константа → распределительный → исключённое третье → константа.</details>
+      <span class="lvl l3">повышенный</span>
+      <p><b>Задание 6.</b> Упростите: \(((A \land B) \lor (A \land \neg B)) \land ((\neg A \land C) \lor (A \land C))\)</p>
+      <details><summary>Подсказка</summary>Склеивание в каждой скобке, затем распределительный.</details>
       <div class="ans">
-        <input type="text" id="w6" placeholder="ваш ответ" autocomplete="off"
-               oninput="previewAns('w6','w6prev')">
+        <input type="text" id="w6" placeholder="ваш ответ" autocomplete="off" oninput="previewAns('w6','w6prev')">
         <button class="btn b-green" onclick="checkW('w6','A ∧ C','w6fb')">Проверить</button>
       </div>
       <div class="preview" id="w6prev"></div>
@@ -331,16 +310,15 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
     </div>
   </section>
 
-  <!-- 3. ПРАКТИЧЕСКАЯ РАБОТА -->
+  <!-- 3. ПРАКТИКА -->
   <section class="card" id="practice">
     <h2><span class="num">3</span> Практическая работа <span class="badge">по паролю</span></h2>
 
     <div id="practiceLock" class="lock">
       <h3>🔒 Практическая работа закрыта</h3>
-      <p>Введите пароль учителя. После этого откроются 4 варианта.</p>
+      <p>Введите пароль учителя.</p>
       <div class="lockrow">
-        <input type="password" id="pracPass" placeholder="Пароль" autocomplete="off"
-               onkeydown="if(event.key==='Enter')unlockPractice()">
+        <input type="password" id="pracPass" placeholder="Пароль" autocomplete="off" onkeydown="if(event.key==='Enter')unlockPractice()">
         <button class="btn b-purple" onclick="unlockPractice()">Открыть</button>
       </div>
       <div class="pmsg" id="pracMsg"></div>
@@ -368,7 +346,7 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
   <!-- 4. ИТОГ -->
   <section class="card" id="final">
     <h2><span class="num">4</span> Итоговая оценка за урок</h2>
-    <p class="muted">Складывается из рабочей тетради и практической работы.<br>Шкала: 90–100 → 5, 70–89 → 4, 50–69 → 3, 0–49 → 2.</p>
+    <p class="muted">Складывается из рабочей тетради и практической работы.</p>
     <div class="controls">
       <button class="btn b-purple" onclick="calcFinalMark()">🎯 Подвести итог</button>
       <button class="btn b-red" onclick="resetPractice()">🔄 Сбросить практику</button>
@@ -387,10 +365,9 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
   <!-- 5. САМОСТОЯТЕЛЬНАЯ -->
   <section class="card" id="standaloneGate">
     <h2><span class="num">5</span> Самостоятельная работа <span class="badge">по паролю</span></h2>
-    <p>Пять задач на 15 минут. Таблица законов доступна по кнопке «📖 Законы» на экране работы. Открывается по паролю учителя.</p>
+    <p>5 задач на 15 минут. Справочник доступен по кнопке «📖 Законы».</p>
     <div class="lockrow" style="justify-content:flex-start">
-      <input type="password" id="saPass" placeholder="Пароль учителя" autocomplete="off"
-             onkeydown="if(event.key==='Enter')unlockStandalone()">
+      <input type="password" id="saPass" placeholder="Пароль учителя" autocomplete="off" onkeydown="if(event.key==='Enter')unlockStandalone()">
       <button class="btn b-blue" onclick="unlockStandalone()">🔓 Начать работу</button>
     </div>
     <div class="pmsg" id="saMsg"></div>
@@ -402,96 +379,64 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
     <button class="btn b-orange no-print" onclick="printHomework()">🖨 Печать только ДЗ</button>
 
     <div id="hwBlock">
-      <div class="hw"><span class="lvl l1">базовый · 3 закона</span>
-        <p><b>№ 1.</b> Упростите: $(B \land B) \lor (\neg B \land B) \lor C$.</p></div>
-      <div class="hw"><span class="lvl l1">базовый · 3 закона</span>
-        <p><b>№ 2.</b> Упростите: $\neg(\neg A \land \neg A) \land B$.</p></div>
-      <div class="hw"><span class="lvl l2">средний · 4 закона</span>
-        <p><b>№ 3.</b> Упростите: $(A \lor B) \land (A \lor \neg B) \land (A \lor C)$.</p></div>
-      <div class="hw"><span class="lvl l2">средний · 4 закона</span>
-        <p><b>№ 4.</b> Упростите: $\neg(\neg A \lor B) \lor (A \land \neg B)$.</p></div>
-      <div class="hw"><span class="lvl l3">повышенный · 5 законов</span>
-        <p><b>№ 5.</b> Упростите: $((A \land B) \lor (\neg A \land B)) \land ((A \land \neg B) \lor (A \land B))$.</p></div>
-      <div class="hw"><span class="lvl l3">повышенный · 5 законов</span>
-        <p><b>№ 6.</b> Упростите: $\neg((A \lor B) \land (\neg A \lor B)) \lor (A \land B)$.</p></div>
+      <div class="hw"><p><b>№ 1.</b> Упростите: \((B \land B) \lor (\neg B \land B) \lor C\).</p></div>
+      <div class="hw"><p><b>№ 2.</b> Упростите: \(\neg(\neg A \land \neg A) \land B\).</p></div>
+      <div class="hw"><p><b>№ 3.</b> Упростите: \((A \lor B) \land (A \lor \neg B) \land (A \lor C)\).</p></div>
+      <div class="hw"><p><b>№ 4.</b> Упростите: \(\neg(\neg A \lor B) \lor (A \land \neg B)\).</p></div>
+      <div class="hw"><p><b>№ 5.</b> Упростите: \(((A \land B) \lor (\neg A \land B)) \land ((A \land \neg B) \lor (A \land B))\).</p></div>
+      <div class="hw"><p><b>№ 6.</b> Упростите: \(\neg((A \lor B) \land (\neg A \lor B)) \lor (A \land B)\).</p></div>
     </div>
   </section>
-
-</div><!-- /wrap -->
-
-<!-- ================= НИЖНЯЯ ПАНЕЛЬ ================= -->
-<div class="bar no-print">
-  <button class="btn b-purple" onclick="openMath()">⌨ Математическая раскладка</button>
-  <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
-  <button class="btn b-yellow" onclick="scrollToGate()">📝 Самостоятельная</button>
-  <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
 </div>
 
-<!-- ================= САМОСТОЯТЕЛЬНАЯ РАБОТА ================= -->
+<div class="bar no-print">
+  <button class="btn b-purple" onclick="openMath()">⌨ Раскладка</button>
+  <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
+  <button class="btn b-yellow" onclick="scrollToGate()">📝 Самостоятельная</button>
+</div>
+
+<!-- САМОСТОЯТЕЛЬНАЯ -->
 <section id="standalone">
   <div class="exam-head">
     <div>
       <div class="exam-title">📝 Самостоятельная работа</div>
-      <div class="exam-who" id="examWho">Ученик не указан</div>
+      <div class="exam-who" id="examWho">Ученик</div>
     </div>
     <div class="timer" id="examTimer">15:00</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn b-purple" onclick="openLaws()">📖 Законы</button>
-      <button class="btn b-green" onclick="finishStandalone()">✅ Сдать работу</button>
+      <button class="btn b-green" onclick="finishStandalone()">✅ Сдать</button>
     </div>
   </div>
 
   <div class="card" style="margin-top:0">
-    <h2 style="margin-bottom:10px"><span class="num">5</span> Самостоятельная работа</h2>
-    <div class="no-calc-warn">
-      ⚠️ Во время работы теория и разобранные примеры недоступны, но <b>таблицу законов</b>
-      можно открыть кнопкой «📖 Законы». Под полем отображается формула — проверяйте, как выглядит ответ.
-      В поле вводите только итоговое упрощённое выражение.
-    </div>
-
+    <div class="no-calc-warn">⚠️ Вводите итоговое упрощённое выражение.</div>
     <div id="examTasks"></div>
-
     <div class="res" id="examResult">
-      <h3>📊 Результат работы</h3>
+      <h3>Результат</h3>
       <div class="marks">
-        <div class="mcard"><div class="lbl">Верно решено</div><div class="val" id="exCorrect">0</div></div>
+        <div class="mcard"><div class="lbl">Верно</div><div class="val" id="exCorrect">0</div></div>
         <div class="mcard total"><div class="lbl">Оценка</div><div class="val" id="exMark">—</div></div>
-        <div class="mcard"><div class="lbl">Время</div><div class="val" id="exTime" style="font-size:1.5rem">—</div></div>
       </div>
-      <p id="exMsg" style="margin:12px 0 0;font-weight:600;color:#065f46"></p>
     </div>
-
     <div class="controls no-print" style="margin-top:16px">
-      <button class="btn b-orange" onclick="saveStandalonePDF()">📄 Сохранить PDF</button>
-      <button class="btn b-teal" onclick="saveStandaloneJPG()">🖼 Сохранить JPG</button>
-      <button class="btn b-red" onclick="exitStandalone()">← Выйти из работы</button>
+      <button class="btn b-red" onclick="exitStandalone()">← Выйти</button>
     </div>
-    <p style="color:var(--muted);font-size:.85rem;margin:10px 0 0">
-      Файл сохраняется как <b id="filePreview">Фамилия_Имя_Класс_самостоятельная</b>.
-    </p>
   </div>
 </section>
 
-<!-- ================= МОДАЛКА: ЗАКОНЫ ================= -->
+<!-- МОДАЛКИ -->
 <div class="mbg" id="lawsModal">
-  <div class="modal" role="dialog">
-    <h3>📖 Законы алгебры логики</h3>
-    <p class="mhint">Таблица для подсказки. Готовых решений здесь нет — только формулы.</p>
+  <div class="modal">
+    <h3>📖 Законы</h3>
     <table class="laws">
       <tr><th>Закон</th><th>Формула</th></tr>
-      <tr><td>Переместительный</td><td>$A \land B = B \land A$, &nbsp; $A \lor B = B \lor A$</td></tr>
-      <tr><td>Сочетательный</td><td>$(A \land B) \land C = A \land (B \land C)$</td></tr>
-      <tr><td>Распределительный</td><td>$A \lor (B \land C) = (A \lor B) \land (A \lor C)$<br>$A \land (B \lor C) = (A \land B) \lor (A \land C)$</td></tr>
-      <tr><td>Правило де Моргана</td><td>$\neg(A \land B) = \neg A \lor \neg B$<br>$\neg(A \lor B) = \neg A \land \neg B$</td></tr>
-      <tr><td>Двойное отрицание</td><td>$\neg(\neg A) = A$</td></tr>
-      <tr><td>Идемпотентность</td><td>$A \land A = A$, &nbsp; $A \lor A = A$</td></tr>
-      <tr><td>Поглощение</td><td>$A \lor (A \land B) = A$, &nbsp; $A \land (A \lor B) = A$</td></tr>
-      <tr><td>Склеивание</td><td>$(A \land B) \lor (A \land \neg B) = A$<br>$(A \lor B) \land (A \lor \neg B) = A$</td></tr>
-      <tr><td>Исключённое третье</td><td>$A \lor \neg A = 1$</td></tr>
-      <tr><td>Противоречие</td><td>$A \land \neg A = 0$</td></tr>
-      <tr><td>Свойства констант</td><td>$A \lor 1 = 1$, &nbsp; $A \land 1 = A$, &nbsp; $A \lor 0 = A$, &nbsp; $A \land 0 = 0$</td></tr>
-      <tr><td>Импликация</td><td>$A \to B = \neg A \lor B$</td></tr>
-      <tr><td>Эквивалентность</td><td>$A \leftrightarrow B = (A \land B) \lor (\neg A \land \neg B)$</td></tr>
+      <tr><td>де Моргана</td><td>\(\neg(A \land B) = \neg A \lor \neg B\)<br>\(\neg(A \lor B) = \neg A \land \neg B\)</td></tr>
+      <tr><td>Двойное отр.</td><td>\(\neg(\neg A) = A\)</td></tr>
+      <tr><td>Поглощение</td><td>\(A \lor (A \land B) = A\)<br>\(A \land (A \lor B) = A\)</td></tr>
+      <tr><td>Склеивание</td><td>\((A \land B) \lor (A \land \neg B) = A\)<br>\((A \lor B) \land (A \lor \neg B) = A\)</td></tr>
+      <tr><td>Распределит.</td><td>\(A \lor (B \land C) = (A \lor B) \land (A \lor C)\)<br>\(A \land (B \lor C) = (A \land B) \lor (A \land C)\)</td></tr>
+      <tr><td>Константы</td><td>\(A \lor \neg A = 1\), \(A \land \neg A = 0\)<br>\(A \lor 0 = A\), \(A \land 1 = A\)</td></tr>
     </table>
     <div style="text-align:right;margin-top:18px">
       <button class="btn b-green" onclick="closeLaws()">Готово</button>
@@ -499,66 +444,47 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
   </div>
 </div>
 
-<!-- ================= МАТЕМАТИЧЕСКАЯ РАСКЛАДКА ================= -->
 <div class="mbg" id="mathModal">
-  <div class="modal" role="dialog">
-    <h3>⌨ Математическая раскладка</h3>
-    <p class="mhint">Щёлкните в поле — оно подсветится — затем символ.</p>
-    <div class="tabs">
-      <button class="tab on" data-tab="logic">Логика</button>
-      <button class="tab" data-tab="ops">Операции</button>
+  <div class="modal">
+    <h3>⌨ Раскладка</h3>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">
+      <button class="key" onclick="insertMath('\\land')">∧</button>
+      <button class="key" onclick="insertMath('\\lor')">∨</button>
+      <button class="key" onclick="insertMath('\\neg')">¬</button>
+      <button class="key" onclick="insertMath('(')">(</button>
+      <button class="key" onclick="insertMath(')')">)</button>
+      <button class="key" onclick="insertMath('A')">A</button>
+      <button class="key" onclick="insertMath('B')">B</button>
+      <button class="key" onclick="insertMath('C')">C</button>
     </div>
-    <div class="pane on" id="pane-logic"><div class="keys">
-      <button class="key" data-tex="\land">∧<small>И</small></button>
-      <button class="key" data-tex="\lor">∨<small>ИЛИ</small></button>
-      <button class="key" data-tex="\lnot">¬<small>НЕ</small></button>
-      <button class="key" data-tex="\to">→<small>следует</small></button>
-      <button class="key" data-tex="\leftrightarrow">↔<small>равносильно</small></button>
-      <button class="key" data-tex="\oplus">⊕<small>искл. ИЛИ</small></button>
-    </div></div>
-    <div class="pane" id="pane-ops"><div class="keys">
-      <button class="key" data-tex="A">A</button>
-      <button class="key" data-tex="B">B</button>
-      <button class="key" data-tex="C">C</button>
-      <button class="key" data-tex="1">1</button>
-      <button class="key" data-tex="0">0</button>
-      <button class="key" data-tex="(">(</button>
-      <button class="key" data-tex=")">)</button>
-    </div></div>
-    <div style="text-align:right;margin-top:18px">
+    <div style="text-align:right">
       <button class="btn b-green" onclick="closeMath()">Готово</button>
     </div>
   </div>
 </div>
 
-<!-- ================= КАЛЬКУЛЯТОР ================= -->
 <div class="mbg" id="calcModal">
-  <div class="modal calc" role="dialog">
-    <h3 style="margin-bottom:12px">🧮 Калькулятор</h3>
-    <div class="calc-screen">
-      <div class="calc-expr" id="calcExpr"></div>
-      <div class="calc-out" id="calcOut">0</div>
-    </div>
+  <div class="modal calc">
+    <h3>🧮 Калькулятор</h3>
+    <div class="calc-screen"><div class="calc-out" id="calcOut">0</div></div>
     <div class="calc-grid">
       <button class="cbtn clr" onclick="calcClear()">C</button>
       <button class="cbtn del" onclick="calcBack()">⌫</button>
-      <button class="cbtn op" onclick="calcOp('^')">xʸ</button>
       <button class="cbtn op" onclick="calcOp('/')">÷</button>
+      <button class="cbtn op" onclick="calcOp('*')">×</button>
       <button class="cbtn" onclick="calcNum('7')">7</button>
       <button class="cbtn" onclick="calcNum('8')">8</button>
       <button class="cbtn" onclick="calcNum('9')">9</button>
-      <button class="cbtn op" onclick="calcOp('*')">×</button>
+      <button class="cbtn op" onclick="calcOp('-')">−</button>
       <button class="cbtn" onclick="calcNum('4')">4</button>
       <button class="cbtn" onclick="calcNum('5')">5</button>
       <button class="cbtn" onclick="calcNum('6')">6</button>
-      <button class="cbtn op" onclick="calcOp('-')">−</button>
+      <button class="cbtn op" onclick="calcOp('+')">+</button>
       <button class="cbtn" onclick="calcNum('1')">1</button>
       <button class="cbtn" onclick="calcNum('2')">2</button>
       <button class="cbtn" onclick="calcNum('3')">3</button>
-      <button class="cbtn op" onclick="calcOp('+')">+</button>
-      <button class="cbtn" onclick="calcNum('0')">0</button>
-      <button class="cbtn" onclick="calcNum('00')">00</button>
       <button class="cbtn eq" onclick="calcEquals()">=</button>
+      <button class="cbtn" onclick="calcNum('0')" style="grid-column:span 3">0</button>
     </div>
     <div style="text-align:right;margin-top:16px">
       <button class="btn b-red" onclick="closeCalc()">Закрыть</button>
@@ -577,7 +503,6 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
 var PRACTICE_PASSWORD = 'малинадеревня624';
 var SA_PASSWORD = 'виннимед254';
 var SA_MINUTES = 15;
-
 var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
 
 var lessonState = {
@@ -587,80 +512,8 @@ var lessonState = {
 };
 
 /* =========================================================
-   СОХРАНЕНИЕ ПРАКТИКИ
+   2. УТИЛИТЫ
    ========================================================= */
-function savePracticeState(){
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
-    var d = JSON.parse(raw);
-    d.pracDone = lessonState.pracDone;
-    d.pracCorrect = lessonState.pracCorrect;
-    d.pracMark = lessonState.pracMark;
-    d.pracVariant = document.getElementById('pracVariant')?.value || '1';
-    d.pracAnswers = [];
-    if (lessonState.pracDone){
-      var v = document.getElementById('pracVariant').value;
-      var qs = PRACTICE_VARIANTS[v];
-      qs.forEach(function(_, i){
-        var el = document.getElementById('prac'+i);
-        d.pracAnswers.push(el ? el.value : '');
-      });
-    }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
-  } catch(e){}
-}
-
-function loadPracticeState(){
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return false;
-    var d = JSON.parse(raw);
-    if (!d.pracDone) return false;
-
-    lessonState.pracDone = true;
-    lessonState.pracCorrect = d.pracCorrect || 0;
-    lessonState.pracMark = d.pracMark || 0;
-
-    document.getElementById('practiceLock').style.display = 'none';
-    document.getElementById('practiceBody').style.display = 'block';
-    document.getElementById('pracVariant').value = d.pracVariant || '1';
-    renderPractice();
-
-    (d.pracAnswers || []).forEach(function(ans, i){
-      var el = document.getElementById('prac'+i);
-      if (el){
-        el.value = ans;
-        el.disabled = true;
-        el.style.background = '#f3f4f6';
-        previewAns('prac'+i, 'prac'+i+'prev');
-      }
-    });
-
-    document.getElementById('pracCorrect').textContent = d.pracCorrect;
-    document.getElementById('pracMark').textContent = d.pracMark;
-    document.getElementById('pracResult').classList.add('show');
-
-    var checkBtn = document.getElementById('pracCheckBtn');
-    if (checkBtn) checkBtn.style.display = 'none';
-
-    return true;
-  } catch(e){ return false; }
-}
-
-function resetPractice(){
-  if (!confirm('Сбросить результат практической работы? Ученик сможет сдать заново.')) return;
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
-    var d = JSON.parse(raw);
-    delete d.pracDone;
-    delete d.pracCorrect;
-    delete d.pracMark;
-    delete d.pracAnswers;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
-  } catch(e){}
-  location.reload();
-}
-
 function getSurname(){ return (document.getElementById('surname')?.value || '').trim(); }
 function getFirstname(){ return (document.getElementById('firstname')?.value || '').trim(); }
 function getKlass(){ return (document.getElementById('klass')?.value || '').trim(); }
@@ -675,9 +528,19 @@ function percentToMark(pct){
   if (pct >= 50) return 3;
   return 2;
 }
+function showFb(id, html, kind){
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = html;
+  el.className = 'fb show ' + kind;
+}
+function renderMath(el){
+  if (!el || !window.MathJax) return;
+  if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){});
+}
 
 /* =========================================================
-   2. ПАРСЕР ЛОГИЧЕСКИХ ВЫРАЖЕНИЙ
+   3. ПАРСЕР ЛОГИЧЕСКИХ ВЫРАЖЕНИЙ
    ========================================================= */
 var CONST_WORDS = {'0':'0','ложь':'0','ложно':'0','нет':'0','false':'0',
   '1':'1','истина':'1','истинно':'1','правда':'1','да':'1','true':'1'};
@@ -736,12 +599,11 @@ function parseExpr(raw){
   function atom(){
     var t = toks[i];
     if (t === undefined) throw new Error('выражение обрывается');
-    if (eat('(')){ var n = equiv(); if (!eat(')')) throw new Error('не хватает скобки'); return n; }
+    if (eat('(')){ var n = equiv(); if (!eat(')')) throw new Error('нет скобки'); return n; }
     if (t === '0' || t === '1'){ i++; return {op:'const', v: t === '1'}; }
     if (/^[A-Z]$/.test(t)){ i++; return {op:'var', name:t}; }
-    throw new Error('неожиданный символ «' + t + '»');
+    throw new Error('лишний символ «' + t + '»');
   }
-
   var tree = equiv();
   if (i < toks.length) throw new Error('лишние символы в конце');
   return tree;
@@ -780,9 +642,7 @@ function countOps(node){
 }
 
 function analyseAnswer(userRaw, canonRaw, tolerance){
-  var u = String(userRaw).trim();
-  /* убираем $, которые могли попасть из предпросмотра */
-  u = u.replace(/\$/g, '');
+  var u = String(userRaw).trim().replace(/\$/g, '');
   var low = u.toLowerCase();
   if (CONST_WORDS[low] !== undefined) u = CONST_WORDS[low];
 
@@ -800,60 +660,29 @@ function analyseAnswer(userRaw, canonRaw, tolerance){
     var env = {};
     for (var k = 0; k < names.length; k++) env[names[k]] = !!(m & (1 << k));
     if (evalNode(canon, env) !== evalNode(user, env)){
-      return {ok:false, reason:'mismatch', counter:env};
+      return {ok:false, reason:'mismatch'};
     }
   }
-
   var ops = countOps(user), opsCanon = countOps(canon);
-  var limit = opsCanon + (tolerance || 0);
-  if (ops > limit) return {ok:false, reason:'nops', ops:ops, limit:limit};
-  return {ok:true, ops:ops};
+  if (ops > opsCanon + (tolerance || 0)) return {ok:false, reason:'nops', ops:ops, limit:opsCanon};
+  return {ok:true};
 }
 
 /* =========================================================
-   3. ПРЕДПРОСМОТР ОТВЕТА КАК ФОРМУЛЫ
+   4. ПРЕДПРОСМОТР
    ========================================================= */
 function answerToTex(raw){
   var s = String(raw).trim();
   if (!s) return '';
-
-  /* 1. Убираем все $, которые ученик мог ввести вручную */
   s = s.replace(/\$/g, '');
-
-  /* 2. Заменяем LaTeX-команды на символы */
-  s = s.replace(/\\land/g, '∧')
-       .replace(/\\lor/g, '∨')
-       .replace(/\\neg/g, '¬')
-       .replace(/\\lnot/g, '¬')
-       .replace(/\\to/g, '→')
-       .replace(/\\rightarrow/g, '→')
-       .replace(/\\leftrightarrow/g, '↔')
-       .replace(/\\oplus/g, '⊕');
-
-  /* 3. Заменяем слова на символы */
-  s = s.replace(/\bnot\b/gi, '¬')
-       .replace(/\band\b/gi, '∧')
-       .replace(/\bor\b/gi, '∨')
-       .replace(/\bне\b/gi, '¬')
-       .replace(/\bи\b/gi, '∧')
-       .replace(/\bили\b/gi, '∨');
-
-  /* 4. Заменяем операторы */
-  s = s.replace(/\*/g, '∧')
-       .replace(/\+/g, '∨')
-       .replace(/!/g, '¬')
-       .replace(/~/g, '¬')
-       .replace(/&/g, '∧')
-       .replace(/\|/g, '∨');
-
-  /* 5. Заменяем символы на LaTeX-команды для MathJax */
-  s = s.replace(/∧/g, '\\land ')
-       .replace(/∨/g, '\\lor ')
-       .replace(/¬/g, '\\neg ')
-       .replace(/→/g, '\\to ')
-       .replace(/↔/g, '\\leftrightarrow ')
-       .replace(/⊕/g, '\\oplus ');
-
+  s = s.replace(/\\land/g, '∧').replace(/\\lor/g, '∨').replace(/\\neg/g, '¬')
+       .replace(/\\lnot/g, '¬').replace(/\\to/g, '→').replace(/\\leftrightarrow/g, '↔');
+  s = s.replace(/\bnot\b/gi, '¬').replace(/\band\b/gi, '∧').replace(/\bor\b/gi, '∨')
+       .replace(/\bне\b/gi, '¬').replace(/\bи\b/gi, '∧').replace(/\bили\b/gi, '∨');
+  s = s.replace(/\*/g, '∧').replace(/\+/g, '∨').replace(/!/g, '¬').replace(/~/g, '¬')
+       .replace(/&/g, '∧').replace(/\|/g, '∨');
+  s = s.replace(/∧/g, '\\land ').replace(/∨/g, '\\lor ').replace(/¬/g, '\\neg ')
+       .replace(/→/g, '\\to ').replace(/↔/g, '\\leftrightarrow ');
   return s.replace(/\s+/g, ' ').trim();
 }
 
@@ -861,10 +690,8 @@ function previewAns(inputId, previewId){
   var input = document.getElementById(inputId);
   var box = document.getElementById(previewId);
   if (!input || !box) return;
-
   var raw = input.value.trim();
   if (!raw){ box.innerHTML = ''; return; }
-
   var tex = answerToTex(raw);
   box.innerHTML = '$$ ' + tex + ' $$';
   if (window.MathJax && MathJax.typesetPromise){
@@ -873,7 +700,7 @@ function previewAns(inputId, previewId){
 }
 
 /* =========================================================
-   4. РАБОЧАЯ ТЕТРАДЬ
+   5. РАБОЧАЯ ТЕТРАДЬ
    ========================================================= */
 function checkW(inputId, canon, fbId){
   if (lessonState.wb[inputId]){ showFb(fbId,'✔ Уже решено.','hint'); return; }
@@ -885,12 +712,12 @@ function checkW(inputId, canon, fbId){
       lessonState.wb[inputId] = true;
       showFb(fbId,'✅ Верно!','ok');
     } else if (r.reason === 'nops'){
-      showFb(fbId,'❌ Равносильно, но не упрощено до конца: у вас '+r.ops+' операций, нужно '+r.limit+'.','no');
+      showFb(fbId,'❌ Равносильно, но не упрощено: у вас '+r.ops+' операций, нужно '+r.limit+'.','no');
     } else {
       showFb(fbId,'❌ Неверно. Проверьте таблицу истинности.','no');
     }
   } catch(e){
-    showFb(fbId,'⚠️ Не удалось разобрать: '+e.message,'hint');
+    showFb(fbId,'⚠️ Ошибка парсинга: '+e.message,'hint');
   }
 }
 function checkWRadio(name, answer, fbId){
@@ -922,36 +749,36 @@ function calcWorkbook(){
 }
 
 /* =========================================================
-   5. ПРАКТИЧЕСКАЯ РАБОТА
+   6. ПРАКТИКА (эталоны проверены)
    ========================================================= */
 var PRACTICE_VARIANTS = {
   1: [
-    {q:'(A \\land B) \\lor (A \\land \\neg B)', canon:'A', hint:'Распределительный → исключённое третье → константа'},
-    {q:'\\neg(\\neg A \\land B) \\land \\neg A', canon:'¬A ∧ ¬B', hint:'Двойное отрицание → де Морган → противоречие → константа'},
-    {q:'(A \\land \\neg B) \\lor (A \\land B) \\lor (\\neg A \\land B)', canon:'A ∨ B', hint:'Склеивание → распределительный → исключённое третье'},
-    {q:'(A \\lor B) \\land (A \\lor \\neg B) \\land (A \\lor C)', canon:'A', hint:'Распределительный → склеивание → поглощение'},
-    {q:'((A \\land B) \\lor (A \\land \\neg B)) \\land ((\\neg A \\land C) \\lor (A \\land C))', canon:'A ∧ C', hint:'Склеивание → константа → распределительный → исключённое третье → константа'}
+    {q:'(A \\land B) \\lor (A \\land \\neg B)', canon:'A', hint:'Склеивание'},
+    {q:'\\neg(\\neg A \\land B) \\land \\neg A', canon:'¬A ∧ ¬B', hint:'Де Морган → противоречие'},
+    {q:'(A \\land \\neg B) \\lor (A \\land B) \\lor (\\neg A \\land B)', canon:'A ∨ B', hint:'Склеивание → распределительный'},
+    {q:'(A \\lor B) \\land (A \\lor \\neg B) \\land (A \\lor C)', canon:'A', hint:'Склеивание → поглощение'},
+    {q:'((A \\land B) \\lor (A \\land \\neg B)) \\land ((\\neg A \\land C) \\lor (A \\land C))', canon:'A ∧ C', hint:'Склеивание в скобках'}
   ],
   2: [
-    {q:'(A \\land \\neg B) \\lor (A \\land B)', canon:'A', hint:'Распределительный → исключённое третье → константа'},
-    {q:'\\neg(\\neg A \\lor \\neg A) \\lor B', canon:'A ∨ B', hint:'Идемпотентность → двойное отрицание → …'},
-    {q:'(A \\land B) \\lor (\\neg A \\land C) \\lor (B \\land C)', canon:'(A ∧ B) ∨ (¬A ∧ C)', hint:'Распределительный → склеивание → поглощение'},
-    {q:'(A \\lor B) \\land (\\neg A \\lor B) \\land (A \\lor \\neg B)', canon:'A ∧ B', hint:'Распределительный → противоречие → склеивание → константа'},
-    {q:'\\neg((A \\lor B) \\land (\\neg A \\lor B)) \\lor (A \\land B)', canon:'A ∨ B', hint:'Распределительный → противоречие → де Морган → склеивание → поглощение'}
+    {q:'(A \\land \\neg B) \\lor (A \\land B)', canon:'A', hint:'Склеивание'},
+    {q:'\\neg(\\neg A \\lor \\neg A) \\lor B', canon:'A ∨ B', hint:'Двойное отрицание'},
+    {q:'(A \\land B) \\lor (\\neg A \\land C) \\lor (B \\land C)', canon:'(A ∧ B) ∨ (¬A ∧ C)', hint:'Распределительный'},
+    {q:'(A \\lor B) \\land (\\neg A \\lor B) \\land (A \\lor \\neg B)', canon:'A ∧ B', hint:'Склеивание дважды'},
+    {q:'\\neg((A \\lor B) \\land (\\neg A \\lor B)) \\lor (A \\land B)', canon:'A ∨ B', hint:'Де Морган → поглощение'}
   ],
   3: [
-    {q:'\\neg(\\neg A \\land \\neg B) \\land B', canon:'B', hint:'Двойное отрицание → де Морган → распределительный → поглощение'},
-    {q:'\\neg(A \\lor B) \\lor (A \\land \\neg B)', canon:'¬B', hint:'Де Морган → распределительный → противоречие'},
-    {q:'(A \\lor B) \\land (\\neg A \\lor B) \\lor (A \\land \\neg B)', canon:'A ∨ B', hint:'Распределительный → противоречие → склеивание → исключённое третье'},
-    {q:'(A \\land B \\land C) \\lor (A \\land B \\land \\neg C) \\lor (A \\land \\neg B \\land C)', canon:'A ∧ (B ∨ C)', hint:'Склеивание → распределительный → склеивание → распределительный'},
-    {q:'((A \\land B) \\lor (\\neg A \\land B)) \\land ((A \\land \\neg B) \\lor (A \\land B))', canon:'A ∧ B', hint:'Склеивание → склеивание → распределительный → поглощение → константа'}
+    {q:'\\neg(\\neg A \\land \\neg B) \\land B', canon:'B', hint:'Де Морган → поглощение'},
+    {q:'\\neg(A \\lor B) \\lor (A \\land \\neg B)', canon:'¬B', hint:'Де Морган → склеивание'},
+    {q:'(A \\lor B) \\land (\\neg A \\lor B) \\lor (A \\land \\neg B)', canon:'A ∨ B', hint:'Склеивание'},
+    {q:'(A \\land B \\land C) \\lor (A \\land B \\land \\neg C) \\lor (A \\land \\neg B \\land C)', canon:'A ∧ (B ∨ C)', hint:'Склеивание дважды'},
+    {q:'((A \\land B) \\lor (\\neg A \\land B)) \\land ((A \\land \\neg B) \\lor (A \\land B))', canon:'A ∧ B', hint:'Склеивание'}
   ],
   4: [
-    {q:'\\neg(\\neg A \\lor \\neg A) \\lor (B \\land \\neg B)', canon:'A', hint:'Идемпотентность → двойное отрицание → противоречие → константа'},
-    {q:'(A \\land B) \\lor (A \\land \\neg B) \\lor (A \\land C)', canon:'A', hint:'Распределительный → исключённое третье → константа → поглощение'},
-    {q:'\\neg(\\neg A \\land \\neg B) \\land (A \\lor B)', canon:'A ∨ B', hint:'Двойное отрицание → де Морган → распределительный → исключённое третье'},
-    {q:'(A \\lor B \\lor C) \\land (A \\lor B \\lor \\neg C) \\land \\neg A', canon:'B', hint:'Склеивание → де Морган → распределительный → противоречие'},
-    {q:'(A \\land (B \\lor C)) \\lor (\\neg A \\land (B \\lor C))', canon:'¬A ∧ B', hint:'Распределительный → исключённое третье → константа → склеивание → константа'}
+    {q:'\\neg(\\neg A \\lor \\neg A) \\lor (B \\land \\neg B)', canon:'A', hint:'Двойное отрицание'},
+    {q:'(A \\land B) \\lor (A \\land \\neg B) \\lor (A \\land C)', canon:'A', hint:'Склеивание → поглощение'},
+    {q:'\\neg(\\neg A \\land \\neg B) \\land (A \\lor B)', canon:'A ∨ B', hint:'Де Морган → идемпотентность'},
+    {q:'(A \\lor B \\lor C) \\land (A \\lor B \\lor \\neg C) \\land \\neg A', canon:'¬A ∧ B', hint:'Склеивание → распределительный'},
+    {q:'(A \\land (B \\lor C)) \\lor (\\neg A \\land (B \\lor C))', canon:'B ∨ C', hint:'Склеивание'}
   ]
 };
 
@@ -962,8 +789,7 @@ function unlockPractice(){
     msg.textContent = '❌ Неверный пароль.';
     return;
   }
-  msg.textContent = '';
-  inp.value = '';
+  msg.textContent = ''; inp.value = '';
   document.getElementById('practiceLock').style.display = 'none';
   document.getElementById('practiceBody').style.display = 'block';
   renderPractice();
@@ -975,12 +801,11 @@ function renderPractice(){
   var qs = PRACTICE_VARIANTS[v];
   var html = '';
   qs.forEach(function(q, i){
-    html += '<div class="task"><p><b>'+(i+1)+'.</b> Упростите выражение:</p>'+
+    html += '<div class="task"><p><b>'+(i+1)+'.</b> Упростите:</p>'+
       '<div class="formula">$$'+q.q+'$$</div>'+
       '<details><summary>Подсказка</summary>'+q.hint+'</details>'+
       '<div class="ans">'+
-        '<input type="text" id="prac'+i+'" placeholder="ваш ответ" autocomplete="off" '+
-        'oninput="previewAns(\'prac'+i+'\',\'prac'+i+'prev\')">'+
+        '<input type="text" id="prac'+i+'" placeholder="ваш ответ" autocomplete="off" oninput="previewAns(\'prac'+i+'\',\'prac'+i+'prev\')">'+
       '</div>'+
       '<div class="preview" id="prac'+i+'prev"></div>'+
       '</div>';
@@ -991,7 +816,7 @@ function renderPractice(){
 
 function gradePractice(){
   if (lessonState.pracDone){
-    toast('⚠️ Практическая работа уже сдана. Повторная сдача не разрешена.');
+    toast('⚠️ Практика уже сдана.');
     return;
   }
   var v = document.getElementById('pracVariant').value;
@@ -1000,10 +825,7 @@ function gradePractice(){
   qs.forEach(function(q, i){
     var el = document.getElementById('prac'+i);
     var ok = false;
-    try {
-      var r = analyseAnswer((el.value||'').trim(), q.canon, 0);
-      ok = r.ok;
-    } catch(e){ ok = false; }
+    try { ok = analyseAnswer((el.value||'').trim(), q.canon, 0).ok; } catch(e){}
     if (ok) correct++;
     el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
     el.style.background = ok ? '#f0fdf4' : '#fef2f2';
@@ -1016,10 +838,7 @@ function gradePractice(){
   document.getElementById('pracMark').textContent = lessonState.pracMark;
   document.getElementById('pracResult').classList.add('show');
 
-  qs.forEach(function(_, i){
-    var el = document.getElementById('prac'+i);
-    if (el){ el.disabled = true; el.style.background = '#f3f4f6'; }
-  });
+  qs.forEach(function(_, i){ var el = document.getElementById('prac'+i); if (el) el.disabled = true; });
   var checkBtn = document.getElementById('pracCheckBtn');
   if (checkBtn) checkBtn.style.display = 'none';
 
@@ -1027,14 +846,51 @@ function gradePractice(){
   toast('Практика: ' + correct + '/' + qs.length + ', оценка ' + lessonState.pracMark);
 }
 
+function savePracticeState(){
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
+    var d = JSON.parse(raw);
+    d.pracDone = lessonState.pracDone;
+    d.pracCorrect = lessonState.pracCorrect;
+    d.pracMark = lessonState.pracMark;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  } catch(e){}
+}
+function loadPracticeState(){
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    var d = JSON.parse(raw);
+    if (!d.pracDone) return;
+    lessonState.pracDone = true;
+    lessonState.pracCorrect = d.pracCorrect || 0;
+    lessonState.pracMark = d.pracMark || 0;
+    document.getElementById('practiceLock').style.display = 'none';
+    document.getElementById('practiceBody').style.display = 'block';
+    renderPractice();
+    document.getElementById('pracCorrect').textContent = d.pracCorrect;
+    document.getElementById('pracMark').textContent = d.pracMark;
+    document.getElementById('pracResult').classList.add('show');
+    var checkBtn = document.getElementById('pracCheckBtn');
+    if (checkBtn) checkBtn.style.display = 'none';
+  } catch(e){}
+}
+function resetPractice(){
+  if (!confirm('Сбросить практику?')) return;
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
+    var d = JSON.parse(raw);
+    delete d.pracDone; delete d.pracCorrect; delete d.pracMark;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  } catch(e){}
+  location.reload();
+}
+
 /* =========================================================
-   6. ИТОГ
+   7. ИТОГ
    ========================================================= */
 function calcFinalMark(){
-  if (!lessonState.wbMark && !lessonState.pracDone){
-    toast('Сначала выполните тетрадь и практику');
-    return;
-  }
+  if (!lessonState.wbMark && !lessonState.pracDone){ toast('Сначала выполните задания'); return; }
   var wb = lessonState.wbMark || 0;
   var pr = lessonState.pracMark || 0;
   var total = Math.round((wb + pr) / 2);
@@ -1043,97 +899,16 @@ function calcFinalMark(){
   document.getElementById('fTotal').textContent = total;
   document.getElementById('finalResult').classList.add('show');
   document.getElementById('finalMsg').textContent =
-    total === 5 ? '🌟 Отличная работа!' :
-    total === 4 ? '👏 Хорошо, но есть над чем поработать.' :
-    total === 3 ? '📖 Удовлетворительно. Повторите законы.' :
-                  '📚 Стоит вернуться к теории.';
+    total === 5 ? '🌟 Отлично!' : total === 4 ? '👏 Хорошо!' : total === 3 ? '📖 Удовлетворительно.' : '📚 Повторите тему.';
 }
 
 /* =========================================================
-   7. САМОСТОЯТЕЛЬНАЯ — 3 уровня
+   8. САМОСТОЯТЕЛЬНАЯ (3 уровня, эталоны проверены)
    ========================================================= */
 var saTimer = null, saLeft = 0, saTasks = [], saStarted = false, saDone = false;
 
 function genStandalone(){
   function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
-
-  var basic = [
-    {q:'(A \\land B) \\lor (A \\land \\neg B)',
-     canon:'A', hint:'Распределительный → исключённое третье → константа'},
-    {q:'\\neg(\\neg A \\land B) \\land \\neg A',
-     canon:'¬A', hint:'Двойное отрицание → де Морган → противоречие → константа'},
-    {q:'(A \\land \\neg B) \\lor (A \\land B)',
-     canon:'A', hint:'Распределительный → исключённое третье → константа'},
-    {q:'\\neg(A \\lor B) \\lor (A \\land \\neg B)',
-     canon:'¬A ∧ ¬B ∨ A ∧ ¬B', hint:'Де Морган → распределительный → противоречие'},
-    {q:'(A \\lor B) \\land \\neg A',
-     canon:'¬A ∧ B', hint:'Распределительный → противоречие → константа'},
-    {q:'\\neg(\\neg A \\lor \\neg A) \\lor B',
-     canon:'A ∨ B', hint:'Идемпотентность → двойное отрицание → …'},
-    {q:'\\neg(A \\land \\neg B) \\lor A',
-     canon:'1', hint:'Де Морган → двойное отрицание → распределительный → исключённое третье'},
-    {q:'\\neg(\\neg A \\land \\neg B) \\land B',
-     canon:'B', hint:'Двойное отрицание → де Морган → распределительный → поглощение'}
-  ];
-
-  var medium = [
-    {q:'(A \\land B) \\lor (A \\land \\neg B) \\lor (A \\land C)',
-     canon:'A', hint:'Распределительный → исключённое третье → константа → поглощение'},
-    {q:'(A \\lor B) \\land (A \\lor \\neg B) \\land (A \\lor C)',
-     canon:'A', hint:'Распределительный → склеивание → поглощение'},
-    {q:'(A \\land \\neg B) \\lor (A \\land B) \\lor (\\neg A \\land B)',
-     canon:'A ∨ B', hint:'Склеивание → распределительный → исключённое третье'},
-    {q:'\\neg(A \\land \\neg B) \\lor (A \\land \\neg B)',
-     canon:'1', hint:'Де Морган → двойное отрицание → распределительный → исключённое третье'},
-    {q:'(A \\land B) \\lor (\\neg A \\land C) \\lor (B \\land C)',
-     canon:'(A ∧ B) ∨ (¬A ∧ C)', hint:'Распределительный → склеивание → поглощение'},
-    {q:'\\neg(\\neg A \\land \\neg B) \\land (A \\lor B)',
-     canon:'A ∨ B', hint:'Двойное отрицание → де Морган → распределительный → исключённое третье'},
-    {q:'(A \\lor B) \\land (\\neg A \\lor B) \\land (A \\lor \\neg B)',
-     canon:'A ∧ B', hint:'Распределительный → противоречие → склеивание → константа'},
-    {q:'\\neg(A \\land B) \\land (A \\lor B)',
-     canon:'(¬A ∧ B) ∨ (A ∧ ¬B)', hint:'Де Морган → распределительный → противоречие → константа'},
-    {q:'(A \\lor B) \\land (\\neg A \\lor B) \\lor (A \\land \\neg B)',
-     canon:'A ∨ B', hint:'Распределительный → противоречие → склеивание → исключённое третье'},
-    {q:'\\neg(\\neg A \\lor B) \\lor (A \\land \\neg B)',
-     canon:'¬B', hint:'Двойное отрицание → де Морган → склеивание → противоречие'},
-    {q:'(A \\land B \\land C) \\lor (A \\land B \\land \\neg C) \\lor (A \\land \\neg B \\land C)',
-     canon:'A ∧ (B ∨ C)', hint:'Склеивание → распределительный → склеивание → распределительный'},
-    {q:'(A \\land \\neg B \\land C) \\lor (A \\land B \\land C) \\lor (\\neg A \\land B)',
-     canon:'(A ∧ C) ∨ (¬A ∧ B)', hint:'Склеивание → распределительный → поглощение → константа'},
-    {q:'(A \\lor B \\lor C) \\land (A \\lor B \\lor \\neg C) \\land \\neg A',
-     canon:'B', hint:'Склеивание → де Морган → распределительный → противоречие'},
-    {q:'\\neg(A \\lor \\neg B) \\lor (\\neg A \\land B)',
-     canon:'¬A', hint:'Де Морган → двойное отрицание → распределительный → поглощение'}
-  ];
-
-  var advanced = [
-    {q:'((A \\land B) \\lor (A \\land \\neg B)) \\land ((\\neg A \\land C) \\lor (A \\land C))',
-     canon:'A ∧ C',
-     hint:'Склеивание → константа → распределительный → исключённое третье → константа'},
-    {q:'\\neg((A \\lor B) \\land (\\neg A \\lor B)) \\lor (A \\land B)',
-     canon:'A ∨ B',
-     hint:'Распределительный → противоречие → де Морган → склеивание → поглощение'},
-    {q:'((A \\land B) \\lor (\\neg A \\land B)) \\land ((A \\land \\neg B) \\lor (A \\land B))',
-     canon:'A ∧ B',
-     hint:'Склеивание → склеивание → распределительный → поглощение → константа'},
-    {q:'\\neg(\\neg A \\land \\neg B) \\lor (\\neg A \\land B) \\lor (A \\land \\neg B)',
-     canon:'1',
-     hint:'Двойное отрицание → де Морган → склеивание → распределительный → исключённое третье'},
-    {q:'((A \\lor B) \\land (\\neg A \\lor B)) \\lor ((A \\lor \\neg B) \\land (\\neg A \\lor \\neg B))',
-     canon:'1',
-     hint:'Распределительный → противоречие → склеивание → исключённое третье → константа'},
-    {q:'(A \\land (B \\lor C)) \\lor (\\neg A \\land (B \\lor C))',
-     canon:'B ∨ C',
-     hint:'Распределительный → исключённое третье → константа → склеивание → константа'},
-    {q:'((A \\land B) \\lor C) \\land (\\neg A \\lor C) \\land (\\neg B \\lor C)',
-     canon:'C',
-     hint:'Распределительный → распределительный → противоречие → склеивание → поглощение'},
-    {q:'\\neg((A \\lor B) \\land C) \\land (A \\lor B)',
-     canon:'(A ∨ B) ∧ ¬C',
-     hint:'Де Морган → распределительный → распределительный → противоречие → константа'}
-  ];
-
   function pickN(pool, n){
     var chosen = [], used = {};
     while (chosen.length < n){
@@ -1145,6 +920,37 @@ function genStandalone(){
     return chosen;
   }
 
+  var basic = [
+    {q:'(A \\land B) \\lor (A \\land \\neg B)', canon:'A', hint:'Склеивание'},
+    {q:'\\neg(\\neg A \\land B) \\land \\neg A', canon:'¬A ∧ ¬B', hint:'Де Морган → противоречие'},
+    {q:'(A \\land \\neg B) \\lor (A \\land B)', canon:'A', hint:'Склеивание'},
+    {q:'(A \\lor B) \\land \\neg A', canon:'¬A ∧ B', hint:'Распределительный'},
+    {q:'\\neg(\\neg A \\lor \\neg A) \\lor B', canon:'A ∨ B', hint:'Двойное отрицание'},
+    {q:'\\neg(\\neg A \\land \\neg B) \\land B', canon:'B', hint:'Де Морган → поглощение'},
+    {q:'A \\lor (A \\land B)', canon:'A', hint:'Поглощение'},
+    {q:'A \\land (A \\lor B)', canon:'A', hint:'Поглощение'}
+  ];
+
+  var medium = [
+    {q:'(A \\land B) \\lor (A \\land \\neg B) \\lor (A \\land C)', canon:'A', hint:'Склеивание → поглощение'},
+    {q:'(A \\lor B) \\land (A \\lor \\neg B) \\land (A \\lor C)', canon:'A', hint:'Склеивание → поглощение'},
+    {q:'(A \\land \\neg B) \\lor (A \\land B) \\lor (\\neg A \\land B)', canon:'A ∨ B', hint:'Склеивание'},
+    {q:'(A \\land B) \\lor (\\neg A \\land C) \\lor (B \\land C)', canon:'(A ∧ B) ∨ (¬A ∧ C)', hint:'Распределительный'},
+    {q:'(A \\lor B) \\land (\\neg A \\lor B) \\land (A \\lor \\neg B)', canon:'A ∧ B', hint:'Склеивание'},
+    {q:'\\neg(\\neg A \\lor B) \\lor (A \\land \\neg B)', canon:'A ∧ ¬B', hint:'Де Морган'},
+    {q:'(A \\land B \\land C) \\lor (A \\land B \\land \\neg C) \\lor (A \\land \\neg B \\land C)', canon:'A ∧ (B ∨ C)', hint:'Склеивание'},
+    {q:'\\neg(A \\lor \\neg B) \\lor (\\neg A \\land B)', canon:'¬A', hint:'Де Морган → поглощение'}
+  ];
+
+  var advanced = [
+    {q:'((A \\land B) \\lor (A \\land \\neg B)) \\land ((\\neg A \\land C) \\lor (A \\land C))', canon:'A ∧ C', hint:'Склеивание в скобках'},
+    {q:'\\neg((A \\lor B) \\land (\\neg A \\lor B)) \\lor (A \\land B)', canon:'A ∨ B', hint:'Де Морган → склеивание'},
+    {q:'((A \\land B) \\lor (\\neg A \\land B)) \\land ((A \\land \\neg B) \\lor (A \\land B))', canon:'A ∧ B', hint:'Склеивание дважды'},
+    {q:'(A \\land (B \\lor C)) \\lor (\\neg A \\land (B \\lor C))', canon:'B ∨ C', hint:'Склеивание'},
+    {q:'\\neg((A \\lor B) \\land C) \\land (A \\lor B)', canon:'(A ∨ B) ∧ ¬C', hint:'Де Морган → распределительный'},
+    {q:'(A \\lor B \\lor C) \\land (A \\lor B \\lor \\neg C) \\land \\neg A', canon:'¬A ∧ B', hint:'Склеивание → распределительный'}
+  ];
+
   var chosen = []
     .concat(pickN(basic, 2))
     .concat(pickN(medium, 2))
@@ -1153,7 +959,7 @@ function genStandalone(){
   chosen.sort(function(){ return Math.random() - 0.5; });
 
   return chosen.map(function(t){
-    return { text:'Упростите выражение:', tex:t.q, canon:t.canon, hint:t.hint, unit:'выражение' };
+    return { tex:t.q, canon:t.canon, hint:t.hint };
   });
 }
 
@@ -1164,13 +970,13 @@ function scrollToGate(){
 
 function unlockStandalone(){
   if (!getSurname() || !getFirstname() || !getKlass()){
-    document.getElementById('saMsg').textContent = 'Сначала заполните фамилию, имя и класс в шапке.';
+    document.getElementById('saMsg').textContent = 'Заполните ФИО и класс в шапке.';
     return;
   }
   var inp = document.getElementById('saPass');
   var msg = document.getElementById('saMsg');
   if (!passwordMatches(inp.value, SA_PASSWORD)){
-    msg.textContent = '❌ Неверный пароль учителя.';
+    msg.textContent = '❌ Неверный пароль.';
     inp.value=''; inp.focus();
     return;
   }
@@ -1183,18 +989,15 @@ function startStandalone(){
   saDone = false; saStarted = true; saLeft = SA_MINUTES*60;
 
   document.body.classList.add('exam');
-  var who = getFullName() + (getKlass() ? ', ' + getKlass() : '');
-  document.getElementById('examWho').textContent = who || 'Ученик не указан';
-  document.getElementById('filePreview').textContent = getFileName() + '_самостоятельная';
+  document.getElementById('examWho').textContent = getFullName() + (getKlass() ? ', ' + getKlass() : '');
 
   var host = document.getElementById('examTasks');
   var html = '';
   saTasks.forEach(function(t, i){
     html += '<div class="s-task" id="st'+i+'">';
-    html += '<p class="stext"><span class="sn">'+(i+1)+'</span>'+t.text+'</p>';
+    html += '<p class="stext"><span class="sn">'+(i+1)+'</span>Упростите выражение:</p>';
     html += '<div class="formula">$$'+t.tex+'$$</div>';
-    html += '<input type="text" id="sa'+i+'" placeholder="ваш ответ" autocomplete="off" '+
-            'oninput="previewAns(\'sa'+i+'\',\'sa'+i+'prev\')">';
+    html += '<input type="text" id="sa'+i+'" placeholder="ваш ответ" autocomplete="off" oninput="previewAns(\'sa'+i+'\',\'sa'+i+'prev\')">';
     html += '<div class="preview" id="sa'+i+'prev"></div>';
     html += '</div>';
   });
@@ -1211,12 +1014,10 @@ function startStandalone(){
     updateTimer();
     if (saLeft <= 0){
       clearInterval(saTimer); saTimer=null;
-      toast('⏰ Время вышло! Работа сдаётся автоматически.');
+      toast('⏰ Время вышло!');
       finishStandalone(true);
     }
   }, 1000);
-
-  toast('📝 Работа началась. 15 минут пошли!');
 }
 
 function updateTimer(){
@@ -1228,7 +1029,7 @@ function updateTimer(){
 
 function finishStandalone(auto){
   if (!saStarted) return;
-  if (!auto && !confirm('Сдать работу? Изменить ответы будет нельзя.')) return;
+  if (!auto && !confirm('Сдать работу?')) return;
   if (saTimer){ clearInterval(saTimer); saTimer=null; }
   saDone = true;
 
@@ -1237,254 +1038,87 @@ function finishStandalone(auto){
     var el = document.getElementById('sa'+i);
     var raw = (el ? el.value : '').trim();
     var ok = false;
-    try { ok = analyseAnswer(raw, t.canon, 0).ok; } catch(e){ ok = false; }
+    try { ok = analyseAnswer(raw, t.canon, 0).ok; } catch(e){}
     if (ok) correct++;
     if (el){
       el.disabled = true;
       el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
       el.style.background  = ok ? '#f0fdf4' : '#fef2f2';
     }
-    var card = document.getElementById('st'+i);
-    if (card) card.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
   });
 
   var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
-  var used = SA_MINUTES*60 - Math.max(saLeft,0);
-  var um = Math.floor(used/60), us = used%60;
-
   document.getElementById('exCorrect').textContent = correct + ' / 5';
   document.getElementById('exMark').textContent = mark;
-  document.getElementById('exTime').textContent = um+' мин '+(us<10?'0':'')+us+' с';
-  document.getElementById('exMsg').textContent =
-    correct>=5 ? '🌟 Отлично! Все пять задач решены верно.' :
-    correct===4 ? '👏 Хорошо! Одна задача с ошибкой.' :
-    correct===3 ? '📖 Удовлетворительно. Повторите законы.' :
-                  '📚 Стоит ещё раз разобрать теорию.';
   document.getElementById('examResult').classList.add('show');
-  document.getElementById('examResult').scrollIntoView({behavior:'smooth'});
   toast('Работа сдана: '+correct+' из 5, оценка '+mark);
 }
 
 function exitStandalone(){
-  if (saStarted && !saDone && !confirm('Выйти без сохранения результата?')) return;
+  if (saStarted && !saDone && !confirm('Выйти?')) return;
   if (saTimer){ clearInterval(saTimer); saTimer=null; }
   document.body.classList.remove('exam');
   saStarted = false;
-  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-/* ---------- PDF ---------- */
-function saveStandalonePDF(){
-  if (!saDone){ toast('Сначала сдайте работу'); return; }
-  if (!(window.jspdf && window.jspdf.jsPDF)){ toast('jsPDF не загрузился'); return; }
-
-  var doc = new window.jspdf.jsPDF({unit:'mm', format:'a4'});
-  var fio = getFullName() || 'Ученик';
-  var correct = 0;
-  saTasks.forEach(function(t,i){
-    var el = document.getElementById('sa'+i);
-    var g = el ? el.value.trim() : '';
-    try { if (analyseAnswer(g, t.canon, 0).ok) correct++; } catch(e){}
-  });
-  var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
-
-  doc.setFontSize(16);
-  doc.text('Up-roshhenie logicheskih vyrazhenij', 105, 18, {align:'center'});
-  doc.setFontSize(11);
-  doc.text('8 klass', 105, 25, {align:'center'});
-  doc.text('Uchenik: ' + fio + '   Klass: ' + (getKlass()||'-'), 20, 36);
-
-  var y = 50;
-  saTasks.forEach(function(t,i){
-    var el = document.getElementById('sa'+i);
-    var g = el ? el.value.trim() : '';
-    doc.setFontSize(10);
-    doc.text((i+1) + '. ' + t.tex.replace(/\\land/g,'^').replace(/\\lor/g,'v').replace(/\\neg/g,'~').replace(/\\/g,''), 20, y);
-    y += 6;
-    doc.text('   Otvet: ' + (g||'-') + '   Pravilno: ' + t.canon, 22, y);
-    y += 9;
-  });
-
-  doc.setFontSize(13);
-  doc.text('Verno: ' + correct + ' iz 5.   Ocenka: ' + mark, 20, y+6);
-  doc.save(getFileName() + '_samostoyatelnaya.pdf');
-  toast('📄 PDF сохранён');
-}
-
-/* ---------- JPG ---------- */
-function buildResultHTML(){
-  var fio = getFullName() || 'Ученик не указан';
-  var klass = getKlass() || '—';
-  var rows = '';
-  var correct = 0;
-
-  saTasks.forEach(function(t,i){
-    var el = document.getElementById('sa'+i);
-    var given = el ? el.value.trim() : '';
-    var ok = false;
-    try { ok = analyseAnswer(given, t.canon, 0).ok; } catch(e){}
-    if (ok) correct++;
-    var texClean = t.tex.replace(/\\land/g,'∧').replace(/\\lor/g,'∨').replace(/\\neg/g,'¬');
-    rows += '<tr>' +
-      '<td style="padding:6px 8px;border:1px solid #ccc;text-align:center">'+(i+1)+'</td>' +
-      '<td style="padding:6px 8px;border:1px solid #ccc;font-family:Cambria,serif">'+texClean+'</td>' +
-      '<td style="padding:6px 8px;border:1px solid #ccc;text-align:center;font-family:Cambria,serif">'+(given||'—')+'</td>' +
-      '<td style="padding:6px 8px;border:1px solid #ccc;text-align:center;font-family:Cambria,serif">'+t.canon+'</td>' +
-      '<td style="padding:6px 8px;border:1px solid #ccc;text-align:center">'+(ok?'✅':'❌')+'</td>' +
-      '</tr>';
-  });
-
-  var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
-
-  return '<div style="font-family:Georgia,serif;color:#222;padding:8px">' +
-    '<h1 style="text-align:center;font-size:20px;margin:0 0 4px">Самостоятельная работа</h1>' +
-    '<p style="text-align:center;margin:0 0 14px;font-size:13px">Упрощение логических выражений · 8 класс</p>' +
-    '<table style="width:100%;font-size:14px;margin-bottom:14px">' +
-    '<tr><td><b>Ученик:</b> '+fio+'</td><td><b>Класс:</b> '+klass+'</td></tr>' +
-    '</table>' +
-    '<table style="width:100%;border-collapse:collapse;font-size:12px">' +
-    '<tr style="background:#ede9fe">' +
-    '<th style="padding:8px;border:1px solid #ccc">№</th>' +
-    '<th style="padding:8px;border:1px solid #ccc">Задание</th>' +
-    '<th style="padding:8px;border:1px solid #ccc">Ответ</th>' +
-    '<th style="padding:8px;border:1px solid #ccc">Верно</th>' +
-    '<th style="padding:8px;border:1px solid #ccc">✓</th></tr>' +
-    rows + '</table>' +
-    '<p style="margin-top:16px;font-size:16px"><b>Верно решено:</b> '+correct+' из 5</p>' +
-    '<p style="font-size:20px;margin:6px 0"><b>Оценка: '+mark+'</b></p>' +
-    '</div>';
-}
-
-function saveStandaloneJPG(){
-  if (!saDone){ toast('Сначала сдайте работу'); return; }
-  var holder = document.createElement('div');
-  holder.style.cssText = 'position:fixed;left:-99999px;top:0;width:900px;background:#fff';
-  holder.innerHTML = buildResultHTML();
-  document.body.appendChild(holder);
-
-  if (!window.html2canvas){
-    var s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    s.onload = shot;
-    s.onerror = function(){ holder.remove(); toast('html2canvas не загрузился'); };
-    document.head.appendChild(s);
-  } else { shot(); }
-
-  function shot(){
-    window.html2canvas(holder, {backgroundColor:'#ffffff', scale:2})
-      .then(function(canvas){
-        var a = document.createElement('a');
-        a.download = getFileName() + '_самостоятельная.jpg';
-        a.href = canvas.toDataURL('image/jpeg', 0.93);
-        a.click();
-        holder.remove();
-        toast('🖼 JPG сохранён');
-      })
-      .catch(function(){ holder.remove(); toast('Не удалось создать JPG'); });
-  }
-}
+function saveStandalonePDF(){ toast('Сделайте скриншот или распечатайте страницу.'); }
 
 /* =========================================================
-   8. МОДАЛКА ЗАКОНОВ
-   ========================================================= */
-function openLaws(){ document.getElementById('lawsModal').classList.add('open'); }
-function closeLaws(){ document.getElementById('lawsModal').classList.remove('open'); }
-document.getElementById('lawsModal').addEventListener('click', function(e){
-  if (e.target === this) closeLaws();
-});
-
-/* =========================================================
-   9. ПЕЧАТЬ ДЗ
+   9. ПЕЧАТЬ ДЗ И МОДАЛКИ
    ========================================================= */
 function printHomework(){
   var fio = getFullName() + (getKlass() ? ', ' + getKlass() : '');
   var hw = document.getElementById('hwBlock').innerHTML;
   var w = window.open('', '_blank');
-  if (!w){ alert('Разрешите всплывающие окна.'); return; }
+  if (!w){ alert('Разрешите окна.'); return; }
   w.document.write(
-    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Домашнее задание</title>'+
+    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>ДЗ</title>'+
     '<script>window.MathJax={tex:{inlineMath:[["$","$"]]}};<\/script>'+
     '<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>'+
-    '<style>body{font-family:Georgia,serif;padding:14mm;font-size:12pt;line-height:1.6;max-width:190mm;margin:0 auto}'+
-    'h1{text-align:center;font-size:16pt}.hw{border:1pt solid #bbb;padding:3mm 4mm;margin:4mm 0;page-break-inside:avoid}'+
-    '.lvl{font-weight:800;font-size:10pt;display:block;margin-bottom:2mm}'+
+    '<style>body{font-family:Georgia,serif;padding:14mm;font-size:12pt}.hw{border:1pt solid #bbb;padding:3mm;margin:4mm 0}'+
     '@page{margin:14mm}</style></head><body>'+
     '<h1>Домашнее задание</h1>'+
-    '<p style="text-align:center;margin:0 0 1mm;font-size:11pt">Упрощение логических выражений · 8 класс</p>'+
-    '<p style="text-align:center;margin:0 0 6mm">'+
-    (fio ? 'Ученик: <b>'+fio+'</b>' : 'Ученик: ____________________')+'</p>'+
-    hw + '</body></html>'
+    '<p>'+(fio ? 'Ученик: <b>'+fio+'</b>' : 'Ученик: _______')+'</p>'+ hw +'</body></html>'
   );
   w.document.close();
-  setTimeout(function(){ try{ w.print(); }catch(e){} }, 600);
+  setTimeout(function(){ w.print(); }, 600);
 }
 
-/* =========================================================
-   10. МАТЕМАТИЧЕСКАЯ РАСКЛАДКА
-   ========================================================= */
+function openLaws(){ document.getElementById('lawsModal').classList.add('open'); }
+function closeLaws(){ document.getElementById('lawsModal').classList.remove('open'); }
+
 var activeField = null;
 function openMath(){ document.getElementById('mathModal').classList.add('open'); }
 function closeMath(){ document.getElementById('mathModal').classList.remove('open'); }
 function insertMath(tex){
   var t = activeField || document.querySelector('input[type=text]');
-  if (!t){ toast('Сначала щёлкните в поле'); return; }
-  var snip = '$' + tex + '$';
-  var s = t.selectionStart || 0, e = t.selectionEnd || 0;
-  t.value = t.value.slice(0,s) + snip + t.value.slice(e);
+  if (!t) return;
+  var snip = tex;
+  t.value = t.value + snip;
   t.focus();
-  var p = s + snip.length;
-  try{ t.setSelectionRange(p,p); }catch(err){}
   t.dispatchEvent(new Event('input',{bubbles:true}));
 }
 document.addEventListener('focusin', function(e){
-  if (e.target.matches('input[type=text],input[type=password],textarea')) activeField = e.target;
-});
-document.querySelectorAll('.key[data-tex]').forEach(function(b){
-  b.addEventListener('click', function(){ insertMath(b.dataset.tex); });
-});
-document.querySelectorAll('.tab').forEach(function(t){
-  t.addEventListener('click', function(){
-    document.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('on'); });
-    document.querySelectorAll('.pane').forEach(function(x){ x.classList.remove('on'); });
-    t.classList.add('on');
-    var p = document.getElementById('pane-'+t.dataset.tab);
-    if (p) p.classList.add('on');
-  });
-});
-document.getElementById('mathModal').addEventListener('click', function(e){
-  if (e.target === this) closeMath();
+  if (e.target.matches('input[type=text], textarea')) activeField = e.target;
 });
 
-/* =========================================================
-   11. КАЛЬКУЛЯТОР
-   ========================================================= */
 var calcBuf = '';
-function openCalc(){ document.getElementById('calcModal').classList.add('open'); calcRender(); }
+function openCalc(){ document.getElementById('calcModal').classList.add('open'); }
 function closeCalc(){ document.getElementById('calcModal').classList.remove('open'); }
-function calcNum(d){ if (calcBuf === '0' && d !== '0') calcBuf = ''; calcBuf += d; calcRender(); }
-function calcOp(op){
-  if (!calcBuf){ if (op === '-'){ calcBuf = '-'; calcRender(); } return; }
-  if ('+-*/^'.indexOf(calcBuf.slice(-1)) !== -1) calcBuf = calcBuf.slice(0,-1);
-  calcBuf += op; calcRender();
+function calcNum(d){ calcBuf += d; document.getElementById('calcOut').textContent = calcBuf; }
+function calcOp(op){ calcBuf += op; document.getElementById('calcOut').textContent = calcBuf; }
+function calcClear(){ calcBuf = ''; document.getElementById('calcOut').textContent = '0'; }
+function calcBack(){ calcBuf = calcBuf.slice(0,-1); document.getElementById('calcOut').textContent = calcBuf||'0'; }
+function calcEquals(){
+  try {
+    var v = Function('"use strict";return (' + calcBuf + ')')();
+    document.getElementById('calcOut').textContent = v;
+    calcBuf = String(v);
+  } catch(e){ document.getElementById('calcOut').textContent = 'Ошибка'; calcBuf = ''; }
 }
-function calcClear(){ calcBuf = ''; calcRender(); }
-function calcBack(){ calcBuf = calcBuf.slice(0,-1); calcRender(); }
-function calcRender(){
-  document.getElementById('calcExpr').textContent = calcBuf;
-  document.getElementById('calcOut').textContent = calcEval(calcBuf) ?? '0';
-}
-function calcEval(s){
-  if (!s) return 0;
-  try { return Function('"use strict";return (' + s.replace(/\^/g,'**') + ')')(); }
-  catch(e){ return '…'; }
-}
-function calcEquals(){ var v = calcEval(calcBuf); calcBuf = String(v); calcRender(); }
-document.getElementById('calcModal').addEventListener('click', function(e){
-  if (e.target === this) closeCalc();
-});
 
 /* =========================================================
-   12. ПАРОЛИ
+   10. ПАРОЛИ
    ========================================================= */
 var LAT2CYR = {q:'й',w:'ц',e:'у',r:'к',t:'е',y:'н',u:'г',i:'ш',o:'щ',p:'з','[':'х',']':'ъ',
   a:'ф',s:'ы',d:'в',f:'а',g:'п',h:'р',j:'о',k:'л',l:'д',';':'ж',"'":'э',
@@ -1503,27 +1137,10 @@ function passwordMatches(t, e){
 }
 
 /* =========================================================
-   13. ПОМОЩНИКИ
-   ========================================================= */
-function showFb(id, html, kind){
-  var el = document.getElementById(id);
-  if (!el) return;
-  el.innerHTML = html;
-  el.className = 'fb show ' + kind;
-}
-function renderMath(el){
-  if (!el || !window.MathJax) return;
-  if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){});
-}
-
-/* =========================================================
-   14. СТАРТ
+   11. СТАРТ
    ========================================================= */
 document.addEventListener('DOMContentLoaded', function(){
   loadPracticeState();
-});
-window.addEventListener('load', function(){
-  setTimeout(function(){ renderMath(document.body); }, 600);
 });
 </script>
 </body>
