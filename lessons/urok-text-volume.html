@@ -528,7 +528,70 @@ var lessonState = {
   wbCorrect: 0, wbMark: 0,
   pracDone: false, pracCorrect: 0, pracMark: 0
 };
+var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
 
+function savePracticeState(){
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
+    var d = JSON.parse(raw);
+    d.pracDone = lessonState.pracDone;
+    d.pracCorrect = lessonState.pracCorrect;
+    d.pracMark = lessonState.pracMark;
+    d.pracVariant = document.getElementById('pracVariant')?.value || '1';
+    d.pracAnswers = [];
+    if (lessonState.pracDone){
+      var v = document.getElementById('pracVariant').value;
+      var qs = PRACTICE_VARIANTS[v];
+      qs.forEach(function(_, i){
+        var el = document.getElementById('prac'+i);
+        d.pracAnswers.push(el ? el.value : '');
+      });
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  } catch(e){}
+}
+
+function loadPracticeState(){
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    var d = JSON.parse(raw);
+    if (!d.pracDone) return false;
+
+    lessonState.pracDone = true;
+    lessonState.pracCorrect = d.pracCorrect || 0;
+    lessonState.pracMark = d.pracMark || 0;
+
+    /* показываем результат вместо формы */
+    document.getElementById('practiceLock').style.display = 'none';
+    document.getElementById('practiceBody').style.display = 'block';
+    document.getElementById('pracVariant').value = d.pracVariant || '1';
+    renderPractice();
+
+    /* восстанавливаем ответы и блокируем поля */
+    (d.pracAnswers || []).forEach(function(ans, i){
+      var el = document.getElementById('prac'+i);
+      if (el){
+        el.value = ans;
+        el.disabled = true;
+        el.style.background = '#f3f4f6';
+      }
+    });
+
+    /* показываем результат */
+    document.getElementById('pracCorrect').textContent = d.pracCorrect;
+    document.getElementById('pracMark').textContent = d.pracMark;
+    document.getElementById('pracResult').classList.add('show');
+
+    /* прячем кнопку «Проверить» и меняем заголовок */
+    var checkBtn = document.querySelector('#practiceBody > button.b-green');
+    if (checkBtn) checkBtn.style.display = 'none';
+    var h2 = document.querySelector('#practice h2');
+    if (h2) h2.innerHTML = h2.innerHTML + ' <span class="badge" style="background:#fee2e2;color:#b91c1c">сдано</span>';
+
+    return true;
+  } catch(e){ return false; }
+}
 function getSurname(){ return (document.getElementById('surname')?.value || '').trim(); }
 function getFirstname(){ return (document.getElementById('firstname')?.value || '').trim(); }
 function getKlass(){ return (document.getElementById('klass')?.value || '').trim(); }
@@ -648,6 +711,9 @@ function renderPractice(){
 }
 
 function gradePractice(){
+  if (lessonState.pracDone){
+    toast('⚠️ Практическая работа уже сдана. Повторная сдача не разрешена.');
+    return;}
   var v = document.getElementById('pracVariant').value;
   var qs = PRACTICE_VARIANTS[v];
   var correct = 0;
@@ -666,6 +732,15 @@ function gradePractice(){
   document.getElementById('pracCorrect').textContent = correct;
   document.getElementById('pracMark').textContent = lessonState.pracMark;
   document.getElementById('pracResult').classList.add('show');
+    /* блокируем поля и кнопку после сдачи */
+  qs.forEach(function(_, i){
+    var el = document.getElementById('prac'+i);
+    if (el){ el.disabled = true; el.style.background = '#f3f4f6'; }
+  });
+  var checkBtn = document.querySelector('#practiceBody > button.b-green');
+  if (checkBtn) checkBtn.style.display = 'none';
+
+  savePracticeState();
   toast('Практика: ' + correct + '/' + qs.length + ', оценка ' + lessonState.pracMark);
 }
 
@@ -1049,7 +1124,8 @@ document.addEventListener('focusin', function(e){
   if (e.target.matches('input[type=text],input[type=password],textarea')){
     activeField = e.target;
   }
-});
+}
+);
 document.querySelectorAll('.key[data-tex]').forEach(function(b){
   b.addEventListener('click', function(){ insertMath(b.dataset.tex); });
 });
@@ -1133,6 +1209,9 @@ function renderMath(el){
   if (!el || !window.MathJax) return;
   if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){});
 }
+document.addEventListener('DOMContentLoaded', function(){
+  loadPracticeState();
+});
 window.addEventListener('load', function(){
   setTimeout(function(){ renderMath(document.body); }, 600);
 });
