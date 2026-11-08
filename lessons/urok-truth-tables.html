@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Построение таблиц истинности · 8 класс</title>
+
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$']] },
+  svg: { fontCache: 'global' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23ede9fe'/><text x='16' y='23' font-size='17' font-family='Georgia' font-weight='bold' fill='%236d28d9' text-anchor='middle'>I</text></svg>">
+
+<style>
+.student{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:16px;position:relative;z-index:2}
+.student .f{display:flex;flex-direction:column;gap:4px}
+.student label{font-size:.78rem;font-weight:800;color:#4c4660;text-transform:uppercase;letter-spacing:.4px}
+.student input{border:2px solid rgba(255,255,255,.85);border-radius:10px;padding:8px 13px;
+  font-size:.95rem;font-family:inherit;background:rgba(255,255,255,.92);color:var(--ink);outline:none}
+.student input:focus{background:#fff;border-color:#a78bfa;box-shadow:0 0 0 4px rgba(255,255,255,.55)}
+#surname{width:200px} #firstname{width:180px} #klass{width:90px}
+
+/* --- Таблицы истинности --- */
+.tt-wrap{overflow-x:auto;margin:16px 0}
+table.tt{border-collapse:collapse;margin:0 auto;font-family:Consolas,monospace;font-size:1rem}
+table.tt th{background:var(--blue);color:#1d4ed8;padding:8px 12px;border:1px solid #93c5fd;font-weight:800;text-align:center}
+table.tt td{border:1px solid #cbd5e1;padding:0;text-align:center;background:#fff}
+table.tt .cell{width:46px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 0.1s}
+table.tt .cell:hover{background:#f1f5f9}
+table.tt .cell.editable{background:#f8fafc}
+table.tt .cell.val1{color:#047857;font-weight:800;background:#ecfdf5}
+table.tt .cell.val0{color:#b91c1c;font-weight:800;background:#fef2f2}
+table.tt .cell.locked{background:#f1f5f9;color:#64748b;cursor:default;font-weight:700}
+table.tt .cell.correct{background:#dcfce7;border-color:#22c55e;box-shadow:inset 0 0 0 2px #4ade80}
+table.tt .cell.wrong{background:#fee2e2;border-color:#ef4444;box-shadow:inset 0 0 0 2px #f87171}
+table.tt th.final,table.tt td.final{background:#fef9c3;border-color:#fde047;color:#854d0e}
+
+/* --- Задания --- */
+.task-header{font-weight:800;font-size:1.05rem;margin-bottom:12px;color:#4c1d95}
+.tgrid{display:grid;grid-template-columns:100px 1fr;gap:6px 12px;margin:10px 0;font-family:Cambria,Georgia,serif;font-size:.98rem}
+.tgrid .k{font-weight:800;color:#6d28d9}
+
+.calc-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.calc-row input{max-width:150px;border:2px solid #e6e3f1;border-radius:8px;padding:6px 10px;font-family:Consolas,monospace;font-size:.95rem;}
+.calc-row span{font-weight:700;color:#5b4b8a}
+
+.res{background:linear-gradient(135deg,var(--green),var(--blue));border-radius:var(--r);padding:22px;margin:18px 0;display:none}
+.res.show{display:block}
+.res h3{margin:0 0 14px;color:#065f46}
+.marks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.mcard{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:0 4px 16px rgba(6,95,70,.1)}
+.mcard .lbl{font-size:.75rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.mcard .val{font-size:2.3rem;font-weight:900;line-height:1;color:#6d28d9}
+.mcard.total .val{color:#047857}
+.mcard.lesson .val{color:#9d174d}
+.mcard.test .val{color:#1d4ed8}
+
+.bar{background:#fff;border-radius:var(--r);padding:16px;border:1px solid #f2f0fa;
+  box-shadow:0 -4px 24px rgba(120,110,160,.16);display:flex;flex-wrap:wrap;gap:10px;
+  position:sticky;bottom:10px;z-index:30;margin-top:24px}
+
+table.laws{border-collapse:collapse;width:100%;margin:14px 0;font-size:.92rem;display:block;overflow-x:auto}
+table.laws th,table.laws td{border:1px solid #e6e3f1;padding:8px 10px;text-align:left;vertical-align:top;background:#fdfcff}
+table.laws th{background:var(--blue);color:#1d4ed8;font-weight:800;font-size:.86rem}
+table.laws tr:nth-child(even) td{background:#fbfaff}
+table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
+
+/* --- Калькулятор и модалки --- */
+.mbg{display:none;position:fixed;inset:0;background:rgba(60,55,90,.48);z-index:200;align-items:center;justify-content:center;padding:16px}
+.mbg.open{display:flex}
+.modal{background:#fff;border-radius:22px;max-width:660px;width:100%;max-height:88vh;overflow:auto;padding:24px;box-shadow:0 24px 70px rgba(60,55,90,.4)}
+.modal h3{margin:0 0 4px;font-size:1.12rem}
+
+.calc{max-width:340px}
+.calc-screen{background:#1e1b2e;color:#e9e6f5;border-radius:14px;padding:14px 16px;margin-bottom:12px;text-align:right;font-family:Consolas,monospace;overflow:hidden}
+.calc-expr{font-size:.82rem;color:#a9a3c4;min-height:18px;word-break:break-all}
+.calc-out{font-size:1.9rem;font-weight:700;word-break:break-all;line-height:1.2}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cbtn{border:none;border-radius:12px;padding:15px 0;font-size:1.05rem;font-weight:700;font-family:inherit;cursor:pointer;background:#f5f3ff;color:#4c1d95;transition:.12s}
+.cbtn:hover{background:#ede9fe}
+.cbtn:active{transform:scale(.96)}
+.cbtn.op{background:var(--purple);color:#5b21b6}
+.cbtn.eq{background:var(--green);color:#047857;grid-column:span 2}
+.cbtn.del{background:var(--orange);color:#c2410c}
+.cbtn.clr{background:#fee2e2;color:#b91c1c}
+
+#standalone{display:none}
+body.exam{padding-bottom:20px}
+body.exam #theory, body.exam #workbook, body.exam #practice, body.exam #final, body.exam #homework, body.exam #standaloneGate, body.exam .bar, body.exam .hero{display:none !important}
+body.exam #standalone{display:block}
+
+.exam-head{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);border-radius:0 0 20px 20px;padding:14px 20px;margin:-24px -16px 18px;box-shadow:0 6px 24px rgba(120,110,160,.18);display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+.exam-title{font-weight:800;font-size:1.05rem}
+.exam-who{font-size:.86rem;color:var(--muted)}
+.timer{font-family:Consolas,monospace;font-size:1.5rem;font-weight:800;color:#047857;background:var(--green);padding:6px 18px;border-radius:12px;min-width:110px;text-align:center}
+.timer.warn{background:var(--yellow);color:#b45309}
+.timer.danger{background:#fee2e2;color:#b91c1c;animation:pulseT 1s infinite}
+@keyframes pulseT{0%,100%{opacity:1}50%{opacity:.55}}
+
+.s-task{background:#fff;border-radius:18px;padding:18px 20px;margin:14px 0;border:2px solid #e8e3f5;box-shadow:0 4px 18px rgba(120,110,160,.09)}
+.s-task .sn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--purple);color:#5b21b6;font-weight:800;font-size:.85rem;margin-right:8px}
+.s-task .stext{margin:0 0 12px;font-size:1rem;line-height:1.65}
+
+.no-calc-warn{background:var(--yellow);border-left:4px solid var(--yd);border-radius:12px;padding:12px 16px;margin:0 0 16px;font-size:.92rem;font-weight:600;color:#b45309}
+
+.lock{text-align:center;padding:32px 18px;border-radius:16px;background:linear-gradient(135deg,#fff7ed,#fef2f2);border:2px dashed var(--od)}
+.lock h3{margin:10px 0 4px}
+.lock p{color:var(--muted);margin:0 0 16px;font-size:.94rem}
+.lockrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.pmsg{min-height:22px;font-weight:600;color:var(--bad);margin-top:10px}
+
+@media(max-width:720px){
+  #surname,#firstname,#klass{width:100%}
+  .marks{grid-template-columns:1fr}
+  table.tt th, table.tt td{padding:6px 8px; font-size:.9rem}
+  table.tt .cell{width:36px;height:36px}
+  .exam-head{flex-direction:column;align-items:flex-start}
+}
+@media print{
+  .no-print{display:none !important}
+  body{background:#fff;padding:0;font-size:11.5pt}
+  .card{box-shadow:none;border:none;padding:0;margin:0}
+  .task{break-inside:avoid}
+  .btn,.controls,.bar,.nav{display:none !important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">К содержанию</a>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="../index.html"><span class="logo">I</span> Информатика · кабинет 318А</a>
+    <button class="burger" aria-label="Меню">☰</button>
+    <div class="nav-links">
+      <a href="../index.html">Главная</a>
+      <a href="../lessons.html" class="active">Уроки</a>
+      <a href="../materials.html">Материалы</a>
+      <a href="../tests.html">Тесты</a>
+      <a href="../oge.html">ОГЭ</a>
+      <a href="../about.html">О сайте</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap" id="main">
+
+  <header class="hero">
+    <h1>Построение таблиц истинности</h1>
+    <p class="lead">Урок информатики · 8 класс · Логические выражения</p>
+    <div class="student">
+      <div class="f"><label for="surname">Фамилия</label>
+        <input type="text" id="surname" placeholder="Иванов" autocomplete="off"></div>
+      <div class="f"><label for="firstname">Имя</label>
+        <input type="text" id="firstname" placeholder="Пётр" autocomplete="off"></div>
+      <div class="f"><label for="klass">Класс</label>
+        <input type="text" id="klass" placeholder="8А" autocomplete="off"></div>
+    </div>
+  </header>
+
+  <!-- 1. ТЕОРИЯ -->
+  <section class="card" id="theory">
+    <h2><span class="num">1</span> Теоретический материал</h2>
+    <h3>Логические операции</h3>
+    <table class="laws">
+      <tr><th>Операция</th><th>Обозначение</th><th>Результат = 1, когда…</th></tr>
+      <tr><td>Инверсия (НЕ)</td><td>$\neg A$</td><td>$A = 0$</td></tr>
+      <tr><td>Конъюнкция (И)</td><td>$A \land B$</td><td>оба $A = 1$ и $B = 1$</td></tr>
+      <tr><td>Дизъюнкция (ИЛИ)</td><td>$A \lor B$</td><td>хотя бы одно = 1</td></tr>
+      <tr><td>Импликация</td><td>$A \to B$</td><td>$A = 0$ или $B = 1$ (ложно только при 1→0)</td></tr>
+      <tr><td>Эквивалентность</td><td>$A \leftrightarrow B$</td><td>$A = B$</td></tr>
+    </table>
+    <h3>Правила построения</h3>
+    <ol>
+      <li>Количество строк = $2^n$ + 1 (заголовок).</li>
+      <li>Приоритет: $\neg \to \land \to \lor \to \to \to \leftrightarrow$.</li>
+      <li>Первый столбец меняется медленнее.</li>
+    </ol>
+    <h3>Пример</h3>
+    <p>Для $F = \neg A \land (B \lor C)$:</p>
+    <div class="tt-wrap">
+      <table class="tt">
+        <tr><th>A</th><th>B</th><th>C</th><th>¬A</th><th>B ∨ C</th><th class="final">F</th></tr>
+        <tr><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+        <tr><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+        <tr><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+        <tr><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+        <tr><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+        <tr><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+        <tr><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 2. РАБОЧАЯ ТЕТРАДЬ -->
+  <section class="card" id="workbook">
+    <h2><span class="num">2</span> Рабочая тетрадь</h2>
+    <p class="muted">Заполните ячейки (клик переключает 0/1) и нажмите «Проверить».</p>
+    <div id="tasksArea"></div>
+    <div class="controls">
+      <button class="btn b-purple" onclick="calcWorkbook()">📊 Оценить тетрадь</button>
+    </div>
+    <div class="res" id="wbResult">
+      <h3>Результат тетради</h3>
+      <p style="margin:0;font-weight:700">Верно: <span id="wbCorrect">0</span> из <span id="wbTotal">11</span> · Оценка: <span id="wbMark" style="font-size:1.4rem">—</span></p>
+    </div>
+  </section>
+
+  <!-- 3. ПРАКТИЧЕСКАЯ РАБОТА -->
+  <section class="card" id="practice">
+    <h2><span class="num">3</span> Практическая работа <span class="badge">по паролю</span></h2>
+    <div id="practiceLock" class="lock">
+      <h3>🔒 Практическая работа закрыта</h3>
+      <p>Введите пароль учителя. После этого откроются 4 варианта.</p>
+      <div class="lockrow">
+        <input type="password" id="pracPass" placeholder="Пароль" autocomplete="off"
+               onkeydown="if(event.key==='Enter')unlockPractice()">
+        <button class="btn b-purple" onclick="unlockPractice()">Открыть</button>
+      </div>
+      <div class="pmsg" id="pracMsg"></div>
+    </div>
+    <div id="practiceBody" style="display:none">
+      <div class="vbar" style="margin-bottom:14px">
+        <label for="pracVariant"><b>Вариант:</b></label>
+        <select id="pracVariant" onchange="renderPractice()" style="padding:6px;border-radius:8px;border:2px solid #e6e3f1">
+          <option value="1">Вариант 1</option>
+          <option value="2">Вариант 2</option>
+          <option value="3">Вариант 3</option>
+          <option value="4">Вариант 4</option>
+        </select>
+      </div>
+      <div id="pracArea"></div>
+      <button class="btn b-green" id="pracCheckBtn" onclick="gradePractice()" style="margin-top:14px">📊 Проверить практику</button>
+      <div class="res" id="pracResult">
+        <h3>Результат практики</h3>
+        <p style="margin:0;font-weight:700">Верно: <span id="pracCorrect">0</span> из 3 · Оценка: <span id="pracMark" style="font-size:1.4rem">—</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. САМОСТОЯТЕЛЬНАЯ -->
+  <section class="card" id="standaloneGate">
+    <h2><span class="num">4</span> Самостоятельная <span class="badge">по паролю</span></h2>
+    <p>5 задач на 15 минут.</p>
+    <div class="lockrow" style="justify-content:flex-start">
+      <input type="password" id="saPass" placeholder="Пароль учителя" autocomplete="off"
+             onkeydown="if(event.key==='Enter')unlockStandalone()">
+      <button class="btn b-blue" onclick="unlockStandalone()">🔓 Начать</button>
+    </div>
+    <div class="pmsg" id="saMsg"></div>
+  </section>
+
+  <!-- 5. ИТОГИ -->
+  <section class="card" id="final">
+    <h2><span class="num">5</span> Итоги</h2>
+    <div class="controls">
+      <button class="btn b-purple" onclick="calcFinalMark()">🎯 Подвести итог</button>
+      <button class="btn b-red" onclick="resetPractice()">🔄 Сбросить практику</button>
+    </div>
+    <div class="res" id="finalResult">
+      <h3>Оценка за урок</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Тетрадь</div><div class="val" id="fWb">—</div></div>
+        <div class="mcard"><div class="lbl">Практика</div><div class="val" id="fPrac">—</div></div>
+        <div class="mcard total"><div class="lbl">Итог</div><div class="val" id="fTotal">—</div></div>
+      </div>
+      <p id="finalMsg" style="margin:12px 0 0;font-weight:600;color:#065f46"></p>
+    </div>
+  </section>
+
+  <!-- 6. ДЗ -->
+  <section class="card" id="homework">
+    <h2><span class="num">6</span> Домашнее задание</h2>
+    <button class="btn b-orange no-print" onclick="printHomework()">🖨 Печать ДЗ</button>
+    <div id="hwBlock">
+      <div class="hw"><p><b>№ 1.</b> Постройте таблицу для \(F = (A \lor B) \land C\).</p></div>
+      <div class="hw"><p><b>№ 2.</b> Постройте таблицу для \(F = A \land \neg B\).</p></div>
+      <div class="hw"><p><b>№ 3.</b> Постройте таблицы для \(F_1 = A \leftrightarrow B\) и \(F_2 = (A \land B) \lor (\neg A \land \neg B)\). Сравните.</p></div>
+    </div>
+  </section>
+
+</div><!-- /wrap -->
+
+<div class="bar no-print">
+  <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
+  <button class="btn b-yellow" onclick="scrollToGate()">📝 Самостоятельная</button>
+  <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
+</div>
+
+<!-- САМОСТОЯТЕЛЬНАЯ -->
+<section id="standalone">
+  <div class="exam-head">
+    <div>
+      <div class="exam-title">📝 Самостоятельная работа</div>
+      <div class="exam-who" id="examWho">Ученик не указан</div>
+    </div>
+    <div class="timer" id="examTimer">15:00</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn b-green" onclick="finishStandalone()">✅ Сдать</button>
+    </div>
+  </div>
+  <div class="card" style="margin-top:0">
+    <div class="no-calc-warn">⚠️ Теория недоступна. Вводите только ответы (0 или 1).</div>
+    <div id="examTasks"></div>
+    <div class="res" id="examResult">
+      <h3>📊 Результат</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Верно</div><div class="val" id="exCorrect">0</div></div>
+        <div class="mcard total"><div class="lbl">Оценка</div><div class="val" id="exMark">—</div></div>
+        <div class="mcard"><div class="lbl">Время</div><div class="val" id="exTime" style="font-size:1.5rem">—</div></div>
+      </div>
+    </div>
+    <div class="controls no-print" style="margin-top:16px">
+      <button class="btn b-red" onclick="exitStandalone()">← Выйти</button>
+    </div>
+  </div>
+</section>
+
+<!-- КАЛЬКУЛЯТОР -->
+<div class="mbg" id="calcModal">
+  <div class="modal calc" role="dialog">
+    <h3>🧮 Калькулятор</h3>
+    <div class="calc-screen">
+      <div class="calc-expr" id="calcExpr"></div>
+      <div class="calc-out" id="calcOut">0</div>
+    </div>
+    <div class="calc-grid">
+      <button class="cbtn clr" onclick="calcClear()">C</button>
+      <button class="cbtn del" onclick="calcBack()">⌫</button>
+      <button class="cbtn op" onclick="calcOp('^')">xʸ</button>
+      <button class="cbtn op" onclick="calcOp('/')">÷</button>
+      <button class="cbtn" onclick="calcNum('7')">7</button>
+      <button class="cbtn" onclick="calcNum('8')">8</button>
+      <button class="cbtn" onclick="calcNum('9')">9</button>
+      <button class="cbtn op" onclick="calcOp('*')">×</button>
+      <button class="cbtn" onclick="calcNum('4')">4</button>
+      <button class="cbtn" onclick="calcNum('5')">5</button>
+      <button class="cbtn" onclick="calcNum('6')">6</button>
+      <button class="cbtn op" onclick="calcOp('-')">−</button>
+      <button class="cbtn" onclick="calcNum('1')">1</button>
+      <button class="cbtn" onclick="calcNum('2')">2</button>
+      <button class="cbtn" onclick="calcNum('3')">3</button>
+      <button class="cbtn op" onclick="calcOp('+')">+</button>
+      <button class="cbtn" onclick="calcNum('0')">0</button>
+      <button class="cbtn" onclick="calcNum('00')">00</button>
+      <button class="cbtn eq" onclick="calcEquals()">=</button>
+    </div>
+    <div style="text-align:right;margin-top:16px">
+      <button class="btn b-red" onclick="closeCalc()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="../assets/js/main.js"></script>
+
+<script>
+/* =========================================================
+   1. ДАННЫЕ
+   ========================================================= */
+var TASKS = [
+  { expr: 'F = A ∧ B', cols: ['A', 'B', 'F'], data: [[0,0,0],[0,1,0],[1,0,0],[1,1,1]], editable: [2] },
+  { expr: 'F = A ∨ ¬B', cols: ['A', 'B', '¬B', 'F'], data: [[0,0,1,1],[0,1,0,0],[1,0,1,1],[1,1,0,1]], editable: [3] },
+  { expr: 'F = ¬(A ∧ B)', cols: ['A', 'B', 'A∧B', 'F'], data: [[0,0,0,1],[0,1,0,1],[1,0,0,1],[1,1,1,0]], editable: [3] },
+  { expr: 'F = (A ∨ B) ∧ ¬A', cols: ['A', 'B', 'A∨B', '¬A', 'F'], data: [[0,0,0,1,0],[0,1,1,1,1],[1,0,1,0,0],[1,1,1,0,0]], editable: [2, 3, 4] },
+  { expr: 'F = A → (B ∧ C)', cols: ['A', 'B', 'C', 'B∧C', 'F'], data: [[0,0,0,0,1],[0,0,1,0,1],[0,1,0,0,1],[0,1,1,1,1],[1,0,0,0,0],[1,0,1,0,0],[1,1,0,0,0],[1,1,1,1,1]], editable: [3, 4] },
+  { expr: 'F = (A ↔ B) ∨ ¬C', cols: ['A', 'B', 'C', 'A↔B', '¬C', 'F'], data: [[0,0,0,1,1,1],[0,0,1,1,0,1],[0,1,0,0,1,1],[0,1,1,0,0,0],[1,0,0,0,1,1],[1,0,1,0,0,0],[1,1,0,1,1,1],[1,1,1,1,0,1]], editable: [3, 4, 5] },
+  { expr: 'F = (A → B) ∧ (B → C)', cols: ['A', 'B', 'C', 'A→B', 'B→C', 'F'], data: [[0,0,0,1,1,1],[0,0,1,1,1,1],[0,1,0,1,0,0],[0,1,1,1,1,1],[1,0,0,0,1,0],[1,0,1,0,1,0],[1,1,0,1,0,0],[1,1,1,1,1,1]], editable: [3, 4, 5], conclusion: true },
+  { expr: 'F₁ = A → B и F₂ = ¬A ∨ B', cols: ['A', 'B', 'A→B', '¬A', '¬A∨B'], data: [[0,0,1,1,1],[0,1,1,1,1],[1,0,0,0,0],[1,1,1,0,1]], editable: [2, 3, 4], conclusion: true },
+  { expr: 'F = ¬(A ∧ B) ↔ (¬A ∨ ¬B)', cols: ['A', 'B', 'A∧B', '¬(A∧B)', '¬A', '¬B', '¬A∨¬B', 'F'], data: [[0,0,0,1,1,1,1,1],[0,1,0,1,1,0,1,1],[1,0,0,1,0,1,1,1],[1,1,1,0,0,0,0,1]], editable: [2, 3, 4, 5, 6, 7], conclusion: true },
+  { expr: 'F₁ = A ↔ B и F₂ = (A ∧ B) ∨ (¬A ∧ ¬B)', cols: ['A', 'B', 'A↔B', 'A∧B', '¬A', '¬B', '¬A∧¬B', 'F₂'], data: [[0,0,1,0,1,1,1,1],[0,1,0,0,1,0,0,0],[1,0,0,0,0,1,0,0],[1,1,1,1,0,0,0,1]], editable: [2, 3, 4, 5, 6, 7], conclusion: true },
+  { expr: 'F = (A ∨ B) → (A ∧ B)', cols: ['A', 'B', 'A∨B', 'A∧B', 'F'], data: [[0,0,0,0,1],[0,1,1,0,0],[1,0,1,0,0],[1,1,1,1,1]], editable: [2, 3, 4], conclusion: true }
+];
+
+var PRACTICE_VARIANTS = {
+  1: [
+    { expr: 'F = ¬(A ∨ B) ∧ C', ans: '00100000' },
+    { expr: 'F = (A → B) ∨ C', ans: '11011101' },
+    { expr: 'F = A ∧ (B ↔ C)', ans: '00000101' }
+  ],
+  2: [
+    { expr: 'F = ¬A ∧ (B ∨ C)', ans: '00001111' },
+    { expr: 'F = (A ↔ B) → C', ans: '11011101' },
+    { expr: 'F = (A ∨ ¬B) ∧ C', ans: '00010101' }
+  ],
+  3: [
+    { expr: 'F = A ∧ B ∧ C', ans: '00000001' },
+    { expr: 'F = ¬(A ∧ B) ∨ C', ans: '11111011' },
+    { expr: 'F = A → (B ∧ ¬C)', ans: '11010001' }
+  ],
+  4: [
+    { expr: 'F = (A ∨ B) → C', ans: '11010111' },
+    { expr: 'F = ¬A ∨ (B ∧ C)', ans: '11110111' },
+    { expr: 'F = (A ↔ B) ∧ ¬C', ans: '01000100' }
+  ]
+};
+
+/* =========================================================
+   2. ТЕТРАДЬ
+   ========================================================= */
+var state = { solved: {} };
+var userAnswers = {};
+
+function renderTasks(){
+  var area = document.getElementById('tasksArea');
+  var html = '';
+  TASKS.forEach(function(t, idx){
+    var isSolved = state.solved[idx];
+    html += '<div class="task" id="task_'+idx+'">';
+    html += '<p><b>Задание '+(idx+1)+'.</b> Постройте таблицу для: <b>'+t.expr+'</b></p>';
+    html += '<div class="tt-wrap"><table class="tt"><tr>';
+    t.cols.forEach(function(c, cIdx){
+      var isFinal = (cIdx === t.cols.length - 1);
+      html += '<th'+(isFinal?' class="final"':'')+'>'+c+'</th>';
+    });
+    html += '</tr>';
+    t.data.forEach(function(row, rIdx){
+      html += '<tr>';
+      row.forEach(function(val, cIdx){
+        var isEditable = t.editable.indexOf(cIdx) !== -1;
+        var isFinal = (cIdx === t.cols.length - 1);
+        var cellClass = isFinal ? 'final' : '';
+        if (!isEditable) {
+          html += '<td class="'+cellClass+'"><div class="cell locked">'+val+'</div></td>';
+        } else {
+          if (isSolved) {
+            var isCorrect = (userAnswers[idx] && userAnswers[idx][rIdx] && userAnswers[idx][rIdx][cIdx] === val);
+            var markClass = isCorrect ? 'correct' : 'wrong';
+            html += '<td class="'+cellClass+'"><div class="cell '+markClass+'">'+val+'</div></td>';
+          } else {
+            var currentVal = getUserVal(idx, rIdx, cIdx);
+            var valClass = currentVal === 1 ? 'val1' : (currentVal === 0 ? 'val0' : '');
+            var display = currentVal === null ? '' : currentVal;
+            html += '<td class="'+cellClass+'"><div class="cell editable '+valClass+'" onclick="toggleCell('+idx+','+rIdx+','+cIdx+')">'+display+'</div></td>';
+          }
+        }
+      });
+      html += '</tr>';
+    });
+    html += '</table></div>';
+    if (t.conclusion) {
+      html += '<div style="margin-top:15px"><p><b>Вывод:</b> равносильны ли выражения / является ли тождественно истинным? Запишите в тетрадь.</p></div>';
+    }
+    if (!isSolved) {
+      html += '<div class="controls"><button class="btn b-green" onclick="checkTask('+idx+')">Проверить</button></div>';
+      html += '<div class="fb" id="fb_'+idx+'"></div>';
+    } else {
+      html += '<div class="fb show ok">✅ Задание проверено и засчитано!</div>';
+    }
+    html += '</div>';
+  });
+  area.innerHTML = html;
+  renderMath(area);
+}
+
+function getUserVal(taskIdx, r, c){
+  if (!userAnswers[taskIdx] || !userAnswers[taskIdx][r]) return null;
+  var v = userAnswers[taskIdx][r][c];
+  return (v === undefined) ? null : v;
+}
+
+function toggleCell(taskIdx, r, c){
+  if (!userAnswers[taskIdx]) userAnswers[taskIdx] = [];
+  if (!userAnswers[taskIdx][r]) userAnswers[taskIdx][r] = [];
+  var current = userAnswers[taskIdx][r][c];
+  if (current === undefined || current === null) userAnswers[taskIdx][r][c] = 0;
+  else userAnswers[taskIdx][r][c] = 1 - current;
+  renderTasks();
+}
+
+function checkTask(idx){
+  var t = TASKS[idx];
+  var ua = userAnswers[idx] || [];
+  var isCorrect = true;
+  for (var r = 0; r < t.data.length; r++) {
+    for (var c = 0; c < t.cols.length; c++) {
+      if (t.editable.indexOf(c) !== -1) {
+        var expected = t.data[r][c];
+        var actual = (ua[r] && ua[r][c] !== undefined) ? ua[r][c] : null;
+        if (actual !== expected) { isCorrect = false; break; }
+      }
+    }
+    if (!isCorrect) break;
+  }
+  if (isCorrect) {
+    state.solved[idx] = true;
+    toast('✅ Верно! Задание засчитано.');
+  } else {
+    var fb = document.getElementById('fb_'+idx);
+    fb.className = 'fb show no';
+    fb.innerHTML = '❌ Есть ошибки. Проверьте заполнение (все ли ячейки заполнены верно).';
+    toast('❌ Неверно. Попробуйте ещё раз.');
+    return;
+  }
+  renderTasks();
+}
+
+function calcWorkbook(){
+  var total = TASKS.length;
+  var solved = Object.keys(state.solved).length;
+  var pct = Math.round(solved / total * 100);
+  var mark = pct >= 90 ? 5 : pct >= 70 ? 4 : pct >= 50 ? 3 : 2;
+  if (solved === 0) mark = 2;
+  document.getElementById('wbCorrect').textContent = solved;
+  document.getElementById('wbTotal').textContent = total;
+  document.getElementById('wbMark').textContent = mark;
+  document.getElementById('wbResult').classList.add('show');
+  toast('Решено ' + solved + ' из ' + total + '. Оценка: ' + mark);
+}
+
+/* =========================================================
+   3. ПРАКТИКА
+   ========================================================= */
+var pracDone = false;
+function unlockPractice(){
+  var inp = document.getElementById('pracPass');
+  var msg = document.getElementById('pracMsg');
+  if (!passwordMatches(inp.value, 'малинадеревня624')){
+    msg.textContent = '❌ Неверный пароль.';
+    return;
+  }
+  msg.textContent = '';
+  inp.value = '';
+  document.getElementById('practiceLock').style.display = 'none';
+  document.getElementById('practiceBody').style.display = 'block';
+  renderPractice();
+  toast('🔓 Практика открыта');
+}
+
+function renderPractice(){
+  var v = document.getElementById('pracVariant').value;
+  var qs = PRACTICE_VARIANTS[v];
+  var html = '';
+  qs.forEach(function(q, i){
+    html += '<div class="task"><p><b>'+(i+1)+'.</b> Постройте таблицу для <b>'+q.expr+'</b>.</p>'+
+      '<p class="muted" style="font-size:.85rem">Введите итоговый столбец (8 цифр для 3 переменных). Пробелы можно ставить для удобства.</p>'+
+      '<div class="calc-row">'+
+        '<input type="text" id="prac'+i+'" placeholder="например: 0 0 1 0 0 0 0 0" style="font-family:Consolas,monospace;letter-spacing:2px;max-width:100%">'+
+      '</div></div>';
+  });
+  document.getElementById('pracArea').innerHTML = html;
+}
+
+function gradePractice(){
+  if (pracDone){
+    toast('⚠️ Практика уже сдана.');
+    return;
+  }
+  var v = document.getElementById('pracVariant').value;
+  var qs = PRACTICE_VARIANTS[v];
+  var correct = 0;
+  
+  qs.forEach(function(q, i){
+    var el = document.getElementById('prac'+i);
+    var val = (el.value||'').replace(/\s+/g, '').trim();
+    var ok = val === q.ans;
+    
+    if (ok) correct++;
+    el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
+    el.style.background = ok ? '#f0fdf4' : '#fef2f2';
+  });
+
+  var pct = Math.round(correct / qs.length * 100);
+  var mark = pct >= 90 ? 5 : pct >= 60 ? 4 : pct >= 30 ? 3 : 2;
+  
+  pracDone = true;
+  document.getElementById('pracCorrect').textContent = correct;
+  document.getElementById('pracMark').textContent = mark;
+  document.getElementById('pracResult').classList.add('show');
+  
+  document.querySelectorAll('#pracArea input').forEach(function(el){ el.disabled = true; });
+  var checkBtn = document.getElementById('pracCheckBtn');
+  if (checkBtn) checkBtn.style.display = 'none';
+  
+  toast('Практика: ' + correct + '/' + qs.length + ', оценка ' + mark);
+}
+
+/* =========================================================
+   4. САМОСТОЯТЕЛЬНАЯ
+   ========================================================= */
+var saTimer = null, saLeft = 0, saTasks = [], saStarted = false, saDone = false;
+
+function genStandalone(){
+  var pool = [
+    {q:'Чему равно A ∧ B, если A=1, B=0?', ans:'0'},
+    {q:'Чему равно A ∨ B, если A=0, B=1?', ans:'1'},
+    {q:'Чему равно ¬A, если A=1?', ans:'0'},
+    {q:'Чему равно A → B, если A=1, B=0?', ans:'0'},
+    {q:'Чему равно A → B, если A=0, B=0?', ans:'1'},
+    {q:'Сколько строк (без заголовка) в таблице для 2 переменных?', ans:'4'},
+    {q:'Сколько строк (без заголовка) в таблице для 3 переменных?', ans:'8'},
+    {q:'Чему равно A ↔ B, если A=1, B=0?', ans:'0'},
+    {q:'Чему равно A ∧ B, если A=0, B=0?', ans:'0'},
+    {q:'Чему равно A ∨ B, если A=0, B=0?', ans:'0'}
+  ];
+  return pool.sort(function(){ return 0.5 - Math.random(); }).slice(0, 5);
+}
+
+function scrollToGate(){
+  document.getElementById('standaloneGate').scrollIntoView({behavior:'smooth', block:'center'});
+  document.getElementById('saPass').focus();
+}
+
+function unlockStandalone(){
+  if (!getSurname() || !getFirstname() || !getKlass()){
+    document.getElementById('saMsg').textContent = 'Заполните ФИО и класс.';
+    return;
+  }
+  var inp = document.getElementById('saPass');
+  var msg = document.getElementById('saMsg');
+  if (!passwordMatches(inp.value, 'виннимед254')){
+    msg.textContent = '❌ Неверный пароль.';
+    inp.value=''; inp.focus();
+    return;
+  }
+  msg.textContent=''; inp.value='';
+  startStandalone();
+}
+
+function startStandalone(){
+  saTasks = genStandalone();
+  saDone = false; saStarted = true; saLeft = 15*60;
+  document.body.classList.add('exam');
+  var who = getFullName() + (getKlass() ? ', ' + getKlass() : '');
+  document.getElementById('examWho').textContent = who || 'Ученик';
+  var host = document.getElementById('examTasks');
+  var html = '';
+  saTasks.forEach(function(t, i){
+    html += '<div class="s-task" id="st'+i+'">';
+    html += '<p class="stext"><span class="sn">'+(i+1)+'</span>'+t.q+'</p>';
+    html += '<input type="text" id="sa'+i+'" placeholder="0 или 1" autocomplete="off" style="width:100px;font-family:Consolas,monospace;padding:8px;border-radius:8px;border:2px solid #ccc">';
+    html += '</div>';
+  });
+  host.innerHTML = html;
+  document.getElementById('examResult').classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if (saTimer) clearInterval(saTimer);
+  updateTimer();
+  saTimer = setInterval(function(){
+    saLeft--;
+    updateTimer();
+    if (saLeft <= 0){
+      clearInterval(saTimer); saTimer=null;
+      toast('⏰ Время вышло!');
+      finishStandalone(true);
+    }
+  }, 1000);
+}
+
+function updateTimer(){
+  var m = Math.floor(saLeft/60), s = saLeft % 60;
+  var el = document.getElementById('examTimer');
+  el.textContent = (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  el.className = 'timer' + (saLeft<=60?' danger' : saLeft<=300?' warn':'');
+}
+
+function finishStandalone(auto){
+  if (!saStarted) return;
+  if (!auto && !confirm('Сдать работу?')) return;
+  if (saTimer){ clearInterval(saTimer); saTimer=null; }
+  saDone = true;
+  var correct = 0;
+  saTasks.forEach(function(t,i){
+    var el = document.getElementById('sa'+i);
+    var v = (el ? el.value : '').trim();
+    if (v === t.ans) { correct++; if (el) el.style.borderColor = 'var(--ok)'; }
+    else { if (el) el.style.borderColor = 'var(--bad)'; }
+    if (el) el.disabled = true;
+  });
+  var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
+  document.getElementById('exCorrect').textContent = correct + ' / 5';
+  document.getElementById('exMark').textContent = mark;
+  document.getElementById('exTime').textContent = '—';
+  document.getElementById('examResult').classList.add('show');
+}
+
+function exitStandalone(){
+  if (saStarted && !saDone && !confirm('Выйти?')) return;
+  if (saTimer){ clearInterval(saTimer); saTimer=null; }
+  document.body.classList.remove('exam');
+  saStarted = false;
+}
+
+function resetPractice(){
+  if (!confirm('Сбросить практику?')) return;
+  pracDone = false;
+  document.getElementById('practiceLock').style.display = 'block';
+  document.getElementById('practiceBody').style.display = 'none';
+  document.getElementById('pracResult').classList.remove('show');
+  document.getElementById('pracCheckBtn').style.display = 'inline-flex';
+  toast('Практика сброшена');
+}
+
+function passwordMatches(t, e){
+  t = String(t||'').trim().toLowerCase();
+  e = String(e||'').trim().toLowerCase();
+  if (!t) return false;
+  return t === e;
+}
+
+/* =========================================================
+   5. ИТОГ, ДЗ, КАЛЬКУЛЯТОР
+   ========================================================= */
+function calcFinalMark(){
+  // Считаем оценку тетради (по 11 заданиям)
+  var totalWb = TASKS.length;
+  var solvedWb = Object.keys(state.solved).length;
+  var pctWb = Math.round(solvedWb / totalWb * 100);
+  var markWb = pctWb >= 90 ? 5 : pctWb >= 70 ? 4 : pctWb >= 50 ? 3 : 2;
+  if (solvedWb === 0) markWb = 2;
+
+  // Получаем оценку практики (если она не сдана, ставим 2)
+  var markPrac = 2;
+  var pracCorrect = document.getElementById('pracCorrect').textContent;
+  if (pracDone) {
+    var pctPrac = Math.round(parseInt(pracCorrect) / 3 * 100);
+    markPrac = pctPrac >= 90 ? 5 : pctPrac >= 60 ? 4 : pctPrac >= 30 ? 3 : 2;
+  }
+
+  // Итоговая оценка (среднее)
+  var total = Math.round((markWb + markPrac) / 2);
+
+  document.getElementById('fWb').textContent = markWb;
+  document.getElementById('fPrac').textContent = markPrac;
+  document.getElementById('fTotal').textContent = total;
+  document.getElementById('finalResult').classList.add('show');
+
+  document.getElementById('finalMsg').textContent =
+    total === 5 ? '🌟 Отличная работа!' :
+    total === 4 ? '👏 Хорошо!' :
+    total === 3 ? '📖 Удовлетворительно.' : '📚 Стоит повторить тему.';
+}
+
+function printHomework(){
+  var fio = getFullName() + (getKlass() ? ', ' + getKlass() : '');
+  var hw = document.getElementById('hwBlock').innerHTML;
+  var w = window.open('', '_blank');
+  if (!w){ alert('Разрешите окна.'); return; }
+  w.document.write(
+    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>ДЗ</title>'+
+    '<script>window.MathJax={tex:{inlineMath:[["$","$"]]}};<\/script>'+
+    '<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>'+
+    '<style>body{font-family:Georgia,serif;padding:14mm;font-size:12pt}.hw{border:1pt solid #bbb;padding:3mm;margin:4mm 0}'+
+    '@page{margin:14mm}</style></head><body>'+
+    '<h1>Домашнее задание</h1>'+
+    '<p>'+(fio ? 'Ученик: <b>'+fio+'</b>' : 'Ученик: _______')+'</p>'+ hw +'</body></html>'
+  );
+  w.document.close();
+  setTimeout(function(){ w.print(); }, 600);
+}
+
+function getSurname(){ return (document.getElementById('surname')?.value || '').trim(); }
+function getFirstname(){ return (document.getElementById('firstname')?.value || '').trim(); }
+function getKlass(){ return (document.getElementById('klass')?.value || '').trim(); }
+function getFullName(){ return [getSurname(), getFirstname()].filter(Boolean).join(' '); }
+function toast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function(){ t.classList.remove('show'); }, 2600);
+}
+
+var calcBuf = '';
+function openCalc(){ document.getElementById('calcModal').classList.add('open'); calcRender(); }
+function closeCalc(){ document.getElementById('calcModal').classList.remove('open'); }
+function calcNum(d){ if (calcBuf === '0' && d !== '0') calcBuf = ''; calcBuf += d; calcRender(); }
+function calcOp(op){
+  if (!calcBuf){ if (op === '-'){ calcBuf = '-'; calcRender(); } return; }
+  var last = calcBuf.slice(-1);
+  if ('+-*/^'.indexOf(last) !== -1) calcBuf = calcBuf.slice(0,-1);
+  calcBuf += op; calcRender();
+}
+function calcClear(){ calcBuf = ''; calcRender(); }
+function calcBack(){ calcBuf = calcBuf.slice(0,-1); calcRender(); }
+function calcRender(){
+  document.getElementById('calcExpr').textContent = calcBuf || '';
+  document.getElementById('calcOut').textContent = calcPreview();
+}
+function calcPreview(){
+  if (!calcBuf) return '0';
+  try {
+    var v = calcEval(calcBuf);
+    if (v === null) return '…';
+    if (!isFinite(v)) return '∞';
+    return (Math.round(v*1e10)/1e10).toString();
+  } catch(e){ return '…'; }
+}
+function calcEval(str){
+  var s = str.replace(/\s+/g,'');
+  if (!/^[0-9+\-*/^]+$/.test(s)) return null;
+  var pos = 0;
+  function peek(){ return s[pos]; }
+  function parseExpr(){
+    var v = parseTerm();
+    while (peek()==='+' || peek()==='-'){ var op = s[pos++]; var r = parseTerm(); v = op==='+' ? v+r : v-r; }
+    return v;
+  }
+  function parseTerm(){
+    var v = parsePow();
+    while (peek()==='*' || peek()==='/'){ var op = s[pos++]; var r = parsePow(); v = op==='*' ? v*r : v/r; }
+    return v;
+  }
+  function parsePow(){
+    var v = parseUnary();
+    if (peek()==='^'){ pos++; var e = parsePow(); return Math.pow(v,e); }
+    return v;
+  }
+  function parseUnary(){
+    if (peek()==='-'){ pos++; return -parseUnary(); }
+    if (peek()==='+'){ pos++; return parseUnary(); }
+    return parseAtom();
+  }
+  function parseAtom(){
+    var start = pos;
+    while (pos<s.length && /[0-9]/.test(s[pos])) pos++;
+    if (start===pos) throw new Error('bad');
+    return parseFloat(s.slice(start,pos));
+  }
+  try{
+    var res = parseExpr();
+    if (pos !== s.length) return null;
+    return res;
+  } catch(e){ return null; }
+}
+function calcEquals(){
+  var v = calcEval(calcBuf);
+  if (v === null || !isFinite(v)){ toast('Проверьте выражение'); return; }
+  calcBuf = (Math.round(v*1e10)/1e10).toString();
+  calcRender();
+}
+
+function renderMath(el){
+  if (!el || !window.MathJax) return;
+  if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){});
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  renderTasks();
+  calcRender();
+});
+</script>
+</body>
+</html>
