@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Символьные строки. Сравнение строк. Операции со строками в Python · 8 класс</title>
+<title>Символьные строки в Python · 8 класс</title>
 
 <script>
 window.MathJax = {
@@ -82,19 +82,6 @@ body.exam #standalone{display:block}
   overflow:auto;padding:24px;box-shadow:0 24px 70px rgba(60,55,90,.4)}
 .modal h3{margin:0 0 4px;font-size:1.12rem}
 .mhint{color:var(--muted);font-size:.87rem;margin:0 0 14px}
-.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
-.tab{background:#f5f3ff;border:none;border-radius:10px;padding:7px 14px;cursor:pointer;
-  font-weight:700;color:#6d28d9;font-family:inherit;font-size:.86rem}
-.tab.on{background:var(--purple);color:#4c1d95}
-.pane{display:none}
-.pane.on{display:block}
-.keys{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}
-.key{background:#fbfaff;border:1.5px solid #ece8f8;border-radius:10px;padding:10px 6px;
-  cursor:pointer;font-size:1rem;font-weight:700;color:#5b4b8a;font-family:Consolas,monospace;
-  line-height:1.3;transition:.15s}
-.key:hover{background:var(--purple);border-color:var(--pd);transform:translateY(-1px)}
-.key small{display:block;font-size:.6rem;color:var(--muted);font-weight:600;margin-top:3px;
-  font-family:Consolas,monospace}
 
 .calc{max-width:340px}
 .calc-screen{background:#1e1b2e;color:#e9e6f5;border-radius:14px;padding:14px 16px;margin-bottom:12px;
@@ -133,6 +120,23 @@ table.laws code{background:#f5f3ff;padding:1px 6px;border-radius:4px;font-family
 }
 .preview:empty{display:none}
 
+.code-editor{
+  width:100%;min-height:140px;resize:vertical;
+  font-family:Consolas,monospace;font-size:.95rem;line-height:1.5;
+  background:#1e1b2e;color:#e9e6f5;border:2px solid #2d2940;
+  border-radius:12px;padding:14px 16px;outline:none;
+}
+.code-editor:focus{border-color:var(--pd);box-shadow:0 0 0 4px #ede9fe}
+.code-result{
+  margin-top:10px;padding:10px 14px;border-radius:10px;
+  font-family:Consolas,monospace;font-size:.9rem;
+  background:#f6fffb;border-left:3px solid var(--gd);
+  white-space:pre-wrap;
+}
+.code-result.err{background:#fee2e2;border-left-color:var(--bad);color:#b91c1c}
+.code-result.ok{background:#f0fdf4;border-left-color:var(--ok);color:#047857}
+.code-result:empty{display:none}
+
 pre.code{background:#1e1b2e;color:#e9e6f5;border-radius:12px;padding:14px 18px;
   overflow-x:auto;font-family:Consolas,monospace;font-size:.92rem;line-height:1.55;margin:12px 0}
 pre.code .kw{color:#c4b5fd;font-weight:700}
@@ -153,6 +157,7 @@ pre.code .com{color:#807b93;font-style:italic}
   .task{break-inside:avoid}
   .preview{display:none}
   pre.code{background:#f5f3ff;color:#222}
+  .code-editor{display:none}
 }
 </style>
 </head>
@@ -280,7 +285,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
   <!-- 2. РАБОЧАЯ ТЕТРАДЬ -->
   <section class="card" id="workbook">
     <h2><span class="num">2</span> Рабочая тетрадь</h2>
-    <p class="muted">Вводите ответ — результат выполнения кода или выражение. Под полем появится предпросмотр.</p>
+    <p class="muted">Вводите ответ — результат выполнения кода или выражение. В задачах «напиши код» вводите программу и нажимайте «▶ Запустить».</p>
 
     <div class="task">
       <span class="lvl l1">базовый · индексация</span>
@@ -289,7 +294,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
 <span class="kw">print</span>(s[<span class="num">0</span>], s[-<span class="num">1</span>], <span class="kw">len</span>(s))</pre>
       <details><summary>Подсказка</summary>Индексация с 0, отрицательный индекс — с конца. <code>len</code> — длина строки.</details>
       <div class="ans">
-        <input type="text" id="w1" placeholder="например: A o 3" autocomplete="off">
+        <input type="text" id="w1" placeholder="например: P n 6" autocomplete="off">
         <button class="btn b-green" onclick="checkW('w1','P n 6','w1fb')">Проверить</button>
       </div>
       <div class="fb" id="w1fb"></div>
@@ -302,7 +307,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
 <span class="kw">print</span>(s[:<span class="num">4</span>])</pre>
       <details><summary>Подсказка</summary><code>s[:4]</code> — первые 4 символа, индекс 4 не включается.</details>
       <div class="ans">
-        <input type="text" id="w2" placeholder="например: Pyt" autocomplete="off">
+        <input type="text" id="w2" placeholder="например: Инфо" autocomplete="off">
         <button class="btn b-green" onclick="checkW('w2','Инфо','w2fb')">Проверить</button>
       </div>
       <div class="fb" id="w2fb"></div>
@@ -326,7 +331,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
 <span class="kw">print</span>(s[::<span class="num">2</span>])</pre>
       <details><summary>Подсказка</summary><code>[::2]</code> — каждый второй символ, начиная с индекса 0.</details>
       <div class="ans">
-        <input type="text" id="w4" placeholder="например: Ифраиа" autocomplete="off">
+        <input type="text" id="w4" placeholder="например: Пграмрвне" autocomplete="off">
         <button class="btn b-green" onclick="checkW('w4','Пграмрвне','w4fb')">Проверить</button>
       </div>
       <div class="fb" id="w4fb"></div>
@@ -339,7 +344,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
 <span class="kw">print</span>(s.strip().upper().replace(<span class="str">"WORLD"</span>, <span class="str">"PYTHON"</span>))</pre>
       <details><summary>Подсказка</summary>Методы применяются по цепочке. <code>strip</code> убирает пробелы, <code>upper</code> — в верхний регистр, <code>replace</code> — заменяет.</details>
       <div class="ans">
-        <input type="text" id="w5" placeholder="например: ПРИВЕТ,МИР!" autocomplete="off">
+        <input type="text" id="w5" placeholder="например: HELLO, PYTHON!" autocomplete="off">
         <button class="btn b-green" onclick="checkW('w5','HELLO, PYTHON!','w5fb')">Проверить</button>
       </div>
       <div class="fb" id="w5fb"></div>
@@ -352,10 +357,119 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
 <span class="kw">print</span>(s[::-<span class="num">1</span>])</pre>
       <details><summary>Подсказка</summary><code>[::-1]</code> — разворот строки.</details>
       <div class="ans">
-        <input type="text" id="w6" placeholder="например: еинавориммаргорп" autocomplete="off">
+        <input type="text" id="w6" placeholder="например: акитамрофнИ" autocomplete="off">
         <button class="btn b-green" onclick="checkW('w6','акитамрофнИ','w6fb')">Проверить</button>
       </div>
       <div class="fb" id="w6fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l1">базовый · методы</span>
+      <p><b>Задание 7.</b> Что выведет этот код?</p>
+      <pre class="code"><span class="kw">print</span>(<span class="str">"hello"</span>.count(<span class="str">"l"</span>))</pre>
+      <details><summary>Подсказка</summary><code>count</code> возвращает количество вхождений подстроки.</details>
+      <div class="ans">
+        <input type="text" id="w7" placeholder="число" autocomplete="off">
+        <button class="btn b-green" onclick="checkW('w7','2','w7fb')">Проверить</button>
+      </div>
+      <div class="fb" id="w7fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l2">средний · find</span>
+      <p><b>Задание 8.</b> Что выведет этот код?</p>
+      <pre class="code"><span class="kw">print</span>(<span class="str">"Программирование"</span>.find(<span class="str">"грамм"</span>))</pre>
+      <details><summary>Подсказка</summary><code>find</code> возвращает индекс первого вхождения подстроки или −1, если её нет.</details>
+      <div class="ans">
+        <input type="text" id="w8" placeholder="число" autocomplete="off">
+        <button class="btn b-green" onclick="checkW('w8','3','w8fb')">Проверить</button>
+      </div>
+      <div class="fb" id="w8fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l2">средний · split</span>
+      <p><b>Задание 9.</b> Что выведет этот код?</p>
+      <pre class="code"><span class="kw">print</span>(<span class="str">"a,b,c"</span>.split(<span class="str">","</span>))</pre>
+      <details><summary>Подсказка</summary><code>split</code> разбивает строку по разделителю и возвращает список.</details>
+      <div class="ans">
+        <input type="text" id="w9" placeholder="например: ['a', 'b', 'c']" autocomplete="off">
+        <button class="btn b-green" onclick="checkW('w9','[\'a\', \'b\', \'c\']','w9fb')">Проверить</button>
+      </div>
+      <div class="fb" id="w9fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l2">средний · isdigit</span>
+      <p><b>Задание 10.</b> Что выведет этот код?</p>
+      <pre class="code"><span class="kw">print</span>(<span class="str">"123"</span>.isdigit(), <span class="str">"12a"</span>.isdigit())</pre>
+      <details><summary>Подсказка</summary><code>isdigit</code> возвращает <code>True</code>, только если <b>все</b> символы — цифры.</details>
+      <div class="ans">
+        <input type="text" id="w10" placeholder="например: True False" autocomplete="off">
+        <button class="btn b-green" onclick="checkW('w10','True False','w10fb')">Проверить</button>
+      </div>
+      <div class="fb" id="w10fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l2">средний · strip с аргументом</span>
+      <p><b>Задание 11.</b> Что выведет этот код?</p>
+      <pre class="code"><span class="kw">print</span>(<span class="str">"***hello***"</span>.strip(<span class="str">"*"</span>))</pre>
+      <details><summary>Подсказка</summary><code>strip("x")</code> убирает указанные символы по краям, а не только пробелы.</details>
+      <div class="ans">
+        <input type="text" id="w11" placeholder="например: hello" autocomplete="off">
+        <button class="btn b-green" onclick="checkW('w11','hello','w11fb')">Проверить</button>
+      </div>
+      <div class="fb" id="w11fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l2">средний · replace всех вхождений</span>
+      <p><b>Задание 12.</b> Что выведет этот код?</p>
+      <pre class="code"><span class="kw">print</span>(<span class="str">"banana"</span>.replace(<span class="str">"a"</span>, <span class="str">"o"</span>))</pre>
+      <details><summary>Подсказка</summary><code>replace</code> заменяет <b>все</b> вхождения, а не только первое.</details>
+      <div class="ans">
+        <input type="text" id="w12" placeholder="слово" autocomplete="off">
+        <button class="btn b-green" onclick="checkW('w12','bonono','w12fb')">Проверить</button>
+      </div>
+      <div class="fb" id="w12fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l3">повышенный · ord и chr</span>
+      <p><b>Задание 13.</b> Что выведет этот код?</p>
+      <pre class="code"><span class="kw">print</span>(<span class="kw">ord</span>(<span class="str">'A'</span>), <span class="kw">chr</span>(<span class="num">98</span>))</pre>
+      <details><summary>Подсказка</summary><code>ord</code> — код символа, <code>chr</code> — символ по коду. Код 'A' = 65, код 'b' = 98.</details>
+      <div class="ans">
+        <input type="text" id="w13" placeholder="например: 65 b" autocomplete="off">
+        <button class="btn b-green" onclick="checkW('w13','65 b','w13fb')">Проверить</button>
+      </div>
+      <div class="fb" id="w13fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l3">повышенный · rfind</span>
+      <p><b>Задание 14.</b> Что выведет этот код?</p>
+      <pre class="code"><span class="kw">print</span>(<span class="str">"hello"</span>.rfind(<span class="str">"l"</span>))</pre>
+      <details><summary>Подсказка</summary><code>rfind</code> ищет последнее вхождение, а не первое.</details>
+      <div class="ans">
+        <input type="text" id="w14" placeholder="число" autocomplete="off">
+        <button class="btn b-green" onclick="checkW('w14','3','w14fb')">Проверить</button>
+      </div>
+      <div class="fb" id="w14fb"></div>
+    </div>
+
+    <!-- КОДОВАЯ ЗАДАЧА -->
+    <div class="task">
+      <span class="lvl l3">повышенный · напиши код</span>
+      <p><b>Задание 15.</b> Напишите программу, которая запрашивает строку и выводит её в обратном порядке.</p>
+      <details><summary>Подсказка</summary>Используйте срез <code>[::-1]</code> и <code>input()</code>.</details>
+      <textarea class="code-editor" id="w15" placeholder="s = input()&#10;print(s[::-1])"></textarea>
+      <div class="controls" style="margin-top:10px">
+        <button class="btn b-green" onclick="checkCode('w15','reverse','w15fb')">▶ Запустить и проверить</button>
+      </div>
+      <div class="code-result" id="w15out"></div>
+      <div class="fb" id="w15fb"></div>
     </div>
 
     <div class="controls">
@@ -363,7 +477,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
     </div>
     <div class="res" id="wbResult">
       <h3>Результат рабочей тетради</h3>
-      <p style="margin:0;font-weight:700">Верно: <span id="wbCorrect">0</span> из 6 · Оценка: <span id="wbMark" style="font-size:1.4rem">—</span></p>
+      <p style="margin:0;font-weight:700">Верно: <span id="wbCorrect">0</span> из 15 · Оценка: <span id="wbMark" style="font-size:1.4rem">—</span></p>
     </div>
   </section>
 
@@ -396,7 +510,7 @@ s = s.upper()    <span class="com"># вот теперь s = "HELLO"</span></pre
       <button class="btn b-green" id="pracCheckBtn" onclick="gradePractice()" style="margin-top:14px">📊 Проверить практику</button>
       <div class="res" id="pracResult">
         <h3>Результат практической работы</h3>
-        <p style="margin:0;font-weight:700">Верно: <span id="pracCorrect">0</span> из 5 · Оценка: <span id="pracMark" style="font-size:1.4rem">—</span></p>
+        <p style="margin:0;font-weight:700">Верно: <span id="pracCorrect">0</span> из 6 · Оценка: <span id="pracMark" style="font-size:1.4rem">—</span></p>
       </div>
     </div>
   </section>
@@ -540,6 +654,7 @@ s1 &lt; s2     <span class="com"># лексикографически меньш
       <tr><td><code>s.upper()</code></td><td>В ВЕРХНИЙ</td></tr>
       <tr><td><code>s.lower()</code></td><td>в нижний</td></tr>
       <tr><td><code>s.strip()</code></td><td>убрать пробелы по краям</td></tr>
+      <tr><td><code>s.strip("x")</code></td><td>убрать символы x по краям</td></tr>
       <tr><td><code>s.replace(a,b)</code></td><td>заменить все a на b</td></tr>
       <tr><td><code>s.find(a)</code></td><td>индекс первого вхождения (−1 если нет)</td></tr>
       <tr><td><code>s.rfind(a)</code></td><td>индекс последнего вхождения</td></tr>
@@ -608,7 +723,9 @@ var SA_MINUTES = 15;
 var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
 
 var lessonState = {
-  wb: { w1:false, w2:false, w3:false, w4:false, w5:false, w6:false },
+  wb: { w1:false, w2:false, w3:false, w4:false, w5:false,
+        w6:false, w7:false, w8:false, w9:false, w10:false,
+        w11:false, w12:false, w13:false, w14:false, w15:false },
   wbCorrect: 0, wbMark: 0,
   pracDone: false, pracCorrect: 0, pracMark: 0
 };
@@ -729,14 +846,15 @@ function checkWRadio(name, answer, fbId){
   }
 }
 function calcWorkbook(){
-  var correct = ['w1','w2','w3','w4','w5','w6'].filter(function(k){ return lessonState.wb[k]; }).length;
-  var pct = Math.round(correct / 6 * 100);
+  var correct = ['w1','w2','w3','w4','w5','w6','w7','w8','w9','w10','w11','w12','w13','w14','w15']
+    .filter(function(k){ return lessonState.wb[k]; }).length;
+  var pct = Math.round(correct / 15 * 100);
   lessonState.wbCorrect = correct;
   lessonState.wbMark = percentToMark(pct);
   document.getElementById('wbCorrect').textContent = correct;
   document.getElementById('wbMark').textContent = lessonState.wbMark;
   document.getElementById('wbResult').classList.add('show');
-  toast('Тетрадь: ' + correct + '/6, оценка ' + lessonState.wbMark);
+  toast('Тетрадь: ' + correct + '/15, оценка ' + lessonState.wbMark);
 }
 
 /* =========================================================
@@ -744,52 +862,60 @@ function calcWorkbook(){
    ========================================================= */
 var PRACTICE_VARIANTS = {
   1: [
-    {q:'Что выведет: s = "Python"; print(s[0], s[-1], len(s))?',
-     hint:'Индексация с 0, отрицательный — с конца.', ans:'P n 6'},
-    {q:'Что выведет: s = "Информатика"; print(s[:4])?',
-     hint:'s[:4] — первые 4 символа.', ans:'Инфо'},
-    {q:'Что вернёт: "abc" < "abd"?',
-     hint:'Сравнение посимвольно: c < d.', ans:'True'},
-    {q:'Что выведет: s = "Программирование"; print(s[::2])?',
-     hint:'Каждый второй символ.', ans:'Пграмрвне'},
-    {q:'Что выведет: print("  Hi  ".strip().upper())?',
-     hint:'strip убирает пробелы, upper — в верхний регистр.', ans:'HI'}
-  ],
-  2: [
-    {q:'Что выведет: s = "Python"; print(s[2], s[-3])?',
-     hint:'s[2] — третий символ, s[-3] — третий с конца.', ans:'t h'},
-    {q:'Что выведет: s = "Информатика"; print(s[4:])?',
-     hint:'s[4:] — с индекса 4 до конца.', ans:'рматика'},
+    {q:'Что выведет: s = "Программирование"; print(s[0], s[-1], len(s))?',
+     hint:'Индексация с 0, отрицательный — с конца, len — длина.', ans:'П е 15'},
+    {q:'Что выведет: s = "Информатика"; print(s[2:6])?',
+     hint:'s[2:6] — с индекса 2 по 5 включительно.', ans:'форм'},
     {q:'Что вернёт: "apple" < "banana"?',
      hint:'Сравнение по первому символу: a < b.', ans:'True'},
-    {q:'Что выведет: s = "Программирование"; print(s[::-1])?',
-     hint:'[::-1] — разворот строки.', ans:'еинавориммаргорП'},
-    {q:'Что выведет: print("Hello".lower())?',
-     hint:'lower — в нижний регистр.', ans:'hello'}
+    {q:'Что выведет: s = "abcdef"; print(s[::3])?',
+     hint:'Каждый третий символ, начиная с индекса 0.', ans:'ad'},
+    {q:'Что выведет: print("  Hello  ".strip().lower())?',
+     hint:'strip убирает пробелы, lower — в нижний регистр.', ans:'hello'},
+    {type:'code', q:'Напишите программу, которая запрашивает слово и выводит его в верхнем регистре.',
+     task:'upper', hint:'input() + .upper() + print()'}
+  ],
+  2: [
+    {q:'Что выведет: s = "Программирование"; print(s[3], s[-2], len(s))?',
+     hint:'s[3] — четвёртый символ, s[-2] — второй с конца.', ans:'г н 15'},
+    {q:'Что выведет: s = "Информатика"; print(s[:7])?',
+     hint:'s[:7] — первые 7 символов, индекс 7 не включается.', ans:'Информа'},
+    {q:'Что вернёт: "cat" > "car"?',
+     hint:'Сравнение посимвольно: c=c, a=a, t > r.', ans:'True'},
+    {q:'Что выведет: s = "abcdef"; print(s[::-2])?',
+     hint:'Разворот с шагом 2: индексы 5, 3, 1.', ans:'fdb'},
+    {q:'Что выведет: print("ABC".lower() + "def".upper())?',
+     hint:'lower — в нижний, upper — в верхний, + — склейка.', ans:'abcDEF'},
+    {type:'code', q:'Напишите программу, которая запрашивает строку и выводит её длину.',
+     task:'length', hint:'input() + len() + print()'}
   ],
   3: [
-    {q:'Что выведет: s = "Python"; print(s[-1], s[0])?',
-     hint:'s[-1] — последний, s[0] — первый.', ans:'n P'},
-    {q:'Что выведет: s = "Информатика"; print(s[:3])?',
-     hint:'s[:3] — первые 3 символа.', ans:'Инф'},
-    {q:'Что вернёт: "Z" < "a"?',
-     hint:'Код Z = 90, код a = 97.', ans:'True'},
-    {q:'Что выведет: s = "abcdef"; print(s[1:5:2])?',
-     hint:'С 1 по 4 с шагом 2: индексы 1 и 3.', ans:'bd'},
-    {q:'Что выведет: print("abc".upper() + "def".lower())?',
-     hint:'upper — в верхний, lower — в нижний, + — склейка.', ans:'ABCdef'}
+    {q:'Что выведет: s = "Программирование"; print(s[1], s[-3], len(s))?',
+     hint:'s[1] — второй символ, s[-3] — третий с конца.', ans:'р а 15'},
+    {q:'Что выведет: s = "Информатика"; print(s[5:])?',
+     hint:'s[5:] — с индекса 5 до конца.', ans:'матика'},
+    {q:'Что вернёт: "box" < "boy"?',
+     hint:'Сравнение посимвольно: b=b, o=o, x < y.', ans:'True'},
+    {q:'Что выведет: s = "abcdef"; print(s[1::2])?',
+     hint:'С индекса 1 каждый второй: индексы 1, 3, 5.', ans:'bdf'},
+    {q:'Что выведет: print("Python".upper().replace("P","J"))?',
+     hint:'upper — в верхний, replace — заменяет все вхождения.', ans:'JYTHON'},
+    {type:'code', q:'Напишите программу, которая запрашивает два слова и выводит их конкатенацию (склейку).',
+     task:'concat', hint:'a = input(); b = input(); print(a + b)'}
   ],
   4: [
-    {q:'Что выведет: s = "Python"; print(s[0], s[1], s[2])?',
-     hint:'Индексы 0, 1, 2.', ans:'P y t'},
-    {q:'Что выведет: s = "Информатика"; print(s[7:])?',
-     hint:'s[7:] — с индекса 7 до конца.', ans:'атика'},
-    {q:'Что вернёт: "abc" < "abcd"?',
-     hint:'Все символы совпали, но "abc" короче.', ans:'True'},
-    {q:'Что выведет: s = "Программирование"; print(s[0:4])?',
-     hint:'s[0:4] — первые 4 символа.', ans:'Прог'},
-    {q:'Что выведет: print("Python".replace("P", "J"))?',
-     hint:'replace заменяет все вхождения.', ans:'Jython'}
+    {q:'Что выведет: s = "Программирование"; print(s[0], s[-4], len(s))?',
+     hint:'s[0] — первый, s[-4] — четвёртый с конца.', ans:'П а 15'},
+    {q:'Что выведет: s = "Информатика"; print(s[3:8])?',
+     hint:'s[3:8] — с индекса 3 по 7 включительно.', ans:'орма'},
+    {q:'Что вернёт: "sun" < "sunny"?',
+     hint:'Все символы совпали, но "sun" короче.', ans:'True'},
+    {q:'Что выведет: s = "abcdef"; print(s[::4])?',
+     hint:'Каждый четвёртый символ, начиная с 0.', ans:'ae'},
+    {q:'Что выведет: print("  hi  ".strip().replace("h","H"))?',
+     hint:'strip убирает пробелы, replace заменяет.', ans:'Hi'},
+    {type:'code', q:'Напишите программу, которая запрашивает строку и выводит её первый и последний символы через пробел.',
+     task:'firstlast', hint:'input() + s[0] + s[-1]'}
   ]
 };
 
@@ -813,12 +939,23 @@ function renderPractice(){
   var qs = PRACTICE_VARIANTS[v];
   var html = '';
   qs.forEach(function(q, i){
-    html += '<div class="task"><p><b>'+(i+1)+'.</b> '+q.q+'</p>'+
-      '<details><summary>Подсказка</summary>'+q.hint+'</details>'+
-      '<div class="ans">'+
-        '<input type="text" id="prac'+i+'" placeholder="ответ" autocomplete="off">'+
-      '</div>'+
-      '</div>';
+    if (q.type === 'code'){
+      html += '<div class="task"><p><b>'+(i+1)+'.</b> '+q.q+'</p>'+
+        '<details><summary>Подсказка</summary>'+q.hint+'</details>'+
+        '<textarea class="code-editor" id="prac'+i+'" placeholder="ваш код"></textarea>'+
+        '<div class="controls" style="margin-top:10px">'+
+          '<button class="btn b-green" onclick="runPracticeCode('+i+',\''+q.task+'\')">▶ Запустить</button>'+
+        '</div>'+
+        '<div class="code-result" id="prac'+i+'out"></div>'+
+        '</div>';
+    } else {
+      html += '<div class="task"><p><b>'+(i+1)+'.</b> '+q.q+'</p>'+
+        '<details><summary>Подсказка</summary>'+q.hint+'</details>'+
+        '<div class="ans">'+
+          '<input type="text" id="prac'+i+'" placeholder="ответ" autocomplete="off">'+
+        '</div>'+
+        '</div>';
+    }
   });
   document.getElementById('pracArea').innerHTML = html;
 }
@@ -833,11 +970,16 @@ function gradePractice(){
   var correct = 0;
   qs.forEach(function(q, i){
     var el = document.getElementById('prac'+i);
-    var val = (el.value||'').trim().replace(/\s+/g,' ');
-    var ok = val.toLowerCase() === q.ans.toLowerCase();
+    var ok = false;
+    if (q.type === 'code'){
+      var res = runPython(el.value, q.task);
+      ok = res.ok;
+    } else {
+      var val = (el.value||'').trim().replace(/\s+/g,' ');
+      ok = val.toLowerCase() === q.ans.toLowerCase();
+    }
     if (ok) correct++;
     el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
-    el.style.background = ok ? '#f0fdf4' : '#fef2f2';
   });
   var pct = Math.round(correct / qs.length * 100);
   lessonState.pracCorrect = correct;
@@ -1053,6 +1195,219 @@ function exitStandalone(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+/* =========================================================
+   6. МИНИ-ИНТЕРПРЕТАТОР PYTHON
+   ========================================================= */
+function runPython(code, task){
+  if (!code || !code.trim()) return {ok:false, out:'Пустой код'};
+
+  var TESTS = {
+    reverse: [
+      {input:['Привет'], expect:'тевирП'},
+      {input:['Python'], expect:'nohtyP'},
+      {input:['abc'], expect:'cba'}
+    ],
+    upper: [
+      {input:['привет'], expect:'ПРИВЕТ'},
+      {input:['Hello'], expect:'HELLO'},
+      {input:['abc'], expect:'ABC'}
+    ],
+    length: [
+      {input:['Привет'], expect:'6'},
+      {input:['abc'], expect:'3'},
+      {input:[''], expect:'0'}
+    ],
+    concat: [
+      {input:['При','вет'], expect:'Привет'},
+      {input:['a','b'], expect:'ab'},
+      {input:['Hello, ','World'], expect:'Hello, World'}
+    ],
+    firstlast: [
+      {input:['Привет'], expect:'П т'},
+      {input:['abc'], expect:'a c'},
+      {input:['xy'], expect:'x y'}
+    ]
+  };
+
+  var tests = TESTS[task];
+  if (!tests) return {ok:false, out:'Неизвестная задача'};
+
+  for (var t = 0; t < tests.length; t++){
+    var inp = tests[t].input.slice();
+    var res = emulatePython(code, inp);
+    if (!res.ok) return {ok:false, out:'Ошибка: ' + res.error};
+    var got = res.output.join('\n').trim();
+    if (got !== tests[t].expect){
+      return {ok:false, out:'Тест ' + (t+1) + ': ожидалось «' + tests[t].expect +
+              '», получено «' + got + '»'};
+    }
+  }
+  return {ok:true, out:'Все тесты пройдены!'};
+}
+
+function emulatePython(code, inputs){
+  var lines = code.replace(/\r/g,'').split('\n');
+  var vars = {};
+  var output = [];
+  var inputIndex = 0;
+
+  lines = lines.filter(function(l){
+    var s = l.trim();
+    return s && !s.startsWith('#');
+  });
+
+  for (var i = 0; i < lines.length; i++){
+    var line = lines[i].trim();
+    if (!line) continue;
+
+    var m = line.match(/^(\w+)\s*=\s*input\s*\(\s*\)$/);
+    if (m){
+      vars[m[1]] = inputs[inputIndex] !== undefined ? inputs[inputIndex] : '';
+      inputIndex++;
+      continue;
+    }
+    m = line.match(/^(\w+)\s*=\s*input\s*\(\s*['"][^'"]*['"]\s*\)$/);
+    if (m){
+      vars[m[1]] = inputs[inputIndex] !== undefined ? inputs[inputIndex] : '';
+      inputIndex++;
+      continue;
+    }
+
+    m = line.match(/^print\s*\((.*)\)$/);
+    if (m){
+      var expr = m[1].trim();
+      var val = evalPyExpr(expr, vars);
+      if (val === undefined) return {ok:false, error:'не удалось вычислить: ' + expr};
+      output.push(String(val));
+      continue;
+    }
+
+    m = line.match(/^(\w+)\s*=\s*(.+)$/);
+    if (m){
+      var name = m[1], rhs = m[2].trim();
+      var v = evalPyExpr(rhs, vars);
+      if (v === undefined) return {ok:false, error:'не удалось вычислить: ' + rhs};
+      vars[name] = v;
+      continue;
+    }
+
+    return {ok:false, error:'непонятная строка: ' + line};
+  }
+
+  return {ok:true, output:output};
+}
+
+function evalPyExpr(expr, vars){
+  expr = expr.trim();
+
+  var m = expr.match(/^['"](.*)['"]$/);
+  if (m) return m[1];
+
+  if (/^-?\d+(\.\d+)?$/.test(expr)) return expr;
+
+  if (/^\w+$/.test(expr)) return vars[expr];
+
+  m = expr.match(/^len\s*\(\s*(\w+)\s*\)$/);
+  if (m) return String((vars[m[1]] || '').length);
+
+  m = expr.match(/^(\w+)\s*\[\s*::\s*-1\s*\]$/);
+  if (m) return String(vars[m[1]] || '').split('').reverse().join('');
+
+  m = expr.match(/^(\w+)\s*\[\s*(-?\d+)\s*\]$/);
+  if (m){
+    var s = String(vars[m[1]] || '');
+    var idx = Number(m[2]);
+    if (idx < 0) idx = s.length + idx;
+    return s[idx] || '';
+  }
+
+  m = expr.match(/^(\w+)\s*\[\s*(\d*)\s*:\s*(\d*)\s*\]$/);
+  if (m){
+    var str = String(vars[m[1]] || '');
+    var start = m[2] ? Number(m[2]) : 0;
+    var stop = m[3] ? Number(m[3]) : str.length;
+    return str.slice(start, stop);
+  }
+
+  m = expr.match(/^(\w+)\.(upper|lower|strip)\s*\(\s*\)$/);
+  if (m){
+    var v = String(vars[m[1]] || '');
+    if (m[2] === 'upper') return v.toUpperCase();
+    if (m[2] === 'lower') return v.toLowerCase();
+    return v.trim();
+  }
+
+  m = expr.match(/^(\w+)\.replace\s*\(\s*['"]([^'"]*)['"]\s*,\s*['"]([^'"]*)['"]\s*\)$/);
+  if (m){
+    var str2 = String(vars[m[1]] || '');
+    return str2.split(m[2]).join(m[3]);
+  }
+
+  m = expr.match(/^(\w+)\.count\s*\(\s*['"]([^'"]*)['"]\s*\)$/);
+  if (m){
+    var str3 = String(vars[m[1]] || '');
+    return String((str3.match(new RegExp(escapeRe(m[2]), 'g')) || []).length);
+  }
+
+  m = expr.match(/^(\w+)\.find\s*\(\s*['"]([^'"]*)['"]\s*\)$/);
+  if (m){
+    var str4 = String(vars[m[1]] || '');
+    return String(str4.indexOf(m[2]));
+  }
+
+  m = expr.match(/^(.+?)\s*\+\s*(.+)$/);
+  if (m){
+    var left = evalPyExpr(m[1], vars);
+    var right = evalPyExpr(m[2], vars);
+    if (left === undefined || right === undefined) return undefined;
+    return String(left) + String(right);
+  }
+
+  m = expr.match(/^(.+?)\s*\*\s*(\d+)$/);
+  if (m){
+    var base = evalPyExpr(m[1], vars);
+    if (base === undefined) return undefined;
+    return String(base).repeat(Number(m[2]));
+  }
+
+  m = expr.match(/^(.+?)\s*,\s*(.+)$/);
+  if (m){
+    var p1 = evalPyExpr(m[1], vars);
+    var p2 = evalPyExpr(m[2], vars);
+    if (p1 === undefined || p2 === undefined) return undefined;
+    return p1 + ' ' + p2;
+  }
+
+  return undefined;
+}
+
+function escapeRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+function checkCode(inputId, task, fbId){
+  if (lessonState.wb[inputId]){ showFb(fbId,'✔ Уже решено.','hint'); return; }
+  var code = document.getElementById(inputId).value;
+  var out = document.getElementById(inputId + 'out');
+  var res = runPython(code, task);
+
+  out.className = 'code-result ' + (res.ok ? 'ok' : 'err');
+  out.textContent = res.out;
+
+  if (res.ok){
+    lessonState.wb[inputId] = true;
+    showFb(fbId,'✅ Верно!','ok');
+  } else {
+    showFb(fbId,'❌ Неверно. Смотрите вывод тестов.','no');
+  }
+}
+
+function runPracticeCode(i, task){
+  var code = document.getElementById('prac'+i).value;
+  var out = document.getElementById('prac'+i+'out');
+  var res = runPython(code, task);
+  out.className = 'code-result ' + (res.ok ? 'ok' : 'err');
+  out.textContent = res.out;
+}
+
 /* ---------- PDF ---------- */
 function saveStandalonePDF(){
   if (!saDone){ toast('Сначала сдайте работу'); return; }
@@ -1164,7 +1519,7 @@ function saveStandaloneJPG(){
 }
 
 /* =========================================================
-   6. СПРАВОЧНИК
+   7. СПРАВОЧНИК
    ========================================================= */
 function openRef(){ document.getElementById('refModal').classList.add('open'); }
 function closeRef(){ document.getElementById('refModal').classList.remove('open'); }
@@ -1173,7 +1528,7 @@ document.getElementById('refModal').addEventListener('click', function(e){
 });
 
 /* =========================================================
-   7. ПЕЧАТЬ ДЗ
+   8. ПЕЧАТЬ ДЗ
    ========================================================= */
 function printHomework(){
   var fio = getFullName() + (getKlass() ? ', ' + getKlass() : '');
@@ -1198,7 +1553,7 @@ function printHomework(){
 }
 
 /* =========================================================
-   8. КАЛЬКУЛЯТОР
+   9. КАЛЬКУЛЯТОР
    ========================================================= */
 var calcBuf = '';
 function openCalc(){ document.getElementById('calcModal').classList.add('open'); calcRender(); }
@@ -1226,7 +1581,7 @@ document.getElementById('calcModal').addEventListener('click', function(e){
 });
 
 /* =========================================================
-   9. ПАРОЛИ
+   10. ПАРОЛИ
    ========================================================= */
 var LAT2CYR = {q:'й',w:'ц',e:'у',r:'к',t:'е',y:'н',u:'г',i:'ш',o:'щ',p:'з','[':'х',']':'ъ',
   a:'ф',s:'ы',d:'в',f:'а',g:'п',h:'р',j:'о',k:'л',l:'д',';':'ж',"'":'э',
@@ -1245,7 +1600,7 @@ function passwordMatches(t, e){
 }
 
 /* =========================================================
-   10. ПОМОЩНИКИ
+   11. ПОМОЩНИКИ
    ========================================================= */
 function showFb(id, html, kind){
   var el = document.getElementById(id);
@@ -1255,7 +1610,7 @@ function showFb(id, html, kind){
 }
 
 /* =========================================================
-   11. СТАРТ
+   12. СТАРТ
    ========================================================= */
 document.addEventListener('DOMContentLoaded', function(){
   loadPracticeState();
