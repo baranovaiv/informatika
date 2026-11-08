@@ -262,7 +262,7 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
       <div class="ans">
         <input type="text" id="w2" placeholder="ваш ответ" autocomplete="off"
                oninput="previewAns('w2','w2prev')">
-        <button class="btn b-green" onclick="checkW('w2','¬A','w2fb')">Проверить</button>
+        <button class="btn b-green" onclick="checkW('w2','¬A ∧ ¬B','w2fb')">Проверить</button>
       </div>
       <div class="preview" id="w2prev"></div>
       <div class="fb" id="w2fb"></div>
@@ -302,7 +302,7 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
       <div class="ans">
         <input type="text" id="w5" placeholder="ваш ответ" autocomplete="off"
                oninput="previewAns('w5','w5prev')">
-        <button class="btn b-green" onclick="checkW('w5','¬B','w5fb')">Проверить</button>
+        <button class="btn b-green" onclick="checkW('w5','A ∧ ¬B','w5fb')">Проверить</button>
       </div>
       <div class="preview" id="w5prev"></div>
       <div class="fb" id="w5fb"></div>
@@ -927,7 +927,7 @@ function calcWorkbook(){
 var PRACTICE_VARIANTS = {
   1: [
     {q:'(A \\land B) \\lor (A \\land \\neg B)', canon:'A', hint:'Распределительный → исключённое третье → константа'},
-    {q:'\\neg(\\neg A \\land B) \\land \\neg A', canon:'¬A', hint:'Двойное отрицание → де Морган → противоречие → константа'},
+    {q:'\\neg(\\neg A \\land B) \\land \\neg A', canon:'¬A ∧ ¬B', hint:'Двойное отрицание → де Морган → противоречие → константа'},
     {q:'(A \\land \\neg B) \\lor (A \\land B) \\lor (\\neg A \\land B)', canon:'A ∨ B', hint:'Склеивание → распределительный → исключённое третье'},
     {q:'(A \\lor B) \\land (A \\lor \\neg B) \\land (A \\lor C)', canon:'A', hint:'Распределительный → склеивание → поглощение'},
     {q:'((A \\land B) \\lor (A \\land \\neg B)) \\land ((\\neg A \\land C) \\lor (A \\land C))', canon:'A ∧ C', hint:'Склеивание → константа → распределительный → исключённое третье → константа'}
@@ -941,7 +941,7 @@ var PRACTICE_VARIANTS = {
   ],
   3: [
     {q:'\\neg(\\neg A \\land \\neg B) \\land B', canon:'B', hint:'Двойное отрицание → де Морган → распределительный → поглощение'},
-    {q:'\\neg(A \\lor B) \\lor (A \\land \\neg B)', canon:'¬A ∧ ¬B ∨ A ∧ ¬B', hint:'Де Морган → распределительный → противоречие'},
+    {q:'\\neg(A \\lor B) \\lor (A \\land \\neg B)', canon:'¬B', hint:'Де Морган → распределительный → противоречие'},
     {q:'(A \\lor B) \\land (\\neg A \\lor B) \\lor (A \\land \\neg B)', canon:'A ∨ B', hint:'Распределительный → противоречие → склеивание → исключённое третье'},
     {q:'(A \\land B \\land C) \\lor (A \\land B \\land \\neg C) \\lor (A \\land \\neg B \\land C)', canon:'A ∧ (B ∨ C)', hint:'Склеивание → распределительный → склеивание → распределительный'},
     {q:'((A \\land B) \\lor (\\neg A \\land B)) \\land ((A \\land \\neg B) \\lor (A \\land B))', canon:'A ∧ B', hint:'Склеивание → склеивание → распределительный → поглощение → константа'}
@@ -951,7 +951,7 @@ var PRACTICE_VARIANTS = {
     {q:'(A \\land B) \\lor (A \\land \\neg B) \\lor (A \\land C)', canon:'A', hint:'Распределительный → исключённое третье → константа → поглощение'},
     {q:'\\neg(\\neg A \\land \\neg B) \\land (A \\lor B)', canon:'A ∨ B', hint:'Двойное отрицание → де Морган → распределительный → исключённое третье'},
     {q:'(A \\lor B \\lor C) \\land (A \\lor B \\lor \\neg C) \\land \\neg A', canon:'B', hint:'Склеивание → де Морган → распределительный → противоречие'},
-    {q:'(A \\land (B \\lor C)) \\lor (\\neg A \\land (B \\lor C))', canon:'B ∨ C', hint:'Распределительный → исключённое третье → константа → склеивание → константа'}
+    {q:'(A \\land (B \\lor C)) \\lor (\\neg A \\land (B \\lor C))', canon:'¬A ∧ B', hint:'Распределительный → исключённое третье → константа → склеивание → константа'}
   ]
 };
 
