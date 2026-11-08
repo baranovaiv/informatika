@@ -533,7 +533,7 @@ async function unlockPractice() {
       headers: { 'Content-Type': 'text/plain' }, // text/plain важен для Google Script
       body: JSON.stringify({
         password: inp.value,
-        resource: 'practice'
+        resource: 'practice_truth'
       })
     });
     var data = await response.json();
@@ -626,7 +626,7 @@ async function unlockStandalone() {
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         password: inp.value,
-        resource: 'standalone'
+        resource: 'sa_truth'
       })
     });
     var data = await response.json();
