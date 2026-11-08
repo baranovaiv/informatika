@@ -682,6 +682,10 @@ function renderPractice(){
 }
 
 function gradePractice(){
+  if (lessonState.pracDone){
+    toast('⚠️ Практическая работа уже сдана. Повторная сдача не разрешена.');
+    return;
+  }
   var v = document.getElementById('pracVariant').value;
   var qs = PRACTICE_VARIANTS[v];
   var correct = 0;
@@ -701,6 +705,15 @@ function gradePractice(){
   document.getElementById('pracCorrect').textContent = correct;
   document.getElementById('pracMark').textContent = lessonState.pracMark;
   document.getElementById('pracResult').classList.add('show');
+    /* блокируем поля и кнопку после сдачи */
+  qs.forEach(function(_, i){
+    var el = document.getElementById('prac'+i);
+    if (el){ el.disabled = true; el.style.background = '#f3f4f6'; }
+  });
+  var checkBtn = document.querySelector('#practiceBody > button.b-green');
+  if (checkBtn) checkBtn.style.display = 'none';
+
+  savePracticeState();
   toast('Практика: ' + correct + '/' + qs.length + ', оценка ' + lessonState.pracMark);
 }
 
@@ -1041,7 +1054,9 @@ document.addEventListener('focusin', function(e){
   if (e.target.matches('input[type=text],input[type=password],textarea')){
     activeField = e.target;
   }
-});
+}
+)
+  loadPracticeState();;
 document.querySelectorAll('.key[data-tex]').forEach(function(b){
   b.addEventListener('click', function(){ insertMath(b.dataset.tex); });
 });
