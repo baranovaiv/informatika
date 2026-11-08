@@ -269,11 +269,11 @@ result = <span class="str">""</span>
   <!-- 2. РАБОЧАЯ ТЕТРАДЬ -->
   <section class="card" id="workbook">
     <h2><span class="num">2</span> Рабочая тетрадь</h2>
-    <p class="muted">В каждом задании пишите код Python. Перед запуском введите тестовые данные (через запятую, если строк несколько). Программа выполнится прямо в браузере.</p>
+    <p class="muted">В каждом задании пишите код Python. Перед запуском введите тестовые данные (если нужны). Программа выполнится прямо в браузере.</p>
 
     <div class="task">
       <span class="lvl l1">базовый · индексы</span>
-      <p><b>Задание 1.</b> Дана строка <code>s = "Тетрадь"</code>. Выведите первый и последний символ (последний — через отрицательный индекс), символ с индексом 3 и длину строки.</p>
+      <p><b>Задание 1.</b> Дана строка <code>s = "Тетрадь"</code>. Выведите первый символ, последний (через отрицательный индекс), символ с индексом 3 и длину строки.</p>
       <div class="code-block">
         <textarea id="w1" placeholder="s = &quot;Тетрадь&quot;&#10;print(...)"></textarea>
         <div class="inp-wrap"><label>Тестовые данные:</label><input type="text" id="w1in" placeholder="(не нужны)"></div>
@@ -395,7 +395,7 @@ result = <span class="str">""</span>
   <!-- 4. ИТОГ -->
   <section class="card" id="final">
     <h2><span class="num">4</span> Итоговая оценка за урок</h2>
-    <p class="muted">Складывается из рабочей тетради и практической работы.<br>Шкала: 90–100 → 5, 70–89 → 4, 50–69 → 3, 0–49 → 2.</p>
+    <p class="muted">Складывается из рабочей тетради и практической работы.</p>
     <div class="controls">
       <button class="btn b-purple" onclick="calcFinalMark()">🎯 Подвести итог</button>
       <button class="btn b-red" onclick="resetPractice()">🔄 Сбросить практику</button>
@@ -481,7 +481,6 @@ result = <span class="str">""</span>
     </div>
 
     <div class="controls no-print" style="margin-top:16px">
-      <button class="btn b-orange" onclick="saveStandalonePDF()">📄 Сохранить PDF</button>
       <button class="btn b-red" onclick="exitStandalone()">← Выйти из работы</button>
     </div>
   </div>
@@ -656,36 +655,47 @@ function escapeHtml(s){
 }
 
 /* =========================================================
-   3. ПРОВЕРКИ ДЛЯ РАБОЧЕЙ ТЕТРАДИ (МЯГКИЕ)
+   3. ПРОВЕРКИ ДЛЯ РАБОЧЕЙ ТЕТРАДИ (СВЕРХМЯГКИЕ)
    ========================================================= */
+
+// Убирает все пробелы (включая неразрывные), табы и переносы
+function cleanOut(s){
+  return String(s).replace(/[\s\u00A0]+/g, '');
+}
+
+// Задание 1: ищем Т, ь, а и 7 (или len) в любом порядке и формате
 function w1check(out){
-  // Ищем 'Т', 'т', 'а' и '7' в любом порядке/формате
-  var cleaned = out.replace(/[,\s]+/g, ' ').trim();
-  return cleaned.includes('Т') && cleaned.includes('т') &&
-         cleaned.includes('а') && cleaned.includes('7');
+  var c = cleanOut(out);
+  return c.includes('Т') && c.includes('ь') && c.includes('а') && c.includes('7');
 }
+
+// Задание 2: вывести символы P y t h o n
 function w2check(out){
-  // Убираем пробелы/переносы: должно быть 'Python'
-  var cleaned = out.replace(/\s+/g, '');
-  return cleaned === 'Python';
+  return cleanOut(out) === 'Python';
 }
+
+// Задание 3: вывести "0: P", "1: y" и т.д. (индекс и символ)
+// Разрешаем пробелы, двоеточие с пробелом или без, и регистр
 function w3check(out){
-  // '0:P1:y2:t3:h4:o5:n' без пробелов, в нижнем регистре
-  var cleaned = out.toLowerCase().replace(/\s+/g, '');
-  return cleaned === '0:p1:y2:t3:h4:o5:n';
+  var c = cleanOut(out).toLowerCase();
+  return /^0:p1:y2:t3:h4:o5:n$/.test(c);
 }
+
+// Задание 4: должны быть числа 3 (количество) и 6 (сумма)
 function w4check(out){
-  // Ищем числа 3 и 6 где угодно
   var nums = out.match(/\d+/g) || [];
   return nums.includes('3') && nums.includes('6');
 }
+
+// Задание 5: обратный порядок nohtyP (разрешаем пробелы)
 function w5check(out){
-  // 'nohtyP' без пробелов
-  return out.replace(/\s+/g, '') === 'nohtyP';
+  return cleanOut(out) === 'nohtyP';
 }
+
+// Задание 6: Пр*в*т, м*р! (разрешаем пробелы)
 function w6check(out){
-  // 'Пр*в*т, м*р!' с любыми пробелами
-  return out.trim() === 'Пр*в*т, м*р!';
+  var c = cleanOut(out);
+  return c === 'Пр*в*т,м*р!';
 }
 
 /* =========================================================
@@ -1125,10 +1135,6 @@ function exitStandalone(){
   if (saTimer){ clearInterval(saTimer); saTimer=null; }
   document.body.classList.remove('exam');
   saStarted = false;
-}
-
-function saveStandalonePDF(){
-  toast('Сохраните результат вручную: сделайте скриншот или распечатайте страницу.');
 }
 
 /* =========================================================
