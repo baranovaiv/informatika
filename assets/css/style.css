@@ -342,3 +342,23 @@ details[open] summary{margin-bottom:10px}
 }
 .preview:empty{display:none}
 .preview .err{color:var(--bad);font-weight:600;font-size:.9rem}
+.confetti {
+  position: fixed;
+  top: -40px;
+  font-size: 1.6rem;
+  pointer-events: none;
+  user-select: none;
+  z-index: 9999;
+  animation: confetti-fall linear forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
