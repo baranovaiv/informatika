@@ -800,7 +800,7 @@ function checkQ6(){
 function checkQ7(){
   if (lessonState.wb.q7) return;
   var sel = document.querySelector('input[name="q7"]:checked'); if (!sel) return;
-  if (sel.value === 'b') { lessonState.wb.q7 = true; showFb('q7fb','✅ Верно! <code>$A1</code> → <code>$A3</code> (столбец заморожен, строка +2), <code>B$2</code> → <code>D$2</code> (строка заморожена, столбец +2).','ok'); }
+  if (sel.value === 'a') { lessonState.wb.q7 = true; showFb('q7fb','✅ Верно! <code>$A1</code> → <code>$A3</code> (столбец заморожен, строка +2), <code>B$2</code> → <code>D$2</code> (строка заморожена, столбец +2).','ok'); }
   else showFb('q7fb','❌ Неверно. Из C1 в D3 — это +1 столбец и +2 строки. Разберите каждую часть отдельно.','no');
 }
 function checkQ8(){
