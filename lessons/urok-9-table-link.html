@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ссылки в электронных таблицах · 9 класс</title>
+
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$']] },
+  svg: { fontCache: 'global' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23ede9fe'/><text x='16' y='23' font-size='17' font-family='Georgia' font-weight='bold' fill='%236d28d9' text-anchor='middle'>I</text></svg>">
+
+<style>
+.student{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:16px;position:relative;z-index:2}
+.student .f{display:flex;flex-direction:column;gap:4px}
+.student label{font-size:.78rem;font-weight:800;color:#4c4660;text-transform:uppercase;letter-spacing:.4px}
+.student input{border:2px solid rgba(255,255,255,.85);border-radius:10px;padding:8px 13px;
+  font-size:.95rem;font-family:inherit;background:rgba(255,255,255,.92);color:var(--ink);outline:none}
+.student input:focus{background:#fff;border-color:#a78bfa;box-shadow:0 0 0 4px rgba(255,255,255,.55)}
+#surname{width:200px} #firstname{width:180px} #klass{width:90px}
+
+.task-header{font-weight:800;font-size:1.05rem;margin-bottom:12px;color:#4c1d95}
+.tgrid{display:grid;grid-template-columns:100px 1fr;gap:6px 12px;margin:10px 0;font-family:Cambria,Georgia,serif;font-size:.98rem}
+.tgrid .k{font-weight:800;color:#6d28d9}
+.step-line{background:#f6fffb;border-left:3px solid var(--gd);padding:8px 14px;margin:6px 0;border-radius:0 8px 8px 0;font-family:Cambria,Georgia,serif;font-size:.95rem}
+.answer-line{font-weight:800;color:#047857;margin-top:10px;font-size:1rem;border-top:2px dashed var(--gd);padding-top:8px}
+
+.calc-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.calc-row input{max-width:200px;border:2px solid #e6e3f1;border-radius:8px;padding:6px 10px;
+  font-family:Consolas,monospace;font-size:.95rem;}
+.calc-row span{font-weight:700;color:#5b4b8a}
+
+.match-select{width:100%;max-width:280px;border:2px solid #e6e3f1;border-radius:8px;padding:6px 10px;
+  font-family:inherit;font-size:.9rem;background:#fff;color:var(--ink);outline:none;}
+.match-select:focus{border-color:var(--pd);}
+
+.lock{text-align:center;padding:32px 18px;border-radius:16px;
+  background:linear-gradient(135deg,#fff7ed,#fef2f2);border:2px dashed var(--od)}
+.lock h3{margin:10px 0 4px}
+.lock p{color:var(--muted);margin:0 0 16px;font-size:.94rem}
+.lockrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.pmsg{min-height:22px;font-weight:600;color:var(--bad);margin-top:10px}
+.pmsg.info{color:var(--muted)}
+
+.vbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.res{background:linear-gradient(135deg,var(--green),var(--blue));border-radius:var(--r);padding:22px;margin:18px 0;display:none}
+.res.show{display:block}
+.res h3{margin:0 0 14px;color:#065f46}
+.marks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.mcard{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:0 4px 16px rgba(6,95,70,.1)}
+.mcard .lbl{font-size:.75rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.mcard .val{font-size:2.3rem;font-weight:900;line-height:1;color:#6d28d9}
+.mcard.total .val{color:#047857}
+
+#standalone{display:none}
+body.exam{padding-bottom:20px}
+body.exam #theory, body.exam #workbook, body.exam #practice,
+body.exam #final, body.exam #homework, body.exam #standaloneGate,
+body.exam .bar, body.exam .hero{display:none !important}
+body.exam #standalone{display:block}
+
+.exam-head{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.97);
+  backdrop-filter:blur(10px);border-radius:0 0 20px 20px;padding:14px 20px;margin:-24px -16px 18px;
+  box-shadow:0 6px 24px rgba(120,110,160,.18);display:flex;flex-wrap:wrap;gap:14px;
+  align-items:center;justify-content:space-between}
+.exam-title{font-weight:800;font-size:1.05rem}
+.exam-who{font-size:.86rem;color:var(--muted)}
+.timer{font-family:Consolas,monospace;font-size:1.5rem;font-weight:800;color:#047857;
+  background:var(--green);padding:6px 18px;border-radius:12px;min-width:110px;text-align:center}
+.timer.warn{background:var(--yellow);color:#b45309}
+.timer.danger{background:#fee2e2;color:#b91c1c;animation:pulseT 1s infinite}
+@keyframes pulseT{0%,100%{opacity:1}50%{opacity:.55}}
+
+.s-task{background:#fff;border-radius:18px;padding:18px 20px;margin:14px 0;
+  border:2px solid #e8e3f5;box-shadow:0 4px 18px rgba(120,110,160,.09)}
+.s-task .sn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;
+  border-radius:50%;background:var(--purple);color:#5b21b6;font-weight:800;font-size:.85rem;margin-right:8px}
+.s-task .stext{margin:0 0 12px;font-size:1rem;line-height:1.65}
+
+.no-calc-warn{background:var(--yellow);border-left:4px solid var(--yd);border-radius:12px;
+  padding:12px 16px;margin:0 0 16px;font-size:.92rem;font-weight:600;color:#b45309}
+
+.bar{background:#fff;border-radius:var(--r);padding:16px;border:1px solid #f2f0fa;
+  box-shadow:0 -4px 24px rgba(120,110,160,.16);display:flex;flex-wrap:wrap;gap:10px;
+  position:sticky;bottom:10px;z-index:30;margin-top:24px}
+
+table.laws{border-collapse:collapse;width:100%;margin:14px 0;font-size:.92rem;display:block;overflow-x:auto}
+table.laws th,table.laws td{border:1px solid #e6e3f1;padding:8px 10px;text-align:left;vertical-align:top;background:#fdfcff}
+table.laws th{background:var(--blue);color:#1d4ed8;font-weight:800;font-size:.86rem}
+table.laws tr:nth-child(even) td{background:#fbfaff}
+table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
+
+.mbg{display:none;position:fixed;inset:0;background:rgba(60,55,90,.48);z-index:200;
+  align-items:center;justify-content:center;padding:16px}
+.mbg.open{display:flex}
+.modal{background:#fff;border-radius:22px;max-width:660px;width:100%;max-height:88vh;
+  overflow:auto;padding:24px;box-shadow:0 24px 70px rgba(60,55,90,.4)}
+.modal h3{margin:0 0 4px;font-size:1.12rem}
+
+.calc{max-width:340px}
+.calc-screen{
+  background:#1e1b2e;color:#e9e6f5;border-radius:14px;padding:14px 16px;margin-bottom:12px;
+  text-align:right;font-family:Consolas,monospace;overflow:hidden;
+}
+.calc-expr{font-size:.82rem;color:#a9a3c4;min-height:18px;word-break:break-all}
+.calc-out{font-size:1.9rem;font-weight:700;word-break:break-all;line-height:1.2}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cbtn{
+  border:none;border-radius:12px;padding:15px 0;font-size:1.05rem;font-weight:700;
+  font-family:inherit;cursor:pointer;background:#f5f3ff;color:#4c1d95;transition:.12s;
+}
+.cbtn:hover{background:#ede9fe}
+.cbtn:active{transform:scale(.96)}
+.cbtn.op{background:var(--purple);color:#5b21b6}
+.cbtn.eq{background:var(--green);color:#047857;grid-column:span 2}
+.cbtn.del{background:var(--orange);color:#c2410c}
+.cbtn.clr{background:#fee2e2;color:#b91c1c}
+
+.ref-table{font-family:Consolas,monospace;font-size:.95rem}
+.badge{display:inline-block;background:#ede9fe;color:#5b21b6;border-radius:20px;padding:2px 10px;font-size:.75rem;font-weight:800;margin-left:6px;vertical-align:middle}
+
+/* ---- Стили для практических заданий ---- */
+.prac-task{background:#fff;border-radius:18px;padding:20px 22px;margin:16px 0;
+  border:2px solid #e8e3f5;box-shadow:0 4px 18px rgba(120,110,160,.09)}
+.prac-task h4{margin:0 0 6px;font-size:1.05rem;color:#4c1d95;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.prac-task .goal{font-size:.85rem;font-weight:700;color:#5b4b8a;background:#f5f3ff;border-radius:10px;padding:6px 12px;display:inline-block;margin-bottom:10px}
+.prac-task ol{margin:8px 0 8px 0;padding-left:22px}
+.prac-task ol li{margin-bottom:6px;line-height:1.55}
+.prac-task code{background:#f3f1fb;border-radius:6px;padding:1px 6px;font-family:Consolas,monospace;font-size:.92em;color:#5b21b6}
+.prac-task .check-box{background:#f6fffb;border-left:3px solid var(--gd);padding:10px 14px;margin:10px 0;border-radius:0 8px 8px 0;font-size:.93rem}
+.prac-task .check-box b{color:#047857}
+.prac-task .q-to-notebook{background:#fff7ed;border-left:3px solid var(--od);padding:10px 14px;margin:10px 0;border-radius:0 8px 8px 0;font-size:.93rem}
+.prac-task .q-to-notebook b{color:#c2410c}
+.prac-task .mini-table{border-collapse:collapse;margin:10px 0;font-size:.9rem}
+.prac-task .mini-table td,.prac-task .mini-table th{border:1px solid #d9d4ec;padding:5px 12px;text-align:center}
+.prac-task .mini-table th{background:#f5f3ff;font-weight:700;color:#5b4b8a}
+.prac-task .mini-table .head-col{background:#ede9fe;font-weight:700;color:#5b21b6}
+.prac-task.advanced{border-color:#fcd34d;background:linear-gradient(135deg,#fffbeb,#fff)}
+.prac-task.advanced h4{color:#b45309}
+.prac-task.advanced .goal{background:#fef3c7;color:#b45309}
+
+@media(max-width:720px){
+  #surname,#firstname,#klass{width:100%}
+  .marks{grid-template-columns:1fr}
+  .exam-head{flex-direction:column;align-items:flex-start}
+  .match-select{max-width:100%;}
+  .tgrid{grid-template-columns:1fr}
+}
+@media print{
+  .no-print{display:none !important}
+  body{background:#fff;padding:0;font-size:11.5pt}
+  .card{box-shadow:none;border:none;padding:0;margin:0}
+  .task{break-inside:avoid}
+  .btn, .controls, .bar, .nav {display:none !important;}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">К содержанию</a>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="../index.html"><span class="logo">I</span> Информатика · кабинет 318А</a>
+    <button class="burger" aria-label="Меню">☰</button>
+    <div class="nav-links">
+      <a href="../index.html">Главная</a>
+      <a href="../lessons.html" class="active">Уроки</a>
+      <a href="../materials.html">Материалы</a>
+      <a href="../tests.html">Тесты</a>
+      <a href="../oge.html">ОГЭ</a>
+      <a href="../about.html">О сайте</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap" id="main">
+
+  <header class="hero">
+    <h1>Организация вычислений в электронных таблицах</h1>
+    <p class="lead">Относительные, абсолютные и смешанные ссылки · Преобразование формул при копировании · 9 класс</p>
+    <div class="student">
+      <div class="f"><label for="surname">Фамилия</label>
+        <input type="text" id="surname" placeholder="Иванов" autocomplete="off"></div>
+      <div class="f"><label for="firstname">Имя</label>
+        <input type="text" id="firstname" placeholder="Пётр" autocomplete="off"></div>
+      <div class="f"><label for="klass">Класс</label>
+        <input type="text" id="klass" placeholder="9А" autocomplete="off"></div>
+    </div>
+  </header>
+
+  <!-- ================= ТЕОРИЯ ================= -->
+  <section class="card" id="theory">
+    <h2><span class="num">1</span> Теоретический материал</h2>
+
+    <h3>Зачем нужны ссылки разных типов?</h3>
+    <p>Электронная таблица — это «умная» сетка. Когда вы копируете формулу, Calc не копирует её буквально, а <b>подстраивает</b> адреса ячеек под новое положение. Это удобно, но иногда нужно «заморозить» адрес, чтобы он не менялся. Для этого и существуют три типа ссылок.</p>
+
+    <h3>Три типа ссылок</h3>
+    <table class="laws">
+      <tr><th>Тип</th><th>Пример</th><th>Поведение при копировании</th><th>Когда использовать</th></tr>
+      <tr><td>Относительная</td><td class="ref-table">A1</td><td>Сдвигается вместе с ячейкой (по строкам и столбцам)</td><td>Обычные вычисления «по строкам»</td></tr>
+      <tr><td>Абсолютная</td><td class="ref-table">$A$1</td><td><b>Никогда не меняется</b></td><td>Курс валюты, ставка налога, константа</td></tr>
+      <tr><td>Смешанная</td><td class="ref-table">$A1</td><td>Фиксируется столбец A, строка меняется</td><td>Таблица умножения: множитель слева</td></tr>
+      <tr><td>Смешанная</td><td class="ref-table">A$1</td><td>Фиксируется строка 1, столбец меняется</td><td>Таблица умножения: множитель сверху</td></tr>
+    </table>
+
+    <p><b>Правило «замка»:</b> знак <code>$</code> — это замок. Он стоит перед той частью адреса, которую нельзя менять. Один <code>$</code> — замок на одну часть, два <code>$</code> — на обе.</p>
+
+    <h3>«Волшебная» клавиша F4</h3>
+    <p>Не нужно вводить <code>$</code> вручную. Поставьте курсор на ссылку в строке формул и нажимайте <b>F4</b>. Циклическое переключение:</p>
+    <div class="step-line">1-е нажатие → <code>$A$1</code> (абсолютная)</div>
+    <div class="step-line">2-е нажатие → <code>A$1</code> (фиксируется строка)</div>
+    <div class="step-line">3-е нажатие → <code>$A1</code> (фиксируется столбец)</div>
+    <div class="step-line">4-е нажатие → <code>A1</code> (снова относительная)</div>
+
+    <h3>Пример оформления задачи</h3>
+    <div class="task" style="border-color:#d1d5db;background:#f9fafb;padding:16px">
+      <p style="margin-top:0"><b>Условие:</b> В ячейке <code>C2</code> записана формула <code>=$A$2*B2</code>. Как она изменится при копировании в <code>C3</code>?</p>
+      <div class="step-line"><b>Решение:</b></div>
+      <div class="step-line">1. <code>$A$2</code> — абсолютная ссылка, «замок» на столбец и строку → остаётся <code>$A$2</code>.</div>
+      <div class="step-line">2. <code>B2</code> — относительная ссылка, при сдвиге на строку вниз → становится <code>B3</code>.</div>
+      <div class="answer-line">ОТВЕТ: <code>=$A$2*B3</code></div>
+    </div>
+
+    <h3>Как «читать» смешанную ссылку</h3>
+    <div class="tgrid" style="grid-template-columns:190px 1fr">
+      <span class="k">$A2</span><span>столбец A заморожен, строка «плывёт» (2 → 3 → 4…)</span>
+      <span class="k">B$1</span><span>строка 1 заморожена, столбец «плывёт» (B → C → D…)</span>
+    </div>
+
+    <h3>Маленькая хитрость для запоминания</h3>
+    <p>Смешанная ссылка — это «полузамок». Смотрите, <b>где стоит $</b>: если перед буквой — заперт столбец, если перед цифрой — заперта строка. Всё просто!</p>
+  </section>
+
+  <!-- ================= РАБОЧАЯ ТЕТРАДЬ ================= -->
+  <section class="card" id="workbook">
+    <h2><span class="num">2</span> Рабочая тетрадь <span class="badge">8 заданий</span></h2>
+    <p class="muted">Внимательно читайте условие. Для заданий с вводом ответа используйте латинские буквы и знак <code>$</code> — как в реальной формуле.</p>
+
+    <div class="task q">
+      <span class="lvl l1">базовый · выбор</span>
+      <p><b>Задание 1.</b> Какая ссылка является <b>абсолютной</b>?</p>
+      <label class="opt"><input type="radio" name="q1" value="a"> A1</label>
+      <label class="opt"><input type="radio" name="q1" value="b"> $A$1</label>
+      <label class="opt"><input type="radio" name="q1" value="c"> $A1</label>
+      <label class="opt"><input type="radio" name="q1" value="d"> A$1</label>
+      <button class="btn b-green" onclick="checkQ1()" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="q1fb"></div>
+    </div>
+
+    <div class="task q">
+      <span class="lvl l1">базовый · выбор</span>
+      <p><b>Задание 2.</b> Что означает запись <code>$B3</code>?</p>
+      <label class="opt"><input type="radio" name="q2" value="a"> Заморожены и столбец, и строка</label>
+      <label class="opt"><input type="radio" name="q2" value="b"> Заморожена только строка 3</label>
+      <label class="opt"><input type="radio" name="q2" value="c"> Заморожен только столбец B</label>
+      <label class="opt"><input type="radio" name="q2" value="d"> Ничего не заморожено</label>
+      <button class="btn b-green" onclick="checkQ2()" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="q2fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l1">базовый · ввод</span>
+      <p><b>Задание 3.</b> Формула <code>=A1+B1</code> записана в <code>C1</code>. Как она будет выглядеть после копирования в <code>C2</code>? <br><span class="muted" style="font-size:.9rem">Запишите без пробелов, например: =A2+B2</span></p>
+      <div class="calc-row">
+        <span>Ответ:</span>
+        <input type="text" id="q3ans" placeholder="=...">
+        <button class="btn b-green" onclick="checkQ3()">Проверить</button>
+      </div>
+      <div class="fb" id="q3fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l2">средний · ввод</span>
+      <p><b>Задание 4.</b> Формула <code>=$A$2*B2</code> записана в <code>C2</code>. Как она будет выглядеть после копирования в <code>C3</code>?</p>
+      <div class="calc-row">
+        <span>Ответ:</span>
+        <input type="text" id="q4ans" placeholder="=...">
+        <button class="btn b-green" onclick="checkQ4()">Проверить</button>
+      </div>
+      <div class="fb" id="q4fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l2">средний · ввод</span>
+      <p><b>Задание 5.</b> Формула <code>=$A2*B$1</code> записана в <code>B2</code>. Как она будет выглядеть после копирования в <code>D4</code>?</p>
+      <div class="calc-row">
+        <span>Ответ:</span>
+        <input type="text" id="q5ans" placeholder="=...">
+        <button class="btn b-green" onclick="checkQ5()">Проверить</button>
+      </div>
+      <div class="fb" id="q5fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l2">средний · ввод</span>
+      <p><b>Задание 6.</b> Формула <code>=A$1+B2</code> записана в <code>C1</code>. Как она будет выглядеть после копирования в <code>D2</code>?</p>
+      <div class="calc-row">
+        <span>Ответ:</span>
+        <input type="text" id="q6ans" placeholder="=...">
+        <button class="btn b-green" onclick="checkQ6()">Проверить</button>
+      </div>
+      <div class="fb" id="q6fb"></div>
+    </div>
+
+    <div class="task q">
+      <span class="lvl l3">повышенный · выбор</span>
+      <p><b>Задание 7.</b> При копировании формулы <code>=$A1+B$2</code> из <code>C1</code> в <code>D3</code> получится:</p>
+      <label class="opt"><input type="radio" name="q7" value="a"> =$A3+C$2</label>
+      <label class="opt"><input type="radio" name="q7" value="b"> =$A3+D$2</label>
+      <label class="opt"><input type="radio" name="q7" value="c"> =$B3+C$4</label>
+      <label class="opt"><input type="radio" name="q7" value="d"> =$A1+D$2</label>
+      <button class="btn b-green" onclick="checkQ7()" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="q7fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l3">повышенный · ввод</span>
+      <p><b>Задание 8.</b> В ячейку <code>A1</code> ввели формулу <code>=B$2+$C3+D4</code>. Как она будет выглядеть после копирования в <code>B2</code>?</p>
+      <div class="calc-row">
+        <span>Ответ:</span>
+        <input type="text" id="q8ans" placeholder="=...">
+        <button class="btn b-green" onclick="checkQ8()">Проверить</button>
+      </div>
+      <div class="fb" id="q8fb"></div>
+    </div>
+
+    <div class="controls">
+      <button class="btn b-purple" onclick="calcWorkbook()">📊 Оценить рабочую тетрадь</button>
+    </div>
+    <div class="res" id="wbResult">
+      <h3>Результат рабочей тетради</h3>
+      <p style="margin:0;font-weight:700">Верно: <span id="wbCorrect">0</span> из 8 · Оценка: <span id="wbMark" style="font-size:1.4rem">—</span></p>
+    </div>
+  </section>
+
+  <!-- ================= ПРАКТИКА ================= -->
+  <section class="card" id="practice">
+    <h2><span class="num">3</span> Практическая работа в LibreOffice Calc <span class="badge">по паролю</span></h2>
+
+    <div id="practiceLock" class="lock">
+      <h3>🔒 Практическая работа закрыта</h3>
+      <p>Введите пароль учителя. После этого откроются пошаговые задания для выполнения в LibreOffice Calc.</p>
+      <div class="lockrow">
+        <input type="password" id="pracPass" placeholder="Пароль" autocomplete="off"
+               onkeydown="if(event.key==='Enter')unlockPractice()">
+        <button class="btn b-purple" id="pracBtn" onclick="unlockPractice()">Открыть</button>
+      </div>
+      <div class="pmsg" id="pracMsg"></div>
+    </div>
+
+    <div id="practiceBody" style="display:none">
+      <div class="no-calc-warn">
+        💾 <b>Правило работы:</b> после каждого задания сохраняйте файл с именем <code>Фамилия_Ссылки.ods</code>.
+        Задания идут от простого к сложному — каждое следующее опирается на предыдущее.
+        Все листы создавайте в одном документе.
+      </div>
+
+      <!-- Задание 1 -->
+      <div class="prac-task">
+        <h4>📌 Задание 1. «Разминка»: относительные ссылки</h4>
+        <span class="goal">Цель: убедиться, что относительные ссылки «сдвигаются» при копировании</span>
+        <ol>
+          <li>Откройте новый документ Calc. На <b>Листе 1</b> создайте таблицу:</li>
+        </ol>
+        <table class="mini-table">
+          <tr><th></th><th>A</th><th>B</th><th>C</th></tr>
+          <tr><td class="head-col">1</td><td>Число 1</td><td>Число 2</td><td>Сумма</td></tr>
+          <tr><td class="head-col">2</td><td>5</td><td>3</td><td></td></tr>
+          <tr><td class="head-col">3</td><td>8</td><td>2</td><td></td></tr>
+          <tr><td class="head-col">4</td><td>10</td><td>7</td><td></td></tr>
+          <tr><td class="head-col">5</td><td>4</td><td>6</td><td></td></tr>
+        </table>
+        <ol start="2">
+          <li>В ячейку <code>C2</code> введите формулу <code>=A2+B2</code>.</li>
+          <li>Скопируйте <code>C2</code> в диапазон <code>C3:C5</code> маркером автозаполнения (потяните за правый нижний угол ячейки).</li>
+        </ol>
+        <div class="check-box">
+          <b>✅ Проверка:</b> щёлкните по <code>C4</code> — в строке формул должно быть <code>=A4+B4</code>.
+        </div>
+        <div class="q-to-notebook">
+          <b>📝 Вопрос в тетрадь:</b> почему формулы в столбце C разные, хотя вы копировали одну и ту же?
+        </div>
+      </div>
+
+      <!-- Задание 2 -->
+      <div class="prac-task">
+        <h4>📌 Задание 2. «Заморозка»: абсолютные ссылки</h4>
+        <span class="goal">Цель: научиться фиксировать ячейку знаком $ и клавишей F4</span>
+        <ol>
+          <li>На <b>Листе 2</b> создайте таблицу перевода рублей в доллары:</li>
+        </ol>
+        <table class="mini-table">
+          <tr><th></th><th>A</th><th>B</th><th>C</th></tr>
+          <tr><td class="head-col">1</td><td></td><td><b>Курс доллара:</b></td><td>95,50</td></tr>
+          <tr><td class="head-col">2</td><td><b>Сумма (руб.)</b></td><td><b>Сумма (USD)</b></td><td></td></tr>
+          <tr><td class="head-col">3</td><td>1000</td><td></td><td></td></tr>
+          <tr><td class="head-col">4</td><td>5000</td><td></td><td></td></tr>
+          <tr><td class="head-col">5</td><td>12000</td><td></td><td></td></tr>
+          <tr><td class="head-col">6</td><td>250</td><td></td><td></td></tr>
+        </table>
+        <ol start="2">
+          <li>В ячейку <code>B3</code> введите формулу <code>=A3/C1</code>.</li>
+          <li>Поставьте курсор на ссылку <code>C1</code> в строке формул и нажмите <b>F4</b> — она превратится в <code>$C$1</code>.</li>
+          <li>Скопируйте формулу из <code>B3</code> в <code>B4:B6</code>.</li>
+        </ol>
+        <div class="check-box">
+          <b>✅ Проверка:</b> во всех ячейках столбца B должна быть ссылка на <code>$C$1</code>.
+          Если убрать <code>$</code>, при копировании формула «сломается» (будет делить на пустую ячейку).
+          Убедитесь в этом, отменив изменение (Ctrl+Z).
+        </div>
+        <div class="q-to-notebook">
+          <b>📝 Вопрос в тетрадь:</b> что произойдёт, если в <code>B3</code> оставить <code>=A3/C1</code> и скопировать вниз?
+          Проверьте и объясните результат.
+        </div>
+      </div>
+
+      <!-- Задание 3 -->
+      <div class="prac-task">
+        <h4>📌 Задание 3. «Таблица умножения»: смешанные ссылки</h4>
+        <span class="goal">Цель: понять разницу между $A1 и A$1</span>
+        <ol>
+          <li>На <b>Листе 3</b> постройте таблицу умножения 5×5:</li>
+        </ol>
+        <table class="mini-table">
+          <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr>
+          <tr><td class="head-col">1</td><td>×</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+          <tr><td class="head-col">2</td><td>1</td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="head-col">3</td><td>2</td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="head-col">4</td><td>3</td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="head-col">5</td><td>4</td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="head-col">6</td><td>5</td><td></td><td></td><td></td><td></td><td></td></tr>
+        </table>
+        <ol start="2">
+          <li>В ячейку <code>B2</code> введите формулу <code>=$A2*B$1</code>. <b>Внимание:</b> здесь две смешанные ссылки!
+            <ul style="margin:6px 0 0 0">
+              <li><code>$A2</code> — зафиксирован столбец A (множитель слева), строка меняется;</li>
+              <li><code>B$1</code> — зафиксирована строка 1 (множитель сверху), столбец меняется.</li>
+            </ul>
+          </li>
+          <li>Скопируйте <code>B2</code> во весь диапазон <code>B2:F6</code> — протяните маркер вправо, затем вниз (или сразу за угол выделения).</li>
+        </ol>
+        <div class="check-box">
+          <b>✅ Проверка:</b> щёлкните по <code>D4</code> — формула должна быть <code>=$A4*D$1</code>, а значение — 6.
+        </div>
+        <div class="q-to-notebook">
+          <b>📝 Вопрос в тетрадь:</b> измените в <code>B2</code> формулу на <code>=A2*B1</code> (без <code>$</code>) и скопируйте в <code>B2:F6</code>.
+          Что пошло не так? Объясните.
+        </div>
+      </div>
+
+      <!-- Задание 4 -->
+      <div class="prac-task">
+        <h4>📌 Задание 4. «Смета с НДС»: комбинирование типов ссылок</h4>
+        <span class="goal">Цель: применить все три типа ссылок в одной задаче</span>
+        <ol>
+          <li>На <b>Листе 4</b> создайте таблицу закупки канцтоваров:</li>
+        </ol>
+        <table class="mini-table">
+          <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr>
+          <tr><td class="head-col">1</td><td>Товар</td><td>Цена</td><td>Кол-во</td><td>Стоимость</td><td>НДС</td><td>Итого</td></tr>
+          <tr><td class="head-col">2</td><td>Ручка</td><td>50</td><td>10</td><td></td><td></td><td></td></tr>
+          <tr><td class="head-col">3</td><td>Тетрадь</td><td>120</td><td>5</td><td></td><td></td><td></td></tr>
+          <tr><td class="head-col">4</td><td>Альбом</td><td>300</td><td>2</td><td></td><td></td><td></td></tr>
+          <tr><td class="head-col">5</td><td></td><td></td><td><b>Всего:</b></td><td></td><td></td><td></td></tr>
+        </table>
+        <ol start="2">
+          <li>В ячейку <code>H1</code> введите ставку НДС — <b>0,20</b> (формат «процент»).</li>
+          <li>В <code>D2</code> — формула <code>=B2*C2</code>. Скопируйте в <code>D3:D4</code>.</li>
+          <li>В <code>E2</code> — формула <code>=D2*$H$1</code>. Скопируйте в <code>E3:E4</code>.</li>
+          <li>В <code>F2</code> — формула <code>=D2+E2</code>. Скопируйте в <code>F3:F4</code>.</li>
+          <li>В <code>D5</code> — <code>=SUM(D2:D4)</code>, в <code>F5</code> — <code>=SUM(F2:F4)</code>.</li>
+        </ol>
+        <div class="check-box">
+          <b>✅ Проверка:</b> измените ставку в <code>H1</code> на 0,10 — все значения НДС и «Итого» должны пересчитаться автоматически.
+        </div>
+        <div class="q-to-notebook">
+          <b>📝 Дополнительно:</b> в ячейку <code>G2</code> введите формулу <code>=D2*C$1</code> — это упражнение на смешанную ссылку (фиксируется строка заголовка).
+          Объясните, почему при копировании вниз ссылка <code>C$1</code> не меняется, хотя это не имеет экономического смысла.
+        </div>
+      </div>
+
+      <!-- Задание 5 -->
+      <div class="prac-task">
+        <h4>📌 Задание 5. «Секретное задание»: прогнозирование формул</h4>
+        <span class="goal">Цель: научиться «читать» формулу и предсказывать её изменение без компьютера</span>
+        <ol>
+          <li>В ячейку <code>A1</code> введите формулу <code>=B$2+$C3+D4</code>.</li>
+          <li><b>Не копируя</b>, запишите в тетрадь, как она будет выглядеть в ячейках:
+            <ul style="margin:6px 0 0 0">
+              <li><code>A2</code> (сдвиг на 1 строку вниз) → <code>__________</code></li>
+              <li><code>B1</code> (сдвиг на 1 столбец вправо) → <code>__________</code></li>
+              <li><code>B2</code> (сдвиг на 1 строку вниз и 1 столбец вправо) → <code>__________</code></li>
+            </ul>
+          </li>
+          <li>Проверьте себя: скопируйте <code>A1</code> в <code>A2</code>, <code>B1</code>, <code>B2</code> и сравните с записями.</li>
+        </ol>
+        <div class="check-box">
+          <b>✅ Эталон для самопроверки:</b><br>
+          <code>A2</code>: <code>=B$2+$C4+D5</code><br>
+          <code>B1</code>: <code>=C$2+$C3+E4</code><br>
+          <code>B2</code>: <code>=C$2+$C4+E5</code>
+        </div>
+      </div>
+
+      <!-- Задание 6 -->
+      <div class="prac-task">
+        <h4>📌 Задание 6. «Реальная задача»: журнал успеваемости</h4>
+        <span class="goal">Цель: комплексное применение — относительные и абсолютные ссылки в учебной ситуации</span>
+        <ol>
+          <li>На <b>Листе 6</b> создайте таблицу:</li>
+        </ol>
+        <table class="mini-table">
+          <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr>
+          <tr><td class="head-col">1</td><td>Ученик</td><td>Оценка 1</td><td>Оценка 2</td><td>Средний балл</td><td>Отклонение от класса</td></tr>
+          <tr><td class="head-col">2</td><td>Иванов</td><td>4</td><td>5</td><td></td><td></td></tr>
+          <tr><td class="head-col">3</td><td>Петров</td><td>3</td><td>4</td><td></td><td></td></tr>
+          <tr><td class="head-col">4</td><td>Сидоров</td><td>5</td><td>5</td><td></td><td></td></tr>
+          <tr><td class="head-col">5</td><td></td><td><b>Средний по классу:</b></td><td></td><td></td><td></td></tr>
+        </table>
+        <ol start="2">
+          <li>В <code>D2</code> — формула <code>=СРЗНАЧ(B2:C2)</code> (или <code>=AVERAGE(B2:C2)</code>). Скопируйте в <code>D3:D4</code>.</li>
+          <li>В <code>B5</code> — формула <code>=СРЗНАЧ(B2:B4)</code>. Скопируйте в <code>C5</code>.</li>
+          <li>В <code>D5</code> — <code>=СРЗНАЧ(D2:D4)</code>.</li>
+          <li>В <code>E2</code> — формула отклонения среднего балла ученика от среднего по классу: <code>=D2-$D$5</code>. <b>Почему здесь нужна абсолютная ссылка?</b></li>
+          <li>Скопируйте <code>E2</code> в <code>E3:E4</code>.</li>
+        </ol>
+        <div class="q-to-notebook">
+          <b>📝 Вопрос в тетрадь:</b> если убрать <code>$</code> в ссылке <code>$D$5</code>, что произойдёт с формулой в <code>E3</code>?
+          Проверьте и объясните результат.
+        </div>
+      </div>
+
+      <!-- Задание 7 -->
+      <div class="prac-task advanced">
+        <h4>⭐ Задание 7*. «Повышенная сложность»: зарплатная ведомость</h4>
+        <span class="goal">Цель: смешанные ссылки в «настоящей» экономической задаче · для сильных учеников</span>
+        <ol>
+          <li>На <b>Листе 7</b> создайте таблицу:</li>
+        </ol>
+        <table class="mini-table">
+          <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr>
+          <tr><td class="head-col">1</td><td>Сотрудник</td><td>Оклад</td><td>Премия (%)</td><td>Премия (руб.)</td><td>НДФЛ (13%)</td><td>К выплате</td></tr>
+          <tr><td class="head-col">2</td><td>Орлов</td><td>40000</td><td>0,10</td><td></td><td></td><td></td></tr>
+          <tr><td class="head-col">3</td><td>Зайцев</td><td>55000</td><td>0,15</td><td></td><td></td><td></td></tr>
+          <tr><td class="head-col">4</td><td>Смирнов</td><td>32000</td><td>0,20</td><td></td><td></td><td></td></tr>
+          <tr><td class="head-col">5</td><td></td><td></td><td></td><td></td><td><b>Ставка НДФЛ:</b></td><td>0,13</td></tr>
+        </table>
+        <ol start="2">
+          <li>В <code>D2</code> — формула <code>=B2*C2</code>. Скопируйте вниз.</li>
+          <li>В <code>E2</code> — формула <code>=(B2+D2)*$G$5</code>. Скопируйте вниз.</li>
+          <li>В <code>F2</code> — формула <code>=B2+D2-E2</code>. Скопируйте вниз.</li>
+          <li>В <code>B6</code> — <code>=СУММ(B2:B4)</code> и скопируйте вправо до <code>F6</code>.</li>
+        </ol>
+        <div class="check-box">
+          <b>🔬 Исследование:</b> измените ставку НДФЛ в <code>G5</code> на 0,15.
+          Проверьте, что все суммы пересчитались, а ссылка на ставку не «поехала» при копировании.
+        </div>
+      </div>
+
+      <div class="controls" style="margin-top:18px">
+        <button class="btn b-green" onclick="markPracticeDone()">✅ Отметить практику как выполненную</button>
+      </div>
+      <div class="res" id="pracResult">
+        <h3>Практическая работа выполнена</h3>
+        <p style="margin:0;font-weight:700">Не забудьте сохранить файл <code>Фамилия_Ссылки.ods</code> и показать учителю.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ИТОГ ================= -->
+  <section class="card" id="final">
+    <h2><span class="num">4</span> Итоговая оценка за урок</h2>
+    <p class="muted">Складывается из рабочей тетради и отметки о выполнении практической работы.</p>
+    <div class="controls">
+      <button class="btn b-purple" onclick="calcFinalMark()">🎯 Подвести итог</button>
+      <button class="btn b-red" onclick="resetPractice()">🔄 Сбросить отметку о практике</button>
+    </div>
+    <div class="res" id="finalResult">
+      <h3>Итог урока</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Тетрадь</div><div class="val" id="fWb">—</div></div>
+        <div class="mcard"><div class="lbl">Практика</div><div class="val" id="fPrac">—</div></div>
+        <div class="mcard total"><div class="lbl">Итог</div><div class="val" id="fTotal">—</div></div>
+      </div>
+      <p id="finalMsg" style="margin:12px 0 0;font-weight:600;color:#065f46"></p>
+    </div>
+  </section>
+
+  <!-- ================= САМОСТОЯТЕЛЬНАЯ ================= -->
+  <section class="card" id="standaloneGate">
+    <h2><span class="num">5</span> Самостоятельная работа <span class="badge">по паролю</span></h2>
+    <p>5 заданий на 15 минут по теории урока. Открывается по паролю учителя.</p>
+    <div class="lockrow" style="justify-content:flex-start">
+      <input type="password" id="saPass" placeholder="Пароль учителя" autocomplete="off"
+             onkeydown="if(event.key==='Enter')unlockStandalone()">
+      <button class="btn b-blue" id="saBtn" onclick="unlockStandalone()">🔓 Начать работу</button>
+    </div>
+    <div class="pmsg" id="saMsg"></div>
+  </section>
+
+  <!-- ================= ДОМАШНЕЕ ЗАДАНИЕ ================= -->
+  <section class="card" id="homework">
+    <h2><span class="num">6</span> Домашнее задание</h2>
+    <button class="btn b-orange no-print" onclick="printHomework()">🖨 Печать только ДЗ</button>
+
+    <div id="hwBlock">
+      <div class="hw"><span class="lvl l1">обязательная часть (на «4»)</span>
+        <p><b>№ 1.</b> Придумайте и запишите 3 формулы (по одной на каждый тип ссылок) и опишите, как они изменятся при копировании на одну строку вниз.</p></div>
+      <div class="hw"><span class="lvl l2">обязательная часть (на «4»)</span>
+        <p><b>№ 2.</b> В ячейке <code>C1</code> записана формула <code>=$A1+B$2</code>. Как она будет выглядеть после копирования в <code>D3</code> и в <code>E1</code>?</p></div>
+      <div class="hw"><span class="lvl l3">дополнительная часть (на «5»)</span>
+        <p><b>№ 3.</b> Составьте в Calc таблицу «Мои карманные расходы за неделю» с использованием абсолютной ссылки на дневной лимит. Опишите, зачем понадобилась абсолютная ссылка.</p></div>
+      <div class="hw"><span class="lvl l3">дополнительная часть (на «5»)</span>
+        <p><b>№ 4.</b> Постройте таблицу умножения 5×5 с помощью смешанных ссылок. Запишите формулу для левой верхней ячейки и объясните, почему в ней два знака <code>$</code>.</p></div>
+    </div>
+  </section>
+
+</div><!-- /wrap -->
+
+<div class="bar no-print">
+  <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
+  <button class="btn b-yellow" onclick="scrollToGate()">📝 Самостоятельная</button>
+  <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
+</div>
+
+<section id="standalone">
+  <div class="exam-head">
+    <div>
+      <div class="exam-title">📝 Самостоятельная работа</div>
+      <div class="exam-who" id="examWho">Ученик не указан</div>
+    </div>
+    <div class="timer" id="examTimer">15:00</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
+      <button class="btn b-green" onclick="finishStandalone()">✅ Сдать работу</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:0">
+    <h2 style="margin-bottom:10px"><span class="num">5</span> Самостоятельная работа</h2>
+    <div class="no-calc-warn">
+      ⚠️ Во время работы теория и примеры недоступны. Вводите только итоговые ответы.
+    </div>
+
+    <div id="examTasks"></div>
+
+    <div class="res" id="examResult">
+      <h3>📊 Результат работы</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Верно решено</div><div class="val" id="exCorrect">0</div></div>
+        <div class="mcard total"><div class="lbl">Оценка</div><div class="val" id="exMark">—</div></div>
+        <div class="mcard"><div class="lbl">Время</div><div class="val" id="exTime" style="font-size:1.5rem">—</div></div>
+      </div>
+      <p id="exMsg" style="margin:12px 0 0;font-weight:600;color:#065f46"></p>
+    </div>
+
+    <div class="controls no-print" style="margin-top:16px">
+      <button class="btn b-red" onclick="exitStandalone()">← Выйти из работы</button>
+    </div>
+  </div>
+</section>
+
+<div class="mbg" id="calcModal">
+  <div class="modal calc" role="dialog" aria-label="Калькулятор">
+    <h3>🧮 Калькулятор</h3>
+    <div class="calc-screen">
+      <div class="calc-expr" id="calcExpr"></div>
+      <div class="calc-out" id="calcOut">0</div>
+    </div>
+    <div class="calc-grid">
+      <button class="cbtn clr" onclick="calcClear()">C</button>
+      <button class="cbtn del" onclick="calcBack()">⌫</button>
+      <button class="cbtn op" onclick="calcOp('^')">xʸ</button>
+      <button class="cbtn op" onclick="calcOp('/')">÷</button>
+      <button class="cbtn" onclick="calcNum('7')">7</button>
+      <button class="cbtn" onclick="calcNum('8')">8</button>
+      <button class="cbtn" onclick="calcNum('9')">9</button>
+      <button class="cbtn op" onclick="calcOp('*')">×</button>
+      <button class="cbtn" onclick="calcNum('4')">4</button>
+      <button class="cbtn" onclick="calcNum('5')">5</button>
+      <button class="cbtn" onclick="calcNum('6')">6</button>
+      <button class="cbtn op" onclick="calcOp('-')">−</button>
+      <button class="cbtn" onclick="calcNum('1')">1</button>
+      <button class="cbtn" onclick="calcNum('2')">2</button>
+      <button class="cbtn" onclick="calcNum('3')">3</button>
+      <button class="cbtn op" onclick="calcOp('+')">+</button>
+      <button class="cbtn" onclick="calcNum('0')">0</button>
+      <button class="cbtn" onclick="calcNum('00')">00</button>
+      <button class="cbtn eq" onclick="calcEquals()">=</button>
+    </div>
+    <div style="text-align:right;margin-top:16px">
+      <button class="btn b-red" onclick="closeCalc()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="../assets/js/main.js"></script>
+
+<script>
+/* =========================================================
+   0. НАСТРОЙКИ GOOGLE APPS SCRIPT
+   ========================================================= */
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzRiIsJ8Sbn1HP1n9cTnVE652h1Ohrd8Q6wH3raYPLfGnIu7u-rsYG7BAp0VT7eXgs8/exec';
+var RESOURCE_ID = 'urok-table-refs';
+var SA_MINUTES = 15;
+var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
+
+/* =========================================================
+   1. ПРОВЕРКА ПАРОЛЯ
+   ========================================================= */
+async function checkPasswordRemote(resourceId, type, password){
+  try {
+    var response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ resource: resourceId, type: type, password: password })
+    });
+    var data = await response.json();
+    return data;
+  } catch (error) {
+    return { ok: false, error: 'network' };
+  }
+}
+
+/* =========================================================
+   2. СОСТОЯНИЕ
+   ========================================================= */
+var lessonState = {
+  wb: { q1:false, q2:false, q3:false, q4:false, q5:false, q6:false, q7:false, q8:false },
+  wbCorrect: 0, wbMark: 0,
+  pracDone: false, pracMark: 0
+};
+
+function getSurname(){ return (document.getElementById('surname')?.value || '').trim(); }
+function getFirstname(){ return (document.getElementById('firstname')?.value || '').trim(); }
+function getKlass(){ return (document.getElementById('klass')?.value || '').trim(); }
+function getFullName(){ return [getSurname(), getFirstname()].filter(Boolean).join(' '); }
+function percentToMark(pct){ if (pct >= 90) return 5; if (pct >= 70) return 4; if (pct >= 50) return 3; return 2; }
+
+/* =========================================================
+   3. УТИЛИТЫ
+   ========================================================= */
+function showFb(id, html, kind){
+  var el = document.getElementById(id);
+  el.innerHTML = html;
+  el.className = 'fb show ' + kind;
+}
+function renderMath(el){ if (!el || !window.MathJax) return; if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){}); }
+
+/* =========================================================
+   4. РАБОЧАЯ ТЕТРАДЬ (8 заданий)
+   ========================================================= */
+function checkQ1(){
+  if (lessonState.wb.q1) return;
+  var sel = document.querySelector('input[name="q1"]:checked'); if (!sel) return;
+  if (sel.value === 'b') { lessonState.wb.q1 = true; showFb('q1fb','✅ Верно! Абсолютная ссылка фиксирует и столбец, и строку: <code>$A$1</code>.','ok'); }
+  else showFb('q1fb','❌ Неверно. Абсолютная ссылка имеет <b>два</b> знака <code>$</code> — перед буквой и перед цифрой.','no');
+}
+function checkQ2(){
+  if (lessonState.wb.q2) return;
+  var sel = document.querySelector('input[name="q2"]:checked'); if (!sel) return;
+  if (sel.value === 'c') { lessonState.wb.q2 = true; showFb('q2fb','✅ Верно! <code>$B3</code> — смешанная: знак <code>$</code> стоит перед буквой B, значит заморожен столбец B.','ok'); }
+  else showFb('q2fb','❌ Неверно. Посмотрите, где стоит <code>$</code>: перед буквой — заперт столбец, перед цифрой — заперта строка.','no');
+}
+function checkQ3(){
+  if (lessonState.wb.q3) return;
+  var v = document.getElementById('q3ans').value.trim().replace(/\s+/g,'').toUpperCase();
+  if (v === '=A2+B2') { lessonState.wb.q3 = true; showFb('q3fb','✅ Верно! Обе ссылки относительные, сдвинулись на строку вниз.','ok'); }
+  else showFb('q3fb','❌ Неверно. Обе ссылки относительные — при сдвиге вниз на 1 строку каждая увеличивает номер строки на 1.','no');
+}
+function checkQ4(){
+  if (lessonState.wb.q4) return;
+  var v = document.getElementById('q4ans').value.trim().replace(/\s+/g,'').toUpperCase();
+  if (v === '=$A$2*B3') { lessonState.wb.q4 = true; showFb('q4fb','✅ Верно! <code>$A$2</code> не меняется, <code>B2</code> сдвигается в <code>B3</code>.','ok'); }
+  else showFb('q4fb','❌ Неверно. <code>$A$2</code> — абсолютная, а <code>B2</code> при сдвиге на строку вниз станет <code>B3</code>.','no');
+}
+function checkQ5(){
+  if (lessonState.wb.q5) return;
+  var v = document.getElementById('q5ans').value.trim().replace(/\s+/g,'').toUpperCase();
+  if (v === '=$A4*D$1') { lessonState.wb.q5 = true; showFb('q5fb','✅ Верно! <code>$A2</code> → <code>$A4</code> (столбец заморожен, строка сдвинулась на 2); <code>B$1</code> → <code>D$1</code> (строка заморожена, столбец сдвинулся на 2).','ok'); }
+  else showFb('q5fb','❌ Неверно. Сдвиг из B2 в D4 — это +2 столбца и +2 строки. Учитывайте, что заморожено, а что «плывёт».','no');
+}
+function checkQ6(){
+  if (lessonState.wb.q6) return;
+  var v = document.getElementById('q6ans').value.trim().replace(/\s+/g,'').toUpperCase();
+  if (v === '=B$1+C3') { lessonState.wb.q6 = true; showFb('q6fb','✅ Верно! <code>A$1</code> → <code>B$1</code>, <code>B2</code> → <code>C3</code>.','ok'); }
+  else showFb('q6fb','❌ Неверно. <code>A$1</code>: строка 1 заморожена, столбец сдвигается. <code>B2</code> — относительная, сдвигается и по строке, и по столбцу.','no');
+}
+function checkQ7(){
+  if (lessonState.wb.q7) return;
+  var sel = document.querySelector('input[name="q7"]:checked'); if (!sel) return;
+  if (sel.value === 'b') { lessonState.wb.q7 = true; showFb('q7fb','✅ Верно! <code>$A1</code> → <code>$A3</code> (столбец заморожен, строка +2), <code>B$2</code> → <code>D$2</code> (строка заморожена, столбец +2).','ok'); }
+  else showFb('q7fb','❌ Неверно. Из C1 в D3 — это +1 столбец и +2 строки. Разберите каждую часть отдельно.','no');
+}
+function checkQ8(){
+  if (lessonState.wb.q8) return;
+  var v = document.getElementById('q8ans').value.trim().replace(/\s+/g,'').toUpperCase();
+  if (v === '=C$2+$C4+E5') { lessonState.wb.q8 = true; showFb('q8fb','✅ Верно! <code>B$2</code> → <code>C$2</code>, <code>$C3</code> → <code>$C4</code>, <code>D4</code> → <code>E5</code>.','ok'); }
+  else showFb('q8fb','❌ Неверно. Из A1 в B2 — это +1 столбец и +1 строка. Разберите каждую ссылку с учётом знаков <code>$</code>.','no');
+}
+
+function calcWorkbook(){
+  var keys = ['q1','q2','q3','q4','q5','q6','q7','q8'];
+  var correct = keys.filter(function(k){ return lessonState.wb[k]; }).length;
+  var pct = Math.round(correct / keys.length * 100);
+  lessonState.wbCorrect = correct;
+  lessonState.wbMark = percentToMark(pct);
+  document.getElementById('wbCorrect').textContent = correct;
+  document.getElementById('wbMark').textContent = lessonState.wbMark;
+  document.getElementById('wbResult').classList.add('show');
+  toast('Тетрадь: ' + correct + '/8, оценка ' + lessonState.wbMark);
+}
+
+/* =========================================================
+   5. ПРАКТИКА — только отметка о выполнении
+   ========================================================= */
+async function unlockPractice(){
+  var inp = document.getElementById('pracPass');
+  var msg = document.getElementById('pracMsg');
+  var btn = document.getElementById('pracBtn');
+  var pass = inp.value.trim();
+  if (!pass){ msg.className='pmsg'; msg.textContent='Введите пароль.'; return; }
+  msg.className='pmsg info'; msg.textContent='Проверка…'; btn.disabled = true;
+  var data = await checkPasswordRemote(RESOURCE_ID, 'practice', pass);
+  btn.disabled = false;
+  if (data.error === 'network'){ msg.className='pmsg'; msg.textContent='⚠️ Ошибка соединения. Проверьте интернет.'; return; }
+  if (!data.ok){ msg.className='pmsg'; msg.textContent='❌ Неверный пароль.'; inp.value=''; inp.focus(); return; }
+  msg.textContent=''; inp.value='';
+  document.getElementById('practiceLock').style.display = 'none';
+  document.getElementById('practiceBody').style.display = 'block';
+  toast('🔓 Практика открыта');
+}
+
+function markPracticeDone(){
+  if (!confirm('Отметить практическую работу как выполненную?')) return;
+  lessonState.pracDone = true;
+  // практика засчитывается как «5» при отметке о выполнении всех заданий
+  lessonState.pracMark = 5;
+  document.getElementById('pracResult').classList.add('show');
+  savePracticeState();
+  toast('✅ Практика отмечена как выполненная');
+}
+
+function savePracticeState(){
+  try { var raw = localStorage.getItem(STORAGE_KEY)||'{}'; var d = JSON.parse(raw);
+    d.pracDone = lessonState.pracDone; d.pracMark = lessonState.pracMark;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  } catch(e){}
+}
+function loadPracticeState(){
+  try { var raw = localStorage.getItem(STORAGE_KEY); if (!raw) return; var d = JSON.parse(raw);
+    if (!d.pracDone) return;
+    lessonState.pracDone = true;
+    lessonState.pracMark = d.pracMark || 5;
+    document.getElementById('practiceLock').style.display = 'none';
+    document.getElementById('practiceBody').style.display = 'block';
+    document.getElementById('pracResult').classList.add('show');
+  } catch(e){}
+}
+function resetPractice(){
+  if (!confirm('Сбросить отметку о выполнении практики?')) return;
+  try { var raw = localStorage.getItem(STORAGE_KEY)||'{}'; var d = JSON.parse(raw);
+    delete d.pracDone; delete d.pracMark;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  } catch(e){}
+  location.reload();
+}
+
+/* =========================================================
+   6. ИТОГ
+   ========================================================= */
+function calcFinalMark(){
+  if (!lessonState.wbMark && !lessonState.pracDone){ toast('Сначала выполните тетрадь и отметьте практику'); return; }
+  var wb = lessonState.wbMark || 0;
+  var pr = lessonState.pracMark || 0;
+  var total = Math.round((wb + pr) / 2);
+  document.getElementById('fWb').textContent = wb || '—';
+  document.getElementById('fPrac').textContent = pr || '—';
+  document.getElementById('fTotal').textContent = total;
+  document.getElementById('finalResult').classList.add('show');
+  document.getElementById('finalMsg').textContent =
+    total === 5 ? '🌟 Отличная работа!' :
+    total === 4 ? '👏 Хорошо!' :
+    total === 3 ? '📖 Удовлетворительно.' : '📚 Стоит повторить тему.';
+}
+
+/* =========================================================
+   7. САМОСТОЯТЕЛЬНАЯ
+   ========================================================= */
+var saTimer = null, saLeft = 0, saTasks = [], saStarted = false, saDone = false;
+
+function genStandalone(){
+  var pool = [
+    {q:'Какая ссылка является абсолютной? (A1, $A$1, $A1, A$1)', ans:'$A$1'},
+    {q:'Что означает запись $B3: заморожен столбец B или строка 3?', ans:'столбец B'},
+    {q:'Формула =A1+B1 записана в C1. Как она будет выглядеть после копирования в C2?', ans:'=A2+B2'},
+    {q:'Формула =$A$2*B2 записана в C2. Как она будет выглядеть после копирования в C3?', ans:'=$A$2*B3'},
+    {q:'Формула =$A2*B$1 записана в B2. Как она будет выглядеть после копирования в D4?', ans:'=$A4*D$1'},
+    {q:'Формула =A$1+B2 записана в C1. Как она будет выглядеть после копирования в D2?', ans:'=B$1+C3'},
+    {q:'Сколько знаков $ в абсолютной ссылке?', ans:'2'},
+    {q:'Какая клавиша циклически переключает типы ссылок?', ans:'F4'}
+  ];
+  function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+  function pickN(arr, n){
+    var copy = arr.slice(), res = [];
+    for (var i = 0; i < n && copy.length; i++){
+      var idx = rnd(0, copy.length-1);
+      res.push(copy.splice(idx, 1)[0]);
+    }
+    return res;
+  }
+  var selected = pickN(pool, 5);
+  return selected.map(function(t){ return { text: t.q, canon: t.ans }; });
+}
+
+function scrollToGate(){
+  document.getElementById('standaloneGate').scrollIntoView({behavior:'smooth', block:'center'});
+  document.getElementById('saPass').focus();
+}
+
+async function unlockStandalone(){
+  if (!getSurname() || !getFirstname() || !getKlass()){
+    document.getElementById('saMsg').className='pmsg';
+    document.getElementById('saMsg').textContent='Заполните ФИО и класс.';
+    return;
+  }
+  var inp = document.getElementById('saPass');
+  var msg = document.getElementById('saMsg');
+  var btn = document.getElementById('saBtn');
+  var pass = inp.value.trim();
+  if (!pass){ msg.className='pmsg'; msg.textContent='Введите пароль.'; return; }
+  msg.className='pmsg info'; msg.textContent='Проверка…'; btn.disabled = true;
+  var data = await checkPasswordRemote(RESOURCE_ID, 'standalone', pass);
+  btn.disabled = false;
+  if (data.error === 'network'){ msg.className='pmsg'; msg.textContent='⚠️ Ошибка соединения. Проверьте интернет.'; return; }
+  if (!data.ok){ msg.className='pmsg'; msg.textContent='❌ Неверный пароль.'; inp.value=''; inp.focus(); return; }
+  msg.textContent=''; inp.value='';
+  startStandalone();
+}
+
+function startStandalone(){
+  saTasks = genStandalone();
+  saDone = false; saStarted = true; saLeft = SA_MINUTES*60;
+  document.body.classList.add('exam');
+  var who = getFullName() + (getKlass() ? ', ' + getKlass() : '');
+  document.getElementById('examWho').textContent = who || 'Ученик';
+  var host = document.getElementById('examTasks');
+  var html = '';
+  saTasks.forEach(function(t, i){
+    html += '<div class="s-task" id="st'+i+'">';
+    html += '<p class="stext"><span class="sn">'+(i+1)+'</span>'+t.text+'</p>';
+    html += '<input type="text" id="sa'+i+'" placeholder="ваш ответ" autocomplete="off">';
+    html += '</div>';
+  });
+  host.innerHTML = html;
+  document.getElementById('examResult').classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if (saTimer) clearInterval(saTimer);
+  updateTimer();
+  saTimer = setInterval(function(){
+    saLeft--;
+    updateTimer();
+    if (saLeft <= 0){ clearInterval(saTimer); saTimer=null; toast('⏰ Время вышло!'); finishStandalone(true); }
+  }, 1000);
+}
+
+function updateTimer(){
+  var m = Math.floor(saLeft/60), s = saLeft % 60;
+  var el = document.getElementById('examTimer');
+  el.textContent = (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  el.className = 'timer' + (saLeft<=60?' danger' : saLeft<=300?' warn':'');
+}
+
+function finishStandalone(auto){
+  if (!saStarted) return;
+  if (!auto && !confirm('Сдать работу?')) return;
+  if (saTimer){ clearInterval(saTimer); saTimer=null; }
+  saDone = true;
+  var correct = 0;
+  saTasks.forEach(function(t,i){
+    var el = document.getElementById('sa'+i);
+    var v = (el ? el.value : '').trim().toLowerCase().replace(/\s+/g,'');
+    var ans = t.canon.toLowerCase().replace(/\s+/g,'');
+    var ok = v === ans;
+    if (ok) correct++;
+    if (el){ el.disabled = true; el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)'; el.style.background = ok ? '#f0fdf4' : '#fef2f2'; }
+  });
+  var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
+  document.getElementById('exCorrect').textContent = correct + ' / 5';
+  document.getElementById('exMark').textContent = mark;
+  document.getElementById('exTime').textContent = '—';
+  document.getElementById('exMsg').textContent =
+    correct>=5 ? '🌟 Отлично!' : correct===4 ? '👏 Хорошо!' : correct===3 ? '📖 Удовлетворительно.' : '📚 Стоит повторить.';
+  document.getElementById('examResult').classList.add('show');
+}
+
+function exitStandalone(){
+  if (saStarted && !saDone && !confirm('Выйти?')) return;
+  if (saTimer){ clearInterval(saTimer); saTimer=null; }
+  document.body.classList.remove('exam');
+  saStarted = false;
+}
+
+/* =========================================================
+   8. ПЕЧАТЬ ДЗ
+   ========================================================= */
+function printHomework(){
+  var fio = getFullName() + (getKlass() ? ', ' + getKlass() : '');
+  var hw = document.getElementById('hwBlock').innerHTML;
+  var w = window.open('', '_blank');
+  if (!w){ alert('Разрешите всплывающие окна.'); return; }
+  w.document.write(
+    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>ДЗ</title>'+
+    '<script>window.MathJax={tex:{inlineMath:[["$","$"]]}};<\/script>'+
+    '<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>'+
+    '<style>body{font-family:Georgia,serif;padding:14mm;font-size:12pt}.hw{border:1pt solid #bbb;padding:3mm;margin:4mm 0}'+
+    '@page{margin:14mm}</style></head><body>'+
+    '<h1>Домашнее задание</h1>'+
+    '<p>'+(fio ? 'Ученик: <b>'+fio+'</b>' : 'Ученик: _______')+'</p>'+ hw +'</body></html>'
+  );
+  w.document.close();
+  setTimeout(function(){ w.print(); }, 600);
+}
+
+/* =========================================================
+   9. КАЛЬКУЛЯТОР
+   ========================================================= */
+var calcBuf = '';
+function openCalc(){ document.getElementById('calcModal').classList.add('open'); calcRender(); }
+function closeCalc(){ document.getElementById('calcModal').classList.remove('open'); }
+function calcNum(d){ if (calcBuf === '0' && d !== '0') calcBuf = ''; calcBuf += d; calcRender(); }
+function calcOp(op){
+  if (!calcBuf){ if (op === '-'){ calcBuf = '-'; calcRender(); } return; }
+  var last = calcBuf.slice(-1);
+  if ('+-*/^'.indexOf(last) !== -1) calcBuf = calcBuf.slice(0,-1);
+  calcBuf += op; calcRender();
+}
+function calcClear(){ calcBuf = ''; calcRender(); }
+function calcBack(){ calcBuf = calcBuf.slice(0,-1); calcRender(); }
+
+function calcRender(){
+  document.getElementById('calcExpr').textContent = calcBuf || '';
+  document.getElementById('calcOut').textContent = calcPreview();
+}
+function calcPreview(){
+  if (!calcBuf) return '0';
+  try { var v = calcEval(calcBuf); if (v === null) return '…'; if (!isFinite(v)) return '∞'; return (Math.round(v*1e10)/1e10).toString(); } catch(e){ return '…'; }
+}
+function calcEval(str){
+  var s = str.replace(/\s+/g,''); if (!/^[0-9+\-*/^]+$/.test(s)) return null;
+  var pos = 0;
+  function peek(){ return s[pos]; }
+  function parseExpr(){
+    var v = parseTerm();
+    while (peek()==='+' || peek()==='-'){ var op = s[pos++]; var r = parseTerm(); v = op==='+' ? v+r : v-r; }
+    return v;
+  }
+  function parseTerm(){
+    var v = parsePow();
+    while (peek()==='*' || peek()==='/'){ var op = s[pos++]; var r = parsePow(); v = op==='*' ? v*r : v/r; }
+    return v;
+  }
+  function parsePow(){
+    var v = parseUnary();
+    if (peek()==='^'){ pos++; var e = parsePow(); return Math.pow(v,e); }
+    return v;
+  }
+  function parseUnary(){
+    if (peek()==='-'){ pos++; return -parseUnary(); }
+    if (peek()==='+'){ pos++; return parseUnary(); }
+    return parseAtom();
+  }
+  function parseAtom(){
+    var start = pos;
+    while (pos<s.length && /[0-9]/.test(s[pos])) pos++;
+    if (start===pos) throw new Error('bad');
+    return parseFloat(s.slice(start,pos));
+  }
+  try{ var res = parseExpr(); if (pos !== s.length) return null; return res; } catch(e){ return null; }
+}
+function calcEquals(){
+  var v = calcEval(calcBuf);
+  if (v === null || !isFinite(v)){ toast('Проверьте выражение'); return; }
+  calcBuf = (Math.round(v*1e10)/1e10).toString(); calcRender();
+}
+
+/* =========================================================
+   10. СТАРТ
+   ========================================================= */
+document.addEventListener('DOMContentLoaded', function(){ loadPracticeState(); });
+</script>
+</body>
+</html>
