@@ -3,127 +3,174 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Текст, списки, ссылки и изображения · 8-9 класс</title>
-
-<link rel="stylesheet" href="../assets/css/style.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23ede9fe'/><text x='16' y='23' font-size='17' font-family='Georgia' font-weight='bold' fill='%236d28d9' text-anchor='middle'>I</text></svg>">
-
-<style>
-/* --- ЗАЩИТА ОТ КОПИРОВАНИЯ --- */
-.prevent-copy {
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-/* --- Стили для кода --- */
-pre.code {
-  background: #1e1b2e;
-  color: #e9e6f5;
-  border-radius: 12px;
-  padding: 16px 20px;
-  overflow-x: auto;
-  font-family: Consolas, monospace;
-  font-size: .95rem;
-  line-height: 1.55;
-  margin: 16px 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-pre.code .kw { color: #c4b5fd; font-weight: 700; }
-pre.code .str { color: #6ee7b7; }
-pre.code .num { color: #fdba74; }
-pre.code .com { color: #807b93; font-style: italic; }
-
-/* --- Остальное оформление --- */
-.lock { text-align: center; padding: 32px 18px; border-radius: 16px; background: linear-gradient(135deg,#fff7ed,#fef2f2); border: 2px dashed var(--od); }
-.note { background: #f8f7ff; border-left: 4px solid #a78bfa; padding: 14px 20px; border-radius: 0 12px 12px 0; margin: 16px 0; font-size: .95rem; }
-
-/* --- Стили для теста --- */
-.test-option {
-  display: block;
-  background: #f8fafc;
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 10px 15px;
-  margin-bottom: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.test-option:hover {
-  border-color: #a78bfa;
-  background: #faf5ff;
-}
-.test-option input {
-  margin-right: 10px;
-}
-.test-input {
-  width: 100%;
-  max-width: 300px;
-  padding: 8px 12px;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: 0.95rem;
-  margin-top: 5px;
-}
-.test-input:focus {
-  outline: none;
-  border-color: #a78bfa;
-}
-.q-block {
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #e2e8f0;
-}
-.q-title {
-  font-weight: 700;
-  margin-bottom: 10px;
-  color: #1e293b;
-}
-.result-box {
-  text-align: center;
-  padding: 20px;
-  border-radius: 12px;
-  background: #f0fdf4;
-  border: 2px solid #22c55e;
-  margin-top: 20px;
-}
-.result-box.bad {
-  background: #fef2f2;
-  border-color: #ef4444;
-}
-.res-score {
-  font-size: 2.5rem;
-  font-weight: 900;
-  color: #047857;
-  line-height: 1.2;
-}
-.result-box.bad .res-score {
-  color: #b91c1c;
-}
-</style>
+<title>Текст, картинки и ссылки · 7 класс</title>
 
 <script>
-// Дополнительная защита от копирования (JS)
-document.addEventListener('DOMContentLoaded', () => {
-  const protectedElements = document.querySelectorAll('.prevent-copy');
-  
-  protectedElements.forEach(el => {
-    el.style.userSelect = 'none';
-    el.style.webkitUserSelect = 'none';
-    el.addEventListener('contextmenu', e => e.preventDefault());
-    el.addEventListener('dragstart', e => e.preventDefault());
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && ['c', 'a', 'x', 'insert'].includes(e.key.toLowerCase())) {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      e.preventDefault();
-      alert('Копирование кода запрещено! Набирайте код вручную.');
-    }
-  });
-});
+window.MathJax = {
+  tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$']] },
+  svg: { fontCache: 'global' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
 </script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23ede9fe'/><text x='16' y='23' font-size='17' font-family='Georgia' font-weight='bold' fill='%236d28d9' text-anchor='middle'>&lt;/&gt;</text></svg>">
+
+<style>
+.student{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:16px;position:relative;z-index:2}
+.student .f{display:flex;flex-direction:column;gap:4px}
+.student label{font-size:.78rem;font-weight:800;color:#4c4660;text-transform:uppercase;letter-spacing:.4px}
+.student input{border:2px solid rgba(255,255,255,.85);border-radius:10px;padding:8px 13px;
+  font-size:.95rem;font-family:inherit;background:rgba(255,255,255,.92);color:var(--ink);outline:none}
+.student input:focus{background:#fff;border-color:#a78bfa;box-shadow:0 0 0 4px rgba(255,255,255,.55)}
+#surname{width:200px} #firstname{width:180px} #klass{width:90px}
+
+.lock{text-align:center;padding:32px 18px;border-radius:16px;
+  background:linear-gradient(135deg,#fff7ed,#fef2f2);border:2px dashed var(--od)}
+.lock h3{margin:10px 0 4px}
+.lock p{color:var(--muted);margin:0 0 16px;font-size:.94rem}
+.lockrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.pmsg{min-height:22px;font-weight:600;color:var(--bad);margin-top:10px}
+.pmsg.info{color:var(--muted)}
+
+.vbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.res{background:linear-gradient(135deg,var(--green),var(--blue));border-radius:var(--r);padding:22px;margin:18px 0;display:none}
+.res.show{display:block}
+.res h3{margin:0 0 14px;color:#065f46}
+.marks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.mcard{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:0 4px 16px rgba(6,95,70,.1)}
+.mcard .lbl{font-size:.75rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.mcard .val{font-size:2.3rem;font-weight:900;line-height:1;color:#6d28d9}
+.mcard.total .val{color:#047857}
+
+/* ---------- ЗАЩИТА ОТ КОПИРОВАНИЯ ПРАКТИКИ ---------- */
+#practiceBody{
+  -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none;
+  -webkit-touch-callout:none;
+}
+#practiceBody input,
+#practiceBody textarea,
+#practiceBody select{
+  -webkit-user-select:text; -moz-user-select:text; -ms-user-select:text; user-select:text;
+}
+
+/* ---------- ОЦЕНКА УЧИТЕЛЯ ---------- */
+.teacher-mark{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;
+  background:#f5f3ff;border:2px dashed #c4b5fd;border-radius:14px;padding:14px 16px}
+.teacher-mark label{font-weight:800;color:#4c1d95}
+.teacher-mark select{padding:8px 12px;border-radius:10px;border:2px solid #c4b5fd;
+  font-family:inherit;font-size:1rem;font-weight:700;background:#fff}
+.teacher-mark small{color:var(--muted)}
+
+/* ---------- ПРАКТИКУМ ---------- */
+.practicum-note{background:#eff6ff;border-left:4px solid #3b82f6;border-radius:12px;
+  padding:12px 16px;margin:0 0 16px;font-size:.92rem;color:#1e40af}
+.step{background:#fdfcff;border-left:4px solid #a78bfa;border-radius:12px;
+  padding:14px 18px;margin:12px 0}
+.step h4{margin:0 0 6px;color:#5b21b6}
+.step code{background:#ede9fe;padding:2px 6px;border-radius:6px;font-size:.9rem;
+  font-family:Consolas,monospace;color:#6d28d9}
+.step pre{background:#1e1b2e;color:#e9e6f5;border-radius:10px;padding:12px 14px;
+  font-family:Consolas,monospace;font-size:.85rem;overflow-x:auto;margin:8px 0}
+.step .rep{margin-top:10px}
+.step .rep label{display:block;font-size:.78rem;font-weight:800;color:#4c4660;
+  text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.step .rep input,
+.step .rep textarea{width:100%;border:2px solid #e6e3f1;border-radius:10px;
+  padding:10px 12px;font-family:Consolas,monospace;font-size:.9rem;background:#fff;outline:none}
+.step .rep input:focus,
+.step .rep textarea:focus{border-color:#a78bfa;box-shadow:0 0 0 3px rgba(167,139,250,.18)}
+
+/* ---------- ЧЕК-ЛИСТ ---------- */
+.checklist{background:#f0fdf4;border:2px solid #86efac;border-radius:14px;padding:14px 18px;margin:18px 0}
+.checklist h4{margin:0 0 10px;color:#166534}
+.checklist label{display:flex;align-items:flex-start;gap:10px;margin:8px 0;font-weight:600;cursor:pointer}
+.checklist input[type=checkbox]{width:18px;height:18px;margin-top:2px;accent-color:#16a34a;flex-shrink:0}
+.checklist .cl-summary{margin-top:12px;font-weight:800;color:#166534}
+
+/* ---------- ДЕМО-КАРТОЧКИ ---------- */
+.demo-row{display:flex;flex-wrap:wrap;gap:14px;margin:16px 0}
+.demo-card{flex:1 1 220px;background:#fdfcff;border:2px solid #ece8f8;border-radius:14px;padding:14px}
+.demo-card h4{margin:0 0 8px;color:#5b21b6;font-size:.95rem}
+.demo-card .live{background:#fff;border-radius:10px;padding:10px;border:1px dashed #c4b5fd}
+.demo-card code{display:block;margin-top:8px;font-family:Consolas,monospace;
+  font-size:.78rem;color:#6d28d9;background:#ede9fe;padding:6px 8px;border-radius:8px;word-break:break-all}
+.demo-card a{color:#2563eb;font-weight:600}
+
+#standalone{display:none}
+body.exam{padding-bottom:20px}
+body.exam #theory, body.exam #workbook, body.exam #practice,
+body.exam #final, body.exam #homework, body.exam #standaloneGate,
+body.exam .bar, body.exam .hero{display:none !important}
+body.exam #standalone{display:block}
+
+.exam-head{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.97);
+  backdrop-filter:blur(10px);border-radius:0 0 20px 20px;padding:14px 20px;margin:-24px -16px 18px;
+  box-shadow:0 6px 24px rgba(120,110,160,.18);display:flex;flex-wrap:wrap;gap:14px;
+  align-items:center;justify-content:space-between}
+.exam-title{font-weight:800;font-size:1.05rem}
+.exam-who{font-size:.86rem;color:var(--muted)}
+.timer{font-family:Consolas,monospace;font-size:1.5rem;font-weight:800;color:#047857;
+  background:var(--green);padding:6px 18px;border-radius:12px;min-width:110px;text-align:center}
+.timer.warn{background:var(--yellow);color:#b45309}
+.timer.danger{background:#fee2e2;color:#b91c1c;animation:pulseT 1s infinite}
+@keyframes pulseT{0%,100%{opacity:1}50%{opacity:.55}}
+
+.s-task{background:#fff;border-radius:18px;padding:18px 20px;margin:14px 0;
+  border:2px solid #e8e3f5;box-shadow:0 4px 18px rgba(120,110,160,.09)}
+.s-task .sn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;
+  border-radius:50%;background:var(--purple);color:#5b21b6;font-weight:800;font-size:.85rem;margin-right:8px}
+.s-task .stext{margin:0 0 12px;font-size:1rem;line-height:1.65}
+.s-task .opt{display:block;margin:6px 0}
+
+.no-calc-warn{background:var(--yellow);border-left:4px solid var(--yd);border-radius:12px;
+  padding:12px 16px;margin:0 0 16px;font-size:.92rem;font-weight:600;color:#b45309}
+
+.mbg{display:none;position:fixed;inset:0;background:rgba(60,55,90,.48);z-index:200;
+  align-items:center;justify-content:center;padding:16px}
+.mbg.open{display:flex}
+.modal{background:#fff;border-radius:22px;max-width:660px;width:100%;max-height:88vh;
+  overflow:auto;padding:24px;box-shadow:0 24px 70px rgba(60,55,90,.4)}
+.modal h3{margin:0 0 4px;font-size:1.12rem}
+
+.calc{max-width:340px}
+.calc-screen{background:#1e1b2e;color:#e9e6f5;border-radius:14px;padding:14px 16px;margin-bottom:12px;
+  text-align:right;font-family:Consolas,monospace;overflow:hidden}
+.calc-expr{font-size:.82rem;color:#a9a3c4;min-height:18px;word-break:break-all}
+.calc-out{font-size:1.9rem;font-weight:700;word-break:break-all;line-height:1.2}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cbtn{border:none;border-radius:12px;padding:15px 0;font-size:1.05rem;font-weight:700;
+  font-family:inherit;cursor:pointer;background:#f5f3ff;color:#4c1d95;transition:.12s}
+.cbtn:hover{background:#ede9fe}
+.cbtn:active{transform:scale(.96)}
+.cbtn.op{background:var(--purple);color:#5b21b6}
+.cbtn.eq{background:var(--green);color:#047857;grid-column:span 2}
+.cbtn.del{background:var(--orange);color:#c2410c}
+.cbtn.clr{background:#fee2e2;color:#b91c1c}
+
+.bar{background:#fff;border-radius:var(--r);padding:16px;border:1px solid #f2f0fa;
+  box-shadow:0 -4px 24px rgba(120,110,160,.16);display:flex;flex-wrap:wrap;gap:10px;
+  position:sticky;bottom:10px;z-index:30;margin-top:24px}
+
+table.codes{border-collapse:collapse;width:100%;margin:16px 0;font-size:.85rem;display:block;overflow-x:auto}
+table.codes th,table.codes td{border:1px solid #e6e3f1;padding:6px 8px;text-align:center;background:#fdfcff}
+table.codes th{background:var(--purple);color:#4c1d95;font-weight:800}
+table.codes tr:nth-child(even) td{background:#fbfaff}
+table.codes .tag{font-family:Consolas,monospace;color:#6d28d9;font-weight:700}
+
+@media(max-width:720px){
+  #surname,#firstname,#klass{width:100%}
+  .marks{grid-template-columns:1fr}
+}
+@media print{
+  .no-print{display:none !important}
+  body{background:#fff;padding:0;font-size:11.5pt}
+  .card{box-shadow:none;border:none;padding:0;margin:0}
+  .task{break-inside:avoid}
+}
+</style>
 </head>
 <body>
 <a class="skip" href="#main">К содержанию</a>
@@ -146,304 +193,1081 @@ document.addEventListener('DOMContentLoaded', () => {
 <div class="wrap" id="main">
 
   <header class="hero">
-    <h1>Текст, списки, ссылки и изображения</h1>
-    <p class="lead">Урок технологии · 8-9 класс · Создаём страницу Аппаратное обеспечение</p>
-<div class="student" style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; margin-top: 16px;">
-  <div class="f" style="display: flex; flex-direction: column; gap: 6px;">
-    <label for="surname" style="font-size: .8rem; font-weight: 800; color: #4c4660; text-transform: uppercase;">Фамилия</label>
-    <input type="text" id="surname" placeholder="Иванов" autocomplete="off" style="width: 200px; border: none; border-radius: 12px; padding: 12px 16px; font-size: .95rem; font-family: inherit; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-  </div>
-  
-  <div class="f" style="display: flex; flex-direction: column; gap: 6px;">
-    <label for="firstname" style="font-size: .8rem; font-weight: 800; color: #4c4660; text-transform: uppercase;">Имя</label>
-    <input type="text" id="firstname" placeholder="Иван" autocomplete="off" style="width: 180px; border: none; border-radius: 12px; padding: 12px 16px; font-size: .95rem; font-family: inherit; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-  </div>
-  
-  <div class="f" style="display: flex; flex-direction: column; gap: 6px;">
-    <label for="klass" style="font-size: .8rem; font-weight: 800; color: #4c4660; text-transform: uppercase;">Класс</label>
-    <input type="text" id="klass" placeholder="7А" autocomplete="off" style="width: 90px; border: none; border-radius: 12px; padding: 12px 16px; font-size: .95rem; font-family: inherit; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-  </div>
-</div>
+    <h1>Текст, картинки и ссылки</h1>
+    <p class="lead">Урок информатики · 7 класс · Теги текста, списки, изображения, гиперссылки</p>
+    <div class="student">
+      <div class="f"><label for="surname">Фамилия</label>
+        <input type="text" id="surname" placeholder="Иванов" autocomplete="off"></div>
+      <div class="f"><label for="firstname">Имя</label>
+        <input type="text" id="firstname" placeholder="Иван" autocomplete="off"></div>
+      <div class="f"><label for="klass">Класс</label>
+        <input type="text" id="klass" placeholder="7А" autocomplete="off"></div>
+    </div>
   </header>
 
-  <!-- 1. ТЕОРИЯ -->
+  <!-- ===================== ТЕОРИЯ ===================== -->
   <section class="card" id="theory">
     <h2><span class="num">1</span> Теоретический материал</h2>
 
-    <h3>Выделение текста</h3>
-    <p>Для выделения слов в тексте есть парные теги. <b>&lt;strong&gt;</b> делает текст жирным и означает «важно» — на него обращают внимание поисковые системы. <b>&lt;b&gt;</b> тоже жирный, но без смыслового значения.</p>
-    <p><b>&lt;em&gt;</b> делает курсив и означает смысловое ударение. <b>&lt;i&gt;</b> – просто курсив (например, для названий и иностранных слов).</p>
-    <p>Дополнительно: <b>&lt;u&gt;</b> подчёркивает, <b>&lt;s&gt;</b> зачёркивает, <b>&lt;sub&gt;</b> делает нижний индекс (H<sub>2</sub>O), <b>&lt;sup&gt;</b> — верхний (x<sup>2</sup>).</p>
-    
-    <div class="note">
-      <b>Правило:</b> не используйте теги только ради внешнего вида. Жирный шрифт без смысла лучше задавать через CSS. Теги говорят о смысле, CSS — о виде.
-    </div>
+    <h3>Теги текста</h3>
+    <p>Текст на странице размещают внутри <b>парных тегов</b>. Открывающий тег — <code>&lt;p&gt;</code>, закрывающий — <code>&lt;/p&gt;</code>.</p>
+    <table class="codes">
+      <tr><th>Тег</th><th>Что делает</th><th>Пример</th></tr>
+      <tr><td class="tag">&lt;h1&gt;…&lt;/h1&gt;</td><td>Заголовок 1 уровня (самый крупный). Есть h1–h6</td><td>&lt;h1&gt;Мой сайт&lt;/h1&gt;</td></tr>
+      <tr><td class="tag">&lt;p&gt;…&lt;/p&gt;</td><td>Абзац текста</td><td>&lt;p&gt;Это абзац.&lt;/p&gt;</td></tr>
+      <tr><td class="tag">&lt;strong&gt;…&lt;/strong&gt;</td><td>Жирный текст (важный)</td><td>&lt;strong&gt;важно&lt;/strong&gt;</td></tr>
+      <tr><td class="tag">&lt;em&gt;…&lt;/em&gt;</td><td>Курсив (акцент)</td><td>&lt;em&gt;акцент&lt;/em&gt;</td></tr>
+      <tr><td class="tag">&lt;br&gt;</td><td>Перенос строки (одиночный тег)</td><td>строка1&lt;br&gt;строка2</td></tr>
+    </table>
 
     <h3>Списки</h3>
-    <p>Маркированный список <b>&lt;ul&gt;</b> выводит пункты с точками. Каждый пункт — тег <b>&lt;li&gt;</b>.</p>
-    <p>Нумерованный список <b>&lt;ol&gt;</b> нумерует пункты автоматически. Используется для последовательностей и шагов.</p>
-    <p>Список определений <b>&lt;dl&gt;</b> состоит из пар: <b>&lt;dt&gt;</b> — термин, <b>&lt;dd&gt;</b> — его объяснение. Хорошо подходит для словарей и глоссариев.</p>
+    <p>Список — это контейнер <code>&lt;ul&gt;</code> (маркированный) или <code>&lt;ol&gt;</code> (нумерованный), внутри которого лежат пункты <code>&lt;li&gt;</code>.</p>
+    <pre style="background:#1e1b2e;color:#e9e6f5;border-radius:12px;padding:16px;font-family:Consolas,monospace;font-size:.88rem;overflow-x:auto">&lt;ul&gt;
+  &lt;li&gt;Первый пункт&lt;/li&gt;
+  &lt;li&gt;Второй пункт&lt;/li&gt;
+  &lt;li&gt;Третий пункт&lt;/li&gt;
+&lt;/ul&gt;</pre>
+
+    <h3>Картинки</h3>
+    <p>Изображение вставляют одиночным тегом <code>&lt;img&gt;</code>. У него два главных атрибута:</p>
+    <ul>
+      <li><code>src</code> — путь к файлу картинки (например, <code>images/cat.jpg</code>);</li>
+      <li><code>alt</code> — текст, который покажется, если картинка не загрузилась. Он же нужен для незрячих пользователей.</li>
+    </ul>
+    <pre style="background:#1e1b2e;color:#e9e6f5;border-radius:12px;padding:16px;font-family:Consolas,monospace;font-size:.88rem;overflow-x:auto">&lt;img src="images/cat.jpg" alt="Мой кот Барсик"&gt;</pre>
+    <p>Картинки удобно хранить в отдельной папке <code>images</code> рядом с <code>index.html</code>.</p>
 
     <h3>Ссылки</h3>
-    <p>Тег <b>&lt;a&gt;</b> создаёт гиперссылку. Обязательный атрибут <b>href</b> указывает, куда ведёт ссылка.</p>
-    <p>Виды ссылок: внешняя (на другой сайт, с полным адресом https://...), внутренняя (на страницу своего сайта, просто имя файла), якорная (на элемент той же страницы: href="#top"), и ссылка на почту (href="mailto:info@site.ru").</p>
-    <p>Атрибут <b>target="_blank"</b> открывает ссылку в новой вкладке. Добавляйте его для внешних ссылок, чтобы посетитель не уходил с вашего сайта.</p>
-    <p>Чтобы якорная ссылка работала, у элемента-цели должен быть <b>id</b>: &lt;h2 id="top"&gt;Начало&lt;/h2&gt;.</p>
+    <p>Ссылка создаётся парным тегом <code>&lt;a&gt;</code> с атрибутом <code>href</code> — адресом, куда ведёт переход.</p>
+    <pre style="background:#1e1b2e;color:#e9e6f5;border-radius:12px;padding:16px;font-family:Consolas,monospace;font-size:.88rem;overflow-x:auto">&lt;a href="https://example.com"&gt;Мой любимый сайт&lt;/a&gt;
+&lt;a href="about.html"&gt;О сайте&lt;/a&gt;</pre>
+    <p><b>Абсолютная</b> ссылка содержит полный адрес (<code>https://…</code>). <b>Относительная</b> — путь внутри своего сайта (<code>about.html</code>, <code>images/cat.jpg</code>). Относительные ссылки работают, даже если сайт перенести в другую папку.</p>
 
-    <h3>Изображения</h3>
-    <p>Тег <b>&lt;img&gt;</b> вставляет картинку. Он непарный, закрывающего тега нет.</p>
-    <p><b>src</b> — путь к файлу. Если картинка лежит в папке images рядом с HTML-файлом, пишем images/имя.jpg.</p>
-    <p><b>alt</b> — текст, который покажется, если картинка не загрузилась. Он также читается программами для незрячих людей — поэтому alt обязателен и должен описывать, что на картинке.</p>
-    <p><b>width</b> и <b>height</b> задают размеры в пикселях. Достаточно указать один — второй браузер посчитает сам, сохранив пропорции.</p>
+    <h3>Как это выглядит вживую</h3>
+    <div class="demo-row">
+      <div class="demo-card">
+        <h4>Заголовок и абзац</h4>
+        <div class="live">
+          <h2 style="margin:0 0 6px;font-size:1.2rem">Мой сайт о котах</h2>
+          <p style="margin:0">Коты — <strong>удивительные</strong> животные. Они <em>любят</em> спать.</p>
+        </div>
+        <code>&lt;h2&gt;Мой сайт о котах&lt;/h2&gt;<br>&lt;p&gt;Коты — &lt;strong&gt;удивительные&lt;/strong&gt;…&lt;/p&gt;</code>
+      </div>
+      <div class="demo-card">
+        <h4>Список</h4>
+        <div class="live">
+          <ul style="margin:0;padding-left:18px">
+            <li>Мурзик</li>
+            <li>Барсик</li>
+            <li>Рыжик</li>
+          </ul>
+        </div>
+        <code>&lt;ul&gt;&lt;li&gt;Мурзик&lt;/li&gt;…&lt;/ul&gt;</code>
+      </div>
+      <div class="demo-card">
+        <h4>Ссылка</h4>
+        <div class="live">
+          <a href="https://example.com" target="_blank" rel="noopener">Мой любимый сайт</a>
+        </div>
+        <code>&lt;a href="https://example.com"&gt;Мой любимый сайт&lt;/a&gt;</code>
+      </div>
+    </div>
+
+    <div class="note info">
+      <b>Важно:</b> у картинки всегда указывайте <code>alt</code>, а у ссылки — понятный текст. Это делает сайт доступным и аккуратным.
+    </div>
   </section>
 
-  <!-- 2. ОБРАЗЕЦ КОДА -->
+  <!-- ===================== РАБОЧАЯ ТЕТРАДЬ ===================== -->
   <section class="card" id="workbook">
-    <h2><span class="num">2</span> Образец кода (не копировать!)</h2>
-    <p class="muted">Сверьтесь с образцом после того, как наберёте код сами в Visual Studio Code.</p>
+    <h2><span class="num">2</span> Рабочая тетрадь</h2>
+    <p class="muted">Теоретические вопросы в интерактивной форме. Выбирайте вариант или вводите ответ.</p>
 
-    <div class="prevent-copy">
-      <div class="lock" style="background:#f8f7ff; border-color:#a78bfa; padding:16px;">
-        ⚠️ <b>Внимание!</b> Копирование этого кода запрещено. Набирайте его вручную, иначе теги не запомнятся.
+    <div class="task">
+      <p><b>Задание 1.</b> Какой тег создаёт маркированный список?</p>
+      <label class="opt"><input type="radio" name="q1" value="a"> &lt;ol&gt;</label>
+      <label class="opt"><input type="radio" name="q1" value="b"> &lt;ul&gt;</label>
+      <label class="opt"><input type="radio" name="q1" value="c"> &lt;li&gt;</label>
+      <label class="opt"><input type="radio" name="q1" value="d"> &lt;list&gt;</label>
+      <button class="btn b-green" onclick="checkWRadio('q1','b','q1fb')" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="q1fb"></div>
+    </div>
+
+    <div class="task">
+      <p><b>Задание 2.</b> Какой атрибут тега <code>&lt;img&gt;</code> задаёт путь к файлу картинки?</p>
+      <div class="ans">
+        <input type="text" id="q2" placeholder="имя атрибута" autocomplete="off" style="max-width:200px">
+        <button class="btn b-green" onclick="checkW('q2','src','q2fb')">Проверить</button>
+      </div>
+      <details><summary>Подсказка</summary>Этот атрибут есть и у ссылки, но у картинки он называется иначе — от слова «source» (источник).</details>
+      <div class="fb" id="q2fb"></div>
+    </div>
+
+    <div class="task">
+      <p><b>Задание 3.</b> Какой тег создаёт нумерованный список?</p>
+      <label class="opt"><input type="radio" name="q3" value="a"> &lt;ul&gt;</label>
+      <label class="opt"><input type="radio" name="q3" value="b"> &lt;ol&gt;</label>
+      <label class="opt"><input type="radio" name="q3" value="c"> &lt;li&gt;</label>
+      <label class="opt"><input type="radio" name="q3" value="d"> &lt;dl&gt;</label>
+      <button class="btn b-green" onclick="checkWRadio('q3','b','q3fb')" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="q3fb"></div>
+    </div>
+
+    <div class="task">
+      <p><b>Задание 4.</b> Какой атрибут ссылки задаёт адрес, куда ведёт переход?</p>
+      <div class="ans">
+        <input type="text" id="q4" placeholder="имя атрибута" autocomplete="off" style="max-width:200px">
+        <button class="btn b-green" onclick="checkW('q4','href','q4fb')">Проверить</button>
+      </div>
+      <details><summary>Подсказка</summary>Hypertext REFerence — «гипертекстовая ссылка». Сокращённо 4 буквы.</details>
+      <div class="fb" id="q4fb"></div>
+    </div>
+
+    <div class="task">
+      <p><b>Задание 5.</b> Что означает атрибут <code>alt</code> у картинки?</p>
+      <label class="opt"><input type="radio" name="q5" value="a"> Альтернативный текст, если картинка не загрузилась</label>
+      <label class="opt"><input type="radio" name="q5" value="b"> Альбом с картинками</label>
+      <label class="opt"><input type="radio" name="q5" value="c"> Размер картинки в пикселях</label>
+      <label class="opt"><input type="radio" name="q5" value="d"> Название папки с картинками</label>
+      <button class="btn b-green" onclick="checkWRadio('q5','a','q5fb')" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="q5fb"></div>
+    </div>
+
+    <div class="task">
+      <p><b>Задание 6.</b> Какой тег делает текст жирным и подчёркивает важность?</p>
+      <div class="ans">
+        <input type="text" id="q6" placeholder="например: strong" autocomplete="off" style="max-width:200px">
+        <button class="btn b-green" onclick="checkW('q6','strong','q6fb')">Проверить</button>
+      </div>
+      <details><summary>Подсказка</summary>Слово по-английски значит «сильный». Не путайте с &lt;b&gt; — он просто жирный, без смысла.</details>
+      <div class="fb" id="q6fb"></div>
+    </div>
+
+    <div class="controls">
+      <button class="btn b-purple" onclick="calcWorkbook()">📊 Оценить рабочую тетрадь</button>
+    </div>
+    <div class="res" id="wbResult">
+      <h3>Результат рабочей тетради</h3>
+      <p style="margin:0;font-weight:700">Верно: <span id="wbCorrect">0</span> из 6 · Оценка: <span id="wbMark" style="font-size:1.4rem">—</span></p>
+    </div>
+  </section>
+
+  <!-- ===================== ПРАКТИКА: ПОШАГОВЫЙ ПРАКТИКУМ ===================== -->
+  <section class="card" id="practice">
+    <h2><span class="num">3</span> Практическая работа в Visual Studio Code <span class="badge">по паролю</span></h2>
+
+    <div id="practiceLock" class="lock">
+      <h3>🔒 Практическая работа закрыта</h3>
+      <p>Введите пароль учителя, чтобы открыть пошаговый практикум и поля отчёта.</p>
+      <div class="lockrow">
+        <input type="password" id="pracPass" placeholder="Пароль" autocomplete="off"
+               onkeydown="if(event.key==='Enter')unlockPractice()">
+        <button class="btn b-purple" id="pracBtn" onclick="unlockPractice()">Открыть</button>
+      </div>
+      <div class="pmsg" id="pracMsg"></div>
+    </div>
+
+    <div id="practiceBody" style="display:none">
+      <div class="practicum-note">
+        📄 <b>Пошаговый практикум.</b> Выполняйте шаги по порядку в <b>Visual Studio Code</b>.
+        Текст инструкций защищён от копирования — код переписывайте руками, чтобы запомнить.
+        В поля отчёта вписывайте, что получилось.
       </div>
 
-<pre class="code"><span class="com">&lt;!-- Фрагмент hardware.html --&gt;</span>
-&lt;!DOCTYPE html&gt;
-&lt;html lang=<span class="str">"ru"</span>&gt;
+      <div class="step">
+        <h4>Шаг 1. Создайте папку проекта</h4>
+        <p>Откройте <b>Visual Studio Code</b>. Создайте папку <code>my-first-site</code> на рабочем столе
+           и откройте её: <code>Файл → Открыть папку…</code></p>
+        <div class="rep">
+          <label>Отчёт по шагу 1</label>
+          <input type="text" id="step1" placeholder="папка my-first-site создана и открыта в VS Code">
+        </div>
+      </div>
+
+      <div class="step">
+        <h4>Шаг 2. Создайте файл <code>index.html</code></h4>
+        <p>В левой панели нажмите «Новый файл» и назовите его <code>index.html</code>.
+           Расширение <code>.html</code> обязательно.</p>
+        <div class="rep">
+          <label>Отчёт по шагу 2</label>
+          <input type="text" id="step2" placeholder="index.html">
+        </div>
+      </div>
+
+      <div class="step">
+        <h4>Шаг 3. Введите каркас документа</h4>
+        <p>Наберите <code>!</code> и нажмите <b>Tab</b> — появится каркас HTML5. Или перепишите вручную:</p>
+        <pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="ru"&gt;
 &lt;head&gt;
-  &lt;meta charset=<span class="str">"UTF-8"</span>&gt;
-  &lt;title&gt;Аппаратное обеспечение — Компьютер изнутри&lt;/title&gt;
-  &lt;link rel=<span class="str">"stylesheet"</span> href=<span class="str">"style.css"</span>&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Текст, картинки и ссылки&lt;/title&gt;
 &lt;/head&gt;
 &lt;body&gt;
-  <span class="com">&lt;!-- 1. Шапка сайта --&gt;</span>
-  &lt;header id=<span class="str">"top"</span>&gt;
-    &lt;h1&gt;Компьютер изнутри&lt;/h1&gt;
-    &lt;p&gt;Сайт об аппаратном и программном обеспечении компьютера&lt;/p&gt;
-  &lt;/header&gt;
 
-  <span class="com">&lt;!-- 2. Меню --&gt;</span>
-  &lt;nav&gt;
-    &lt;a href=<span class="str">"index.html"</span>&gt;Главная&lt;/a&gt;
-    &lt;a href=<span class="str">"hardware.html"</span>&gt;Аппаратное обеспечение&lt;/a&gt;
-    &lt;a href=<span class="str">"software.html"</span>&gt;Программное обеспечение&lt;/a&gt;
-    &lt;a href=<span class="str">"gallery.html"</span>&gt;Галерея&lt;/a&gt;
-  &lt;/nav&gt;
-
-  <span class="com">&lt;!-- 3. Основной блок --&gt;</span>
-  &lt;main&gt;
-    &lt;h1&gt;Аппаратное обеспечение компьютера&lt;/h1&gt;
-    &lt;p class=<span class="str">"lead"</span>&gt;Аппаратное обеспечение, или «железо», 
-    — это все устройства, из которых состоит компьютер.&lt;/p&gt;
-
-    &lt;h2&gt;Устройства ввода&lt;/h2&gt;
-    &lt;ul&gt;
-      &lt;li&gt;клавиатура — ввод текста и команд;&lt;/li&gt;
-      &lt;li&gt;мышь и тачпад — управление указателем;&lt;/li&gt;
-      &lt;li&gt;сканер — перевод изображения в цифру;&lt;/li&gt;
-      &lt;li&gt;микрофон — ввод звука;&lt;/li&gt;
-      &lt;li&gt;сенсорный экран — ввод касанием.&lt;/li&gt;
-    &lt;/ul&gt;
-
-    &lt;h2&gt;Устройства вывода&lt;/h2&gt;
-    &lt;ul&gt;
-      &lt;li&gt;монитор — вывод изображения;&lt;/li&gt;
-      &lt;li&gt;принтер — печать на бумаге;&lt;/li&gt;
-      &lt;li&gt;колонки и наушники — вывод звука;&lt;/li&gt;
-      &lt;li&gt;проектор — вывод на большой экран.&lt;/li&gt;
-    &lt;/ul&gt;
-
-    &lt;h2&gt;Устройства обработки и хранения&lt;/h2&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;strong&gt;процессор (CPU)&lt;/strong&gt; — выполняет команды;&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;оперативная память&lt;/strong&gt; — временная память;&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;накопитель&lt;/strong&gt; — постоянное хранение;&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;видеокарта&lt;/strong&gt; — обработка графики;&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;материнская плата&lt;/strong&gt; — соединяет всё.&lt;/li&gt;
-    &lt;/ul&gt;
-
-    &lt;h2&gt;Как компьютер обрабатывает информацию&lt;/h2&gt;
-    &lt;ol&gt;
-      &lt;li&gt;Данные и программа попадают в память.&lt;/li&gt;
-      &lt;li&gt;Процессор читает команды из памяти.&lt;/li&gt;
-      &lt;li&gt;Процессор выполняет команду.&lt;/li&gt;
-      &lt;li&gt;Результат сохраняется или выводится.&lt;/li&gt;
-      &lt;li&gt;Шаги повторяются до конца программы.&lt;/li&gt;
-    &lt;/ol&gt;
-
-    &lt;h2&gt;Материнская плата&lt;/h2&gt;
-    &lt;p&gt;Материнская плата — большая плата, на которой закреплены процессор, память и разъёмы.&lt;/p&gt;
-    &lt;img src=<span class="str">"images/motherboard.jpg"</span> alt=<span class="str">"Материнская плата"</span> width=<span class="str">"360"</span>&gt;
-    &lt;p class=<span class="str">"caption"</span>&gt;Сюда устанавливают процессор и память.&lt;/p&gt;
-  &lt;/main&gt;
-
-  <span class="com">&lt;!-- 4. Подвал --&gt;</span>
-  &lt;footer&gt;
-    &lt;p&gt;Учебный сайт по информатике · 8–9 класс&lt;/p&gt;
-    &lt;p&gt;&lt;a href=<span class="str">"#top"</span>&gt;Наверх&lt;/a&gt;&lt;/p&gt;
-  &lt;/footer&gt;
 &lt;/body&gt;
 &lt;/html&gt;</pre>
+        <div class="rep">
+          <label>Отчёт по шагу 3 — вставьте свой каркас</label>
+          <textarea id="step3" rows="7"></textarea>
+        </div>
+      </div>
+
+      <div class="step">
+        <h4>Шаг 4. Заголовок, абзац и выделение</h4>
+        <p>Внутри <code>&lt;body&gt;</code> добавьте заголовок <code>&lt;h1&gt;</code>, абзац <code>&lt;p&gt;</code>
+           и выделите одно слово жирным <code>&lt;strong&gt;</code>, другое — курсивом <code>&lt;em&gt;</code>.</p>
+        <pre>&lt;h1&gt;Моя тема по информатике&lt;/h1&gt;
+&lt;p&gt;Здесь я расскажу про &lt;strong&gt;важное&lt;/strong&gt;
+   и про &lt;em&gt;интересное&lt;/em&gt;.&lt;/p&gt;</pre>
+        <div class="rep">
+          <label>Отчёт по шагу 4</label>
+          <textarea id="step4" rows="5"></textarea>
+        </div>
+      </div>
+
+      <div class="step">
+        <h4>Шаг 5. Список</h4>
+        <p>Добавьте маркированный список <code>&lt;ul&gt;</code> из трёх пунктов <code>&lt;li&gt;</code>
+           и нумерованный список <code>&lt;ol&gt;</code> из двух пунктов.</p>
+        <pre>&lt;ul&gt;
+  &lt;li&gt;Первый факт&lt;/li&gt;
+  &lt;li&gt;Второй факт&lt;/li&gt;
+  &lt;li&gt;Третий факт&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+  &lt;li&gt;Шаг 1&lt;/li&gt;
+  &lt;li&gt;Шаг 2&lt;/li&gt;
+&lt;/ol&gt;</pre>
+        <div class="rep">
+          <label>Отчёт по шагу 5</label>
+          <textarea id="step5" rows="6"></textarea>
+        </div>
+      </div>
+
+      <div class="step">
+        <h4>Шаг 6. Картинка и ссылка</h4>
+        <p>Создайте папку <code>images</code> рядом с <code>index.html</code>, положите туда картинку
+           (например, <code>pic.jpg</code>). Вставьте картинку тегом <code>&lt;img&gt;</code> с атрибутами
+           <code>src</code> и <code>alt</code>. Добавьте ссылку <code>&lt;a href="…"&gt;</code> на полезный сайт.</p>
+        <pre>&lt;img src="images/pic.jpg" alt="Иллюстрация к теме"&gt;
+&lt;p&gt;Полезный сайт:
+   &lt;a href="https://example.com"&gt;example.com&lt;/a&gt;&lt;/p&gt;</pre>
+        <div class="rep">
+          <label>Отчёт по шагу 6</label>
+          <textarea id="step6" rows="5"></textarea>
+        </div>
+      </div>
+
+      <div class="step">
+        <h4>Шаг 7. Проверьте в браузере</h4>
+        <p>Откройте <code>index.html</code> двойным щелчком (или через <b>Live Server</b> → «Go Live»).
+           Проверьте: на вкладке — название, на странице — заголовок, выделения, списки, картинка и ссылка.
+           Если картинки нет — проверьте, что она лежит в папке <code>images</code>.</p>
+        <div class="rep">
+          <label>Отчёт по шагу 7 — что видите на странице и как называется вкладка</label>
+          <input type="text" id="step7" placeholder="заголовок, выделения, списки, картинка, ссылка; вкладка «Текст, картинки и ссылки»">
+        </div>
+      </div>
+
+      <!-- ЧЕК-ЛИСТ САМОПРОВЕРКИ -->
+      <div class="checklist" id="checklist">
+        <h4>✅ Чек-лист самопроверки</h4>
+        <label><input type="checkbox" id="cl1" onchange="updateChecklist()"> Страница открывается в браузере без ошибок</label>
+        <label><input type="checkbox" id="cl2" onchange="updateChecklist()"> На вкладке видно название «Текст, картинки и ссылки»</label>
+        <label><input type="checkbox" id="cl3" onchange="updateChecklist()"> Есть заголовок h1 и абзац p</label>
+        <label><input type="checkbox" id="cl4" onchange="updateChecklist()"> Есть маркированный список ul и нумерованный ol</label>
+        <label><input type="checkbox" id="cl5" onchange="updateChecklist()"> Картинка видна, и у неё указан alt</label>
+        <label><input type="checkbox" id="cl6" onchange="updateChecklist()"> Ссылка работает и ведёт на нужный сайт</label>
+        <div class="cl-summary" id="clSummary">Отмечено: 0 из 6</div>
+      </div>
+
+      <button class="btn b-green" id="pracSendBtn" onclick="sendPractice()" style="margin-top:14px">📤 Отправить отчёт на проверку</button>
+      <div class="fb" id="pracFb" style="margin-top:10px"></div>
+
+      <div class="teacher-mark">
+        <label for="teacherMark">Оценка учителя за практику:</label>
+        <select id="teacherMark" onchange="setTeacherMark(this.value)">
+          <option value="">— выберите —</option>
+          <option value="5">5</option>
+          <option value="4">4</option>
+          <option value="3">3</option>
+          <option value="2">2</option>
+        </select>
+        <small>Выставляется учителем после проверки отчёта.</small>
+      </div>
     </div>
   </section>
 
-  <!-- 3. ТЕСТ -->
-  <section class="card" id="test">
-    <h2><span class="num">3</span> Тест на закрепление</h2>
-    <p class="muted">Выберите вариант и ответьте на вопросы. После завершения нажмите «Проверить результаты».</p>
-
-    <div id="testStart">
-      <div style="display:flex; gap:10px; margin-bottom:20px;">
-        <button class="btn b-purple" onclick="startTest(1)">Вариант 1</button>
-        <button class="btn b-purple" onclick="startTest(2)">Вариант 2</button>
-      </div>
+  <!-- ===================== ИТОГ ===================== -->
+  <section class="card" id="final">
+    <h2><span class="num">4</span> Итоговая оценка за урок</h2>
+    <p class="muted">Складывается из рабочей тетради и оценки учителя за практическую работу.<br>
+      Шкала: 90–100 → 5, 70–89 → 4, 50–69 → 3, 0–49 → 2.</p>
+    <div class="controls">
+      <button class="btn b-purple" onclick="calcFinalMark()">🎯 Подвести итог</button>
     </div>
-
-    <div id="testBody" style="display:none;">
-      <h3 id="testVariantTitle" style="margin-bottom:20px; color:#4c1d95;"></h3>
-      <div id="testQuestions"></div>
-      <button class="btn b-green" onclick="checkTest()" style="margin-top:20px;">✅ Проверить результаты</button>
-      <div id="testResult" class="result-box" style="display:none;">
-        <div class="res-score" id="testScore">0</div>
-        <p style="margin:10px 0 0; font-weight:700;">Правильных ответов</p>
-        <p style="margin:5px 0 0; font-size:1.2rem; font-weight:800;" id="testMark">Оценка: —</p>
+    <div class="res" id="finalResult">
+      <h3>Итог урока</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Тетрадь</div><div class="val" id="fWb">—</div></div>
+        <div class="mcard"><div class="lbl">Практика (учитель)</div><div class="val" id="fPrac">—</div></div>
+        <div class="mcard total"><div class="lbl">Итог</div><div class="val" id="fTotal">—</div></div>
       </div>
+      <p id="finalMsg" style="margin:12px 0 0;font-weight:600;color:#065f46"></p>
     </div>
   </section>
 
-  <!-- 4. ПРОВЕРЬТЕ СЕБЯ -->
+  <!-- ===================== ДОМАШНЕЕ ЗАДАНИЕ ===================== -->
   <section class="card" id="homework">
-    <h2><span class="num">4</span> Проверьте себя (в VS Code)</h2>
-    <p>После того как наберёте код в VS Code и откроете страницу в браузере, проверьте:</p>
-    <ul style="list-style-type: none; padding-left: 0;">
-      <li>✅ Страница открывается и связана ссылкой с главной</li>
-      <li>✅ Видны три группы устройств со списками</li>
-      <li>✅ Шаги обработки информации пронумерованы</li>
-      <li>✅ Фотография материнской платы отображается</li>
-      <li>✅ Под фотографией есть подпись</li>
-      <li>✅ Ссылка «Наверх» возвращает к шапке</li>
-    </ul>
+    <h2><span class="num">5</span> Домашнее задание — тест</h2>
+    <p class="muted">Тест по теории. Скачайте PDF, распечатайте, заполните и принесите на следующий урок.</p>
+    <button class="btn b-orange no-print" onclick="downloadHomeworkPDF()">📄 Скачать тест в PDF</button>
+    <button class="btn b-teal no-print" onclick="printHomework()" style="margin-left:8px">🖨 Печать теста</button>
+
+    <div id="hwBlock" style="display:none">
+      <h3>Домашнее задание. Тест «Текст, картинки и ссылки»</h3>
+      <p>Фамилия, имя: ______________________________  Класс: ______</p>
+      <p><b>1.</b> Какой тег создаёт маркированный список?</p>
+      <p>а) &lt;ol&gt; &nbsp;&nbsp; б) &lt;ul&gt; &nbsp;&nbsp; в) &lt;li&gt; &nbsp;&nbsp; г) &lt;list&gt;</p>
+      <p><b>2.</b> Какой тег создаёт нумерованный список?</p>
+      <p>а) &lt;ul&gt; &nbsp;&nbsp; б) &lt;ol&gt; &nbsp;&nbsp; в) &lt;li&gt; &nbsp;&nbsp; г) &lt;dl&gt;</p>
+      <p><b>3.</b> Какой атрибут тега &lt;img&gt; задаёт путь к файлу?</p>
+      <p>а) href &nbsp;&nbsp; б) src &nbsp;&nbsp; в) alt &nbsp;&nbsp; г) link</p>
+      <p><b>4.</b> Какой атрибут ссылки задаёт адрес перехода?</p>
+      <p>а) src &nbsp;&nbsp; б) href &nbsp;&nbsp; в) alt &nbsp;&nbsp; г) url</p>
+      <p><b>5.</b> Что означает атрибут alt у картинки?</p>
+      <p>а) размер картинки &nbsp;&nbsp; б) альтернативный текст &nbsp;&nbsp; в) папка с картинками &nbsp;&nbsp; г) цвет рамки</p>
+      <p><b>6.</b> Какой тег делает текст жирным и важным?</p>
+      <p>а) &lt;i&gt; &nbsp;&nbsp; б) &lt;em&gt; &nbsp;&nbsp; в) &lt;strong&gt; &nbsp;&nbsp; г) &lt;b&gt;</p>
+      <p><b>7.</b> Какой тег создаёт перенос строки?</p>
+      <p>а) &lt;p&gt; &nbsp;&nbsp; б) &lt;br&gt; &nbsp;&nbsp; в) &lt;hr&gt; &nbsp;&nbsp; г) &lt;newline&gt;</p>
+      <p><b>8.</b> Какая ссылка называется относительной?</p>
+      <p>а) с полным адресом https://… &nbsp;&nbsp; б) путь внутри своего сайта &nbsp;&nbsp; в) ссылка на картинку &nbsp;&nbsp; г) ссылка без текста</p>
+      <p><b>9.</b> Зачем нужен alt, если картинка загрузилась?</p>
+      <p>а) ни за чем &nbsp;&nbsp; б) для незрячих пользователей и поиска &nbsp;&nbsp; в) для цвета &nbsp;&nbsp; г) для размера</p>
+      <p><b>10.</b> Какой тег задаёт заголовок 1 уровня?</p>
+      <p>а) &lt;h1&gt; &nbsp;&nbsp; б) &lt;h6&gt; &nbsp;&nbsp; в) &lt;p&gt; &nbsp;&nbsp; г) &lt;title&gt;</p>
+      <p style="margin-top:18px"><b>Ответы:</b> 1__ 2__ 3__ 4__ 5__ 6__ 7__ 8__ 9__ 10__</p>
+    </div>
+  </section>
+
+  <!-- ===================== САМОСТОЯТЕЛЬНАЯ ===================== -->
+  <section class="card" id="standaloneGate">
+    <h2><span class="num">6</span> Самостоятельная работа <span class="badge">по паролю</span></h2>
+    <p>Тест на 15 минут. Открывается по паролю учителя. Во время работы теория и рабочая тетрадь недоступны.</p>
+    <div class="lockrow" style="justify-content:flex-start">
+      <input type="password" id="saPass" placeholder="Пароль учителя" autocomplete="off"
+             onkeydown="if(event.key==='Enter')unlockStandalone()">
+      <button class="btn b-blue" id="saBtn" onclick="unlockStandalone()">🔓 Начать тест</button>
+    </div>
+    <div class="pmsg" id="saMsg"></div>
   </section>
 
 </div><!-- /wrap -->
 
-<script>
-// --- Логика теста ---
-const testData = {
-  1: [
-    { q: '1. Какой тег создаёт нумерованный список?', type: 'radio', options: ['&lt;ul&gt;', '&lt;ol&gt;', '&lt;li&gt;', '&lt;list&gt;'], answer: 1 },
-    { q: '2. Зачем нужен атрибут alt?', type: 'radio', options: ['меняет размер', 'показывает текст вместо незагрузившейся картинки', 'добавляет рамку', 'делает ссылку'], answer: 1 },
-    { q: '3. Какие теги делают текст жирным? (выберите все верные)', type: 'checkbox', options: ['&lt;b&gt;', '&lt;strong&gt;', '&lt;i&gt;', '&lt;em&gt;'], answer: [0, 1] },
-    { q: '4. Тег &lt;li&gt; используется и в &lt;ul&gt;, и в &lt;ol&gt;.', type: 'radio', options: ['Верно', 'Неверно'], answer: 0 },
-    { q: '5. Ссылка &lt;a href="page.html"&gt; откроет страницу другого сайта.', type: 'radio', options: ['Верно', 'Неверно'], answer: 1 },
-    { q: '6. Напишите тег для вставки изображения.', type: 'text', answer: '<img>' },
-    { q: '7. Установите соответствие между тегом и его назначением:<br>1) &lt;a&gt; 2) &lt;img&gt; 3) &lt;ul&gt; 4) &lt;dl&gt;<br>а) картинка б) список определений в) ссылка г) маркированный список<br><i>Введите ответ в формате: 1-в, 2-а...</i>', type: 'text', answer: '1-в, 2-а, 3-г, 4-б' },
-    { q: '8. Правильная ссылка на другую страницу своего сайта:', type: 'radio', options: ['&lt;a src="page.html"&gt;', '&lt;a href="page.html"&gt;', '&lt;link page.html&gt;', '&lt;img href="page.html"&gt;'], answer: 1 },
-    { q: '9. Найдите ошибку: &lt;ul&gt; &lt;li&gt;Процессор&lt;/li&gt; &lt;li&gt;Память &lt;/ul&gt;<br><i>Введите пропущенный закрывающий тег</i>', type: 'text', answer: '</li>' },
-    { q: '10. Чем &lt;ul&gt; отличается от &lt;ol&gt;? (Одним предложением)', type: 'text', answer: 'ul — маркированный, ol — нумерованный' }
-  ],
-  2: [
-    { q: '1. Какой тег создаёт абзац?', type: 'radio', options: ['&lt;t&gt;', '&lt;p&gt;', '&lt;par&gt;', '&lt;br&gt;'], answer: 1 },
-    { q: '2. Атрибут src встречается у тега:', type: 'radio', options: ['&lt;a&gt;', '&lt;img&gt;', '&lt;p&gt;', '&lt;ul&gt;'], answer: 1 },
-    { q: '3. Какие теги служат для выделения текста? (выберите все верные)', type: 'checkbox', options: ['&lt;b&gt;', '&lt;i&gt;', '&lt;hr&gt;', '&lt;u&gt;'], answer: [0, 1, 3] },
-    { q: '4. Атрибут width задаёт ширину изображения.', type: 'radio', options: ['Верно', 'Неверно'], answer: 0 },
-    { q: '5. Напишите тег нумерованного списка.', type: 'text', answer: '<ol>' },
-    { q: '6. Установите соответствие между устройством и его типом:<br>1) клавиатура 2) монитор 3) мышь<br>а) устройство вывода б) устройство ввода<br><i>Введите ответ в формате: 1-б, 2-а...</i>', type: 'text', answer: '1-б, 2-а, 3-б' },
-    { q: '7. Куда правильно класть картинки сайта?', type: 'radio', options: ['в папку images рядом с HTML', 'на другой сайт', 'в style.css', 'в title'], answer: 0 },
-    { q: '8. &lt;br&gt; используется для переноса строки.', type: 'radio', options: ['Верно', 'Неверно'], answer: 0 },
-    { q: '9. Найдите ошибку: &lt;h2&gt;Устройства&lt;/h2&gt; &lt;img src="images/monitor.jpg"&gt;<br><i>Введите пропущенный атрибут (одно слово)</i>', type: 'text', answer: 'alt' },
-    { q: '10. Зачем картинке атрибут alt? (Одним предложением)', type: 'text', answer: 'показывает текст, если картинка не загрузилась' }
-  ]
-};
+<div class="bar no-print">
+  <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
+  <button class="btn b-yellow" onclick="scrollToGate()">📝 Самостоятельная</button>
+  <button class="btn b-orange" onclick="downloadHomeworkPDF()">📄 Скачать ДЗ (PDF)</button>
+</div>
 
-let currentVariant = 0;
+<!-- ===================== САМОСТОЯТЕЛЬНАЯ ===================== -->
+<section id="standalone">
+  <div class="exam-head">
+    <div>
+      <div class="exam-title">📝 Самостоятельная работа. Тест</div>
+      <div class="exam-who" id="examWho">Ученик не указан</div>
+    </div>
+    <div class="timer" id="examTimer">15:00</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
+      <button class="btn b-green" onclick="finishStandalone()">✅ Сдать тест</button>
+    </div>
+  </div>
 
-function startTest(v) {
-  currentVariant = v;
-  document.getElementById('testStart').style.display = 'none';
-  document.getElementById('testBody').style.display = 'block';
-  document.getElementById('testVariantTitle').textContent = 'Вариант ' + v;
-  document.getElementById('testResult').style.display = 'none';
+  <div class="card" style="margin-top:0">
+    <h2 style="margin-bottom:10px"><span class="num">6</span> Самостоятельная работа</h2>
+    <div class="no-calc-warn">
+      ⚠️ Во время работы теория и рабочая тетрадь недоступны. Выберите один вариант ответа в каждом вопросе.
+    </div>
 
-  const questions = testData[v];
-  const host = document.getElementById('testQuestions');
-  let html = '';
+    <div id="examTasks"></div>
 
-  questions.forEach((q, i) => {
-    html += `<div class="q-block">`;
-    html += `<div class="q-title">${q.q}</div>`;
-    
-    if (q.type === 'radio') {
-      q.options.forEach((opt, j) => {
-        html += `<label class="test-option"><input type="radio" name="q${i}" value="${j}"> ${opt}</label>`;
-      });
-    } else if (q.type === 'checkbox') {
-      q.options.forEach((opt, j) => {
-        html += `<label class="test-option"><input type="checkbox" name="q${i}" value="${j}"> ${opt}</label>`;
-      });
-    } else if (q.type === 'text') {
-      html += `<input type="text" class="test-input" id="q${i}" placeholder="Ваш ответ...">`;
-    }
-    html += `</div>`;
-  });
+    <div class="res" id="examResult">
+      <h3>📊 Результат работы</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Верно решено</div><div class="val" id="exCorrect">0</div></div>
+        <div class="mcard total"><div class="lbl">Оценка</div><div class="val" id="exMark">—</div></div>
+        <div class="mcard"><div class="lbl">Время</div><div class="val" id="exTime" style="font-size:1.5rem">—</div></div>
+      </div>
+      <p id="exMsg" style="margin:12px 0 0;font-weight:600;color:#065f46"></p>
+    </div>
 
-  host.innerHTML = html;
-}
+    <div class="controls no-print" style="margin-top:16px">
+      <button class="btn b-orange" onclick="saveStandalonePDF()">📄 Сохранить PDF</button>
+      <button class="btn b-red" onclick="exitStandalone()">← Выйти из работы</button>
+    </div>
+    <p style="color:var(--muted);font-size:.85rem;margin:10px 0 0">
+      Файл сохраняется как <b id="filePreview">Фамилия_Имя_Класс_тест</b>.
+    </p>
+  </div>
+</section>
 
-function checkTest() {
-  const questions = testData[currentVariant];
-  let correctCount = 0;
+<!-- ===================== КАЛЬКУЛЯТОР ===================== -->
+<div class="mbg" id="calcModal">
+  <div class="modal calc" role="dialog">
+    <h3 style="margin-bottom:12px">🧮 Калькулятор</h3>
+    <div class="calc-screen">
+      <div class="calc-expr" id="calcExpr"></div>
+      <div class="calc-out" id="calcOut">0</div>
+    </div>
+    <div class="calc-grid">
+      <button class="cbtn clr" onclick="calcClear()">C</button>
+      <button class="cbtn del" onclick="calcBack()">⌫</button>
+      <button class="cbtn op" onclick="calcOp('^')">xʸ</button>
+      <button class="cbtn op" onclick="calcOp('/')">÷</button>
+      <button class="cbtn" onclick="calcNum('7')">7</button>
+      <button class="cbtn" onclick="calcNum('8')">8</button>
+      <button class="cbtn" onclick="calcNum('9')">9</button>
+      <button class="cbtn op" onclick="calcOp('*')">×</button>
+      <button class="cbtn" onclick="calcNum('4')">4</button>
+      <button class="cbtn" onclick="calcNum('5')">5</button>
+      <button class="cbtn" onclick="calcNum('6')">6</button>
+      <button class="cbtn op" onclick="calcOp('-')">−</button>
+      <button class="cbtn" onclick="calcNum('1')">1</button>
+      <button class="cbtn" onclick="calcNum('2')">2</button>
+      <button class="cbtn" onclick="calcNum('3')">3</button>
+      <button class="cbtn op" onclick="calcOp('+')">+</button>
+      <button class="cbtn" onclick="calcNum('0')">0</button>
+      <button class="cbtn" onclick="calcNum('00')">00</button>
+      <button class="cbtn eq" onclick="calcEquals()">=</button>
+    </div>
+    <div style="text-align:right;margin-top:16px">
+      <button class="btn b-red" onclick="closeCalc()">Закрыть</button>
+    </div>
+  </div>
+</div>
 
-  questions.forEach((q, i) => {
-    let isCorrect = false;
-
-    if (q.type === 'radio') {
-      const selected = document.querySelector(`input[name="q${i}"]:checked`);
-      if (selected && parseInt(selected.value) === q.answer) isCorrect = true;
-    } else if (q.type === 'checkbox') {
-      const checked = Array.from(document.querySelectorAll(`input[name="q${i}"]:checked`)).map(el => parseInt(el.value));
-      // Проверка массивов на совпадение
-      if (checked.length === q.answer.length && checked.every(v => q.answer.includes(v))) isCorrect = true;
-    } else if (q.type === 'text') {
-      const val = document.getElementById(`q${i}`).value.trim().toLowerCase();
-      // Для текстовых ответов делаем нестрогую проверку (убираем пробелы и знаки)
-      const cleanVal = val.replace(/[\s,.-]/g, '');
-      const cleanAns = q.answer.toLowerCase().replace(/[\s,.-]/g, '');
-      // Небольшой допуск для открытых вопросов
-      if (q.answer === 'ul — маркированный, ol — нумерованный' || q.answer === 'показывает текст, если картинка не загрузилась') {
-         if (val.includes('маркирован') || val.includes('нумер') || val.includes('не загрузил')) isCorrect = true;
-      } else {
-         if (cleanVal === cleanAns) isCorrect = true;
-      }
-    }
-
-    if (isCorrect) correctCount++;
-  });
-
-  const resultBox = document.getElementById('testResult');
-  const scoreEl = document.getElementById('testScore');
-  const markEl = document.getElementById('testMark');
-
-  scoreEl.textContent = correctCount + ' / 10';
-  
-  let mark = 2;
-  if (correctCount >= 9) mark = 5;
-  else if (correctCount >= 7) mark = 4;
-  else if (correctCount >= 5) mark = 3;
-
-  markEl.textContent = 'Оценка: ' + mark;
-  resultBox.classList.add('show');
-  
-  if (mark >= 4) {
-    resultBox.classList.remove('bad');
-    resultBox.style.display = 'block';
-  } else {
-    resultBox.classList.add('bad');
-    resultBox.style.display = 'block';
-  }
-}
-</script>
+<div class="toast" id="toast"></div>
 
 <script src="../assets/js/main.js"></script>
+
+<script>
+/* =========================================================
+   0. НАСТРОЙКИ GOOGLE APPS SCRIPT
+   ========================================================= */
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzRiIsJ8Sbn1HP1n9cTnVE652h1Ohrd8Q6wH3raYPLfGnIu7u-rsYG7BAp0VT7eXgs8/exec';
+var RESOURCE_ID = 'urok-html-text-img-links';
+var SA_MINUTES = 15;
+
+/* =========================================================
+   1. ПРОВЕРКА ПАРОЛЯ ЧЕРЕЗ GOOGLE APPS SCRIPT
+   ========================================================= */
+async function checkPasswordRemote(resourceId, type, password){
+  try {
+    var response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ resource: resourceId, type: type, password: password })
+    });
+    var data = await response.json();
+    return data;
+  } catch (error) {
+    return { ok: false, error: 'network' };
+  }
+}
+
+/* =========================================================
+   2. СОСТОЯНИЕ
+   ========================================================= */
+var lessonState = {
+  wb: { q1:false, q2:false, q3:false, q4:false, q5:false, q6:false },
+  wbCorrect: 0, wbMark: 0,
+  pracSent: false,
+  teacherMark: 0
+};
+var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
+var PRACTICE_STEPS = ['step1','step2','step3','step4','step5','step6','step7'];
+
+/* =========================================================
+   3. РАБОЧАЯ ТЕТРАДЬ
+   ========================================================= */
+function checkW(inputId, answer, fbId){
+  if (lessonState.wb[inputId]){ showFb(fbId,'✔ Уже решено.','hint'); return; }
+  var v = (document.getElementById(inputId).value||'').trim();
+  if (v.toLowerCase() === String(answer).toLowerCase()){
+    lessonState.wb[inputId] = true;
+    showFb(fbId,'✅ Верно!','ok');
+  } else {
+    showFb(fbId,'❌ Неверно. Смотрите подсказку.','no');
+  }
+}
+function checkWRadio(name, answer, fbId){
+  if (lessonState.wb[name]){ showFb(fbId,'✔ Уже решено.','hint'); return; }
+  var sel = document.querySelector('input[name="'+name+'"]:checked');
+  if (!sel){ showFb(fbId,'Выберите вариант.','hint'); return; }
+  document.querySelectorAll('input[name="'+name+'"]').forEach(function(r){
+    var lab = r.closest('.opt');
+    lab.classList.remove('correct','wrong');
+    if (r.value === answer) lab.classList.add('correct');
+    if (r.checked && r.value !== answer) lab.classList.add('wrong');
+  });
+  if (sel.value === answer){ lessonState.wb[name] = true; showFb(fbId,'✅ Верно!','ok'); }
+  else                     { showFb(fbId,'❌ Неверно.','no'); }
+}
+function calcWorkbook(){
+  var correct = ['q1','q2','q3','q4','q5','q6'].filter(function(k){ return lessonState.wb[k]; }).length;
+  var pct = Math.round(correct / 6 * 100);
+  lessonState.wbCorrect = correct;
+  lessonState.wbMark = percentToMark(pct);
+  document.getElementById('wbCorrect').textContent = correct;
+  document.getElementById('wbMark').textContent = lessonState.wbMark;
+  document.getElementById('wbResult').classList.add('show');
+  toast('Тетрадь: ' + correct + '/6, оценка ' + lessonState.wbMark);
+}
+
+/* =========================================================
+   4. ПРАКТИКА: ПОШАГОВЫЙ ПРАКТИКУМ + ЧЕК-ЛИСТ
+   ========================================================= */
+async function unlockPractice(){
+  var inp = document.getElementById('pracPass');
+  var msg = document.getElementById('pracMsg');
+  var btn = document.getElementById('pracBtn');
+  var pass = inp.value.trim();
+
+  if (!pass){ msg.className='pmsg'; msg.textContent='Введите пароль.'; return; }
+
+  msg.className = 'pmsg info'; msg.textContent = 'Проверка…'; btn.disabled = true;
+
+  var data = await checkPasswordRemote(RESOURCE_ID, 'practice', pass);
+  btn.disabled = false;
+
+  if (data.error === 'network'){
+    msg.className = 'pmsg';
+    msg.textContent = '⚠️ Ошибка соединения. Проверьте интернет.';
+    return;
+  }
+  if (!data.ok){
+    msg.className = 'pmsg';
+    msg.textContent = '❌ Неверный пароль.';
+    inp.value = ''; inp.focus();
+    return;
+  }
+
+  msg.textContent = '';
+  inp.value = '';
+  document.getElementById('practiceLock').style.display = 'none';
+  document.getElementById('practiceBody').style.display = 'block';
+  loadPracticeState();
+  toast('🔓 Практика открыта');
+}
+
+function updateChecklist(){
+  var boxes = ['cl1','cl2','cl3','cl4','cl5','cl6'];
+  var n = boxes.filter(function(id){ return document.getElementById(id).checked; }).length;
+  document.getElementById('clSummary').textContent = 'Отмечено: ' + n + ' из 6';
+  savePracticeState();
+}
+
+function sendPractice(){
+  var filled = 0;
+  PRACTICE_STEPS.forEach(function(id){
+    var el = document.getElementById(id);
+    if (el && el.value.trim()) filled++;
+  });
+  if (filled < PRACTICE_STEPS.length){
+    showFb('pracFb','❌ Заполните все семь шагов отчёта (даже кратко).','no');
+    return;
+  }
+  var boxes = ['cl1','cl2','cl3','cl4','cl5','cl6'];
+  var checked = boxes.filter(function(id){ return document.getElementById(id).checked; }).length;
+  if (checked < 6){
+    showFb('pracFb','❌ Отметьте все пункты чек-листа самопроверки (проверьте, что всё работает).','no');
+    return;
+  }
+
+  lessonState.pracSent = true;
+  showFb('pracFb','✅ Отчёт отправлен. Учитель проверит и выставит оценку.','ok');
+  PRACTICE_STEPS.forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.disabled = true;
+  });
+  boxes.forEach(function(id){ document.getElementById(id).disabled = true; });
+  document.getElementById('pracSendBtn').style.display = 'none';
+  savePracticeState();
+  toast('📤 Отчёт отправлен на проверку');
+}
+
+function setTeacherMark(v){
+  if (!lessonState.pracSent){
+    toast('Сначала ученик должен отправить отчёт');
+    document.getElementById('teacherMark').value = '';
+    return;
+  }
+  lessonState.teacherMark = Number(v) || 0;
+  savePracticeState();
+  toast('Оценка учителя: ' + (v || '—'));
+}
+
+function savePracticeState(){
+  try {
+    var d = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    d.pracSent = lessonState.pracSent;
+    d.teacherMark = lessonState.teacherMark;
+    d.steps = {};
+    PRACTICE_STEPS.forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) d.steps[id] = el.value;
+    });
+    d.checks = {};
+    ['cl1','cl2','cl3','cl4','cl5','cl6'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) d.checks[id] = el.checked;
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  } catch(e){}
+}
+
+function loadPracticeState(){
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    var d = JSON.parse(raw);
+    if (d.steps){
+      Object.keys(d.steps).forEach(function(id){
+        var el = document.getElementById(id);
+        if (el) el.value = d.steps[id];
+      });
+    }
+    if (d.checks){
+      Object.keys(d.checks).forEach(function(id){
+        var el = document.getElementById(id);
+        if (el) el.checked = d.checks[id];
+      });
+      updateChecklist();
+    }
+    if (d.pracSent){
+      lessonState.pracSent = true;
+      showFb('pracFb','✅ Отчёт уже отправлен. Учитель проверит и выставит оценку.','ok');
+      PRACTICE_STEPS.forEach(function(id){
+        var el = document.getElementById(id);
+        if (el) el.disabled = true;
+      });
+      ['cl1','cl2','cl3','cl4','cl5','cl6'].forEach(function(id){
+        var el = document.getElementById(id);
+        if (el) el.disabled = true;
+      });
+      document.getElementById('pracSendBtn').style.display = 'none';
+    }
+    if (d.teacherMark){
+      lessonState.teacherMark = d.teacherMark;
+      document.getElementById('teacherMark').value = d.teacherMark;
+    }
+  } catch(e){}
+}
+
+/* ---------- ЗАЩИТА ОТ КОПИРОВАНИЯ ---------- */
+(function protectPractice(){
+  var area = document.getElementById('practiceBody');
+  if (!area) return;
+
+  function isField(t){
+    return t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT');
+  }
+
+  ['copy','cut','contextmenu','dragstart','selectstart'].forEach(function(ev){
+    area.addEventListener(ev, function(e){
+      if (isField(e.target)) return;
+      e.preventDefault();
+      if (ev === 'copy' || ev === 'cut') toast('🔒 Копирование текста практики запрещено');
+    });
+  });
+
+  area.addEventListener('keydown', function(e){
+    var k = (e.key || '').toLowerCase();
+    if ((e.ctrlKey || e.metaKey) && ['a','c','x','insert'].indexOf(k) !== -1 && !isField(e.target)){
+      e.preventDefault();
+      toast('🔒 Копирование текста практики запрещено');
+    }
+  });
+})();
+
+/* =========================================================
+   5. ИТОГ
+   ========================================================= */
+function calcFinalMark(){
+  var wb = lessonState.wbMark || 0;
+  var pr = lessonState.teacherMark || 0;
+  if (!wb && !pr){
+    toast('Сначала выполните тетрадь и дождитесь оценки учителя');
+    return;
+  }
+  var total = Math.round((wb + pr) / 2);
+  document.getElementById('fWb').textContent = wb || '—';
+  document.getElementById('fPrac').textContent = pr || '—';
+  document.getElementById('fTotal').textContent = total;
+  document.getElementById('finalResult').classList.add('show');
+  document.getElementById('finalMsg').textContent =
+    total === 5 ? '🌟 Отличная работа!' :
+    total === 4 ? '👏 Хорошо, но есть над чем поработать.' :
+    total === 3 ? '📖 Удовлетворительно. Повторите теорию.' :
+                  '📚 Стоит вернуться к теории.';
+}
+
+/* =========================================================
+   6. САМОСТОЯТЕЛЬНАЯ (ТЕСТ ПО ПАРОЛЮ)
+   ========================================================= */
+var saTimer = null, saLeft = 0, saTasks = [], saStarted = false, saDone = false;
+
+function genStandalone(){
+  function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+  var bank = [
+    {q:'Какой тег создаёт маркированный список?', options:['&lt;ol&gt;','&lt;ul&gt;','&lt;li&gt;','&lt;list&gt;'], ans:1},
+    {q:'Какой тег создаёт нумерованный список?', options:['&lt;ul&gt;','&lt;ol&gt;','&lt;li&gt;','&lt;dl&gt;'], ans:1},
+    {q:'Какой атрибут тега &lt;img&gt; задаёт путь к файлу?', options:['href','src','alt','link'], ans:1},
+    {q:'Какой атрибут ссылки задаёт адрес перехода?', options:['src','href','alt','url'], ans:1},
+    {q:'Что означает атрибут alt у картинки?', options:['размер картинки','альтернативный текст','папка с картинками','цвет рамки'], ans:1},
+    {q:'Какой тег делает текст жирным и важным?', options:['&lt;i&gt;','&lt;em&gt;','&lt;strong&gt;','&lt;b&gt;'], ans:2},
+    {q:'Какой тег создаёт перенос строки?', options:['&lt;p&gt;','&lt;br&gt;','&lt;hr&gt;','&lt;newline&gt;'], ans:1},
+    {q:'Какая ссылка называется относительной?', options:['с полным адресом https://…','путь внутри своего сайта','ссылка на картинку','ссылка без текста'], ans:1},
+    {q:'Какой тег задаёт заголовок 1 уровня?', options:['&lt;h1&gt;','&lt;h6&gt;','&lt;p&gt;','&lt;title&gt;'], ans:0},
+    {q:'Какой тег создаёт пункт списка?', options:['&lt;ul&gt;','&lt;ol&gt;','&lt;li&gt;','&lt;item&gt;'], ans:2},
+    {q:'Где обычно хранят картинки для сайта?', options:['в папке images','в корне рядом с index.html','в папке html','в папке css'], ans:0},
+    {q:'Какой тег создаёт курсив (акцент)?', options:['&lt;strong&gt;','&lt;b&gt;','&lt;em&gt;','&lt;i&gt;'], ans:2}
+  ];
+  var tasks = [], used = [];
+  while (tasks.length < 5){
+    var idx = rnd(0, bank.length-1);
+    if (used.indexOf(idx) === -1){ used.push(idx); tasks.push(bank[idx]); }
+  }
+  return tasks;
+}
+
+function scrollToGate(){
+  document.getElementById('standaloneGate').scrollIntoView({behavior:'smooth', block:'center'});
+  document.getElementById('saPass').focus();
+}
+
+async function unlockStandalone(){
+  if (!getSurname() || !getFirstname() || !getKlass()){
+    document.getElementById('saMsg').className = 'pmsg';
+    document.getElementById('saMsg').textContent = 'Сначала заполните фамилию, имя и класс в шапке.';
+    return;
+  }
+  var inp = document.getElementById('saPass');
+  var msg = document.getElementById('saMsg');
+  var btn = document.getElementById('saBtn');
+  var pass = inp.value.trim();
+  if (!pass){ msg.className='pmsg'; msg.textContent='Введите пароль.'; return; }
+
+  msg.className = 'pmsg info'; msg.textContent = 'Проверка…'; btn.disabled = true;
+  var data = await checkPasswordRemote(RESOURCE_ID, 'standalone', pass);
+  btn.disabled = false;
+
+  if (data.error === 'network'){
+    msg.className = 'pmsg';
+    msg.textContent = '⚠️ Ошибка соединения. Проверьте интернет.';
+    return;
+  }
+  if (!data.ok){
+    msg.className = 'pmsg';
+    msg.textContent = '❌ Неверный пароль учителя.';
+    inp.value = ''; inp.focus();
+    return;
+  }
+  msg.textContent = ''; inp.value = '';
+  startStandalone();
+}
+
+function startStandalone(){
+  saTasks = genStandalone();
+  saDone = false; saStarted = true; saLeft = SA_MINUTES*60;
+
+  document.body.classList.add('exam');
+  var who = getFullName() + (getKlass() ? ', ' + getKlass() : '');
+  document.getElementById('examWho').textContent = who || 'Ученик не указан';
+  document.getElementById('filePreview').textContent = getFileName() + '_тест';
+
+  var host = document.getElementById('examTasks');
+  var html = '';
+  saTasks.forEach(function(t, i){
+    html += '<div class="s-task" id="st'+i+'">';
+    html += '<p class="stext"><span class="sn">'+(i+1)+'</span>'+t.q+'</p>';
+    t.options.forEach(function(opt, j){
+      html += '<label class="opt" style="display:block;margin:6px 0">' +
+        '<input type="radio" name="sa'+i+'" value="'+j+'"> '+opt+'</label>';
+    });
+    html += '</div>';
+  });
+  host.innerHTML = html;
+  renderMath(host);
+
+  document.getElementById('examResult').classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  if (saTimer) clearInterval(saTimer);
+  updateTimer();
+  saTimer = setInterval(function(){
+    saLeft--;
+    updateTimer();
+    if (saLeft <= 0){
+      clearInterval(saTimer); saTimer=null;
+      toast('⏰ Время вышло! Тест сдаётся автоматически.');
+      finishStandalone(true);
+    }
+  }, 1000);
+
+  toast('📝 Тест начался. 15 минут пошли!');
+}
+
+function updateTimer(){
+  var m = Math.floor(saLeft/60), s = saLeft % 60;
+  var el = document.getElementById('examTimer');
+  el.textContent = (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  el.className = 'timer' + (saLeft<=60?' danger' : saLeft<=300?' warn':'');
+}
+
+function finishStandalone(auto){
+  if (!saStarted) return;
+  if (!auto && !confirm('Сдать тест? Изменить ответы будет нельзя.')) return;
+  if (saTimer){ clearInterval(saTimer); saTimer=null; }
+  saDone = true;
+
+  var correct = 0;
+  saTasks.forEach(function(t,i){
+    var sel = document.querySelector('input[name="sa'+i+'"]:checked');
+    var ok = sel && Number(sel.value) === t.ans;
+    if (ok) correct++;
+    document.querySelectorAll('input[name="sa'+i+'"]').forEach(function(r){
+      r.disabled = true;
+      var lab = r.closest('.opt');
+      if (Number(r.value) === t.ans) lab.classList.add('correct');
+      if (sel && r.checked && !ok) lab.classList.add('wrong');
+    });
+    var card = document.getElementById('st'+i);
+    if (card) card.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
+  });
+
+  var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
+  var used = SA_MINUTES*60 - Math.max(saLeft,0);
+  var um = Math.floor(used/60), us = used%60;
+
+  document.getElementById('exCorrect').textContent = correct + ' / 5';
+  document.getElementById('exMark').textContent = mark;
+  document.getElementById('exTime').textContent = um+' мин '+(us<10?'0':'')+us+' с';
+  document.getElementById('exMsg').textContent =
+    correct>=5 ? '🌟 Отлично! Все пять вопросов верны.' :
+    correct===4 ? '👏 Хорошо! Одна ошибка.' :
+    correct===3 ? '📖 Удовлетворительно. Повторите теорию.' :
+                  '📚 Стоит ещё раз разобрать тему.';
+  document.getElementById('examResult').classList.add('show');
+  document.getElementById('examResult').scrollIntoView({behavior:'smooth'});
+  toast('Тест сдан: '+correct+' из 5, оценка '+mark);
+}
+
+function exitStandalone(){
+  if (saStarted && !saDone && !confirm('Выйти без сохранения результата?')) return;
+  if (saTimer){ clearInterval(saTimer); saTimer=null; }
+  document.body.classList.remove('exam');
+  saStarted = false;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function saveStandalonePDF(){
+  if (!saDone){ toast('Сначала сдайте тест'); return; }
+  if (!(window.jspdf && window.jspdf.jsPDF)){ toast('jsPDF не загрузился'); return; }
+  var doc = new window.jspdf.jsPDF({unit:'mm', format:'a4'});
+  var fio = getFullName() || 'Ученик';
+  var correct = 0;
+  saTasks.forEach(function(t,i){
+    var sel = document.querySelector('input[name="sa'+i+'"]:checked');
+    if (sel && Number(sel.value) === t.ans) correct++;
+  });
+  var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
+
+  doc.setFontSize(16);
+  doc.text('Samostoyatelnaya rabota', 105, 18, {align:'center'});
+  doc.setFontSize(11);
+  doc.text('Tekst, kartinki i ssylki', 105, 25, {align:'center'});
+  doc.text('Uchenik: ' + fio + '   Klass: ' + (getKlass()||'-'), 20, 36);
+
+  var y = 48;
+  saTasks.forEach(function(t,i){
+    var sel = document.querySelector('input[name="sa'+i+'"]:checked');
+    var given = sel ? t.options[Number(sel.value)] : '—';
+    var prav = t.options[t.ans];
+    doc.setFontSize(9);
+    doc.text((i+1) + '. ' + t.q.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/[^\x00-\x7F]/g,'?'), 18, y);
+    y += 5;
+    doc.text('   Otvet: ' + given.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/[^\x00-\x7F]/g,'?') +
+             '   Pravilno: ' + prav.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/[^\x00-\x7F]/g,'?'), 20, y);
+    y += 8;
+    if (y > 270){ doc.addPage(); y = 20; }
+  });
+
+  doc.setFontSize(13);
+  doc.text('Verno: ' + correct + ' iz 5.   Ocenka: ' + mark, 20, y+6);
+  doc.save(getFileName() + '_test.pdf');
+  toast('📄 PDF сохранён');
+}
+
+/* =========================================================
+   7. ДОМАШНЕЕ ЗАДАНИЕ (ТЕСТ В PDF, НА РУССКОМ)
+   ========================================================= */
+var _hwFontReady = false;
+async function ensureCyrillicFont(doc){
+  if (_hwFontReady) return true;
+  try {
+    var url = 'https://cdn.jsdelivr.net/gh/googlefonts/roboto@main/src/hinted/Roboto-Regular.ttf';
+    var resp = await fetch(url);
+    if (!resp.ok) throw new Error('font fetch failed');
+    var buf = await resp.arrayBuffer();
+    var b64 = arrayBufferToBase64(buf);
+    doc.addFileToVFS('Roboto-Regular.ttf', b64);
+    doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+    doc.setFont('Roboto');
+    _hwFontReady = true;
+    return true;
+  } catch(e){
+    console.warn('Cyrillic font not loaded, fallback to print:', e);
+    return false;
+  }
+}
+function arrayBufferToBase64(buffer){
+  var binary = '', bytes = new Uint8Array(buffer);
+  for (var i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+}
+
+async function downloadHomeworkPDF(){
+  if (!(window.jspdf && window.jspdf.jsPDF)){ toast('jsPDF не загрузился'); return; }
+
+  var doc = new window.jspdf.jsPDF({unit:'mm', format:'a4'});
+  var okFont = await ensureCyrillicFont(doc);
+  if (!okFont){
+    toast('Не удалось загрузить шрифт. Открываю печать…');
+    printHomework();
+    return;
+  }
+
+  var y = 18;
+  doc.setFontSize(15);
+  doc.text('Домашнее задание. Тест', 105, y, {align:'center'}); y += 7;
+  doc.setFontSize(11);
+  doc.text('Текст, картинки и ссылки', 105, y, {align:'center'}); y += 10;
+  doc.setFontSize(11);
+  doc.text('Фамилия, имя: ______________________________   Класс: ______', 20, y); y += 10;
+
+  var qs = [
+    {q:'Какой тег создаёт маркированный список?', a:'а) <ol>   б) <ul>   в) <li>   г) <list>'},
+    {q:'Какой тег создаёт нумерованный список?', a:'а) <ul>   б) <ol>   в) <li>   г) <dl>'},
+    {q:'Какой атрибут тега <img> задаёт путь к файлу?', a:'а) href   б) src   в) alt   г) link'},
+    {q:'Какой атрибут ссылки задаёт адрес перехода?', a:'а) src   б) href   в) alt   г) url'},
+    {q:'Что означает атрибут alt у картинки?', a:'а) размер картинки   б) альтернативный текст   в) папка с картинками   г) цвет рамки'},
+    {q:'Какой тег делает текст жирным и важным?', a:'а) <i>   б) <em>   в) <strong>   г) <b>'},
+    {q:'Какой тег создаёт перенос строки?', a:'а) <p>   б) <br>   в) <hr>   г) <newline>'},
+    {q:'Какая ссылка называется относительной?', a:'а) с полным адресом https://…   б) путь внутри своего сайта   в) ссылка на картинку   г) ссылка без текста'},
+    {q:'Зачем нужен alt, если картинка загрузилась?', a:'а) ни за чем   б) для незрячих пользователей и поиска   в) для цвета   г) для размера'},
+    {q:'Какой тег задаёт заголовок 1 уровня?', a:'а) <h1>   б) <h6>   в) <p>   г) <title>'}
+  ];
+
+  doc.setFontSize(10);
+  qs.forEach(function(item, i){
+    if (y > 265){ doc.addPage(); y = 18; }
+    doc.text((i+1) + '. ' + item.q, 20, y); y += 5;
+    doc.text('   ' + item.a, 22, y); y += 9;
+  });
+
+  if (y > 250){ doc.addPage(); y = 18; }
+  doc.setFontSize(11);
+  doc.text('Ответы: 1__  2__  3__  4__  5__  6__  7__  8__  9__  10__', 20, y);
+
+  doc.save('domashnee_zadanie_HTML_text_img_links.pdf');
+  toast('📄 PDF с домашним заданием сохранён');
+}
+
+function printHomework(){
+  var fio = getFullName() + (getKlass() ? ', ' + getKlass() : '');
+  var hw = document.getElementById('hwBlock').innerHTML;
+  var w = window.open('', '_blank');
+  if (!w){ alert('Разрешите всплывающие окна.'); return; }
+  w.document.write(
+    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Домашнее задание</title>'+
+    '<style>body{font-family:Georgia,serif;padding:14mm;font-size:12pt;line-height:1.6;max-width:190mm;margin:0 auto}'+
+    'h3{text-align:center;font-size:15pt}p{margin:4mm 0}'+
+    '@page{margin:14mm}</style></head><body>'+
+    hw +
+    '<p style="text-align:center;margin-top:8mm">'+
+    (fio ? 'Ученик: <b>'+fio+'</b>' : 'Ученик: ____________________')+'</p>'+
+    '</body></html>'
+  );
+  w.document.close();
+  setTimeout(function(){ try{ w.print(); }catch(e){} }, 600);
+}
+
+/* =========================================================
+   8. КАЛЬКУЛЯТОР
+   ========================================================= */
+var calcBuf = '';
+function openCalc(){ document.getElementById('calcModal').classList.add('open'); calcRender(); }
+function closeCalc(){ document.getElementById('calcModal').classList.remove('open'); }
+function calcNum(d){ if (calcBuf === '0' && d !== '0') calcBuf = ''; calcBuf += d; calcRender(); }
+function calcOp(op){
+  if (!calcBuf){ if (op === '-'){ calcBuf = '-'; calcRender(); } return; }
+  if ('+-*/^'.indexOf(calcBuf.slice(-1)) !== -1) calcBuf = calcBuf.slice(0,-1);
+  calcBuf += op; calcRender();
+}
+function calcClear(){ calcBuf = ''; calcRender(); }
+function calcBack(){ calcBuf = calcBuf.slice(0,-1); calcRender(); }
+function calcRender(){
+  document.getElementById('calcExpr').textContent = calcBuf;
+  document.getElementById('calcOut').textContent = calcEval(calcBuf) ?? '0';
+}
+function calcEval(s){
+  if (!s) return 0;
+  try { return Function('"use strict";return (' + s.replace(/\^/g,'**') + ')')(); }
+  catch(e){ return '…'; }
+}
+function calcEquals(){ var v = calcEval(calcBuf); calcBuf = String(v); calcRender(); }
+document.getElementById('calcModal').addEventListener('click', function(e){
+  if (e.target === this) closeCalc();
+});
+
+/* =========================================================
+   9. ПОМОЩНИКИ
+   ========================================================= */
+function getSurname(){ return (document.getElementById('surname')?.value || '').trim(); }
+function getFirstname(){ return (document.getElementById('firstname')?.value || '').trim(); }
+function getKlass(){ return (document.getElementById('klass')?.value || '').trim(); }
+function getFullName(){ return [getSurname(), getFirstname()].filter(Boolean).join(' '); }
+function getFileName(){
+  var parts = [getSurname(), getFirstname(), getKlass()].filter(Boolean);
+  return (parts.length ? parts.join('_') : 'Ученик').replace(/[\\/:*?"<>|\s]+/g,'_');
+}
+function percentToMark(pct){
+  if (pct >= 90) return 5;
+  if (pct >= 70) return 4;
+  if (pct >= 50) return 3;
+  return 2;
+}
+function showFb(id, html, kind){
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = html;
+  el.className = 'fb show ' + kind;
+}
+function renderMath(el){
+  if (!el || !window.MathJax) return;
+  if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){});
+}
+
+window.addEventListener('load', function(){
+  setTimeout(function(){ renderMath(document.body); }, 600);
+});
+document.addEventListener('DOMContentLoaded', function(){
+  loadPracticeState();
+});
+</script>
 </body>
 </html>
