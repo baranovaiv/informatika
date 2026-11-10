@@ -147,15 +147,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   <header class="hero">
     <h1>Текст, списки, ссылки и изображения</h1>
-    <p class="lead">Урок информатики · 8 класс · Создаём страницу «Железо»</p>
-    <div class="student">
-      <div class="f"><label for="surname">Фамилия</label>
-        <input type="text" id="surname" placeholder="Иванов" autocomplete="off"></div>
-      <div class="f"><label for="firstname">Имя</label>
-        <input type="text" id="firstname" placeholder="Пётр" autocomplete="off"></div>
-      <div class="f"><label for="klass">Класс</label>
-        <input type="text" id="klass" placeholder="8А" autocomplete="off"></div>
-    </div>
+    <p class="lead">Урок технологии · 8-9 класс · Создаём страницу Аппаратное обеспечение</p>
+<div class="student" style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; margin-top: 16px;">
+  <div class="f" style="display: flex; flex-direction: column; gap: 6px;">
+    <label for="surname" style="font-size: .8rem; font-weight: 800; color: #4c4660; text-transform: uppercase;">Фамилия</label>
+    <input type="text" id="surname" placeholder="Иванов" autocomplete="off" style="width: 200px; border: none; border-radius: 12px; padding: 12px 16px; font-size: .95rem; font-family: inherit; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+  </div>
+  
+  <div class="f" style="display: flex; flex-direction: column; gap: 6px;">
+    <label for="firstname" style="font-size: .8rem; font-weight: 800; color: #4c4660; text-transform: uppercase;">Имя</label>
+    <input type="text" id="firstname" placeholder="Иван" autocomplete="off" style="width: 180px; border: none; border-radius: 12px; padding: 12px 16px; font-size: .95rem; font-family: inherit; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+  </div>
+  
+  <div class="f" style="display: flex; flex-direction: column; gap: 6px;">
+    <label for="klass" style="font-size: .8rem; font-weight: 800; color: #4c4660; text-transform: uppercase;">Класс</label>
+    <input type="text" id="klass" placeholder="7А" autocomplete="off" style="width: 90px; border: none; border-radius: 12px; padding: 12px 16px; font-size: .95rem; font-family: inherit; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+  </div>
+</div>
   </header>
 
   <!-- 1. ТЕОРИЯ -->
