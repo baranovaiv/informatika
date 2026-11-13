@@ -282,6 +282,7 @@ body.exam #standalone{display:block}
   <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
   <button class="btn b-yellow" onclick="scrollToGate()">📝 Самостоятельная</button>
   <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
+  <button class="btn b-red" onclick="finishLesson()">🏁 Завершить урок</button>
 </div>
 
 <section id="standalone">
@@ -910,6 +911,83 @@ document.addEventListener('DOMContentLoaded', function(){
   renderTasks();
   calcRender();
 });
+
+/* =========================================================
+   8. ЗАВЕРШЕНИЕ УРОКА — ПОЛНЫЙ СБРОС
+   ========================================================= */
+function finishLesson(){
+  if (!confirm('Завершить урок и сбросить ВСЕ результаты?\nЭто действие нельзя отменить.')) return;
+
+  // Остановить таймер самостоятельной
+  if (typeof saTimer !== 'undefined' && saTimer){ clearInterval(saTimer); saTimer = null; }
+
+  // Сброс состояния тетради
+  state = { solved: {} };
+  userAnswers = {};
+
+  // Сброс практики
+  pracDone = false;
+
+  // Сброс самостоятельной
+  if (typeof saStarted !== 'undefined') saStarted = false;
+  if (typeof saDone !== 'undefined') saDone = false;
+  if (typeof saTasks !== 'undefined') saTasks = [];
+  if (typeof saLeft !== 'undefined') saLeft = 0;
+
+  // Тетрадь: перерисовать чистые таблицы
+  renderTasks();
+
+  // Результат тетради скрыть
+  var wbRes = document.getElementById('wbResult');
+  if (wbRes) wbRes.classList.remove('show');
+  var wbCorrect = document.getElementById('wbCorrect'); if (wbCorrect) wbCorrect.textContent = '0';
+  var wbTotal = document.getElementById('wbTotal'); if (wbTotal) wbTotal.textContent = String(TASKS.length);
+  var wbMark = document.getElementById('wbMark'); if (wbMark) wbMark.textContent = '—';
+
+  // Практика: снова закрыть паролем
+  var pLock = document.getElementById('practiceLock');
+  var pBody = document.getElementById('practiceBody');
+  if (pLock) pLock.style.display = '';
+  if (pBody) pBody.style.display = 'none';
+
+  var pPass = document.getElementById('pracPass'); if (pPass) pPass.value = '';
+  var pMsg = document.getElementById('pracMsg'); if (pMsg){ pMsg.textContent = ''; pMsg.className = 'pmsg'; }
+  var pArea = document.getElementById('pracArea'); if (pArea) pArea.innerHTML = '';
+  var pVar = document.getElementById('pracVariant'); if (pVar) pVar.value = '1';
+  var pRes = document.getElementById('pracResult'); if (pRes) pRes.classList.remove('show');
+  var pCorrect = document.getElementById('pracCorrect'); if (pCorrect) pCorrect.textContent = '0';
+  var pMark = document.getElementById('pracMark'); if (pMark) pMark.textContent = '—';
+  var pCheck = document.getElementById('pracCheckBtn'); if (pCheck) pCheck.style.display = 'inline-flex';
+
+  // Итоги
+  var fRes = document.getElementById('finalResult'); if (fRes) fRes.classList.remove('show');
+  ['fWb','fPrac','fTotal'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.textContent = '—';
+  });
+  var fMsg = document.getElementById('finalMsg'); if (fMsg) fMsg.textContent = '';
+
+  // Самостоятельная
+  document.body.classList.remove('exam');
+
+  var saPass = document.getElementById('saPass'); if (saPass) saPass.value = '';
+  var saMsg = document.getElementById('saMsg'); if (saMsg){ saMsg.textContent = ''; saMsg.className = 'pmsg'; }
+  var examTasks = document.getElementById('examTasks'); if (examTasks) examTasks.innerHTML = '';
+  var examResult = document.getElementById('examResult'); if (examResult) examResult.classList.remove('show');
+  var exCorrect = document.getElementById('exCorrect'); if (exCorrect) exCorrect.textContent = '0';
+  var exMark = document.getElementById('exMark'); if (exMark) exMark.textContent = '—';
+  var exTime = document.getElementById('exTime'); if (exTime) exTime.textContent = '—';
+  var examTimer = document.getElementById('examTimer');
+  if (examTimer){ examTimer.textContent = '15:00'; examTimer.className = 'timer'; }
+
+  // Данные ученика
+  ['surname','firstname','klass'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+
+  // Наверх
+  window.scrollTo({top:0, behavior:'smooth'});
+  toast('🏁 Урок завершён. Все результаты сброшены.');
+}
 </script>
 </body>
 </html>
