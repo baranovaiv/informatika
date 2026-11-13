@@ -389,6 +389,7 @@ table.pow tr:first-child td{background:var(--purple);color:#4c1d95;font-weight:8
   <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
   <button class="btn b-yellow" onclick="scrollToGate()">📝 Самостоятельная</button>
   <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
+  <button class="btn b-red" onclick="finishLesson()">🏁 Завершить урок</button>
 </div>
 
 <section id="standalone">
@@ -1300,6 +1301,99 @@ window.addEventListener('load', function(){
 document.addEventListener('DOMContentLoaded', function(){
   loadPracticeState();
 });
+
+/* =========================================================
+   11. ЗАВЕРШЕНИЕ УРОКА — ПОЛНЫЙ СБРОС
+   ========================================================= */
+function finishLesson(){
+  if (!confirm('Завершить урок и сбросить ВСЕ результаты?\nЭто действие нельзя отменить.')) return;
+
+  // Таймер самостоятельной
+  if (typeof saTimer !== 'undefined' && saTimer){ clearInterval(saTimer); saTimer = null; }
+
+  // Состояние урока
+  lessonState = {
+    wb: { w1:false, w2:false, w3:false, w4:false },
+    wbCorrect: 0, wbMark: 0,
+    pracDone: false, pracCorrect: 0, pracMark: 0
+  };
+
+  // Рабочая тетрадь
+  ['w1','w2','w3','w4'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el){ el.value = ''; el.style.borderColor = ''; el.style.background = ''; }
+    var fb = document.getElementById(id + 'fb');
+    if (fb){ fb.innerHTML = ''; fb.className = 'fb'; }
+  });
+  document.querySelectorAll('input[name="w3"]').forEach(function(r){
+    r.checked = false;
+    var lab = r.closest('.opt');
+    if (lab) lab.classList.remove('correct','wrong');
+  });
+  var w3fb = document.getElementById('w3fb');
+  if (w3fb){ w3fb.innerHTML = ''; w3fb.className = 'fb'; }
+
+  var wbRes = document.getElementById('wbResult');
+  if (wbRes) wbRes.classList.remove('show');
+  var wbCorrect = document.getElementById('wbCorrect'); if (wbCorrect) wbCorrect.textContent = '0';
+  var wbMark = document.getElementById('wbMark'); if (wbMark) wbMark.textContent = '—';
+
+  // Практическая работа
+  var pLock = document.getElementById('practiceLock');
+  var pBody = document.getElementById('practiceBody');
+  if (pLock) pLock.style.display = '';
+  if (pBody) pBody.style.display = 'none';
+
+  var pPass = document.getElementById('pracPass'); if (pPass) pPass.value = '';
+  var pMsg = document.getElementById('pracMsg'); if (pMsg){ pMsg.textContent = ''; pMsg.className = 'pmsg'; }
+  var pArea = document.getElementById('pracArea'); if (pArea) pArea.innerHTML = '';
+  var pVar = document.getElementById('pracVariant'); if (pVar) pVar.value = '1';
+  var pRes = document.getElementById('pracResult'); if (pRes) pRes.classList.remove('show');
+  var pCorrect = document.getElementById('pracCorrect'); if (pCorrect) pCorrect.textContent = '0';
+  var pMark = document.getElementById('pracMark'); if (pMark) pMark.textContent = '—';
+  var pCheck = document.getElementById('pracCheckBtn'); if (pCheck) pCheck.style.display = '';
+
+  var pracH2 = document.querySelector('#practice h2');
+  if (pracH2) pracH2.innerHTML = '<span class="num">3</span> Практическая работа <span class="badge">по паролю</span>';
+
+  // Итог
+  var fRes = document.getElementById('finalResult'); if (fRes) fRes.classList.remove('show');
+  ['fWb','fPrac','fTotal'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.textContent = '—';
+  });
+  var fMsg = document.getElementById('finalMsg'); if (fMsg) fMsg.textContent = '';
+
+  // Самостоятельная
+  if (typeof saStarted !== 'undefined') saStarted = false;
+  if (typeof saDone !== 'undefined') saDone = false;
+  if (typeof saTasks !== 'undefined') saTasks = [];
+  if (typeof saLeft !== 'undefined') saLeft = 0;
+
+  document.body.classList.remove('exam');
+
+  var saPass = document.getElementById('saPass'); if (saPass) saPass.value = '';
+  var saMsg = document.getElementById('saMsg'); if (saMsg){ saMsg.textContent = ''; saMsg.className = 'pmsg'; }
+  var examTasks = document.getElementById('examTasks'); if (examTasks) examTasks.innerHTML = '';
+  var examResult = document.getElementById('examResult'); if (examResult) examResult.classList.remove('show');
+  var exCorrect = document.getElementById('exCorrect'); if (exCorrect) exCorrect.textContent = '0';
+  var exMark = document.getElementById('exMark'); if (exMark) exMark.textContent = '—';
+  var exTime = document.getElementById('exTime'); if (exTime) exTime.textContent = '—';
+  var exMsg = document.getElementById('exMsg'); if (exMsg) exMsg.textContent = '';
+  var examTimer = document.getElementById('examTimer');
+  if (examTimer){ examTimer.textContent = '15:00'; examTimer.className = 'timer'; }
+
+  // Данные ученика
+  ['surname','firstname','klass'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+
+  // localStorage
+  try { localStorage.removeItem(STORAGE_KEY); } catch(e){}
+
+  // Наверх
+  window.scrollTo({top:0, behavior:'smooth'});
+  toast('🏁 Урок завершён. Все результаты сброшены.');
+}
 </script>
 </body>
 </html>
