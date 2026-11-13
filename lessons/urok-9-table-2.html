@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Численное моделирование в электронных таблицах · 9 класс</title>
+
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$']] },
+  svg: { fontCache: 'global' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23e0f2fe'/><text x='16' y='23' font-size='17' font-family='Georgia' font-weight='bold' fill='%230369a1' text-anchor='middle'>M</text></svg>">
+
+<style>
+.student{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:16px;position:relative;z-index:2}
+.student .f{display:flex;flex-direction:column;gap:4px}
+.student label{font-size:.78rem;font-weight:800;color:#4c4660;text-transform:uppercase;letter-spacing:.4px}
+.student input{border:2px solid rgba(255,255,255,.85);border-radius:10px;padding:8px 13px;
+  font-size:.95rem;font-family:inherit;background:rgba(255,255,255,.92);color:var(--ink);outline:none}
+.student input:focus{background:#fff;border-color:#7dd3fc;box-shadow:0 0 0 4px rgba(255,255,255,.55)}
+#surname{width:200px} #firstname{width:180px} #klass{width:90px}
+
+.tgrid{display:grid;grid-template-columns:120px 1fr;gap:6px 12px;margin:10px 0;font-family:Cambria,Georgia,serif;font-size:.98rem}
+.tgrid .k{font-weight:800;color:#0369a1}
+.step-line{background:#f0f9ff;border-left:3px solid #0ea5e9;padding:8px 14px;margin:6px 0;border-radius:0 8px 8px 0;font-family:Cambria,Georgia,serif;font-size:.95rem}
+.answer-line{font-weight:800;color:#0369a1;margin-top:10px;font-size:1rem;border-top:2px dashed #0ea5e9;padding-top:8px}
+
+.calc-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.calc-row input{max-width:220px;border:2px solid #e6e3f1;border-radius:8px;padding:6px 10px;
+  font-family:Consolas,monospace;font-size:.95rem;}
+.calc-row span{font-weight:700;color:#5b4b8a}
+
+.lock{text-align:center;padding:32px 18px;border-radius:16px;
+  background:linear-gradient(135deg,#fff7ed,#fef2f2);border:2px dashed var(--od)}
+.lock h3{margin:10px 0 4px}
+.lock p{color:var(--muted);margin:0 0 16px;font-size:.94rem}
+.lockrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.pmsg{min-height:22px;font-weight:600;color:var(--bad);margin-top:10px}
+.pmsg.info{color:var(--muted)}
+
+.res{background:linear-gradient(135deg,#e0f2fe,#f0fdf4);border-radius:var(--r);padding:22px;margin:18px 0;display:none}
+.res.show{display:block}
+.res h3{margin:0 0 14px;color:#0369a1}
+.marks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.mcard{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:0 4px 16px rgba(3,105,161,.1)}
+.mcard .lbl{font-size:.75rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.mcard .val{font-size:2.3rem;font-weight:900;line-height:1;color:#0369a1}
+.mcard.total .val{color:#047857}
+
+#standalone{display:none}
+body.exam{padding-bottom:20px}
+body.exam #theory, body.exam #workbook, body.exam #practice,
+body.exam #final, body.exam #homework, body.exam #standaloneGate,
+body.exam .bar, body.exam .hero{display:none !important}
+body.exam #standalone{display:block}
+
+.exam-head{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.97);
+  backdrop-filter:blur(10px);border-radius:0 0 20px 20px;padding:14px 20px;margin:-24px -16px 18px;
+  box-shadow:0 6px 24px rgba(120,110,160,.18);display:flex;flex-wrap:wrap;gap:14px;
+  align-items:center;justify-content:space-between}
+.exam-title{font-weight:800;font-size:1.05rem}
+.exam-who{font-size:.86rem;color:var(--muted)}
+.timer{font-family:Consolas,monospace;font-size:1.5rem;font-weight:800;color:#047857;
+  background:var(--green);padding:6px 18px;border-radius:12px;min-width:110px;text-align:center}
+.timer.warn{background:var(--yellow);color:#b45309}
+.timer.danger{background:#fee2e2;color:#b91c1c;animation:pulseT 1s infinite}
+@keyframes pulseT{0%,100%{opacity:1}50%{opacity:.55}}
+
+.s-task{background:#fff;border-radius:18px;padding:18px 20px;margin:14px 0;
+  border:2px solid #e8e3f5;box-shadow:0 4px 18px rgba(120,110,160,.09)}
+.s-task .sn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;
+  border-radius:50%;background:#e0f2fe;color:#0369a1;font-weight:800;font-size:.85rem;margin-right:8px}
+.s-task .stext{margin:0 0 12px;font-size:1rem;line-height:1.65}
+
+.no-calc-warn{background:var(--yellow);border-left:4px solid var(--yd);border-radius:12px;
+  padding:12px 16px;margin:0 0 16px;font-size:.92rem;font-weight:600;color:#b45309}
+
+.bar{background:#fff;border-radius:var(--r);padding:16px;border:1px solid #f2f0fa;
+  box-shadow:0 -4px 24px rgba(120,110,160,.16);display:flex;flex-wrap:wrap;gap:10px;
+  position:sticky;bottom:10px;z-index:30;margin-top:24px}
+
+table.laws{border-collapse:collapse;width:100%;margin:14px 0;font-size:.92rem;display:block;overflow-x:auto}
+table.laws th,table.laws td{border:1px solid #e6e3f1;padding:8px 10px;text-align:left;vertical-align:top;background:#fdfcff}
+table.laws th{background:#e0f2fe;color:#0369a1;font-weight:800;font-size:.86rem}
+table.laws tr:nth-child(even) td{background:#fbfaff}
+table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
+
+.mbg{display:none;position:fixed;inset:0;background:rgba(60,55,90,.48);z-index:200;
+  align-items:center;justify-content:center;padding:16px}
+.mbg.open{display:flex}
+.modal{background:#fff;border-radius:22px;max-width:660px;width:100%;max-height:88vh;
+  overflow:auto;padding:24px;box-shadow:0 24px 70px rgba(60,55,90,.4)}
+.modal h3{margin:0 0 4px;font-size:1.12rem}
+
+.calc{max-width:340px}
+.calc-screen{
+  background:#1e1b2e;color:#e9e6f5;border-radius:14px;padding:14px 16px;margin-bottom:12px;
+  text-align:right;font-family:Consolas,monospace;overflow:hidden;
+}
+.calc-expr{font-size:.82rem;color:#a9a3c4;min-height:18px;word-break:break-all}
+.calc-out{font-size:1.9rem;font-weight:700;word-break:break-all;line-height:1.2}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cbtn{
+  border:none;border-radius:12px;padding:15px 0;font-size:1.05rem;font-weight:700;
+  font-family:inherit;cursor:pointer;background:#f0f9ff;color:#0369a1;transition:.12s;
+}
+.cbtn:hover{background:#e0f2fe}
+.cbtn:active{transform:scale(.96)}
+.cbtn.op{background:#bae6fd;color:#0369a1}
+.cbtn.eq{background:var(--green);color:#047857;grid-column:span 2}
+.cbtn.del{background:var(--orange);color:#c2410c}
+.cbtn.clr{background:#fee2e2;color:#b91c1c}
+
+.badge{display:inline-block;background:#e0f2fe;color:#0369a1;border-radius:20px;padding:2px 10px;font-size:.75rem;font-weight:800;margin-left:6px;vertical-align:middle}
+
+/* ---- Практические задания ---- */
+.prac-task{background:#fff;border-radius:18px;padding:20px 22px;margin:16px 0;
+  border:2px solid #e8e3f5;box-shadow:0 4px 18px rgba(120,110,160,.09)}
+.prac-task h4{margin:0 0 6px;font-size:1.05rem;color:#0369a1;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.prac-task .goal{font-size:.85rem;font-weight:700;color:#0369a1;background:#e0f2fe;border-radius:10px;padding:6px 12px;display:inline-block;margin-bottom:10px}
+.prac-task ol{margin:8px 0 8px 0;padding-left:22px}
+.prac-task ol li{margin-bottom:6px;line-height:1.55}
+.prac-task code{background:#f0f9ff;border-radius:6px;padding:1px 6px;font-family:Consolas,monospace;font-size:.92em;color:#0369a1}
+.prac-task .check-box{background:#f6fffb;border-left:3px solid var(--gd);padding:10px 14px;margin:10px 0;border-radius:0 8px 8px 0;font-size:.93rem}
+.prac-task .check-box b{color:#047857}
+.prac-task .q-to-notebook{background:#fff7ed;border-left:3px solid var(--od);padding:10px 14px;margin:10px 0;border-radius:0 8px 8px 0;font-size:.93rem}
+.prac-task .q-to-notebook b{color:#c2410c}
+.prac-task .mini-table{border-collapse:collapse;margin:10px 0;font-size:.9rem}
+.prac-task .mini-table td,.prac-task .mini-table th{border:1px solid #d9d4ec;padding:5px 12px;text-align:center}
+.prac-task .mini-table th{background:#e0f2fe;font-weight:700;color:#0369a1}
+.prac-task .mini-table .head-col{background:#bae6fd;font-weight:700;color:#0369a1}
+.prac-task.advanced{border-color:#fcd34d;background:linear-gradient(135deg,#fffbeb,#fff)}
+.prac-task.advanced h4{color:#b45309}
+.prac-task.advanced .goal{background:#fef3c7;color:#b45309}
+
+@media(max-width:720px){
+  #surname,#firstname,#klass{width:100%}
+  .marks{grid-template-columns:1fr}
+  .exam-head{flex-direction:column;align-items:flex-start}
+  .tgrid{grid-template-columns:1fr}
+}
+@media print{
+  .no-print{display:none !important}
+  body{background:#fff;padding:0;font-size:11.5pt}
+  .card{box-shadow:none;border:none;padding:0;margin:0}
+  .task{break-inside:avoid}
+  .btn, .controls, .bar, .nav {display:none !important;}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">К содержанию</a>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="../index.html"><span class="logo">I</span> Информатика · кабинет 318А</a>
+    <button class="burger" aria-label="Меню">☰</button>
+    <div class="nav-links">
+      <a href="../index.html">Главная</a>
+      <a href="../lessons.html" class="active">Уроки</a>
+      <a href="../materials.html">Материалы</a>
+      <a href="../tests.html">Тесты</a>
+      <a href="../oge.html">ОГЭ</a>
+      <a href="../about.html">О сайте</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap" id="main">
+
+  <header class="hero">
+    <h1>Численное моделирование в электронных таблицах</h1>
+    <p class="lead">Модели роста, накопления, движения и прогноза · Вычислительный эксперимент · 9 класс</p>
+    <div class="student">
+      <div class="f"><label for="surname">Фамилия</label>
+        <input type="text" id="surname" placeholder="Иванов" autocomplete="off"></div>
+      <div class="f"><label for="firstname">Имя</label>
+        <input type="text" id="firstname" placeholder="Пётр" autocomplete="off"></div>
+      <div class="f"><label for="klass">Класс</label>
+        <input type="text" id="klass" placeholder="9А" autocomplete="off"></div>
+    </div>
+  </header>
+
+  <!-- ================= ТЕОРИЯ ================= -->
+  <section class="card" id="theory">
+    <h2><span class="num">1</span> Теоретический материал</h2>
+
+    <h3>Что такое численная модель?</h3>
+    <p>Численная модель — это <b>таблица чисел</b>, которая описывает поведение объекта или процесса. Мы не рисуем график «на глаз» и не выводим формулу аналитически, а задаём <b>правило перехода</b> от одного шага к следующему и многократно применяем его в ячейках.</p>
+    <p>Электронная таблица — идеальный инструмент для такой модели: одна формула, скопированная вниз, превращается в <b>сотни вычисленных шагов</b>.</p>
+
+    <h3>Схема построения численной модели</h3>
+    <table class="laws">
+      <tr><th>Шаг</th><th>Что делаем</th><th>Пример</th></tr>
+      <tr><td>1. Параметры</td><td>Выносим начальные значения в отдельные ячейки</td><td>начальный вклад, ставка, шаг времени</td></tr>
+      <tr><td>2. Правило</td><td>Записываем формулу перехода к следующему шагу</td><td><code>=B2*(1+$C$1)</code></td></tr>
+      <tr><td>3. Копирование</td><td>Протягиваем формулу на нужное число шагов</td><td>строки 2…20</td></tr>
+      <tr><td>4. Анализ</td><td>Смотрим, как меняются значения, находим ответ</td><td>через сколько шагов наступит событие</td></tr>
+    </table>
+
+    <h3>Три типа численных моделей</h3>
+    <div class="step-line"><b>1. Модель роста (накопления).</b> Каждый шаг значение умножается на постоянный коэффициент или увеличивается на постоянную величину. Пример: вклад в банке, рост населения.</div>
+    <div class="step-line"><b>2. Модель движения.</b> Каждый шаг координата меняется на скорость, скорость — на ускорение. Пример: полёт мяча, разгон автомобиля.</div>
+    <div class="step-line"><b>3. Модель прогноза с условием.</b> Модель работает, пока не выполнено условие, после чего меняет поведение. Пример: остывание чая, пока температура не сравняется с комнатной.</div>
+
+    <h3>Зачем нужны абсолютные ссылки</h3>
+    <p>Параметр модели (ставка, шаг времени, ускорение) должен быть <b>один для всех строк</b>. Поэтому при копировании формулы его адрес «замораживают» знаком <code>$</code>. Если параметр «уедет», модель рассыплется.</p>
+    <div class="tgrid">
+      <span class="k">$C$1</span><span>параметр модели: ставка, шаг, коэффициент — не меняется никогда</span>
+      <span class="k">B2</span><span>текущее значение: при копировании вниз превращается в B3, B4, …</span>
+    </div>
+
+    <h3>Пример оформления модели</h3>
+    <div class="task" style="border-color:#d1d5db;background:#f9fafb;padding:16px">
+      <p style="margin-top:0"><b>Условие:</b> Вклад 1000 руб. лежит в банке под 10% годовых. Сколько денег будет на счёте через 5 лет?</p>
+      <div class="step-line"><b>Параметры:</b> <code>C1</code> = 0,10 (ставка), <code>B1</code> = 1000 (начальный вклад).</div>
+      <div class="step-line"><b>Правило:</b> в <code>A2</code> — номер года (1), в <code>B2</code> — <code>=B1*(1+$C$1)</code>.</div>
+      <div class="step-line"><b>Копирование:</b> протянуть вниз до строки 6 (5 лет).</div>
+      <div class="answer-line">ОТВЕТ: 1000 · 1,1<sup>5</sup> ≈ 1610,51 руб.</div>
+    </div>
+
+    <h3>Как «читать» результат модели</h3>
+    <p>Численная модель не даёт формулу «в общем виде» — она даёт <b>таблицу значений</b>. Главный навык — увидеть в столбце чисел закономерность и ответить на вопрос: «когда?», «сколько?», «быстрее или медленнее?».</p>
+  </section>
+
+  <!-- ================= РАБОЧАЯ ТЕТРАДЬ ================= -->
+  <section class="card" id="workbook">
+    <h2><span class="num">2</span> Рабочая тетрадь <span class="badge">8 заданий</span></h2>
+    <p class="muted">Внимательно читайте условие. Для заданий с вводом ответа используйте латинские буквы, знак <code>$</code> и точку как десятичный разделитель.</p>
+
+    <div class="task q">
+      <span class="lvl l1">базовый · выбор</span>
+      <p><b>Задание 1.</b> Какая ссылка нужна для <b>параметра модели</b> (ставки, коэффициента), чтобы он не менялся при копировании формулы вниз?</p>
+      <label class="opt"><input type="radio" name="q1" value="a"> <code>B2</code></label>
+      <label class="opt"><input type="radio" name="q1" value="b"> <code>$C$1</code></label>
+      <label class="opt"><input type="radio" name="q1" value="c"> <code>$C1</code></label>
+      <label class="opt"><input type="radio" name="q1" value="d"> <code>C$1</code></label>
+      <button class="btn b-green" onclick="checkQ1()" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="q1fb"></div>
+    </div>
+
+    <div class="task q">
+      <span class="lvl l1">базовый · выбор</span>
+      <p><b>Задание 2.</b> В модели накопления в <code>B2</code> записана формула <code>=B1*(1+$C$1)</code>. Что произойдёт с формулой после копирования в <code>B3</code>?</p>
+      <label class="opt"><input type="radio" name="q2" value="a"> <code>=B1*(1+$C$1)</code></label>
+      <label class="opt"><input type="radio" name="q2" value="b"> <code>=B2*(1+$C$1)</code></label>
+      <label class="opt"><input type="radio" name="q2" value="c"> <code>=B3*(1+$C$1)</code></label>
+      <label class="opt"><input type="radio" name="q2" value="d"> <code>=B2*(1+$C$2)</code></label>
+      <button class="btn b-green" onclick="checkQ2()" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="q2fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l1">базовый · ввод</span>
+      <p><b>Задание 3.</b> В ячейке <code>C1</code> записан шаг времени 0,5. В <code>A2</code> — начальное время 0. В <code>A3</code> — формула <code>=A2+$C$1</code>. Какое значение будет в <code>A5</code>? <br><span class="muted" style="font-size:.9rem">Ответ — число с точкой в качестве разделителя.</span></p>
+      <div class="calc-row">
+        <span>Ответ:</span>
+        <input type="text" id="q3ans" placeholder="например: 1.5">
+        <button class="btn b-green" onclick="checkQ3()">Проверить</button>
+      </div>
+      <div class="fb" id="q3fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l2">средний · ввод</span>
+      <p><b>Задание 4.</b> Население города 50 000 человек, ежегодный прирост 2%. В <code>B2</code> — <code>=B1*(1+$C$1)</code>, <code>C1</code> = 0,02. Какое население будет через 2 года? Ответ округлите до целого.</p>
+      <div class="calc-row">
+        <span>Ответ:</span>
+        <input type="text" id="q4ans" placeholder="целое число">
+        <button class="btn b-green" onclick="checkQ4()">Проверить</button>
+      </div>
+      <div class="fb" id="q4fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l2">средний · ввод</span>
+      <p><b>Задание 5.</b> Модель движения: <code>v</code> — скорость, <code>a</code> — ускорение, <code>dt</code> — шаг времени. Скорость на следующем шаге вычисляется по формуле <code>=B2+$C$1*$D$1</code>. Чему равна скорость на 3-м шаге, если начальная скорость 2, ускорение 3, шаг времени 0,5? <span class="muted" style="font-size:.9rem">(В <code>B2</code> — начальная скорость 2, каждый следующий шаг прибавляет <code>a·dt</code>.)</span></p>
+      <div class="calc-row">
+        <span>Ответ:</span>
+        <input type="text" id="q5ans" placeholder="число">
+        <button class="btn b-green" onclick="checkQ5()">Проверить</button>
+      </div>
+      <div class="fb" id="q5fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l2">средний · ввод</span>
+      <p><b>Задание 6.</b> В модели остывания температура каждого шага: <code>=B2-$C$1*(B2-$D$1)</code>, где <code>C1</code> — коэффициент 0,2, <code>D1</code> — температура среды 20. Начальная температура 80. Какая температура будет после 2-го шага? Ответ округлите до десятых.</p>
+      <div class="calc-row">
+        <span>Ответ:</span>
+        <input type="text" id="q6ans" placeholder="например: 45.6">
+        <button class="btn b-green" onclick="checkQ6()">Проверить</button>
+      </div>
+      <div class="fb" id="q6fb"></div>
+    </div>
+
+    <div class="task q">
+      <span class="lvl l3">повышенный · выбор</span>
+      <p><b>Задание 7.</b> Модель накопления: <code>B2</code> = <code>=B1*(1+$C$1)</code>, ставка <code>C1</code> = 0,1, начальный вклад <code>B1</code> = 1000. Через сколько шагов вклад впервые превысит 1300 руб.?</p>
+      <label class="opt"><input type="radio" name="q7" value="a"> через 2 шага</label>
+      <label class="opt"><input type="radio" name="q7" value="b"> через 3 шага</label>
+      <label class="opt"><input type="radio" name="q7" value="c"> через 4 шага</label>
+      <label class="opt"><input type="radio" name="q7" value="d"> через 5 шагов</label>
+      <button class="btn b-green" onclick="checkQ7()" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="q7fb"></div>
+    </div>
+
+    <div class="task">
+      <span class="lvl l3">повышенный · ввод</span>
+      <p><b>Задание 8.</b> Модель роста: <code>B2</code> = <code>=B1*$C$1</code>, коэффициент <code>C1</code> = 1,5, начальное значение <code>B1</code> = 8. Какое значение будет в <code>B4</code>? <span class="muted" style="font-size:.9rem">(B2 — первый шаг, B3 — второй, B4 — третий.)</span></p>
+      <div class="calc-row">
+        <span>Ответ:</span>
+        <input type="text" id="q8ans" placeholder="число">
+        <button class="btn b-green" onclick="checkQ8()">Проверить</button>
+      </div>
+      <div class="fb" id="q8fb"></div>
+    </div>
+
+    <div class="controls">
+      <button class="btn b-purple" onclick="calcWorkbook()">📊 Оценить рабочую тетрадь</button>
+    </div>
+    <div class="res" id="wbResult">
+      <h3>Результат рабочей тетради</h3>
+      <p style="margin:0;font-weight:700">Верно: <span id="wbCorrect">0</span> из 8 · Оценка: <span id="wbMark" style="font-size:1.4rem">—</span></p>
+    </div>
+  </section>
+
+  <!-- ================= ПРАКТИКА ================= -->
+  <section class="card" id="practice">
+    <h2><span class="num">3</span> Практическая работа «Численное моделирование» <span class="badge">8 заданий · по паролю</span></h2>
+
+    <div id="practiceLock" class="lock">
+      <h3>🔒 Практическая работа закрыта</h3>
+      <p>Введите пароль учителя. После этого откроются 8 пошаговых заданий для выполнения в LibreOffice Calc.</p>
+      <div class="lockrow">
+        <input type="password" id="pracPass" placeholder="Пароль" autocomplete="off"
+               onkeydown="if(event.key==='Enter')unlockPractice()">
+        <button class="btn b-purple" id="pracBtn" onclick="unlockPractice()">Открыть</button>
+      </div>
+      <div class="pmsg" id="pracMsg"></div>
+    </div>
+
+    <div id="practiceBody" style="display:none">
+      <div class="no-calc-warn">
+        💾 <b>Правило работы:</b> все 8 заданий выполняйте в <b>одном</b> файле <code>Фамилия_Моделирование.ods</code>,
+        каждое задание — на отдельном листе. После каждого задания сохраняйте файл.
+        Параметры модели выносите в отдельные ячейки и фиксируйте абсолютными ссылками.
+      </div>
+
+      <!-- Задание 1 -->
+      <div class="prac-task">
+        <h4>📌 Задание 1. «Вклад в банке»: модель накопления</h4>
+        <span class="goal">Цель: построить простейшую численную модель роста и убедиться, что одна формула заменяет десятки вычислений</span>
+        <ol>
+          <li>На <b>Листе 1</b> создайте таблицу:</li>
+        </ol>
+        <table class="mini-table">
+          <tr><th></th><th>A</th><th>B</th><th>C</th></tr>
+          <tr><td class="head-col">1</td><td>Начальный вклад</td><td>1000</td><td>Ставка: 0,10</td></tr>
+          <tr><td class="head-col">2</td><td><b>Год</b></td><td><b>Сумма на счёте</b></td><td></td></tr>
+          <tr><td class="head-col">3</td><td>1</td><td></td><td></td></tr>
+          <tr><td class="head-col">4</td><td>2</td><td></td><td></td></tr>
+          <tr><td class="head-col">5</td><td>…</td><td></td><td></td></tr>
+        </table>
+        <ol start="2">
+          <li>Вынесите ставку в отдельную ячейку <code>C1</code> = 0,10.</li>
+          <li>В <code>B3</code> введите формулу <code>=B1*(1+$C$1)</code> — сумма после первого года.</li>
+          <li>В <code>B4</code> введите <code>=B3*(1+$C$1)</code> и протяните вниз до <code>B12</code> (10 лет).</li>
+        </ol>
+        <div class="check-box">
+          <b>✅ Проверка:</b> значение в <code>B12</code> должно быть примерно 2593,74.
+          Измените ставку в <code>C1</code> на 0,05 — вся таблица должна пересчитаться.
+        </div>
+        <div class="q-to-notebook">
+          <b>📝 Вопрос в тетрадь:</b> почему в формуле используется <code>$C$1</code>, а не <code>C1</code>?
+          Что произойдёт со вторым годом, если записать <code>=B3*(1+C2)</code> и скопировать вниз?
+        </div>
+      </div>
+
+      <!-- Задание 2 -->
+      <div class="prac-task">
+        <h4>📌 Задание 2. «Рост населения»: модель с процентом</h4>
+        <span class="goal">Цель: применить модель накопления к реальному процессу и найти момент достижения порога</span>
+        <ol>
+          <li>На <b>Листе 2</b> постройте модель роста населения города:</li>
+        </ol>
+        <table class="mini-table">
+          <tr><th></th><th>A</th><th>B</th><th>C</th></tr>
+          <tr><td class="head-col">1</td><td>Население</td><td>50000</td><td>Прирост: 0,02</td></tr>
+          <tr><td class="head-col">2</td><td><b>Год</b></td><td><b>Население</b></td><td></td></tr>
+          <tr><td class="head-col">3</td><td>1</td><td></td><td></td></tr>
+        </table>
+        <ol start="2">
+          <li>В <code>B3</code> — формула <code>=B1*(1+$C$1)</code>. Протяните вниз до <code>B22</code> (20 лет).</li>
+          <li>Найдите год, в котором население <b>впервые превысит</b> 60 000 человек. Запишите номер года в тетрадь.</li>
+          <li>Постройте по столбцу B линейную диаграмму (Вставка → Диаграмма → Линия).</li>
+        </ol>
+        <div class="check-box">
+          <b>✅ Проверка:</b> население превысит 60 000 на 10-м году.
+          На диаграмме кривая должна плавно загибаться вверх — это и есть «сложный процент».
+        </div>
+        <div class="q-to-notebook">
+          <b>📝 Вопрос в тетрадь:</b> почему график не прямая линия? Как это связано с тем, что прирост начисляется на <i>уже выросшее</i> население?
+        </div>
+      </div>
+
+      <!-- Задание 3 -->
+      <div class="prac-task">
+        <h4>📌 Задание 3. «Разгон автомобиля»: модель движения</h4>
+        <span class="goal">Цель: построить модель, в которой каждая строка — шаг по времени</span>
+        <ol>
+          <li>На <b>Листе 3</b> создайте таблицу:</li>
+        </ol>
+        <table class="mini-table">
+          <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+          <tr><td class="head-col">1</td><td>Ускорение</td><td>3</td><td>Шаг времени</td><td>0,5</td></tr>
+          <tr><td class="head-col">2</td><td><b>t</b></td><td><b>Скорость v</b></td><td><b>Путь S</b></td><td></td></tr>
+          <tr><td class="head-col">3</td><td>0</td><td>0</td><td>0</td><td></td></tr>
+        </table>
+        <ol start="2">
+          <li>В <code>A4</code> — формула <code>=A3+$D$1</code> (следующий момент времени).</li>
+          <li>В <code>B4</code> — формула <code>=B3+$B$1*$D$1</code> (скорость растёт на a·dt).</li>
+          <li>В <code>C4</code> — формула <code>=C3+B3*$D$1</code> (путь растёт на v·dt).</li>
+          <li>Скопируйте строку 4 вниз до строки 12.</li>
+        </ol>
+        <div class="check-box">
+          <b>✅ Проверка:</b> через 4 секунды (строка 11) скорость должна быть 12 м/с, путь — около 24 м.
+          Убедитесь, что при изменении ускорения в <code>B1</code> пересчитывается вся таблица.
+        </div>
+        <div class="q-to-notebook">
+          <b>📝 Вопрос в тетрадь:</b> почему для пути формула использует <b>предыдущую</b> скорость <code>B3</code>, а не новую <code>B4</code>?
+          Что означало бы использование <code>B4</code>?
+        </div>
+      </div>
+
+      <!-- Задание 4 -->
+      <div class="prac-task">
+        <h4>📌 Задание 4. «Свободное падение»: модель с ускорением</h4>
+        <span class="goal">Цель: сравнить две модели движения и увидеть роль ускорения</span>
+        <ol>
+          <li>На <b>Листе 4</b> повторите таблицу задания 3, но в <code>B1</code> (ускорение) поставьте <b>9,8</b>, а в <code>D1</code> (шаг) — <b>0,1</b>.</li>
+          <li>Протяните формулы до 20-й строки (около 2 секунд падения).</li>
+          <li>Добавьте столбец <code>D</code> — «идеальный путь» по формуле <code>=4,9*A3^2</code>. Сравните со столбцом C.</li>
+        </ol>
+        <div class="check-box">
+          <b>✅ Проверка:</b> численная модель (столбец C) должна почти совпадать с идеальной формулой (столбец D).
+          Разница — из-за того, что шаг времени не бесконечно мал. Уменьшите шаг до 0,01 — расхождение станет меньше.
+        </div>
+        <div class="q-to-notebook">
+          <b>📝 Вопрос в тетрадь:</b> почему при уменьшении шага времени численная модель становится точнее?
+          Какой вывод можно сделать о выборе шага в численном моделировании?
+        </div>
+      </div>
+
+      <!-- Задание 5 -->
+      <div class="prac-task">
+        <h4>📌 Задание 5. «Остывание чая»: модель с условием</h4>
+        <span class="goal">Цель: добавить в модель условие и построить прогноз до достижения порога</span>
+        <ol>
+          <li>На <b>Листе 5</b> создайте таблицу:</li>
+        </ol>
+        <table class="mini-table">
+          <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+          <tr><td class="head-col">1</td><td>Начальная t°</td><td>80</td><td>t° среды</td><td>20</td></tr>
+          <tr><td class="head-col">2</td><td>Коэффициент</td><td>0,2</td><td>Шаг времени</td><td>0,5</td></tr>
+          <tr><td class="head-col">3</td><td><b>Шаг</b></td><td><b>Температура</b></td><td><b>Разница со средой</b></td><td></td></tr>
+          <tr><td class="head-col">4</td><td>0</td><td>80</td><td></td><td></td></tr>
+        </table>
+        <ol start="2">
+          <li>В <code>A5</code> — <code>=A4+1</code> (номер шага).</li>
+          <li>В <code>B5</code> — формула <code>=B4-$B$2*(B4-$D$1)*$D$2</code> (закон охлаждения Ньютона).</li>
+          <li>В <code>C5</code> — <code>=B5-$D$1</code> (насколько температура ещё выше среды).</li>
+          <li>Протяните вниз до строки 20. Найдите шаг, на котором температура впервые станет ниже 30°.</li>
+        </ol>
+        <div class="check-box">
+          <b>✅ Проверка:</b> температура должна асимптотически приближаться к 20°, но не опускаться ниже.
+          Если в модели появляются числа меньше 20 — проверьте формулу: разница со средой должна уменьшаться, а не расти.
+        </div>
+        <div class="q-to-notebook">
+          <b>📝 Вопрос в тетрадь:</b> почему температура никогда не станет <i>ниже</i> комнатной?
+          Какое условие «заложено» в саму формулу?
+        </div>
+      </div>
+
+      <!-- Задание 6 -->
+      <div class="prac-task">
+        <h4>📌 Задание 6. «Бактерии»: модель удвоения и порог</h4>
+        <span class="goal">Цель: соединить модель роста и поиск порогового значения</span>
+        <ol>
+          <li>На <b>Листе 6</b> создайте модель: начальное число бактерий 100, каждые 20 минут их количество удваивается. Шаг времени — 20 минут.</li>
+          <li>В <code>B1</code> — начальное число 100, в <code>C1</code> — коэффициент 2.</li>
+          <li>В <code>A3</code> — время 0, в <code>A4</code> — <code>=A3+20</code>. В <code>B3</code> — 100, в <code>B4</code> — <code>=B3*$C$1</code>.</li>
+          <li>Протяните вниз до строки 20. Найдите время, когда бактерий станет больше 100 000.</li>
+          <li>Добавьте столбец <code>C</code> — «логарифм числа» по формуле <code>=LOG10(B3)</code>. Постройте график по столбцу C.</li>
+        </ol>
+        <div class="check-box">
+          <b>✅ Проверка:</b> 100 000 бактерий достигнуто примерно за 200 минут.
+          График логарифма должен быть почти прямой линией — это признак экспоненциального роста.
+        </div>
+        <div class="q-to-notebook">
+          <b>📝 Вопрос в тетрадь:</b> почему график обычного числа бактерий «взлетает» вверх, а график логарифма — прямая?
+          Что это говорит о скорости экспоненциального роста?
+        </div>
+      </div>
+
+      <!-- Задание 7 -->
+      <div class="prac-task">
+        <h4>📌 Задание 7. «Кредит»: модель с двумя параметрами</h4>
+        <span class="goal">Цель: построить модель, в которой одновременно работают два параметра — ставка и платёж</span>
+        <ol>
+          <li>На <b>Листе 7</b> создайте таблицу:</li>
+        </ol>
+        <table class="mini-table">
+          <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+          <tr><td class="head-col">1</td><td>Сумма кредита</td><td>100000</td><td>Ставка (мес.)</td><td>0,02</td></tr>
+          <tr><td class="head-col">2</td><td>Ежемесячный платёж</td><td>10000</td><td></td><td></td></tr>
+          <tr><td class="head-col">3</td><td><b>Месяц</b></td><td><b>Долг</b></td><td></td><td></td></tr>
+          <tr><td class="head-col">4</td><td>0</td><td>100000</td><td></td><td></td></tr>
+        </table>
+        <ol start="2">
+          <li>В <code>A5</code> — <code>=A4+1</code>.</li>
+          <li>В <code>B5</code> — формула <code>=B4*(1+$D$1)-$B$2</code>. Протяните вниз.</li>
+          <li>Найдите месяц, когда долг впервые станет меньше нуля. Сколько всего выплачено?</li>
+        </ol>
+        <div class="check-box">
+          <b>✅ Проверка:</b> при платеже 10 000 и ставке 2% кредит закрывается примерно за 11–12 месяцев.
+          Если поставить платёж 5000 — долг начнёт расти. Объясните почему.
+        </div>
+        <div class="q-to-notebook">
+          <b>📝 Вопрос в тетрадь:</b> при каком минимальном платеже долг перестанет уменьшаться?
+          Как это связано с произведением <code>B1*D1</code>?
+        </div>
+      </div>
+
+      <!-- Задание 8 -->
+      <div class="prac-task advanced">
+        <h4>⭐ Задание 8. «Эпидемия»: исследовательская модель</h4>
+        <span class="goal">Цель: провести вычислительный эксперимент — менять параметр и сравнивать сценарии · для сильных учеников</span>
+        <ol>
+          <li>На <b>Листе 8</b> постройте упрощённую модель распространения инфекции:</li>
+        </ol>
+        <table class="mini-table">
+          <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+          <tr><td class="head-col">1</td><td>Заражённых в день 0</td><td>1</td><td>Коэффициент передачи</td><td>1,5</td></tr>
+          <tr><td class="head-col">2</td><td><b>День</b></td><td><b>Заражённых</b></td><td></td><td></td></tr>
+          <tr><td class="head-col">3</td><td>0</td><td>1</td><td></td><td></td></tr>
+        </table>
+        <ol start="2">
+          <li>В <code>A4</code> — <code>=A3+1</code>, в <code>B4</code> — <code>=B3*$D$1</code>. Протяните вниз до строки 20.</li>
+          <li>Проведите <b>три эксперимента</b>, каждый раз записывая в тетрадь значение <code>B20</code>:
+            <ul style="margin:6px 0 0 0">
+              <li>коэффициент 1,5;</li>
+              <li>коэффициент 1,2;</li>
+              <li>коэффициент 1,0.</li>
+            </ul>
+          </li>
+          <li>Сравните три столбца (можно скопировать значения на отдельный лист). Сделайте вывод.</li>
+        </ol>
+        <div class="check-box">
+          <b>🔬 Вывод:</b> при коэффициенте 1,0 число заражённых не меняется — эпидемии нет.
+          При 1,2 — медленный рост, при 1,5 — стремительный «взрыв». Модель показывает, насколько важен параметр передачи.
+        </div>
+        <div class="q-to-notebook">
+          <b>📝 Вопрос в тетрадь:</b> при каком коэффициенте число заражённых станет нулевым?
+          Может ли модель дать отрицательное число? Почему это ограничение модели?
+        </div>
+      </div>
+
+      <div class="controls" style="margin-top:18px">
+        <button class="btn b-green" onclick="markPracticeDone()">✅ Отметить практику как выполненную</button>
+      </div>
+      <div class="res" id="pracResult">
+        <h3>Практическая работа выполнена</h3>
+        <p style="margin:0;font-weight:700">Не забудьте сохранить файл <code>Фамилия_Моделирование.ods</code> и показать учителю.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ИТОГ ================= -->
+  <section class="card" id="final">
+    <h2><span class="num">4</span> Итоговая оценка за урок</h2>
+    <p class="muted">Складывается из рабочей тетради и отметки о выполнении практической работы.</p>
+    <div class="controls">
+      <button class="btn b-purple" onclick="calcFinalMark()">🎯 Подвести итог</button>
+      <button class="btn b-red" onclick="resetPractice()">🔄 Сбросить отметку о практике</button>
+    </div>
+    <div class="res" id="finalResult">
+      <h3>Итог урока</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Тетрадь</div><div class="val" id="fWb">—</div></div>
+        <div class="mcard"><div class="lbl">Практика</div><div class="val" id="fPrac">—</div></div>
+        <div class="mcard total"><div class="lbl">Итог</div><div class="val" id="fTotal">—</div></div>
+      </div>
+      <p id="finalMsg" style="margin:12px 0 0;font-weight:600;color:#0369a1"></p>
+    </div>
+  </section>
+
+  <!-- ================= САМОСТОЯТЕЛЬНАЯ ================= -->
+  <section class="card" id="standaloneGate">
+    <h2><span class="num">5</span> Самостоятельная работа <span class="badge">по паролю</span></h2>
+    <p>5 заданий на 15 минут по теории урока. Открывается по паролю учителя.</p>
+    <div class="lockrow" style="justify-content:flex-start">
+      <input type="password" id="saPass" placeholder="Пароль учителя" autocomplete="off"
+             onkeydown="if(event.key==='Enter')unlockStandalone()">
+      <button class="btn b-blue" id="saBtn" onclick="unlockStandalone()">🔓 Начать работу</button>
+    </div>
+    <div class="pmsg" id="saMsg"></div>
+  </section>
+
+  <!-- ================= ДОМАШНЕЕ ЗАДАНИЕ ================= -->
+  <section class="card" id="homework">
+    <h2><span class="num">6</span> Домашнее задание</h2>
+    <button class="btn b-orange no-print" onclick="printHomework()">🖨 Печать только ДЗ</button>
+
+    <div id="hwBlock">
+      <div class="hw"><span class="lvl l1">обязательная часть (на «4»)</span>
+        <p><b>№ 1.</b> Постройте в Calc модель накопления: вклад 2000 руб. под 8% годовых. Найдите сумму через 7 лет. Запишите в тетрадь формулы для <code>B2</code> и <code>B3</code> и объясните роль знака <code>$</code>.</p></div>
+      <div class="hw"><span class="lvl l2">обязательная часть (на «4»)</span>
+        <p><b>№ 2.</b> Модель движения: начальная скорость 0, ускорение 2, шаг времени 0,5. Составьте таблицу на 10 шагов. Чему равен путь на 10-м шаге? Сравните с формулой <code>S = a·t²/2</code>.</p></div>
+      <div class="hw"><span class="lvl l3">дополнительная часть (на «5»)</span>
+        <p><b>№ 3.</b> Придумайте свою модель с условием (например, «бюджет карманных расходов», «зарядка телефона», «остывание супа»). Опишите параметры, правило перехода и постройте таблицу на 15 шагов.</p></div>
+      <div class="hw"><span class="lvl l3">дополнительная часть (на «5»)</span>
+        <p><b>№ 4.</b> В модели «бактерии» (удвоение каждые 20 минут) выясните, через сколько минут число бактерий превысит 1 000 000. Объясните, почему график обычного числа «взлетает», а логарифма — прямая.</p></div>
+    </div>
+  </section>
+
+</div><!-- /wrap -->
+
+<div class="bar no-print">
+  <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
+  <button class="btn b-yellow" onclick="scrollToGate()">📝 Самостоятельная</button>
+  <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
+</div>
+
+<section id="standalone">
+  <div class="exam-head">
+    <div>
+      <div class="exam-title">📝 Самостоятельная работа</div>
+      <div class="exam-who" id="examWho">Ученик не указан</div>
+    </div>
+    <div class="timer" id="examTimer">15:00</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
+      <button class="btn b-green" onclick="finishStandalone()">✅ Сдать работу</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:0">
+    <h2 style="margin-bottom:10px"><span class="num">5</span> Самостоятельная работа</h2>
+    <div class="no-calc-warn">
+      ⚠️ Во время работы теория и примеры недоступны. Вводите только итоговые ответы.
+    </div>
+
+    <div id="examTasks"></div>
+
+    <div class="res" id="examResult">
+      <h3>📊 Результат работы</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Верно решено</div><div class="val" id="exCorrect">0</div></div>
+        <div class="mcard total"><div class="lbl">Оценка</div><div class="val" id="exMark">—</div></div>
+        <div class="mcard"><div class="lbl">Время</div><div class="val" id="exTime" style="font-size:1.5rem">—</div></div>
+      </div>
+      <p id="exMsg" style="margin:12px 0 0;font-weight:600;color:#0369a1"></p>
+    </div>
+
+    <div class="controls no-print" style="margin-top:16px">
+      <button class="btn b-red" onclick="exitStandalone()">← Выйти из работы</button>
+    </div>
+  </div>
+</section>
+
+<div class="mbg" id="calcModal">
+  <div class="modal calc" role="dialog" aria-label="Калькулятор">
+    <h3>🧮 Калькулятор</h3>
+    <div class="calc-screen">
+      <div class="calc-expr" id="calcExpr"></div>
+      <div class="calc-out" id="calcOut">0</div>
+    </div>
+    <div class="calc-grid">
+      <button class="cbtn clr" onclick="calcClear()">C</button>
+      <button class="cbtn del" onclick="calcBack()">⌫</button>
+      <button class="cbtn op" onclick="calcOp('^')">xʸ</button>
+      <button class="cbtn op" onclick="calcOp('/')">÷</button>
+      <button class="cbtn" onclick="calcNum('7')">7</button>
+      <button class="cbtn" onclick="calcNum('8')">8</button>
+      <button class="cbtn" onclick="calcNum('9')">9</button>
+      <button class="cbtn op" onclick="calcOp('*')">×</button>
+      <button class="cbtn" onclick="calcNum('4')">4</button>
+      <button class="cbtn" onclick="calcNum('5')">5</button>
+      <button class="cbtn" onclick="calcNum('6')">6</button>
+      <button class="cbtn op" onclick="calcOp('-')">−</button>
+      <button class="cbtn" onclick="calcNum('1')">1</button>
+      <button class="cbtn" onclick="calcNum('2')">2</button>
+      <button class="cbtn" onclick="calcNum('3')">3</button>
+      <button class="cbtn op" onclick="calcOp('+')">+</button>
+      <button class="cbtn" onclick="calcNum('0')">0</button>
+      <button class="cbtn" onclick="calcNum('00')">00</button>
+      <button class="cbtn eq" onclick="calcEquals()">=</button>
+    </div>
+    <div style="text-align:right;margin-top:16px">
+      <button class="btn b-red" onclick="closeCalc()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="../assets/js/main.js"></script>
+
+<script>
+/* =========================================================
+   0. НАСТРОЙКИ
+   ========================================================= */
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzRiIsJ8Sbn1HP1n9cTnVE652h1Ohrd8Q6wH3raYPLfGnIu7u-rsYG7BAp0VT7eXgs8/exec';
+var RESOURCE_ID = 'urok-numerical-models';
+var SA_MINUTES = 15;
+var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
+
+/* =========================================================
+   1. ПРОВЕРКА ПАРОЛЯ
+   ========================================================= */
+async function checkPasswordRemote(resourceId, type, password){
+  try {
+    var response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ resource: resourceId, type: type, password: password })
+    });
+    var data = await response.json();
+    return data;
+  } catch (error) {
+    return { ok: false, error: 'network' };
+  }
+}
+
+/* =========================================================
+   2. СОСТОЯНИЕ
+   ========================================================= */
+var lessonState = {
+  wb: { q1:false, q2:false, q3:false, q4:false, q5:false, q6:false, q7:false, q8:false },
+  wbCorrect: 0, wbMark: 0,
+  pracDone: false, pracMark: 0
+};
+
+function getSurname(){ return (document.getElementById('surname')?.value || '').trim(); }
+function getFirstname(){ return (document.getElementById('firstname')?.value || '').trim(); }
+function getKlass(){ return (document.getElementById('klass')?.value || '').trim(); }
+function getFullName(){ return [getSurname(), getFirstname()].filter(Boolean).join(' '); }
+function percentToMark(pct){ if (pct >= 90) return 5; if (pct >= 70) return 4; if (pct >= 50) return 3; return 2; }
+
+/* =========================================================
+   3. УТИЛИТЫ
+   ========================================================= */
+function showFb(id, html, kind){
+  var el = document.getElementById(id);
+  el.innerHTML = html;
+  el.className = 'fb show ' + kind;
+}
+
+/* =========================================================
+   4. РАБОЧАЯ ТЕТРАДЬ (8 заданий)
+   ========================================================= */
+function checkQ1(){
+  if (lessonState.wb.q1) return;
+  var sel = document.querySelector('input[name="q1"]:checked'); if (!sel) return;
+  if (sel.value === 'b') { lessonState.wb.q1 = true; showFb('q1fb','✅ Верно! Параметр модели фиксируется абсолютной ссылкой <code>$C$1</code>.','ok'); }
+  else showFb('q1fb','❌ Неверно. Чтобы параметр не «уезжал» при копировании, нужны <b>два</b> знака <code>$</code> — и перед столбцом, и перед строкой.','no');
+}
+function checkQ2(){
+  if (lessonState.wb.q2) return;
+  var sel = document.querySelector('input[name="q2"]:checked'); if (!sel) return;
+  if (sel.value === 'b') { lessonState.wb.q2 = true; showFb('q2fb','✅ Верно! Относительная ссылка <code>B1</code> сдвигается на строку вниз → <code>B2</code>, а <code>$C$1</code> остаётся.','ok'); }
+  else showFb('q2fb','❌ Неверно. <code>B1</code> — относительная, при копировании вниз она станет <code>B2</code>. <code>$C$1</code> — абсолютная, она не меняется.','no');
+}
+function checkQ3(){
+  if (lessonState.wb.q3) return;
+  var v = document.getElementById('q3ans').value.trim().replace(/\s+/g,'').replace(',','.');
+  var num = parseFloat(v);
+  if (!isNaN(num) && Math.abs(num - 1.5) < 0.001) {
+    lessonState.wb.q3 = true;
+    showFb('q3fb','✅ Верно! A2 = 0, A3 = 0,5, A4 = 1,0, A5 = 1,5. Каждый шаг прибавляется <code>$C$1</code>.','ok');
+  } else showFb('q3fb','❌ Неверно. Каждый шаг прибавляет 0,5 к предыдущему времени: 0 → 0,5 → 1,0 → 1,5.','no');
+}
+function checkQ4(){
+  if (lessonState.wb.q4) return;
+  var v = document.getElementById('q4ans').value.trim().replace(/\s+/g,'').replace(',','.');
+  var num = parseFloat(v);
+  if (!isNaN(num) && num === 52020) {
+    lessonState.wb.q4 = true;
+    showFb('q4fb','✅ Верно! 50000 · 1,02² = 52020.','ok');
+  } else showFb('q4fb','❌ Неверно. Через год: 50000 · 1,02 = 51000. Через два: 51000 · 1,02 = 52020.','no');
+}
+function checkQ5(){
+  if (lessonState.wb.q5) return;
+  var v = document.getElementById('q5ans').value.trim().replace(/\s+/g,'').replace(',','.');
+  var num = parseFloat(v);
+  if (!isNaN(num) && Math.abs(num - 6.5) < 0.001) {
+    lessonState.wb.q5 = true;
+    showFb('q5fb','✅ Верно! Скорость: 2 → 3,5 → 5 → 6,5. Каждый шаг +1,5 (a·dt).','ok');
+  } else showFb('q5fb','❌ Неверно. Каждый шаг прибавляет a·dt = 3 · 0,5 = 1,5. Начальная скорость 2. Шаги: 2 → 3,5 → 5 → 6,5.','no');
+}
+function checkQ6(){
+  if (lessonState.wb.q6) return;
+  var v = document.getElementById('q6ans').value.trim().replace(/\s+/g,'').replace(',','.');
+  var num = parseFloat(v);
+  if (!isNaN(num) && Math.abs(num - 58.4) < 0.05) {
+    lessonState.wb.q6 = true;
+    showFb('q6fb','✅ Верно! Шаг 1: 80 − 0,2·(80−20) = 68. Шаг 2: 68 − 0,2·(68−20) = 58,4.','ok');
+  } else showFb('q6fb','❌ Неверно. Разница с температурой среды сначала 60, затем 48. Уменьшение на 20% от разницы: 80 → 68 → 58,4.','no');
+}
+function checkQ7(){
+  if (lessonState.wb.q7) return;
+  var sel = document.querySelector('input[name="q7"]:checked'); if (!sel) return;
+  if (sel.value === 'b') { lessonState.wb.q7 = true; showFb('q7fb','✅ Верно! 1000 → 1100 → 1210 → 1331. Впервые выше 1300 на 3-м шаге.','ok'); }
+  else showFb('q7fb','❌ Неверно. Посчитайте по шагам: 1000 · 1,1 = 1100 (шаг 1), 1100 · 1,1 = 1210 (шаг 2), 1210 · 1,1 = 1331 (шаг 3).','no');
+}
+function checkQ8(){
+  if (lessonState.wb.q8) return;
+  var v = document.getElementById('q8ans').value.trim().replace(/\s+/g,'').replace(',','.');
+  var num = parseFloat(v);
+  if (!isNaN(num) && num === 27) {
+    lessonState.wb.q8 = true;
+    showFb('q8fb','✅ Верно! B2 = 8 · 1,5 = 12; B3 = 12 · 1,5 = 18; B4 = 18 · 1,5 = 27.','ok');
+  } else showFb('q8fb','❌ Неверно. Каждый шаг умножает на 1,5: 8 → 12 → 18 → 27.','no');
+}
+
+function calcWorkbook(){
+  var keys = ['q1','q2','q3','q4','q5','q6','q7','q8'];
+  var correct = keys.filter(function(k){ return lessonState.wb[k]; }).length;
+  var pct = Math.round(correct / keys.length * 100);
+  lessonState.wbCorrect = correct;
+  lessonState.wbMark = percentToMark(pct);
+  document.getElementById('wbCorrect').textContent = correct;
+  document.getElementById('wbMark').textContent = lessonState.wbMark;
+  document.getElementById('wbResult').classList.add('show');
+  toast('Тетрадь: ' + correct + '/8, оценка ' + lessonState.wbMark);
+}
+
+/* =========================================================
+   5. ПРАКТИКА
+   ========================================================= */
+async function unlockPractice(){
+  var inp = document.getElementById('pracPass');
+  var msg = document.getElementById('pracMsg');
+  var btn = document.getElementById('pracBtn');
+  var pass = inp.value.trim();
+  if (!pass){ msg.className='pmsg'; msg.textContent='Введите пароль.'; return; }
+  msg.className='pmsg info'; msg.textContent='Проверка…'; btn.disabled = true;
+  var data = await checkPasswordRemote(RESOURCE_ID, 'practice', pass);
+  btn.disabled = false;
+  if (data.error === 'network'){ msg.className='pmsg'; msg.textContent='⚠️ Ошибка соединения. Проверьте интернет.'; return; }
+  if (!data.ok){ msg.className='pmsg'; msg.textContent='❌ Неверный пароль.'; inp.value=''; inp.focus(); return; }
+  msg.textContent=''; inp.value='';
+  document.getElementById('practiceLock').style.display = 'none';
+  document.getElementById('practiceBody').style.display = 'block';
+  toast('🔓 Практика открыта');
+}
+
+function markPracticeDone(){
+  if (!confirm('Отметить практическую работу как выполненную?')) return;
+  lessonState.pracDone = true;
+  lessonState.pracMark = 5;
+  document.getElementById('pracResult').classList.add('show');
+  savePracticeState();
+  toast('✅ Практика отмечена как выполненная');
+}
+
+function savePracticeState(){
+  try { var raw = localStorage.getItem(STORAGE_KEY)||'{}'; var d = JSON.parse(raw);
+    d.pracDone = lessonState.pracDone; d.pracMark = lessonState.pracMark;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  } catch(e){}
+}
+function loadPracticeState(){
+  try { var raw = localStorage.getItem(STORAGE_KEY); if (!raw) return; var d = JSON.parse(raw);
+    if (!d.pracDone) return;
+    lessonState.pracDone = true;
+    lessonState.pracMark = d.pracMark || 5;
+    document.getElementById('practiceLock').style.display = 'none';
+    document.getElementById('practiceBody').style.display = 'block';
+    document.getElementById('pracResult').classList.add('show');
+  } catch(e){}
+}
+function resetPractice(){
+  if (!confirm('Сбросить отметку о выполнении практики?')) return;
+  try { var raw = localStorage.getItem(STORAGE_KEY)||'{}'; var d = JSON.parse(raw);
+    delete d.pracDone; delete d.pracMark;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  } catch(e){}
+  location.reload();
+}
+
+/* =========================================================
+   6. ИТОГ
+   ========================================================= */
+function calcFinalMark(){
+  if (!lessonState.wbMark && !lessonState.pracDone){ toast('Сначала выполните тетрадь и отметьте практику'); return; }
+  var wb = lessonState.wbMark || 0;
+  var pr = lessonState.pracMark || 0;
+  var total = Math.round((wb + pr) / 2);
+  document.getElementById('fWb').textContent = wb || '—';
+  document.getElementById('fPrac').textContent = pr || '—';
+  document.getElementById('fTotal').textContent = total;
+  document.getElementById('finalResult').classList.add('show');
+  document.getElementById('finalMsg').textContent =
+    total === 5 ? '🌟 Отличная работа!' :
+    total === 4 ? '👏 Хорошо!' :
+    total === 3 ? '📖 Удовлетворительно.' : '📚 Стоит повторить тему.';
+}
+
+/* =========================================================
+   7. САМОСТОЯТЕЛЬНАЯ
+   ========================================================= */
+var saTimer = null, saLeft = 0, saTasks = [], saStarted = false, saDone = false;
+
+function genStandalone(){
+  var pool = [
+    {q:'Какой тип ссылки нужен для параметра модели (ставки, коэффициента), чтобы он не менялся при копировании?', ans:'$C$1'},
+    {q:'В модели накопления формула =B1*(1+$C$1) скопирована вниз. Как она будет выглядеть в B3?', ans:'=B2*(1+$C$1)'},
+    {q:'Вклад 1000 руб. под 10% годовых. Какая сумма будет через 2 года? (округлите до целого)', ans:'1210'},
+    {q:'Начальная скорость 0, ускорение 2, шаг времени 0,5. Какая скорость будет через 2 шага?', ans:'2'},
+    {q:'Модель: B2 = =B1*1,5, B1 = 8. Чему равно B3?', ans:'18'},
+    {q:'Почему в численной модели движения для пути используется предыдущая скорость, а не новая?', ans:'потому что путь за шаг считается по скорости в начале шага'},
+    {q:'Что произойдёт с моделью остывания, если убрать $ в ссылке на температуру среды?', ans:'формула потеряет параметр и модель рассыплется'},
+    {q:'Модель: B2 = =B1*(1+$C$1), ставка 0,1, B1 = 1000. Через сколько шагов сумма превысит 1300?', ans:'3'}
+  ];
+  function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+  function pickN(arr, n){
+    var copy = arr.slice(), res = [];
+    for (var i = 0; i < n && copy.length; i++){
+      var idx = rnd(0, copy.length-1);
+      res.push(copy.splice(idx, 1)[0]);
+    }
+    return res;
+  }
+  var selected = pickN(pool, 5);
+  return selected.map(function(t){ return { text: t.q, canon: t.ans }; });
+}
+
+function scrollToGate(){
+  document.getElementById('standaloneGate').scrollIntoView({behavior:'smooth', block:'center'});
+  document.getElementById('saPass').focus();
+}
+
+async function unlockStandalone(){
+  if (!getSurname() || !getFirstname() || !getKlass()){
+    document.getElementById('saMsg').className='pmsg';
+    document.getElementById('saMsg').textContent='Заполните ФИО и класс.';
+    return;
+  }
+  var inp = document.getElementById('saPass');
+  var msg = document.getElementById('saMsg');
+  var btn = document.getElementById('saBtn');
+  var pass = inp.value.trim();
+  if (!pass){ msg.className='pmsg'; msg.textContent='Введите пароль.'; return; }
+  msg.className='pmsg info'; msg.textContent='Проверка…'; btn.disabled = true;
+  var data = await checkPasswordRemote(RESOURCE_ID, 'standalone', pass);
+  btn.disabled = false;
+  if (data.error === 'network'){ msg.className='pmsg'; msg.textContent='⚠️ Ошибка соединения. Проверьте интернет.'; return; }
+  if (!data.ok){ msg.className='pmsg'; msg.textContent='❌ Неверный пароль.'; inp.value=''; inp.focus(); return; }
+  msg.textContent=''; inp.value='';
+  startStandalone();
+}
+
+function startStandalone(){
+  saTasks = genStandalone();
+  saDone = false; saStarted = true; saLeft = SA_MINUTES*60;
+  document.body.classList.add('exam');
+  var who = getFullName() + (getKlass() ? ', ' + getKlass() : '');
+  document.getElementById('examWho').textContent = who || 'Ученик';
+  var host = document.getElementById('examTasks');
+  var html = '';
+  saTasks.forEach(function(t, i){
+    html += '<div class="s-task" id="st'+i+'">';
+    html += '<p class="stext"><span class="sn">'+(i+1)+'</span>'+t.text+'</p>';
+    html += '<input type="text" id="sa'+i+'" placeholder="ваш ответ" autocomplete="off">';
+    html += '</div>';
+  });
+  host.innerHTML = html;
+  document.getElementById('examResult').classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if (saTimer) clearInterval(saTimer);
+  updateTimer();
+  saTimer = setInterval(function(){
+    saLeft--;
+    updateTimer();
+    if (saLeft <= 0){ clearInterval(saTimer); saTimer=null; toast('⏰ Время вышло!'); finishStandalone(true); }
+  }, 1000);
+}
+
+function updateTimer(){
+  var m = Math.floor(saLeft/60), s = saLeft % 60;
+  var el = document.getElementById('examTimer');
+  el.textContent = (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  el.className = 'timer' + (saLeft<=60?' danger' : saLeft<=300?' warn':'');
+}
+
+function finishStandalone(auto){
+  if (!saStarted) return;
+  if (!auto && !confirm('Сдать работу?')) return;
+  if (saTimer){ clearInterval(saTimer); saTimer=null; }
+  saDone = true;
+  var correct = 0;
+  saTasks.forEach(function(t,i){
+    var el = document.getElementById('sa'+i);
+    var v = (el ? el.value : '').trim().toLowerCase().replace(/\s+/g,'');
+    var ans = t.canon.toLowerCase().replace(/\s+/g,'');
+    var ok = v === ans;
+    if (ok) correct++;
+    if (el){ el.disabled = true; el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)'; el.style.background = ok ? '#f0fdf4' : '#fef2f2'; }
+  });
+  var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
+  document.getElementById('exCorrect').textContent = correct + ' / 5';
+  document.getElementById('exMark').textContent = mark;
+  document.getElementById('exTime').textContent = '—';
+  document.getElementById('exMsg').textContent =
+    correct>=5 ? '🌟 Отлично!' : correct===4 ? '👏 Хорошо!' : correct===3 ? '📖 Удовлетворительно.' : '📚 Стоит повторить.';
+  document.getElementById('examResult').classList.add('show');
+}
+
+function exitStandalone(){
+  if (saStarted && !saDone && !confirm('Выйти?')) return;
+  if (saTimer){ clearInterval(saTimer); saTimer=null; }
+  document.body.classList.remove('exam');
+  saStarted = false;
+}
+
+/* =========================================================
+   8. ПЕЧАТЬ ДЗ
+   ========================================================= */
+function printHomework(){
+  var fio = getFullName() + (getKlass() ? ', ' + getKlass() : '');
+  var hw = document.getElementById('hwBlock').innerHTML;
+  var w = window.open('', '_blank');
+  if (!w){ alert('Разрешите всплывающие окна.'); return; }
+  w.document.write(
+    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>ДЗ</title>'+
+    '<script>window.MathJax={tex:{inlineMath:[["$","$"]]}};<\/script>'+
+    '<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>'+
+    '<style>body{font-family:Georgia,serif;padding:14mm;font-size:12pt}.hw{border:1pt solid #bbb;padding:3mm;margin:4mm 0}'+
+    '@page{margin:14mm}</style></head><body>'+
+    '<h1>Домашнее задание</h1>'+
+    '<p>'+(fio ? 'Ученик: <b>'+fio+'</b>' : 'Ученик: _______')+'</p>'+ hw +'</body></html>'
+  );
+  w.document.close();
+  setTimeout(function(){ w.print(); }, 600);
+}
+
+/* =========================================================
+   9. КАЛЬКУЛЯТОР
+   ========================================================= */
+var calcBuf = '';
+function openCalc(){ document.getElementById('calcModal').classList.add('open'); calcRender(); }
+function closeCalc(){ document.getElementById('calcModal').classList.remove('open'); }
+function calcNum(d){ if (calcBuf === '0' && d !== '0') calcBuf = ''; calcBuf += d; calcRender(); }
+function calcOp(op){
+  if (!calcBuf){ if (op === '-'){ calcBuf = '-'; calcRender(); } return; }
+  var last = calcBuf.slice(-1);
+  if ('+-*/^'.indexOf(last) !== -1) calcBuf = calcBuf.slice(0,-1);
+  calcBuf += op; calcRender();
+}
+function calcClear(){ calcBuf = ''; calcRender(); }
+function calcBack(){ calcBuf = calcBuf.slice(0,-1); calcRender(); }
+
+function calcRender(){
+  document.getElementById('calcExpr').textContent = calcBuf || '';
+  document.getElementById('calcOut').textContent = calcPreview();
+}
+function calcPreview(){
+  if (!calcBuf) return '0';
+  try { var v = calcEval(calcBuf); if (v === null) return '…'; if (!isFinite(v)) return '∞'; return (Math.round(v*1e10)/1e10).toString(); } catch(e){ return '…'; }
+}
+function calcEval(str){
+  var s = str.replace(/\s+/g,''); if (!/^[0-9+\-*/^]+$/.test(s)) return null;
+  var pos = 0;
+  function peek(){ return s[pos]; }
+  function parseExpr(){
+    var v = parseTerm();
+    while (peek()==='+' || peek()==='-'){ var op = s[pos++]; var r = parseTerm(); v = op==='+' ? v+r : v-r; }
+    return v;
+  }
+  function parseTerm(){
+    var v = parsePow();
+    while (peek()==='*' || peek()==='/'){ var op = s[pos++]; var r = parsePow(); v = op==='*' ? v*r : v/r; }
+    return v;
+  }
+  function parsePow(){
+    var v = parseUnary();
+    if (peek()==='^'){ pos++; var e = parsePow(); return Math.pow(v,e); }
+    return v;
+  }
+  function parseUnary(){
+    if (peek()==='-'){ pos++; return -parseUnary(); }
+    if (peek()==='+'){ pos++; return parseUnary(); }
+    return parseAtom();
+  }
+  function parseAtom(){
+    var start = pos;
+    while (pos<s.length && /[0-9]/.test(s[pos])) pos++;
+    if (start===pos) throw new Error('bad');
+    return parseFloat(s.slice(start,pos));
+  }
+  try{ var res = parseExpr(); if (pos !== s.length) return null; return res; } catch(e){ return null; }
+}
+function calcEquals(){
+  var v = calcEval(calcBuf);
+  if (v === null || !isFinite(v)){ toast('Проверьте выражение'); return; }
+  calcBuf = (Math.round(v*1e10)/1e10).toString(); calcRender();
+}
+
+/* =========================================================
+   10. СТАРТ
+   ========================================================= */
+document.addEventListener('DOMContentLoaded', function(){ loadPracticeState(); });
+</script>
+</body>
+</html>
