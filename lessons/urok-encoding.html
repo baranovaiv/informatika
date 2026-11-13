@@ -116,12 +116,36 @@ body.exam #standalone{display:block}
   box-shadow:0 -4px 24px rgba(120,110,160,.16);display:flex;flex-wrap:wrap;gap:10px;
   position:sticky;bottom:10px;z-index:30;margin-top:24px}
 
+.btn.b-red{background:#fee2e2;color:#b91c1c;border:1px solid #fecaca}
+.btn.b-red:hover{background:#fecaca}
+
 table.codes{border-collapse:collapse;width:100%;margin:16px 0;font-size:.85rem;display:block;overflow-x:auto}
 table.codes th,table.codes td{border:1px solid #e6e3f1;padding:6px 8px;text-align:center;background:#fdfcff}
 table.codes th{background:var(--purple);color:#4c1d95;font-weight:800}
 table.codes tr:nth-child(even) td{background:#fbfaff}
 table.codes .sym{font-family:Georgia,serif;font-size:1rem;font-weight:700;color:#4c1d95}
 table.codes .code{font-family:Consolas,monospace;color:#b45309}
+
+/* Таблица кодов */
+.codes-wrap{max-height:420px;overflow:auto;border-radius:12px;border:1px solid #e6e3f1;margin:14px 0}
+table.codes{display:table;width:100%;margin:0}
+table.codes thead th{position:sticky;top:0;z-index:2}
+table.codes td.sym{font-size:1.15rem}
+
+/* Симулятор */
+.sim{background:#fbfaff;border:1px solid #ece8f8;border-radius:16px;padding:18px;margin:18px 0}
+.sim-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
+.sim-row .f{display:flex;flex-direction:column;gap:4px}
+.sim-row label{font-size:.78rem;font-weight:800;color:#4c4660;text-transform:uppercase;letter-spacing:.4px}
+.sim-row select,.sim-row input{border:2px solid #ece8f8;border-radius:10px;padding:8px 12px;font-family:inherit;font-size:.95rem}
+.sim-row input#simText{min-width:260px;flex:1}
+.sim-out{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.sim-card{background:#fff;border-radius:12px;padding:12px 14px;border:1px solid #ece8f8}
+.sim-card .lbl{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.sim-card .mono{font-family:Consolas,monospace;font-size:.9rem;word-break:break-all;line-height:1.6;color:#4c1d95}
+.sim-card .garbled{font-family:Georgia,serif;font-size:1rem;color:#b91c1c;word-break:break-all}
+.sim-card.bits{grid-column:1/-1}
+.chip{display:inline-block;background:var(--purple);border-radius:6px;padding:1px 6px;margin:2px;font-family:Consolas,monospace;font-size:.82rem;color:#4c1d95}
 
 @media(max-width:720px){
   #surname,#firstname,#klass{width:100%}
@@ -192,20 +216,80 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
     </div>
 
     <h3>Таблица кодов символов</h3>
-    <p>Ниже — коды для нескольких символов в трёх кодировках. Обратите внимание: латиница в UTF-8 занимает 1 байт (совпадает с ASCII), а кириллица — 2 байта.</p>
+    <p>Полная таблица: символ, десятичный код ASCII (только для 0–127), шестнадцатеричный код Windows-1251 и Unicode (U+).</p>
 
-    <table class="codes">
-      <tr>
-        <th>Символ</th><th>ASCII (dec)</th><th>Windows-1251 (hex)</th><th>UTF-8 (hex)</th><th>Байт в UTF-8</th>
-      </tr>
-      <tr><td class="sym">A</td><td class="code">65</td><td class="code">41</td><td class="code">41</td><td>1</td></tr>
-      <tr><td class="sym">a</td><td class="code">97</td><td class="code">61</td><td class="code">61</td><td>1</td></tr>
-      <tr><td class="sym">0</td><td class="code">48</td><td class="code">30</td><td class="code">30</td><td>1</td></tr>
-      <tr><td class="sym">П</td><td class="code">—</td><td class="code">CF (207)</td><td class="code">D0 9F</td><td>2</td></tr>
-      <tr><td class="sym">р</td><td class="code">—</td><td class="code">F0 (240)</td><td class="code">D1 80</td><td>2</td></tr>
-      <tr><td class="sym">А</td><td class="code">—</td><td class="code">C0 (192)</td><td class="code">D0 90</td><td>2</td></tr>
-      <tr><td class="sym">я</td><td class="code">—</td><td class="code">FF (255)</td><td class="code">D1 8F</td><td>2</td></tr>
-    </table>
+    <div class="vbar">
+      <label for="codeFilter"><b>Фильтр:</b></label>
+      <select id="codeFilter" onchange="renderCodeTable()">
+        <option value="all">Все символы</option>
+        <option value="latin">Латиница A–Z, a–z</option>
+        <option value="digits">Цифры и знаки</option>
+        <option value="cyr">Кириллица</option>
+      </select>
+    </div>
+
+    <div class="codes-wrap">
+      <table class="codes" id="codeTable">
+        <thead>
+          <tr>
+            <th>Символ</th>
+            <th>ASCII (dec)</th>
+            <th>Windows-1251 (hex / dec)</th>
+            <th>Unicode (U+)</th>
+            <th>UTF-8 (hex)</th>
+            <th>Байт в UTF-8</th>
+          </tr>
+        </thead>
+        <tbody id="codeTableBody"></tbody>
+      </table>
+    </div>
+
+    <h3>🧪 Симулятор кодировок</h3>
+    <p>Введите текст, выберите «кодировку записи» и «кодировку чтения» — увидите байты и что получится при неверном чтении.</p>
+
+    <div class="sim">
+      <div class="sim-row">
+        <div class="f" style="flex:1">
+          <label for="simText">Текст</label>
+          <input type="text" id="simText" value="Привет, мир!" oninput="simUpdate()">
+        </div>
+        <div class="f">
+          <label for="simWrite">Записать в</label>
+          <select id="simWrite" onchange="simUpdate()">
+            <option value="ascii">ASCII</option>
+            <option value="cp1251" selected>Windows-1251</option>
+            <option value="utf8">UTF-8</option>
+          </select>
+        </div>
+        <div class="f">
+          <label for="simRead">Прочитать как</label>
+          <select id="simRead" onchange="simUpdate()">
+            <option value="ascii">ASCII</option>
+            <option value="cp1251" selected>Windows-1251</option>
+            <option value="utf8">UTF-8</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sim-out">
+        <div class="sim-card bits">
+          <div class="lbl">Байты (hex) — как записано</div>
+          <div class="mono" id="simHex">—</div>
+        </div>
+        <div class="sim-card">
+          <div class="lbl">Байты (dec)</div>
+          <div class="mono" id="simDec">—</div>
+        </div>
+        <div class="sim-card">
+          <div class="lbl">Всего байт</div>
+          <div class="mono" id="simSize">—</div>
+        </div>
+        <div class="sim-card bits">
+          <div class="lbl">Прочитано как выбранная кодировка</div>
+          <div class="garbled" id="simReadOut">—</div>
+        </div>
+      </div>
+    </div>
 
     <div class="note info">
       <b>Важно:</b> если открыть файл, сохранённый в одной кодировке, в другой — можно увидеть «кракозябры» (нечитаемый текст). Это происходит потому, что байты интерпретируются по другой таблице.
@@ -377,6 +461,7 @@ table.codes .code{font-family:Consolas,monospace;color:#b45309}
   <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
   <button class="btn b-yellow" onclick="scrollToGate()">📝 Самостоятельная</button>
   <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
+  <button class="btn b-red" onclick="finishLesson()">🏁 Завершить урок</button>
 </div>
 
 <section id="standalone">
@@ -1197,6 +1282,221 @@ function renderMath(el){
   if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){});
 }
 
+/* =========================================================
+   11. ПОЛНАЯ ТАБЛИЦА КОДОВ
+   ========================================================= */
+var CODE_TABLE = [];
+(function buildCodeTable(){
+  // ASCII: 32–126
+  for (var c = 32; c <= 126; c++){
+    CODE_TABLE.push({ch: String.fromCharCode(c), ascii: c, cp1251: c, uni: c, group: (c>=48&&c<=57)?'digits':((c>=65&&c<=90)||(c>=97&&c<=122))?'latin':'digits'});
+  }
+  // Кириллица Windows-1251: А–я (192–255) + Ё (168), ё (184) + доп. знаки
+  var cyr = [];
+  for (var k = 192; k <= 255; k++) cyr.push(k);
+  cyr.push(168); cyr.push(184);
+  [170,175,178,179,180,181,183,185,186,187,188,189,190,191].forEach(function(x){ cyr.push(x); });
+  cyr.sort(function(a,b){ return a-b; });
+
+  cyr.forEach(function(cp){
+    var ch = String.fromCharCode(cp);
+    var u = ch.charCodeAt(0);
+    CODE_TABLE.push({ch: ch, ascii: null, cp1251: cp, uni: u, group: 'cyr'});
+  });
+})();
+
+function utf8Bytes(str){
+  var bytes = [];
+  for (var i=0;i<str.length;i++){
+    var c = str.codePointAt(i);
+    if (c > 0xFFFF){ i++; }
+    if (c < 0x80){ bytes.push(c); }
+    else if (c < 0x800){ bytes.push(0xC0|(c>>6), 0x80|(c&0x3F)); }
+    else if (c < 0x10000){ bytes.push(0xE0|(c>>12), 0x80|((c>>6)&0x3F), 0x80|(c&0x3F)); }
+    else { bytes.push(0xF0|(c>>18), 0x80|((c>>12)&0x3F), 0x80|((c>>6)&0x3F), 0x80|(c&0x3F)); }
+  }
+  return bytes;
+}
+function hex2(n){ return n.toString(16).toUpperCase().padStart(2,'0'); }
+
+function renderCodeTable(){
+  var filter = document.getElementById('codeFilter')?.value || 'all';
+  var body = document.getElementById('codeTableBody');
+  if (!body) return;
+  var html = '';
+  CODE_TABLE.forEach(function(r){
+    if (filter !== 'all' && r.group !== filter) return;
+    var utf8arr = utf8Bytes(r.ch);
+    var utf8hex = utf8arr.map(hex2).join(' ');
+    var asciiTxt = r.ascii !== null ? r.ascii : '—';
+    var cpTxt = hex2(r.cp1251) + ' (' + r.cp1251 + ')';
+    var uniTxt = 'U+' + r.uni.toString(16).toUpperCase().padStart(4,'0');
+    html += '<tr>' +
+      '<td class="sym">' + (r.ch === ' ' ? '␠' : r.ch) + '</td>' +
+      '<td class="code">' + asciiTxt + '</td>' +
+      '<td class="code">' + cpTxt + '</td>' +
+      '<td class="code">' + uniTxt + '</td>' +
+      '<td class="code">' + utf8hex + '</td>' +
+      '<td>' + utf8arr.length + '</td>' +
+      '</tr>';
+  });
+  body.innerHTML = html || '<tr><td colspan="6" style="padding:14px;text-align:center;color:#888">Нет символов</td></tr>';
+}
+document.addEventListener('DOMContentLoaded', renderCodeTable);
+
+/* =========================================================
+   12. СИМУЛЯТОР КОДИРОВОК
+   ========================================================= */
+function simEncode(str, enc){
+  if (enc === 'ascii'){
+    var out = [];
+    for (var i=0;i<str.length;i++){
+      var c = str.charCodeAt(i);
+      out.push(c < 128 ? c : 63);
+    }
+    return out;
+  }
+  if (enc === 'cp1251'){
+    var map = {
+      'А':192,'Б':193,'В':194,'Г':195,'Д':196,'Е':197,'Ж':198,'З':199,'И':200,'Й':201,'К':202,'Л':203,'М':204,'Н':205,'О':206,'П':207,'Р':208,'С':209,'Т':210,'У':211,'Ф':212,'Х':213,'Ц':214,'Ч':215,'Ш':216,'Щ':217,'Ъ':218,'Ы':219,'Ь':220,'Э':221,'Ю':222,'Я':223,
+      'а':224,'б':225,'в':226,'г':227,'д':228,'е':229,'ж':230,'з':231,'и':232,'й':233,'к':234,'л':235,'м':236,'н':237,'о':238,'п':239,'р':240,'с':241,'т':242,'у':243,'ф':244,'х':245,'ц':246,'ч':247,'ш':248,'щ':249,'ъ':250,'ы':251,'ь':252,'э':253,'ю':254,'я':255,
+      'Ё':168,'ё':184
+    };
+    var out2 = [];
+    for (var j=0;j<str.length;j++){
+      var ch = str[j];
+      var code = ch.charCodeAt(0);
+      if (code < 128) out2.push(code);
+      else if (map[ch] !== undefined) out2.push(map[ch]);
+      else out2.push(63);
+    }
+    return out2;
+  }
+  return utf8Bytes(str);
+}
+function simDecode(bytes, enc){
+  if (enc === 'ascii'){
+    return bytes.map(function(b){ return b < 128 ? String.fromCharCode(b) : '?'; }).join('');
+  }
+  if (enc === 'cp1251'){
+    var rev = {};
+    var pairs = [[192,'А'],[193,'Б'],[194,'В'],[195,'Г'],[196,'Д'],[197,'Е'],[198,'Ж'],[199,'З'],[200,'И'],[201,'Й'],[202,'К'],[203,'Л'],[204,'М'],[205,'Н'],[206,'О'],[207,'П'],[208,'Р'],[209,'С'],[210,'Т'],[211,'У'],[212,'Ф'],[213,'Х'],[214,'Ц'],[215,'Ч'],[216,'Ш'],[217,'Щ'],[218,'Ъ'],[219,'Ы'],[220,'Ь'],[221,'Э'],[222,'Ю'],[223,'Я'],
+      [224,'а'],[225,'б'],[226,'в'],[227,'г'],[228,'д'],[229,'е'],[230,'ж'],[231,'з'],[232,'и'],[233,'й'],[234,'к'],[235,'л'],[236,'м'],[237,'н'],[238,'о'],[239,'п'],[240,'р'],[241,'с'],[242,'т'],[243,'у'],[244,'ф'],[245,'х'],[246,'ц'],[247,'ч'],[248,'ш'],[249,'щ'],[250,'ъ'],[251,'ы'],[252,'ь'],[253,'э'],[254,'ю'],[255,'я'],[168,'Ё'],[184,'ё']];
+    pairs.forEach(function(p){ rev[p[0]] = p[1]; });
+    return bytes.map(function(b){
+      if (b < 128) return String.fromCharCode(b);
+      return rev[b] || '�';
+    }).join('');
+  }
+  try {
+    var arr = new Uint8Array(bytes);
+    return new TextDecoder('utf-8', {fatal:false}).decode(arr);
+  } catch(e){ return '�'; }
+}
+function simUpdate(){
+  var txt = document.getElementById('simText')?.value || '';
+  var w = document.getElementById('simWrite')?.value || 'cp1251';
+  var r = document.getElementById('simRead')?.value || 'cp1251';
+
+  var bytes = simEncode(txt, w);
+  document.getElementById('simHex').innerHTML = bytes.map(function(b){
+    return '<span class="chip">' + hex2(b) + '</span>';
+  }).join(' ') || '—';
+  document.getElementById('simDec').innerHTML = bytes.map(function(b){
+    return '<span class="chip">' + b + '</span>';
+  }).join(' ') || '—';
+  document.getElementById('simSize').textContent = bytes.length + ' байт';
+
+  var decoded = simDecode(bytes, r);
+  var same = decoded === txt;
+  var out = document.getElementById('simReadOut');
+  out.textContent = decoded || '—';
+  out.style.color = same ? '#047857' : '#b91c1c';
+  out.title = same ? 'Текст совпадает' : 'Текст не совпадает — это «кракозябры»';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  if (document.getElementById('simText')) simUpdate();
+});
+
+/* =========================================================
+   13. ЗАВЕРШЕНИЕ УРОКА
+   ========================================================= */
+function finishLesson(){
+  if (!confirm('Завершить урок? Все ответы, оценки, практическая и самостоятельная работа будут удалены.')) return;
+
+  if (typeof saTimer !== 'undefined' && saTimer){ clearInterval(saTimer); saTimer = null; }
+
+  lessonState = {
+    wb: { w1:false, w2:false, w3:false, w4:false, w5:false },
+    wbCorrect: 0, wbMark: 0,
+    pracDone: false, pracCorrect: 0, pracMark: 0
+  };
+  if (typeof saStarted !== 'undefined'){ saStarted = false; saDone = false; saTasks = []; }
+
+  ['surname','firstname','klass','pracPass','saPass'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+
+  ['w1','w2','w3','w4','w5'].forEach(function(id){
+    var el = document.getElementById(id); if (el){ el.value = ''; el.disabled = false; }
+    var fb = document.getElementById(id + 'fb');
+    if (fb){ fb.innerHTML = ''; fb.className = 'fb'; }
+  });
+  document.querySelectorAll('input[name="w3"]').forEach(function(r){
+    r.checked = false;
+    var lab = r.closest('.opt');
+    if (lab) lab.classList.remove('correct','wrong');
+  });
+
+  var wbRes = document.getElementById('wbResult'); if (wbRes) wbRes.classList.remove('show');
+  var wbCorrect = document.getElementById('wbCorrect'); if (wbCorrect) wbCorrect.textContent = '0';
+  var wbMark = document.getElementById('wbMark'); if (wbMark) wbMark.textContent = '—';
+
+  var lock = document.getElementById('practiceLock'); if (lock) lock.style.display = '';
+  var body = document.getElementById('practiceBody'); if (body) body.style.display = 'none';
+  var pmsg = document.getElementById('pracMsg'); if (pmsg){ pmsg.textContent = ''; pmsg.className = 'pmsg'; }
+  var pArea = document.getElementById('pracArea'); if (pArea) pArea.innerHTML = '';
+  var pRes = document.getElementById('pracResult'); if (pRes) pRes.classList.remove('show');
+  var pCorr = document.getElementById('pracCorrect'); if (pCorr) pCorr.textContent = '0';
+  var pMark = document.getElementById('pracMark'); if (pMark) pMark.textContent = '—';
+  var pCheck = document.getElementById('pracCheckBtn'); if (pCheck) pCheck.style.display = '';
+  var pSel = document.getElementById('pracVariant'); if (pSel) pSel.value = '1';
+  var pracH2 = document.querySelector('#practice h2');
+  if (pracH2) pracH2.innerHTML = pracH2.innerHTML.replace(/\s*<span class="badge"[^>]*>сдано<\/span>/g,'');
+
+  var fRes = document.getElementById('finalResult'); if (fRes) fRes.classList.remove('show');
+  ['fWb','fPrac','fTotal'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.textContent = '—';
+  });
+  var fMsg = document.getElementById('finalMsg'); if (fMsg) fMsg.textContent = '';
+
+  var saMsg = document.getElementById('saMsg'); if (saMsg){ saMsg.textContent = ''; saMsg.className = 'pmsg'; }
+  document.body.classList.remove('exam');
+  var examTasks = document.getElementById('examTasks'); if (examTasks) examTasks.innerHTML = '';
+  var examRes = document.getElementById('examResult'); if (examRes) examRes.classList.remove('show');
+  var exCorr = document.getElementById('exCorrect'); if (exCorr) exCorr.textContent = '0';
+  var exMark = document.getElementById('exMark'); if (exMark) exMark.textContent = '—';
+  var exTime = document.getElementById('exTime'); if (exTime) exTime.textContent = '—';
+  var exMsg = document.getElementById('exMsg'); if (exMsg) exMsg.textContent = '';
+  var examTimer = document.getElementById('examTimer');
+  if (examTimer){ examTimer.textContent = '15:00'; examTimer.className = 'timer'; }
+  var examWho = document.getElementById('examWho'); if (examWho) examWho.textContent = 'Ученик не указан';
+  var filePrev = document.getElementById('filePreview'); if (filePrev) filePrev.textContent = 'Фамилия_Имя_Класс_самостоятельная';
+
+  ['mathModal','calcModal'].forEach(function(id){
+    var m = document.getElementById(id); if (m) m.classList.remove('open');
+  });
+  if (typeof calcBuf !== 'undefined'){ calcBuf = ''; var ce = document.getElementById('calcExpr'); if (ce) ce.textContent = ''; var co = document.getElementById('calcOut'); if (co) co.textContent = '0'; }
+
+  try { localStorage.removeItem(STORAGE_KEY); } catch(e){}
+
+  window.scrollTo({top:0, behavior:'smooth'});
+  toast('🏁 Урок завершён. Все данные очищены.');
+}
+
+/* =========================================================
+   14. СТАРТ
+   ========================================================= */
 window.addEventListener('load', function(){
   setTimeout(function(){ renderMath(document.body); }, 600);
 });
