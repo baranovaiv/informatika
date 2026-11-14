@@ -383,35 +383,31 @@ table.pow tr:first-child td{background:var(--purple);color:#4c1d95;font-weight:8
       </div>
       <p id="exMsg" style="margin:12px 0 0;font-weight:600;color:#065f46"></p>
     </div>
+    
     <div class="controls no-print" style="margin-top:16px">
       <button class="btn b-orange" onclick="saveStandalonePDF()">📄 Сохранить PDF</button>
       <button class="btn b-teal" onclick="saveStandaloneJPG()">🖼 Сохранить JPG</button>
       <button class="btn b-red" onclick="exitStandalone()">← Выйти из работы</button>
     </div>
 
-    <!-- БЛОК ЯНДЕКС ФОРМЫ -->
-    <div style="margin-top:30px; padding-top:20px; border-top:2px dashed #e8e3f5;">
-      <h3 style="text-align:center; color:#4c1d95; margin-bottom:10px; font-size:1.2rem;">
+    <!-- БЛОК С ССЫЛКОЙ НА ЯНДЕКС ФОРМУ -->
+    <div style="margin-top:30px; padding:25px; border-top:2px dashed #e8e3f5; background:#fbfaff; border-radius:16px; text-align:center;">
+      <h3 style="color:#4c1d95; margin:0 0 10px; font-size:1.2rem;">
         📸 Загрузка фото решения
       </h3>
-      <p style="font-size:14px; text-align:center; margin-bottom:20px; color:#666;">
-        Сфотографируйте решение на черновике и прикрепите фото ниже.
+      <p style="font-size:14px; margin-bottom:20px; color:#666;">
+        Сфотографируйте решение на черновике и прикрепите фото в форме учителя.
       </p>
-      <p style="text-align:center; margin-bottom:10px;">
-        <a href="https://forms.yandex.ru/u/6af8a45ab9e5cac56e35b097" target="_blank" style="color:#6d28d9; font-weight:bold; text-decoration:underline;">
-          Если форма не загружается, нажмите сюда, чтобы открыть её в новой вкладке
-        </a>
+      
+      <a href="https://forms.yandex.ru/u/6af8a45ab9e5cac56e35b097" target="_blank" class="btn b-purple" style="font-size:1.1rem; padding:14px 28px; text-decoration:none; display:inline-block;">
+        📝 Открыть форму для загрузки фото
+      </a>
+      
+      <p style="font-size:12px; color:#999; margin-top:15px;">
+        (Форма откроется в новой вкладке. После загрузки фото просто закройте её и вернитесь к уроку).
       </p>
-      <iframe 
-        src="https://forms.yandex.ru/u/6af8a45ab9e5cac56e35b097" 
-        width="100%" 
-        height="700" 
-        frameborder="0" 
-        style="border-radius:12px; border:1px solid #e0e0e0; background:#fff; max-width: 800px; display: block; margin: 0 auto;">
-        Загрузка...
-      </iframe>
     </div>
-    <!-- КОНЕЦ БЛОКА ЯНДЕКС ФОРМЫ -->
+    <!-- КОНЕЦ БЛОКА -->
 
   </div>
 </section>
@@ -510,7 +506,7 @@ var lessonState = {
   wbCorrect: 0, wbMark: 0,
   pracDone: false, pracCorrect: 0, pracMark: 0,
   penaltyApplied: false,
-  finalCalculated: false // Флаг защиты от повторного нажатия
+  finalCalculated: false
 };
 var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
 
@@ -730,13 +726,10 @@ function savePracticeState(){
     var d = JSON.parse(raw);
     d.pracDone = lessonState.pracDone; d.pracCorrect = lessonState.pracCorrect;
     d.pracMark = lessonState.pracMark; d.pracVariant = document.getElementById('pracVariant')?.value || '1';
-    
-    // Сохраняем флаги итоговой оценки
     d.finalCalculated = lessonState.finalCalculated;
     d.penaltyApplied = lessonState.penaltyApplied;
     d.wbMark = lessonState.wbMark;
     d.finalTotal = document.getElementById('fTotal')?.textContent;
-
     localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
   } catch(e){}
 }
@@ -747,9 +740,7 @@ function loadPracticeState(){
     var d = JSON.parse(raw); 
     
     if (d.pracDone) {
-      lessonState.pracDone = true; 
-      lessonState.pracCorrect = d.pracCorrect || 0; 
-      lessonState.pracMark = d.pracMark || 0;
+      lessonState.pracDone = true; lessonState.pracCorrect = d.pracCorrect || 0; lessonState.pracMark = d.pracMark || 0;
       document.getElementById('practiceLock').style.display = 'none';
       document.getElementById('practiceBody').style.display = 'block';
       document.getElementById('pracVariant').value = d.pracVariant || '1';
@@ -760,7 +751,6 @@ function loadPracticeState(){
       document.getElementById('pracCheckBtn').style.display = 'none';
     }
 
-    // Восстанавливаем итоговую оценку, если она была подведена
     if (d.finalCalculated) {
       lessonState.finalCalculated = true;
       lessonState.penaltyApplied = d.penaltyApplied || false;
@@ -774,21 +764,18 @@ function loadPracticeState(){
         '📉 Оценка снижена на 1 балл. Итог: ' + d.finalTotal : 
         'Итог сохранён.';
       
-      // Если штраф уже был применен, кнопку не показываем
       if (!lessonState.penaltyApplied) {
         document.getElementById('penaltyBtn').style.display = 'inline-flex';
       }
     }
-
     return true;
   } catch(e){ return false; }
 }
 
 /* =========================================================
-   ИТОГ (ЗАЩИТА ОТ ПОВТОРНОГО НАЖАТИЯ)
+   ИТОГ
    ========================================================= */
 function calcFinalMark(){
-  // Если итог уже подводили, блокируем повторное нажатие
   if (lessonState.finalCalculated) {
     toast('Итог уже подведён.');
     return;
@@ -810,15 +797,12 @@ function calcFinalMark(){
   document.getElementById('finalMsg').textContent =
     total === 5 ? '🌟 Отличная работа!' : total === 4 ? '👏 Хорошо.' : total === 3 ? '📖 Удовлетворительно.' : '📚 Стоит вернуться к теории.';
   
-  // Запоминаем, что итог подведен
   lessonState.finalCalculated = true;
 
-  // Показываем кнопку снижения ТОЛЬКО если её еще ни разу не нажимали
   if (!lessonState.penaltyApplied) {
     document.getElementById('penaltyBtn').style.display = 'inline-flex';
   }
   
-  // Сохраняем состояние
   savePracticeState();
 }
 
@@ -844,7 +828,6 @@ function applyPenalty() {
   document.getElementById('finalMsg').textContent = '📉 Оценка снижена на 1 балл из-за отсутствия классной работы в тетради. Итог: ' + newMark;
   toast('Оценка снижена на 1 балл.');
   
-  // Сохраняем состояние
   savePracticeState();
 }
 
