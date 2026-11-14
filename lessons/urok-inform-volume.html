@@ -131,6 +131,7 @@ table.pow tr:first-child td{background:var(--purple);color:#4c1d95;font-weight:8
   .task{break-inside:avoid}
 }
 </style>
+<base target="_blank">
 </head>
 <body>
 <a class="skip" href="#main">К содержанию</a>
@@ -463,8 +464,8 @@ table.pow tr:first-child td{background:var(--purple);color:#4c1d95;font-weight:8
 <div class="mbg" id="mathModal">
   <div class="modal" role="dialog" aria-label="Математическая раскладка">
     <h3>⌨ Математическая раскладка</h3>
-    <p class="mhint">Щёлкните в нужное поле — оно подсветится зелёным, — затем нажмите символ.
-    Символ вставится в позицию курсора.</p>
+    <p class="mhint">Нажмите символ — он вставится в текущее поле в позицию курсора.
+    Если ни одно поле не в фокусе, вставка пойдёт в последнее использованное поле.</p>
     <div class="keys">
       <button class="key" onclick="insertMath('+')">+</button>
       <button class="key" onclick="insertMath('-')">−</button>
@@ -1316,9 +1317,24 @@ var activeField = null;
 function openMath(){ document.getElementById('mathModal').classList.add('open'); }
 function closeMath(){ document.getElementById('mathModal').classList.remove('open'); }
 function insertMath(text){
-  var t = activeField || document.querySelector('input[type=text]');
-  if (!t){ toast('Сначала щёлкните в поле'); return; }
-  var s = t.selectionStart || 0, e = t.selectionEnd || 0;
+  // 1) поле, которое сейчас в фокусе
+  var t = null;
+  if (document.activeElement && document.activeElement.matches('input[type=text],input[type=password],textarea')) {
+    t = document.activeElement;
+  }
+  // 2) последнее использованное поле
+  if (!t && activeField && document.contains(activeField) && !activeField.disabled) {
+    t = activeField;
+  }
+  // 3) первое доступное текстовое поле на странице
+  if (!t) {
+    var fields = document.querySelectorAll('input[type=text]:not([disabled])');
+    if (fields.length) t = fields[0];
+  }
+  if (!t){ toast('Нет доступного поля для вставки'); return; }
+
+  var s = (typeof t.selectionStart === 'number') ? t.selectionStart : t.value.length;
+  var e = (typeof t.selectionEnd === 'number') ? t.selectionEnd : s;
   t.value = t.value.slice(0,s) + text + t.value.slice(e);
   t.focus();
   var p = s + text.length;

@@ -28,7 +28,35 @@
 .lesson-row h3{margin:0;font-size:.97rem;font-weight:700;flex:1;min-width:200px}
 .lesson-row .tags{display:flex;gap:5px;flex-wrap:wrap}
 .lesson-row .go{font-size:.82rem;font-weight:800;color:#6d28d9;white-space:nowrap}
+
+/* ---- Панель поиска ---- */
+.search-panel{
+  display:flex;gap:12px;flex-wrap:wrap;align-items:center;
+  background:#fff;border-radius:12px;padding:14px 16px;
+  border:2px solid #f0eef8;margin-bottom:8px;
+}
+.search-panel .field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:220px}
+.search-panel label{font-size:.78rem;font-weight:700;color:#6d28d9}
+.search-panel input,.search-panel select{
+  font:inherit;font-size:.92rem;padding:9px 12px;border-radius:9px;
+  border:2px solid #e5e0f5;background:#fbfaff;color:#2e1065;outline:none;
+  transition:border-color .15s;width:100%;box-sizing:border-box;
+}
+.search-panel input:focus,.search-panel select:focus{border-color:#8b5cf6}
+.search-panel .reset-btn{
+  font:inherit;font-size:.85rem;font-weight:700;align-self:flex-end;
+  padding:9px 16px;border-radius:9px;border:2px solid #e5e0f5;
+  background:#fff;color:#6d28d9;cursor:pointer;transition:.15s;
+}
+.search-panel .reset-btn:hover{border-color:#8b5cf6;background:#faf8ff}
+.search-count{font-size:.85rem;color:#6b7280;margin:6px 2px 0}
+mark{background:#fde68a;border-radius:3px;padding:0 1px}
+.no-results{
+  display:none;text-align:center;color:#6b7280;
+  padding:28px 12px;font-size:.95rem;
+}
 </style>
+<base target="_blank">
 </head>
 <body>
 <a class="skip" href="#main">К содержанию</a>
@@ -54,8 +82,30 @@
     <p class="lead">Материалы по классам и направлениям. Выберите тему — откроется страница урока.</p>
   </header>
 
+  <!-- ПАНЕЛЬ ПОИСКА -->
+  <div class="search-panel">
+    <div class="field">
+      <label for="classSelect">Класс / направление</label>
+      <select id="classSelect">
+        <option value="">Все классы и направления</option>
+        <option value="7 класс">7 класс</option>
+        <option value="8 класс">8 класс</option>
+        <option value="9 класс">9 класс</option>
+        <option value="программирование">Программирование</option>
+        <option value="технология">Технология</option>
+        <option value="кружок">Кружок по программированию</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="titleSearch">Название урока</label>
+      <input type="search" id="titleSearch" placeholder="Например: таблицы истинности" autocomplete="off">
+    </div>
+    <button type="button" class="reset-btn" id="resetSearch">Сбросить</button>
+  </div>
+  <p class="search-count" id="searchCount"></p>
+
   <!-- 7 КЛАСС -->
-  <section class="card lesson-group">
+  <section class="card lesson-group" data-group="7 класс">
     <h2>📘 7 класс</h2>
     <div class="lesson-list">
       <a class="lesson-row" href="lessons/urok-inform-volume.html">
@@ -92,7 +142,7 @@
   </section>
 
   <!-- 8 КЛАСС -->
-  <section class="card lesson-group">
+  <section class="card lesson-group" data-group="8 класс">
     <h2>📗 8 класс</h2>
     <div class="lesson-list">
       <a class="lesson-row" href="lessons/urok-logic-simplify.html">
@@ -111,7 +161,7 @@
   </section>
 
   <!-- 9 КЛАСС -->
-  <section class="card lesson-group">
+  <section class="card lesson-group" data-group="9 класс">
     <h2>📙 9 класс</h2>
     <div class="lesson-list">
       <a class="lesson-row" href="lessons/urok-9-table-link.html">
@@ -130,7 +180,7 @@
   </section>
 
   <!-- ПРОГРАММИРОВАНИЕ -->
-  <section class="card lesson-group">
+  <section class="card lesson-group" data-group="программирование">
     <h2>💻 Программирование</h2>
     <div class="lesson-list">
       <a class="lesson-row" href="lessons/urok-strings.html">
@@ -149,7 +199,7 @@
   </section>
 
   <!-- ТЕХНОЛОГИЯ -->
-  <section class="card lesson-group">
+  <section class="card lesson-group" data-group="технология">
     <h2>🛠 Технология</h2>
     <div class="lesson-list">
        <a class="lesson-row" href="lessons/urok-1-web.html">
@@ -164,11 +214,11 @@
         <div class="tags"><span class="tag t11">технология</span></div>
         <span class="go">→</span>
       </a>
-     
+
     </div>
   </section>
 
-   <section class="card lesson-group">
+   <section class="card lesson-group" data-group="кружок">
     <h2>🛠 Кружок по программированию</h2>
     <div class="lesson-list">
        <a class="lesson-row" href="lessons/urok-renpy-1.html">
@@ -183,9 +233,11 @@
         <div class="tags"><span class="tag t11">Кружок</span></div>
         <span class="go">→</span>
       </a>
-     
+
     </div>
   </section>
+
+  <p class="no-results" id="noResults">😕 Ничего не найдено. Попробуйте изменить запрос или выбрать другой класс.</p>
 </div>
 
 <footer class="foot">
@@ -199,5 +251,88 @@
 
 <div class="toast" id="toast"></div>
 <script src="assets/js/main.js"></script>
+<script>
+/* ---- Поиск по классу и названию ---- */
+(function () {
+  const classSelect = document.getElementById('classSelect');
+  const titleInput  = document.getElementById('titleSearch');
+  const resetBtn    = document.getElementById('resetSearch');
+  const countEl     = document.getElementById('searchCount');
+  const noResults   = document.getElementById('noResults');
+  const groups      = Array.from(document.querySelectorAll('.lesson-group'));
+  const rows        = Array.from(document.querySelectorAll('.lesson-row'));
+
+  // Сохраняем исходные заголовки, чтобы подсвечивать совпадения без поломки разметки
+  rows.forEach(function (row) {
+    const h = row.querySelector('h3');
+    h.dataset.original = h.innerHTML;
+  });
+
+  function normalize(s) {
+    return s.toLowerCase().replace(/ё/g, 'е').trim();
+  }
+
+  function applyFilter() {
+    const cls = normalize(classSelect.value);
+    const q   = normalize(titleInput.value);
+    let visible = 0;
+
+    rows.forEach(function (row) {
+      const h = row.querySelector('h3');
+      const tags = Array.from(row.querySelectorAll('.tag'))
+        .map(function (t) { return normalize(t.textContent); })
+        .join(' ');
+
+      const matchClass = !cls || tags.includes(cls);
+      const matchTitle = !q  || normalize(h.textContent).includes(q);
+
+      const show = matchClass && matchTitle;
+      row.style.display = show ? '' : 'none';
+      if (show) visible++;
+
+      // Подсветка найденного фрагмента в названии
+      const original = h.dataset.original;
+      const plain = h.textContent;
+      if (q && matchClass && show) {
+        const idx = normalize(plain).indexOf(q);
+        if (idx !== -1) {
+          // Ищем соответствие в исходном тексте с учётом ё/е
+          const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+          h.innerHTML = original.replace(re, function (m) { return '<mark>' + m + '</mark>'; });
+        } else {
+          h.innerHTML = original;
+        }
+      } else {
+        h.innerHTML = original;
+      }
+    });
+
+    // Скрываем пустые группы
+    groups.forEach(function (g) {
+      const hasVisible = Array.from(g.querySelectorAll('.lesson-row'))
+        .some(function (r) { return r.style.display !== 'none'; });
+      g.style.display = hasVisible ? '' : 'none';
+    });
+
+    // Счётчик и сообщение об отсутствии результатов
+    const filtering = cls || q;
+    countEl.textContent = filtering
+      ? 'Найдено уроков: ' + visible + ' из ' + rows.length
+      : '';
+    noResults.style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  classSelect.addEventListener('change', applyFilter);
+  titleInput.addEventListener('input', applyFilter);
+  resetBtn.addEventListener('click', function () {
+    classSelect.value = '';
+    titleInput.value = '';
+    applyFilter();
+    titleInput.focus();
+  });
+
+  applyFilter();
+})();
+</script>
 </body>
 </html>
