@@ -730,22 +730,56 @@ function savePracticeState(){
     var d = JSON.parse(raw);
     d.pracDone = lessonState.pracDone; d.pracCorrect = lessonState.pracCorrect;
     d.pracMark = lessonState.pracMark; d.pracVariant = document.getElementById('pracVariant')?.value || '1';
+    
+    // Сохраняем флаги итоговой оценки
+    d.finalCalculated = lessonState.finalCalculated;
+    d.penaltyApplied = lessonState.penaltyApplied;
+    d.wbMark = lessonState.wbMark;
+    d.finalTotal = document.getElementById('fTotal')?.textContent;
+
     localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
   } catch(e){}
 }
+
 function loadPracticeState(){
   try {
     var raw = localStorage.getItem(STORAGE_KEY); if (!raw) return false;
-    var d = JSON.parse(raw); if (!d.pracDone) return false;
-    lessonState.pracDone = true; lessonState.pracCorrect = d.pracCorrect || 0; lessonState.pracMark = d.pracMark || 0;
-    document.getElementById('practiceLock').style.display = 'none';
-    document.getElementById('practiceBody').style.display = 'block';
-    document.getElementById('pracVariant').value = d.pracVariant || '1';
-    renderPractice();
-    document.getElementById('pracCorrect').textContent = d.pracCorrect;
-    document.getElementById('pracMark').textContent = d.pracMark;
-    document.getElementById('pracResult').classList.add('show');
-    document.getElementById('pracCheckBtn').style.display = 'none';
+    var d = JSON.parse(raw); 
+    
+    if (d.pracDone) {
+      lessonState.pracDone = true; 
+      lessonState.pracCorrect = d.pracCorrect || 0; 
+      lessonState.pracMark = d.pracMark || 0;
+      document.getElementById('practiceLock').style.display = 'none';
+      document.getElementById('practiceBody').style.display = 'block';
+      document.getElementById('pracVariant').value = d.pracVariant || '1';
+      renderPractice();
+      document.getElementById('pracCorrect').textContent = d.pracCorrect;
+      document.getElementById('pracMark').textContent = d.pracMark;
+      document.getElementById('pracResult').classList.add('show');
+      document.getElementById('pracCheckBtn').style.display = 'none';
+    }
+
+    // Восстанавливаем итоговую оценку, если она была подведена
+    if (d.finalCalculated) {
+      lessonState.finalCalculated = true;
+      lessonState.penaltyApplied = d.penaltyApplied || false;
+      lessonState.wbMark = d.wbMark || 0;
+      
+      document.getElementById('fWb').textContent = lessonState.wbMark || '—';
+      document.getElementById('fPrac').textContent = lessonState.pracMark || '—';
+      document.getElementById('fTotal').textContent = d.finalTotal || '—';
+      document.getElementById('finalResult').classList.add('show');
+      document.getElementById('finalMsg').textContent = d.penaltyApplied ? 
+        '📉 Оценка снижена на 1 балл. Итог: ' + d.finalTotal : 
+        'Итог сохранён.';
+      
+      // Если штраф уже был применен, кнопку не показываем
+      if (!lessonState.penaltyApplied) {
+        document.getElementById('penaltyBtn').style.display = 'inline-flex';
+      }
+    }
+
     return true;
   } catch(e){ return false; }
 }
@@ -779,10 +813,13 @@ function calcFinalMark(){
   // Запоминаем, что итог подведен
   lessonState.finalCalculated = true;
 
-  // Показываем кнопку снижения только если её еще не применяли
+  // Показываем кнопку снижения ТОЛЬКО если её еще ни разу не нажимали
   if (!lessonState.penaltyApplied) {
     document.getElementById('penaltyBtn').style.display = 'inline-flex';
   }
+  
+  // Сохраняем состояние
+  savePracticeState();
 }
 
 function applyPenalty() {
@@ -806,6 +843,9 @@ function applyPenalty() {
   document.getElementById('penaltyBtn').style.display = 'none';
   document.getElementById('finalMsg').textContent = '📉 Оценка снижена на 1 балл из-за отсутствия классной работы в тетради. Итог: ' + newMark;
   toast('Оценка снижена на 1 балл.');
+  
+  // Сохраняем состояние
+  savePracticeState();
 }
 
 /* =========================================================
