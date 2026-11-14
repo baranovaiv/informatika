@@ -388,6 +388,40 @@ table.pow tr:first-child td{background:var(--purple);color:#4c1d95;font-weight:8
       <button class="btn b-orange" onclick="saveStandalonePDF()">📄 Сохранить PDF</button>
       <button class="btn b-teal" onclick="saveStandaloneJPG()">🖼 Сохранить JPG</button>
       <button class="btn b-red" onclick="exitStandalone()">← Выйти из работы</button>
+          <div class="controls no-print" style="margin-top:16px">
+      <button class="btn b-orange" onclick="saveStandalonePDF()">📄 Сохранить PDF</button>
+      <button class="btn b-teal" onclick="saveStandaloneJPG()">🖼 Сохранить JPG</button>
+      <button class="btn b-red" onclick="exitStandalone()">← Выйти из работы</button>
+    </div>
+    
+    <!-- ========================================== -->
+    <!-- ВСТАВИТЬ ЭТОТ БЛОК СЮДА -->
+    <!-- ========================================== -->
+    <div style="margin-top:30px; padding-top:20px; border-top:2px dashed #e8e3f5;">
+      <h3 style="text-align:center; color:#4c1d95; margin-bottom:10px; font-size:1.2rem;">
+        📸 Загрузка фото решения
+      </h3>
+      <p style="font-size:14px; text-align:center; margin-bottom:20px; color:#666;">
+        Сфотографируйте решение на черновике и прикрепите фото ниже.
+      </p>
+      <iframe 
+        src="https://forms.yandex.ru/u/6af8a45ab9e5cac56e35b097" 
+        width="100%" 
+        height="700" 
+        frameborder="0" 
+        style="border-radius:12px; border:1px solid #e0e0e0; background:#fff; max-width: 800px; display: block; margin: 0 auto;">
+        Загрузка...
+      </iframe>
+    </div>
+    <!-- ========================================== -->
+    <!-- КОНЕЦ БЛОКА -->
+    <!-- ========================================== -->
+
+    <p style="color:var(--muted);font-size:.85rem;margin:10px 0 0">
+      Файл сохраняется как <b id="filePreview">Фамилия_Имя_Класс_самостоятельная</b> в папку загрузок браузера.
+    </p>
+  </div>
+</section>
     </div>
   </div>
 </section>
@@ -753,8 +787,8 @@ function applyPenalty() {
   totalEl.textContent = newMark;
   lessonState.penaltyApplied = true;
   document.getElementById('penaltyBtn').style.display = 'none';
-  document.getElementById('finalMsg').textContent = '📉 Оценка снижена на 1 балл. Итог: ' + newMark;
-  toast('Оценка снижена на 1 балл.');
+  document.getElementById('finalMsg').textContent = '📉 Оценка снижена на 1 балл из-за отсутствия классной работы в тетради. Итог: ' + newMark;
+  toast('Оценка снижена на 1 балл из-за отсутствия классной работы в тетради.');
 }
 
 /* =========================================================
@@ -897,7 +931,7 @@ function saveLessonScreenshot() {
   html += '</table><p style="font-size:14px;"><b>Результат тетради:</b> ' + document.getElementById('wbCorrect').textContent + ' из 4, оценка: <b>' + document.getElementById('wbMark').textContent + '</b></p>';
   if (lessonState.pracDone) { html += '<h2 style="font-size:18px;margin:20px 0 10px;color:#4c1d95;">2. Практическая работа</h2><p style="font-size:14px;"><b>Вариант:</b> ' + (document.getElementById('pracVariant')?.value || '—') + '</p><p style="font-size:14px;"><b>Результат:</b> ' + lessonState.pracCorrect + ' из 5, оценка: <b>' + lessonState.pracMark + '</b></p>'; } else { html += '<h2 style="font-size:18px;margin:20px 0 10px;color:#4c1d95;">2. Практическая работа</h2><p style="font-size:14px;color:#999;">Не выполнялась</p>'; }
   html += '<h2 style="font-size:18px;margin:20px 0 10px;color:#4c1d95;">3. Итоговая оценка</h2><table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:16px;"><tr style="background:#ede9fe;"><th style="padding:6px;border:1px solid #ccc;">Тетрадь</th><th style="padding:6px;border:1px solid #ccc;">Практика</th><th style="padding:6px;border:1px solid #ccc;">Итог</th></tr><tr><td style="padding:6px;border:1px solid #ccc;text-align:center;">' + (wbMark || '—') + '</td><td style="padding:6px;border:1px solid #ccc;text-align:center;">' + (pracMark || '—') + '</td><td style="padding:6px;border:1px solid #ccc;text-align:center;font-weight:bold;">' + totalMark + '</td></tr></table>';
-  if (lessonState.penaltyApplied) { html += '<p style="font-size:14px;color:#b91c1c;"><b>📉 Снижено на 1 балл</b></p>'; }
+  if (lessonState.penaltyApplied) { html += '<p style="font-size:14px;color:#b91c1c;"><b>📉 Снижено на 1 балл из-за отсутствия классной работы в тетради</b></p>'; }
   html += '<p style="font-size:14px;margin-top:20px;color:#666;text-align:center;">Скриншот создан ' + new Date().toLocaleString('ru-RU') + '</p></div>';
   holder.innerHTML = html; document.body.appendChild(holder);
   window.html2canvas(holder, { backgroundColor: '#ffffff', scale: 2 }).then(function(canvas) { var a = document.createElement('a'); a.download = getFileName() + '_урок.jpg'; a.href = canvas.toDataURL('image/jpeg', 0.93); a.click(); holder.remove(); toast('📸 Скриншот сохранён'); }).catch(function() { holder.remove(); toast('Не удалось создать скриншот'); });
