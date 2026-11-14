@@ -393,20 +393,25 @@ table.pow tr:first-child td{background:var(--purple);color:#4c1d95;font-weight:8
     <!-- БЛОК ССЫЛКИ НА ФОРМУ -->
     <div style="margin-top:30px; padding:25px; border-top:2px dashed #e8e3f5; background:#fbfaff; border-radius:16px; text-align:center;">
       <h3 style="color:#4c1d95; margin:0 0 10px; font-size:1.2rem;">
-        📸 Загрузка фото решения
+        📎 Сдача работы
       </h3>
-      <p style="font-size:14px; margin-bottom:20px; color:#666;">
-        Сфотографируйте решение на черновике и прикрепите фото в форме учителя.
+      <p style="font-size:15px; margin-bottom:20px; color:#333; line-height: 1.5;">
+        1. Нажмите кнопку <b>«🖼 Сохранить JPG»</b> (она находится чуть выше).<br>
+        2. Файл скачается на компьютер или телефон (в названии уже будет ваша фамилия).<br>
+        3. Нажмите кнопку ниже и прикрепите этот скачанный файл в форму.
       </p>
       
       <a href="https://forms.yandex.ru/u/6af8a45ab9e5cac56e35b097" target="_blank" class="btn b-purple" style="font-size:1.1rem; padding:14px 28px; text-decoration:none; display:inline-block;">
-        📝 Открыть форму для загрузки фото
+        📤 Прикрепить файл в форму
       </a>
       
       <p style="font-size:12px; color:#999; margin-top:15px;">
-        (Форма откроется в новой вкладке. После загрузки фото просто закройте её и вернитесь к уроку).
+        (Форма откроется в новой вкладке. После отправки просто закройте её).
       </p>
     </div>
+    
+    <!-- СКРЫТЫЙ ЭЛЕМЕНТ (нужен для работы скрипта, не удаляйте!) -->
+    <p style="display:none;"><b id="filePreview"></b></p>
 
   </div>
 </section>
@@ -857,14 +862,27 @@ function scrollToGate(){ document.getElementById('standaloneGate').scrollIntoVie
 function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 
 async function unlockStandalone(){
-  if (!getSurname() || !getFirstname() || !getKlass()){ document.getElementById('saMsg').className = 'pmsg'; document.getElementById('saMsg').textContent = 'Сначала заполните ФИО в шапке.'; return; }
+  if (!getSurname() || !getFirstname() || !getKlass()){ 
+    document.getElementById('saMsg').className = 'pmsg'; 
+    document.getElementById('saMsg').textContent = 'Сначала заполните ФИО в шапке.'; 
+    return; 
+  }
+  
   var inp = document.getElementById('saPass'); var msg = document.getElementById('saMsg'); var btn = document.getElementById('saBtn'); var pass = inp.value.trim();
   if (!pass){ msg.className = 'pmsg'; msg.textContent = 'Введите пароль.'; return; }
+  
   msg.className = 'pmsg info'; msg.textContent = 'Проверка…'; btn.disabled = true;
-  var data = await askServer('password', { type: 'standalone', password: pass });
-  btn.disabled = false;
-  if (data.error === 'network'){ msg.className = 'pmsg'; msg.textContent = '⚠️ Ошибка соединения.'; return; }
-  if (!data.ok){ msg.className = 'pmsg'; msg.textContent = '❌ Неверный пароль.'; inp.value = ''; inp.focus(); return; }
+  
+  try {
+    var data = await askServer('password', { type: 'standalone', password: pass });
+    btn.disabled = false;
+    
+    if (data.error === 'network'){ msg.className = 'pmsg'; msg.textContent = '⚠️ Ошибка соединения.'; return; }
+    if (!data.ok){ msg.className = 'pmsg'; msg.textContent = '❌ Неверный пароль.'; inp.value = ''; inp.focus(); return; }
+  } catch (e) {
+    btn.disabled = false;
+  }
+  
   msg.textContent = ''; inp.value = ''; startStandalone();
 }
 
@@ -873,7 +891,11 @@ function startStandalone(){
   document.body.classList.add('exam');
   var who = getFullName() + (getKlass() ? ', ' + getKlass() : '');
   document.getElementById('examWho').textContent = who || 'Ученик не указан';
-  document.getElementById('filePreview').textContent = getFileName() + '_самостоятельная';
+  
+  // Элемент существует, ошибки не будет
+  var fp = document.getElementById('filePreview');
+  if (fp) fp.textContent = getFileName() + '_самостоятельная';
+
   var host = document.getElementById('examTasks'); var html = '';
   saTasks.forEach(function(t, i){ html += '<div class="s-task" id="st'+i+'"><p class="stext"><span class="sn">'+(i+1)+'</span>'+t.text+'<span class="s-flag">'+t.unit+'</span></p><input type="text" inputmode="numeric" id="sa'+i+'" placeholder="ответ" autocomplete="off"></div>'; });
   host.innerHTML = html; renderMath(host);
@@ -1044,4 +1066,3 @@ function finishLesson(){
 </script>
 </body>
 </html>
-
