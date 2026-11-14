@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -444,24 +445,41 @@ var GAS_URL = 'ВАШ_URL_СКРИПТА'; // <--- ВСТАВЬТЕ URL СЮДА
 var RESOURCE_ID = 'urok-inform-volume';
 var SA_MINUTES = 15;
 
-async function askServer(action, payload) {
-  var fullPayload = Object.assign({
-    action: action,
-    lessonId: RESOURCE_ID,
-    studentName: getFullName(),
-    studentClass: getKlass()
-  }, payload);
+/* =========================================================
+   ЗАПРОС НА СЕРВЕР (JSONP ДЛЯ ОБХОДА CORS)
+   ========================================================= */
+function askServer(action, payload) {
+  return new Promise((resolve) => {
+    var callbackName = 'jsonp_' + Math.round(100000 * Math.random());
+    var script = document.createElement('script');
 
-  try {
-    var response = await fetch(GAS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(fullPayload)
-    });
-    return await response.json();
-  } catch (error) {
-    return { error: 'network' };
-  }
+    window[callbackName] = function(data) {
+      delete window[callbackName];
+      if (script.parentNode) document.body.removeChild(script);
+      resolve(data);
+    };
+
+    var fullPayload = Object.assign({
+      action: action,
+      lessonId: RESOURCE_ID,
+      studentName: getFullName(),
+      studentClass: getKlass(),
+      callback: callbackName
+    }, payload);
+
+    // Преобразуем объект в строку URL-параметров
+    var params = Object.keys(fullPayload)
+      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(fullPayload[key]))
+      .join('&');
+
+    script.src = GAS_URL + '?' + params;
+    script.onerror = function() {
+      delete window[callbackName];
+      if (script.parentNode) document.body.removeChild(script);
+      resolve({ error: 'network' });
+    };
+    document.body.appendChild(script);
+  });
 }
 
 var lessonState = {
@@ -488,7 +506,7 @@ function percentToMark(pct){
 }
 
 /* =========================================================
-   РАБОЧАЯ ТЕТРАДЬ (ответ со второй попытки не засчитывается)
+   РАБОЧАЯ ТЕТРАДЬ
    ========================================================= */
 async function checkW(inputId, fbId){
   var input = document.getElementById(inputId);
@@ -652,7 +670,8 @@ async function gradePractice(){
   var btn = document.getElementById('pracCheckBtn');
   btn.disabled = true; btn.textContent = 'Проверка...';
 
-  var data = await askServer('checkPractice', { variant: v, answers: answers });
+  // ОТПРАВЛЯЕМ МАССИВ КАК СТРОКУ JSON (из-за ограничений JSONP)
+  var data = await askServer('checkPractice', { variant: v, answers: JSON.stringify(answers) });
 
   btn.disabled = false; btn.textContent = '📊 Проверить практику';
 
@@ -807,7 +826,9 @@ async function finishStandalone(auto){
   var answers = [];
   saTasks.forEach(function(t,i){ var el = document.getElementById('sa'+i); answers.push({ type: t.type, params: t.params, answer: el ? el.value.trim() : '' }); });
 
-  var data = await askServer('checkStandalone', { tasks: answers });
+  // ОТПРАВЛЯЕМ МАССИВ КАК СТРОКУ JSON
+  var data = await askServer('checkStandalone', { tasks: JSON.stringify(answers) });
+
   if (btn) { btn.disabled = false; btn.textContent = '✅ Сдать работу'; }
   if (data.error === 'network') { toast('⚠️ Ошибка соединения.'); return; }
 
