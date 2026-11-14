@@ -14,6 +14,7 @@ window.MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <link rel="stylesheet" href="../assets/css/style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23ede9fe'/><text x='16' y='23' font-size='17' font-family='Georgia' font-weight='bold' fill='%236d28d9' text-anchor='middle'>I</text></svg>">
@@ -91,11 +92,9 @@ body.exam #standalone{display:block}
 .pane.on{display:block}
 .keys{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}
 .key{background:#fbfaff;border:1.5px solid #ece8f8;border-radius:10px;padding:10px 6px;
-  cursor:pointer;font-size:1rem;font-weight:700;color:#5b4b8a;font-family:Cambria,Georgia,serif;
-  line-height:1.3;transition:.15s}
+  cursor:pointer;font-size:1.2rem;font-weight:700;color:#5b4b8a;font-family:inherit;
+  line-height:1.3;transition:.15s; text-align:center;}
 .key:hover{background:var(--purple);border-color:var(--pd);transform:translateY(-1px)}
-.key small{display:block;font-size:.6rem;color:var(--muted);font-weight:600;margin-top:3px;
-  font-family:Consolas,monospace}
 
 .calc{max-width:340px}
 .calc-screen{background:#1e1b2e;color:#e9e6f5;border-radius:14px;padding:14px 16px;margin-bottom:12px;
@@ -111,6 +110,7 @@ body.exam #standalone{display:block}
 .cbtn.eq{background:var(--green);color:#047857;grid-column:span 2}
 .cbtn.del{background:var(--orange);color:#c2410c}
 .cbtn.clr{background:#fee2e2;color:#b91c1c}
+.cbtn.comma{background:#e0e7ff;color:#3730a3}
 
 .bar{background:#fff;border-radius:var(--r);padding:16px;border:1px solid #f2f0fa;
   box-shadow:0 -4px 24px rgba(120,110,160,.16);display:flex;flex-wrap:wrap;gap:10px;
@@ -181,18 +181,38 @@ table.pow tr:first-child td{background:var(--purple);color:#4c1d95;font-weight:8
       $N = 16 \;\Rightarrow\; 2^{4} = 16 \;\Rightarrow\; i = 4$ бита<br><br>
       $N = 64 \;\Rightarrow\; 2^{6} = 64 \;\Rightarrow\; i = 6$ бит
     </div>
+    
     <h3>Таблица степеней двойки</h3>
     <table class="pow">
-      <tr><td>2¹</td><td>2²</td><td>2³</td><td>2⁴</td><td>2⁵</td><td>2⁶</td><td>2⁷</td><td>2⁸</td><td>2⁹</td><td>2¹⁰</td><td>2¹⁶</td></tr>
-      <tr><td>2</td><td>4</td><td>8</td><td>16</td><td>32</td><td>64</td><td>128</td><td>256</td><td>512</td><td>1024</td><td>65536</td></tr>
+      <tr><td>2¹</td><td>2²</td><td>2³</td><td>2⁴</td><td>2⁵</td><td>2⁶</td><td>2⁷</td><td>2⁸</td><td>2⁹</td><td>2¹⁰</td><td>2¹¹</td><td>2¹²</td><td>2¹³</td><td>2¹⁴</td><td>2¹⁵</td><td>2¹⁶</td></tr>
+      <tr><td>2</td><td>4</td><td>8</td><td>16</td><td>32</td><td>64</td><td>128</td><td>256</td><td>512</td><td>1024</td><td>2048</td><td>4096</td><td>8192</td><td>16384</td><td>32768</td><td>65536</td></tr>
     </table>
-    <h3>Единицы измерения</h3>
-    <div class="tgrid" style="grid-template-columns:130px 1fr">
-      <span class="k">1 байт</span><span>$= 8$ бит</span>
-      <span class="k">1 Кбайт</span><span>$= 1024$ байт $= 2^{10}$ байт</span>
-      <span class="k">1 Мбайт</span><span>$= 1024$ Кбайт</span>
-      <span class="k">1 Гбайт</span><span>$= 1024$ Мбайт</span>
+
+    <h3>Схема перевода единиц информации</h3>
+    <div style="background:linear-gradient(135deg,#f5f3ff,#eef2ff); padding:20px; border-radius:16px; text-align:center; margin:16px 0; overflow-x:auto;">
+      <div style="display:flex; justify-content:center; align-items:center; gap:10px; flex-wrap:wrap;">
+        <div style="background:#fff; padding:10px 15px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.05); font-weight:bold; color:#4c1d95;">Биты</div>
+        <div style="display:flex; flex-direction:column; align-items:center; color:#6d28d9; font-size:0.85rem;">
+          <span>× 8</span>
+          <span style="font-size:1.2rem; line-height:1;">→</span>
+        </div>
+        <div style="background:#fff; padding:10px 15px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.05); font-weight:bold; color:#4c1d95;">Байты</div>
+        <div style="display:flex; flex-direction:column; align-items:center; color:#6d28d9; font-size:0.85rem;">
+          <span>× 1024</span>
+          <span style="font-size:1.2rem; line-height:1;">→</span>
+        </div>
+        <div style="background:#fff; padding:10px 15px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.05); font-weight:bold; color:#4c1d95;">Кбайты</div>
+        <div style="display:flex; flex-direction:column; align-items:center; color:#6d28d9; font-size:0.85rem;">
+          <span>× 1024</span>
+          <span style="font-size:1.2rem; line-height:1;">→</span>
+        </div>
+        <div style="background:#fff; padding:10px 15px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.05); font-weight:bold; color:#4c1d95;">Мбайты</div>
+      </div>
+      <div style="margin-top:12px; font-size:0.9rem; color:#6d28d9; font-weight:600;">
+        ← деление на 8 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ← деление на 1024 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ← деление на 1024
+      </div>
     </div>
+
     <h3>Разобранный пример</h3>
     <div class="task">
       <div class="tgrid">
@@ -319,6 +339,7 @@ table.pow tr:first-child td{background:var(--purple);color:#4c1d95;font-weight:8
       Шкала: 90–100 → 5, 70–89 → 4, 50–69 → 3, 0–49 → 2.</p>
     <div class="controls">
       <button class="btn b-purple" onclick="calcFinalMark()">🎯 Подвести итог</button>
+      <button class="btn b-red" id="penaltyBtn" onclick="applyPenalty()" style="display:none;">📉 Снизить на 1 балл (не писал в тетради)</button>
     </div>
     <div class="res" id="finalResult">
       <h3>Итог урока</h3>
@@ -385,10 +406,12 @@ table.pow tr:first-child td{background:var(--purple);color:#4c1d95;font-weight:8
 </div><!-- /wrap -->
 
 <div class="bar no-print">
+  <button class="btn b-teal" onclick="scrollToTop()">⬆ В начало</button>
   <button class="btn b-purple" onclick="openMath()">⌨ Математическая раскладка</button>
   <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
   <button class="btn b-yellow" onclick="scrollToGate()">📝 Самостоятельная</button>
   <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
+  <button class="btn b-blue" onclick="saveLessonScreenshot()">📸 Скриншот урока</button>
   <button class="btn b-red" onclick="finishLesson()">🏁 Завершить урок</button>
 </div>
 
@@ -436,83 +459,51 @@ table.pow tr:first-child td{background:var(--purple);color:#4c1d95;font-weight:8
   </div>
 </section>
 
+<!-- Модалка математической раскладки -->
 <div class="mbg" id="mathModal">
   <div class="modal" role="dialog" aria-label="Математическая раскладка">
     <h3>⌨ Математическая раскладка</h3>
     <p class="mhint">Щёлкните в нужное поле — оно подсветится зелёным, — затем нажмите символ.
-    Формула вставится в позицию курсора.</p>
-    <div class="tabs">
-      <button class="tab on" data-tab="frac">Дроби</button>
-      <button class="tab" data-tab="pow">Степени</button>
-      <button class="tab" data-tab="sub">Индексы</button>
-      <button class="tab" data-tab="logic">Алгебра логики</button>
-      <button class="tab" data-tab="ops">Операции</button>
+    Символ вставится в позицию курсора.</p>
+    <div class="keys">
+      <button class="key" onclick="insertMath('+')">+</button>
+      <button class="key" onclick="insertMath('-')">−</button>
+      <button class="key" onclick="insertMath('*')">×</button>
+      <button class="key" onclick="insertMath('/')">÷</button>
+      <button class="key" onclick="insertMath('=')">=</button>
+      <button class="key" onclick="insertMath('≠')">≠</button>
+      <button class="key" onclick="insertMath('≈')">≈</button>
+      <button class="key" onclick="insertMath('<')">&lt;</button>
+      <button class="key" onclick="insertMath('>')">&gt;</button>
+      <button class="key" onclick="insertMath('≤')">≤</button>
+      <button class="key" onclick="insertMath('≥')">≥</button>
+      <button class="key" onclick="insertMath('²')">²</button>
+      <button class="key" onclick="insertMath('³')">³</button>
+      <button class="key" onclick="insertMath('^')">^</button>
+      <button class="key" onclick="insertMath('√')">√</button>
+      <button class="key" onclick="insertMath('(')">(</button>
+      <button class="key" onclick="insertMath(')')">)</button>
+      <button class="key" onclick="insertMath(':')">:</button>
+      <button class="key" onclick="insertMath(',')">,</button>
+      <button class="key" onclick="insertMath('1/2')">½</button>
+      <button class="key" onclick="insertMath('1/3')">⅓</button>
+      <button class="key" onclick="insertMath('1/4')">¼</button>
+      <button class="key" onclick="insertMath('3/4')">¾</button>
+      <button class="key" onclick="insertMath('N')">N</button>
+      <button class="key" onclick="insertMath('I')">I</button>
+      <button class="key" onclick="insertMath('K')">K</button>
+      <button class="key" onclick="insertMath('i')">i</button>
+      <button class="key" onclick="insertMath('бит')">бит</button>
+      <button class="key" onclick="insertMath('байт')">байт</button>
+      <button class="key" onclick="insertMath('Кбайт')">Кбайт</button>
     </div>
-    <div class="pane on" id="pane-frac"><div class="keys">
-      <button class="key" data-tex="\frac{1}{2}">½<small>\frac{1}{2}</small></button>
-      <button class="key" data-tex="\frac{1}{3}">⅓<small>\frac{1}{3}</small></button>
-      <button class="key" data-tex="\frac{1}{4}">¼<small>\frac{1}{4}</small></button>
-      <button class="key" data-tex="\frac{3}{4}">¾<small>\frac{3}{4}</small></button>
-      <button class="key" data-tex="\frac{a}{b}">a⁄b<small>своя</small></button>
-      <button class="key" data-tex="\frac{I}{K}">I⁄K<small>дробь</small></button>
-      <button class="key" data-tex="\frac{I}{i}">I⁄i<small>дробь</small></button>
-      <button class="key" data-tex="\dfrac{8192}{8}">8192⁄8<small>перевод</small></button>
-    </div></div>
-    <div class="pane" id="pane-pow"><div class="keys">
-      <button class="key" data-tex="2^{i}">2ⁱ<small>N = 2^i</small></button>
-      <button class="key" data-tex="2^{2}">2²<small>4</small></button>
-      <button class="key" data-tex="2^{3}">2³<small>8</small></button>
-      <button class="key" data-tex="2^{4}">2⁴<small>16</small></button>
-      <button class="key" data-tex="2^{5}">2⁵<small>32</small></button>
-      <button class="key" data-tex="2^{6}">2⁶<small>64</small></button>
-      <button class="key" data-tex="2^{7}">2⁷<small>128</small></button>
-      <button class="key" data-tex="2^{8}">2⁸<small>256</small></button>
-      <button class="key" data-tex="2^{9}">2⁹<small>512</small></button>
-      <button class="key" data-tex="2^{10}">2¹⁰<small>1024</small></button>
-      <button class="key" data-tex="2^{16}">2¹⁶<small>65536</small></button>
-      <button class="key" data-tex="65536">65536<small>ответ</small></button>
-    </div></div>
-    <div class="pane" id="pane-sub"><div class="keys">
-      <button class="key" data-tex="N_{1}">N₁<small>N_{1}</small></button>
-      <button class="key" data-tex="K_{1}">K₁<small>K_{1}</small></button>
-      <button class="key" data-tex="I_{1}">I₁<small>I_{1}</small></button>
-      <button class="key" data-tex="i_{1}">i₁<small>i_{1}</small></button>
-      <button class="key" data-tex="x_{n}">xₙ<small>своя</small></button>
-    </div></div>
-    <div class="pane" id="pane-logic"><div class="keys">
-      <button class="key" data-tex="\land">∧<small>И (AND)</small></button>
-      <button class="key" data-tex="\lor">∨<small>ИЛИ (OR)</small></button>
-      <button class="key" data-tex="\lnot">¬<small>НЕ (NOT)</small></button>
-      <button class="key" data-tex="\to">→<small>следует</small></button>
-      <button class="key" data-tex="\leftrightarrow">↔<small>равносильно</small></button>
-      <button class="key" data-tex="\oplus">⊕<small>искл. ИЛИ</small></button>
-      <button class="key" data-tex="\equiv">≡<small>тождество</small></button>
-      <button class="key" data-tex="\forall">∀<small>для всех</small></button>
-      <button class="key" data-tex="\exists">∃<small>существует</small></button>
-      <button class="key" data-tex="\in">∈<small>принадлежит</small></button>
-      <button class="key" data-tex="\notin">∉<small>не принадлежит</small></button>
-      <button class="key" data-tex="\subset">⊂<small>подмножество</small></button>
-    </div></div>
-    <div class="pane" id="pane-ops"><div class="keys">
-      <button class="key" data-tex="=">=</button>
-      <button class="key" data-tex="\cdot">·<small>умножить</small></button>
-      <button class="key" data-tex="\times">×</button>
-      <button class="key" data-tex="\div">÷</button>
-      <button class="key" data-tex="+">+</button>
-      <button class="key" data-tex="-">−</button>
-      <button class="key" data-tex="\pm">±</button>
-      <button class="key" data-tex="\sqrt{x}">√<small>корень</small></button>
-      <button class="key" data-tex="\approx">≈</button>
-      <button class="key" data-tex="\neq">≠</button>
-      <button class="key" data-tex="\leq">≤</button>
-      <button class="key" data-tex="\geq">≥</button>
-    </div></div>
     <div style="text-align:right;margin-top:18px">
       <button class="btn b-green" onclick="closeMath()">Готово</button>
     </div>
   </div>
 </div>
 
+<!-- Модалка калькулятора -->
 <div class="mbg" id="calcModal">
   <div class="modal calc" role="dialog" aria-label="Калькулятор">
     <h3 style="margin-bottom:12px">🧮 Калькулятор</h3>
@@ -538,7 +529,7 @@ table.pow tr:first-child td{background:var(--purple);color:#4c1d95;font-weight:8
       <button class="cbtn" onclick="calcNum('3')">3</button>
       <button class="cbtn op" onclick="calcOp('+')">+</button>
       <button class="cbtn" onclick="calcNum('0')">0</button>
-      <button class="cbtn" onclick="calcNum('00')">00</button>
+      <button class="cbtn comma" onclick="calcNum(',')">,</button>
       <button class="cbtn eq" onclick="calcEquals()">=</button>
     </div>
     <div style="text-align:right;margin-top:16px">
@@ -586,7 +577,8 @@ async function checkPasswordRemote(resourceId, type, password){
 var lessonState = {
   wb: { w1:false, w2:false, w3:false, w4:false },
   wbCorrect: 0, wbMark: 0,
-  pracDone: false, pracCorrect: 0, pracMark: 0
+  pracDone: false, pracCorrect: 0, pracMark: 0,
+  penaltyApplied: false
 };
 var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
 
@@ -608,28 +600,52 @@ function percentToMark(pct){
 }
 
 /* =========================================================
-   3. РАБОЧАЯ ТЕТРАДЬ
+   3. РАБОЧАЯ ТЕТРАДЬ (с защитой от повторной проверки)
    ========================================================= */
 function checkW(inputId, answer, fbId){
-  if (lessonState.wb[inputId]){ showFb(fbId,'✔ Уже решено.','hint'); return; }
-  var v = (document.getElementById(inputId).value||'').trim();
+  var input = document.getElementById(inputId);
+  var btn = input.nextElementSibling;
+  
+  if (input.disabled) {
+    showFb(fbId, '✔ Задание уже проверено.', 'hint');
+    return;
+  }
+  
+  var v = (input.value||'').trim();
   if (v === answer){
+    input.disabled = true;
+    input.style.background = '#f0fdf4';
+    input.style.borderColor = '#10b981';
+    if (btn) btn.style.display = 'none';
     lessonState.wb[inputId] = true;
     showFb(fbId,'✅ Верно!','ok');
   } else {
     showFb(fbId,'❌ Неверно. Смотрите подсказку.','no');
   }
 }
+
 function checkWRadio(name, answer, fbId){
-  if (lessonState.wb[name]){ showFb(fbId,'✔ Уже решено.','hint'); return; }
+  var radios = document.querySelectorAll('input[name="'+name+'"]');
+  if (radios[0].disabled) {
+    showFb(fbId, '✔ Задание уже проверено.', 'hint');
+    return;
+  }
+  
   var sel = document.querySelector('input[name="'+name+'"]:checked');
   if (!sel){ showFb(fbId,'Выберите вариант.','hint'); return; }
+  
+  radios.forEach(function(r){ r.disabled = true; });
+  var btn = radios[0].closest('.task').querySelector('button');
+  if (btn) btn.style.display = 'none';
+
   document.querySelectorAll('input[name="'+name+'"]').forEach(function(r){
     var lab = r.closest('.opt');
+    if (!lab) return;
     lab.classList.remove('correct','wrong');
     if (r.value === answer) lab.classList.add('correct');
     if (r.checked && r.value !== answer) lab.classList.add('wrong');
   });
+  
   if (sel.value === answer){
     lessonState.wb[name] = true;
     showFb(fbId,'✅ Верно!','ok');
@@ -637,6 +653,7 @@ function checkWRadio(name, answer, fbId){
     showFb(fbId,'❌ Неверно.','no');
   }
 }
+
 function calcWorkbook(){
   var correct = ['w1','w2','w3','w4'].filter(function(k){ return lessonState.wb[k]; }).length;
   var pct = Math.round(correct / 4 * 100);
@@ -847,7 +864,7 @@ function loadPracticeState(){
 }
 
 /* =========================================================
-   5. ИТОГ
+   5. ИТОГ (с возможностью снижения оценки)
    ========================================================= */
 function calcFinalMark(){
   if (!lessonState.wbMark && !lessonState.pracDone){
@@ -866,6 +883,30 @@ function calcFinalMark(){
     total === 4 ? '👏 Хорошо, но есть над чем поработать.' :
     total === 3 ? '📖 Удовлетворительно. Повторите формулы.' :
                   '📚 Стоит вернуться к теории.';
+  
+  // Показываем кнопку снижения оценки, если ещё не применяли
+  if (!lessonState.penaltyApplied) {
+    document.getElementById('penaltyBtn').style.display = 'inline-flex';
+  }
+}
+
+function applyPenalty() {
+  if (lessonState.penaltyApplied) {
+    toast('Снижение уже применено.');
+    return;
+  }
+  var totalEl = document.getElementById('fTotal');
+  var current = parseInt(totalEl.textContent);
+  if (isNaN(current)) {
+    toast('Сначала подведите итог.');
+    return;
+  }
+  var newMark = Math.max(2, current - 1);
+  totalEl.textContent = newMark;
+  lessonState.penaltyApplied = true;
+  document.getElementById('penaltyBtn').style.display = 'none';
+  document.getElementById('finalMsg').textContent = '📉 Оценка снижена на 1 балл (отсутствует решение в тетради). Итог: ' + newMark;
+  toast('Оценка снижена на 1 балл. Итог: ' + newMark);
 }
 
 /* =========================================================
@@ -931,6 +972,10 @@ function scrollToGate(){
   document.getElementById('standaloneGate')
     .scrollIntoView({behavior:'smooth', block:'center'});
   document.getElementById('saPass').focus();
+}
+
+function scrollToTop() {
+  window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 async function unlockStandalone(){
@@ -1108,7 +1153,7 @@ function saveStandalonePDF(){
   toast('📄 PDF сохранён');
 }
 
-/* ---------- JPG ---------- */
+/* ---------- JPG (для самостоятельной) ---------- */
 function buildResultHTML(){
   var fio = getFullName() || 'Ученик не указан';
   var klass = getKlass() || '—';
@@ -1183,6 +1228,117 @@ function saveStandaloneJPG(){
   }
 }
 
+/* ---------- Скриншот всего урока ---------- */
+function saveLessonScreenshot() {
+  var holder = document.createElement('div');
+  holder.style.cssText = 'position:fixed;left:-99999px;top:0;width:1200px;background:#fff;padding:20px;';
+  
+  var fio = getFullName() || 'Ученик не указан';
+  var klass = getKlass() || '—';
+  
+  var wbMark = document.getElementById('fWb').textContent;
+  var pracMark = document.getElementById('fPrac').textContent;
+  var totalMark = document.getElementById('fTotal').textContent;
+  
+  if (totalMark === '—') {
+    wbMark = lessonState.wbMark || '—';
+    pracMark = lessonState.pracMark || '—';
+    totalMark = '—';
+  }
+  
+  var wbTasks = [];
+  ['w1','w2','w3','w4'].forEach(function(id, index) {
+    var input = document.getElementById(id);
+    var val = input ? input.value : '—';
+    var isCorrect = lessonState.wb[id] || false;
+    wbTasks.push({
+      num: index + 1,
+      answer: val,
+      correct: isCorrect
+    });
+  });
+  
+  var html = '<div style="font-family:Georgia,serif;color:#222;padding:8px;">';
+  html += '<h1 style="text-align:center;font-size:24px;margin:0 0 4px;">Информационный объём сообщения</h1>';
+  html += '<p style="text-align:center;margin:0 0 16px;font-size:14px;color:#666;">Урок информатики · 7 класс · Измерение информации</p>';
+  
+  html += '<table style="width:100%;font-size:14px;margin-bottom:20px;border-collapse:collapse;">';
+  html += '<tr><td style="padding:4px;"><b>Ученик:</b> ' + fio + '</td><td style="padding:4px;"><b>Класс:</b> ' + klass + '</td></tr>';
+  html += '<tr><td style="padding:4px;"><b>Дата:</b> ' + new Date().toLocaleDateString('ru-RU') + '</td>';
+  html += '<td style="padding:4px;"><b>Время:</b> ' + new Date().toLocaleTimeString('ru-RU') + '</td></tr>';
+  html += '</table>';
+  
+  html += '<h2 style="font-size:18px;margin:20px 0 10px;color:#4c1d95;">1. Рабочая тетрадь</h2>';
+  html += '<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px;">';
+  html += '<tr style="background:#ede9fe;">';
+  html += '<th style="padding:6px;border:1px solid #ccc;">№</th>';
+  html += '<th style="padding:6px;border:1px solid #ccc;">Ответ ученика</th>';
+  html += '<th style="padding:6px;border:1px solid #ccc;">Верно</th>';
+  html += '</tr>';
+  wbTasks.forEach(function(t) {
+    html += '<tr>';
+    html += '<td style="padding:6px;border:1px solid #ccc;text-align:center;">' + t.num + '</td>';
+    html += '<td style="padding:6px;border:1px solid #ccc;text-align:center;">' + (t.answer || '—') + '</td>';
+    html += '<td style="padding:6px;border:1px solid #ccc;text-align:center;">' + (t.correct ? '✅' : '❌') + '</td>';
+    html += '</tr>';
+  });
+  html += '</table>';
+  
+  var wbRes = document.getElementById('wbCorrect').textContent;
+  var wbM = document.getElementById('wbMark').textContent;
+  html += '<p style="font-size:14px;"><b>Результат тетради:</b> ' + wbRes + ' из 4, оценка: <b>' + wbM + '</b></p>';
+  
+  if (lessonState.pracDone) {
+    html += '<h2 style="font-size:18px;margin:20px 0 10px;color:#4c1d95;">2. Практическая работа</h2>';
+    html += '<p style="font-size:14px;"><b>Вариант:</b> ' + (document.getElementById('pracVariant')?.value || '—') + '</p>';
+    
+    var pracCorrect = lessonState.pracCorrect || 0;
+    var pracMark = lessonState.pracMark || '—';
+    html += '<p style="font-size:14px;"><b>Результат:</b> ' + pracCorrect + ' из 5, оценка: <b>' + pracMark + '</b></p>';
+  } else {
+    html += '<h2 style="font-size:18px;margin:20px 0 10px;color:#4c1d95;">2. Практическая работа</h2>';
+    html += '<p style="font-size:14px;color:#999;">Не выполнялась</p>';
+  }
+  
+  html += '<h2 style="font-size:18px;margin:20px 0 10px;color:#4c1d95;">3. Итоговая оценка за урок</h2>';
+  html += '<table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:16px;">';
+  html += '<tr style="background:#ede9fe;">';
+  html += '<th style="padding:6px;border:1px solid #ccc;">Тетрадь</th>';
+  html += '<th style="padding:6px;border:1px solid #ccc;">Практика</th>';
+  html += '<th style="padding:6px;border:1px solid #ccc;">Итог</th>';
+  html += '</tr>';
+  html += '<tr>';
+  html += '<td style="padding:6px;border:1px solid #ccc;text-align:center;">' + (wbMark || '—') + '</td>';
+  html += '<td style="padding:6px;border:1px solid #ccc;text-align:center;">' + (pracMark || '—') + '</td>';
+  html += '<td style="padding:6px;border:1px solid #ccc;text-align:center;font-weight:bold;">' + totalMark + '</td>';
+  html += '</tr>';
+  html += '</table>';
+  
+  if (lessonState.penaltyApplied) {
+    html += '<p style="font-size:14px;color:#b91c1c;"><b>📉 Применено снижение на 1 балл (отсутствует решение в тетради)</b></p>';
+  }
+  
+  html += '<p style="font-size:14px;margin-top:20px;color:#666;text-align:center;">Скриншот создан автоматически. ' + new Date().toLocaleString('ru-RU') + '</p>';
+  html += '</div>';
+  
+  holder.innerHTML = html;
+  document.body.appendChild(holder);
+  
+  window.html2canvas(holder, { backgroundColor: '#ffffff', scale: 2 })
+    .then(function(canvas) {
+      var a = document.createElement('a');
+      a.download = getFileName() + '_урок.jpg';
+      a.href = canvas.toDataURL('image/jpeg', 0.93);
+      a.click();
+      holder.remove();
+      toast('📸 Скриншот урока сохранён');
+    })
+    .catch(function() {
+      holder.remove();
+      toast('Не удалось создать скриншот');
+    });
+}
+
 /* =========================================================
    7. ПЕЧАТЬ ДЗ
    ========================================================= */
@@ -1210,19 +1366,18 @@ function printHomework(){
 }
 
 /* =========================================================
-   8. МАТЕМАТИЧЕСКАЯ РАСКЛАДКА
+   8. МАТЕМАТИЧЕСКАЯ РАСКЛАДКА (упрощённая)
    ========================================================= */
 var activeField = null;
 function openMath(){ document.getElementById('mathModal').classList.add('open'); }
 function closeMath(){ document.getElementById('mathModal').classList.remove('open'); }
-function insertMath(tex){
+function insertMath(text){
   var t = activeField || document.querySelector('input[type=text]');
   if (!t){ toast('Сначала щёлкните в поле'); return; }
-  var snip = '$' + tex + '$';
   var s = t.selectionStart || 0, e = t.selectionEnd || 0;
-  t.value = t.value.slice(0,s) + snip + t.value.slice(e);
+  t.value = t.value.slice(0,s) + text + t.value.slice(e);
   t.focus();
-  var p = s + snip.length;
+  var p = s + text.length;
   try{ t.setSelectionRange(p,p); }catch(err){}
   t.dispatchEvent(new Event('input',{bubbles:true}));
 }
@@ -1231,31 +1386,26 @@ document.addEventListener('focusin', function(e){
     activeField = e.target;
   }
 });
-document.querySelectorAll('.key[data-tex]').forEach(function(b){
-  b.addEventListener('click', function(){ insertMath(b.dataset.tex); });
-});
-document.querySelectorAll('.tab').forEach(function(t){
-  t.addEventListener('click', function(){
-    document.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('on'); });
-    document.querySelectorAll('.pane').forEach(function(x){ x.classList.remove('on'); });
-    t.classList.add('on');
-    var p = document.getElementById('pane-'+t.dataset.tab);
-    if (p) p.classList.add('on');
-  });
-});
 document.getElementById('mathModal').addEventListener('click', function(e){
   if (e.target === this) closeMath();
 });
 
 /* =========================================================
-   9. КАЛЬКУЛЯТОР
+   9. КАЛЬКУЛЯТОР (с запятой)
    ========================================================= */
 var calcBuf = '';
 function openCalc(){ document.getElementById('calcModal').classList.add('open'); calcRender(); }
 function closeCalc(){ document.getElementById('calcModal').classList.remove('open'); }
 function calcNum(d){
-  if (calcBuf === '0' && d !== '0') calcBuf = '';
-  calcBuf += d; calcRender();
+  if (calcBuf === '0' && d !== '0' && d !== ',') calcBuf = '';
+  if (d === ',') {
+    if (calcBuf.includes(',')) return;
+    if (calcBuf === '') calcBuf = '0';
+    calcBuf += ',';
+  } else {
+    calcBuf += d;
+  }
+  calcRender();
 }
 function calcOp(op){
   if (!calcBuf){ if (op === '-'){ calcBuf = '-'; calcRender(); } return; }
@@ -1270,12 +1420,15 @@ function calcRender(){
 }
 function calcEval(s){
   if (!s) return 0;
-  try { return Function('"use strict";return (' + s.replace(/\^/g,'**') + ')')(); }
+  try {
+    var expr = s.replace(/\^/g,'**').replace(/,/g,'.');
+    return Function('"use strict";return (' + expr + ')')();
+  }
   catch(e){ return '…'; }
 }
 function calcEquals(){
   var v = calcEval(calcBuf);
-  calcBuf = String(v);
+  calcBuf = String(v).replace('.', ',');
   calcRender();
 }
 document.getElementById('calcModal').addEventListener('click', function(e){
@@ -1308,37 +1461,44 @@ document.addEventListener('DOMContentLoaded', function(){
 function finishLesson(){
   if (!confirm('Завершить урок и сбросить ВСЕ результаты?\nЭто действие нельзя отменить.')) return;
 
-  // Таймер самостоятельной
   if (typeof saTimer !== 'undefined' && saTimer){ clearInterval(saTimer); saTimer = null; }
 
-  // Состояние урока
   lessonState = {
     wb: { w1:false, w2:false, w3:false, w4:false },
     wbCorrect: 0, wbMark: 0,
-    pracDone: false, pracCorrect: 0, pracMark: 0
+    pracDone: false, pracCorrect: 0, pracMark: 0,
+    penaltyApplied: false
   };
 
-  // Рабочая тетрадь
   ['w1','w2','w3','w4'].forEach(function(id){
     var el = document.getElementById(id);
-    if (el){ el.value = ''; el.style.borderColor = ''; el.style.background = ''; }
+    if (el){ 
+      el.value = ''; 
+      el.style.borderColor = ''; 
+      el.style.background = ''; 
+      el.disabled = false; 
+    }
     var fb = document.getElementById(id + 'fb');
     if (fb){ fb.innerHTML = ''; fb.className = 'fb'; }
+    var btn = document.querySelector('button[onclick*="checkW(\''+id+'\'"]');
+    if (btn) btn.style.display = '';
   });
   document.querySelectorAll('input[name="w3"]').forEach(function(r){
     r.checked = false;
+    r.disabled = false;
     var lab = r.closest('.opt');
     if (lab) lab.classList.remove('correct','wrong');
   });
   var w3fb = document.getElementById('w3fb');
   if (w3fb){ w3fb.innerHTML = ''; w3fb.className = 'fb'; }
+  var w3btn = document.querySelector('button[onclick*="checkWRadio"]');
+  if (w3btn) w3btn.style.display = '';
 
   var wbRes = document.getElementById('wbResult');
   if (wbRes) wbRes.classList.remove('show');
   var wbCorrect = document.getElementById('wbCorrect'); if (wbCorrect) wbCorrect.textContent = '0';
   var wbMark = document.getElementById('wbMark'); if (wbMark) wbMark.textContent = '—';
 
-  // Практическая работа
   var pLock = document.getElementById('practiceLock');
   var pBody = document.getElementById('practiceBody');
   if (pLock) pLock.style.display = '';
@@ -1356,14 +1516,14 @@ function finishLesson(){
   var pracH2 = document.querySelector('#practice h2');
   if (pracH2) pracH2.innerHTML = '<span class="num">3</span> Практическая работа <span class="badge">по паролю</span>';
 
-  // Итог
   var fRes = document.getElementById('finalResult'); if (fRes) fRes.classList.remove('show');
   ['fWb','fPrac','fTotal'].forEach(function(id){
     var el = document.getElementById(id); if (el) el.textContent = '—';
   });
   var fMsg = document.getElementById('finalMsg'); if (fMsg) fMsg.textContent = '';
+  var penaltyBtn = document.getElementById('penaltyBtn');
+  if (penaltyBtn) penaltyBtn.style.display = 'none';
 
-  // Самостоятельная
   if (typeof saStarted !== 'undefined') saStarted = false;
   if (typeof saDone !== 'undefined') saDone = false;
   if (typeof saTasks !== 'undefined') saTasks = [];
@@ -1382,15 +1542,12 @@ function finishLesson(){
   var examTimer = document.getElementById('examTimer');
   if (examTimer){ examTimer.textContent = '15:00'; examTimer.className = 'timer'; }
 
-  // Данные ученика
   ['surname','firstname','klass'].forEach(function(id){
     var el = document.getElementById(id); if (el) el.value = '';
   });
 
-  // localStorage
   try { localStorage.removeItem(STORAGE_KEY); } catch(e){}
 
-  // Наверх
   window.scrollTo({top:0, behavior:'smooth'});
   toast('🏁 Урок завершён. Все результаты сброшены.');
 }
