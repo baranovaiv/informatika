@@ -921,34 +921,28 @@ async function gradePractice(){
   var localResults = [];
   var serverAnswers = [];
   
-  // 1. Проверяем локально
   qs.forEach(function(q, i){
     var el = document.getElementById('prac'+i);
     var raw = (el.value||'').trim();
     var ok = false;
     try { ok = analyseAnswer(raw, q.canon, 0).ok; } catch(e){}
     localResults.push(ok);
-    
-    // Если верно — отправляем ответ из таблицы (для этого урока там слово 'ok')
-    // Если неверно — отправляем 'fail' (чтобы сервер точно поставил false)
     serverAnswers.push(ok ? 'ok' : 'fail');
   });
 
   var btn = document.getElementById('pracCheckBtn');
   btn.disabled = true; btn.textContent = 'Проверка...';
 
-  // 2. Отправляем на сервер
   var data = await askServer('checkPractice', { variant: v, answers: JSON.stringify(serverAnswers) });
 
   btn.disabled = false; btn.textContent = '📊 Проверить практику';
 
   if (data.error === 'network') { toast('⚠️ Ошибка соединения.'); return; }
 
-  // 3. Выставляем оценки (используем локальные результаты)
   var correct = 0;
   qs.forEach(function(q, i){
     var el = document.getElementById('prac'+i);
-    var ok = localResults[i];
+    var ok = localResults[i]; // Берем локальный результат!
     if (ok) correct++;
     el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
     el.style.background = ok ? '#f0fdf4' : '#fef2f2';
@@ -1130,16 +1124,10 @@ async function finishStandalone(auto){
   saTasks.forEach(function(t,i){
     var el = document.getElementById('sa'+i);
     var raw = el ? el.value.trim() : '';
-    
     var ok = false;
     try { ok = analyseAnswer(raw, t.canon, 0).ok; } catch(e){}
     localResults.push(ok);
-    
-    // Формируем ответ для сервера
-    serverAnswers.push({ 
-      key: t.key, 
-      answer: ok ? 'ok' : 'fail' 
-    });
+    serverAnswers.push({ key: t.key, answer: ok ? 'ok' : 'fail' });
   });
 
   var data = await askServer('checkStandalone', { tasks: JSON.stringify(serverAnswers) });
@@ -1149,14 +1137,14 @@ async function finishStandalone(auto){
 
   saDone = true; var correct = 0;
   saTasks.forEach(function(t,i){
-    var el = document.getElementById('sa'+i); var ok = localResults[i];
+    var el = document.getElementById('sa'+i); 
+    var ok = localResults[i]; // Берем локальный результат!
     if (ok) correct++;
     if (el){ el.disabled = true; el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)'; el.style.background = ok ? '#f0fdf4' : '#fef2f2'; }
     var card = document.getElementById('st'+i); if (card) card.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
   });
 
   var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
-  var used = SA_MINUTES*60 - Math.max(saLeft,0); var um = Math.floor(used/60), us = used%60;
   document.getElementById('exCorrect').textContent = correct + ' / 5';
   document.getElementById('exMark').textContent = mark;
   document.getElementById('examResult').classList.add('show'); document.getElementById('examResult').scrollIntoView({behavior:'smooth'});
