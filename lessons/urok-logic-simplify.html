@@ -835,32 +835,32 @@ function calcWorkbook(){
    ========================================================= */
 var PRACTICE_QUESTIONS = {
   1: [
-    {q:'(A \\land B) \\lor (A \\land \\neg B)', canon:'A', hint:'Склеивание'},
-    {q:'\\neg(\\neg A \\land B) \\land \\neg A', canon:'¬A ∧ ¬B', hint:'Де Морган → противоречие'},
-    {q:'(A \\land \\neg B) \\lor (A \\land B) \\lor (\\neg A \\land B)', canon:'A ∨ B', hint:'Склеивание → распределительный'},
-    {q:'(A \\lor B) \\land (A \\lor \\neg B) \\land (A \\lor C)', canon:'A', hint:'Склеивание → поглощение'},
-    {q:'((A \\land B) \\lor (A \\land \\neg B)) \\land ((\\neg A \\land C) \\lor (A \\land C))', canon:'A ∧ C', hint:'Склеивание в скобках'}
+    {q:'A \\lor (A \\land B)', canon:'A', hint:'Закон поглощения'},
+    {q:'\\neg(A \\land B) \\lor A', canon:'¬B ∨ A', hint:'Де Морган → исключение'},
+    {q:'(A \\land B) \\lor (\\neg A \\land B)', canon:'B', hint:'Склеивание'},
+    {q:'(A \\lor B) \\land (A \\lor C) \\land (A \\lor \\neg B)', canon:'A ∨ C', hint:'Склеивание → распределительный'},
+    {q:'\\neg(\\neg A \\lor B) \\land \\neg B', canon:'A ∧ ¬B', hint:'Де Морган → поглощение'}
   ],
   2: [
-    {q:'(A \\land \\neg B) \\lor (A \\land B)', canon:'A', hint:'Склеивание'},
-    {q:'\\neg(\\neg A \\lor \\neg A) \\lor B', canon:'A ∨ B', hint:'Двойное отрицание'},
+    {q:'A \\land (A \\lor B)', canon:'A', hint:'Закон поглощения'},
+    {q:'\\neg(A \\lor B) \\land A', canon:'0', hint:'Де Морган → противоречие (0)'},
+    {q:'(A \\lor B) \\land (A \\lor \\neg B)', canon:'A', hint:'Склеивание'},
     {q:'(A \\land B) \\lor (\\neg A \\land C) \\lor (B \\land C)', canon:'(A ∧ B) ∨ (¬A ∧ C)', hint:'Распределительный'},
-    {q:'(A \\lor B) \\land (\\neg A \\lor B) \\land (A \\lor \\neg B)', canon:'A ∧ B', hint:'Склеивание дважды'},
-    {q:'\\neg((A \\lor B) \\land (\\neg A \\lor B)) \\lor (A \\land B)', canon:'A ∨ B', hint:'Де Морган → поглощение'}
+    {q:'\\neg(\\neg A \\land B) \\land (A \\lor B)', canon:'A ∨ B', hint:'Де Морган → идемпотентность'}
   ],
   3: [
-    {q:'\\neg(\\neg A \\land \\neg B) \\land B', canon:'B', hint:'Де Морган → поглощение'},
-    {q:'\\neg(A \\lor B) \\lor (A \\land \\neg B)', canon:'¬B', hint:'Де Морган → склеивание'},
-    {q:'(A \\lor B) \\land (\\neg A \\lor B) \\lor (A \\land \\neg B)', canon:'A ∨ B', hint:'Склеивание'},
-    {q:'(A \\land B \\land C) \\lor (A \\land B \\land \\neg C) \\lor (A \\land \\neg B \\land C)', canon:'A ∧ (B ∨ C)', hint:'Склеивание дважды'},
-    {q:'((A \\land B) \\lor (\\neg A \\land B)) \\land ((A \\land \\neg B) \\lor (A \\land B))', canon:'A ∧ B', hint:'Склеивание'}
+    {q:'A \\lor (\\neg A \\land B)', canon:'A ∨ B', hint:'Закон исключения'},
+    {q:'\\neg(\\neg A \\land B) \\lor A', canon:'1', hint:'Де Морган → исключённое третье (1)'},
+    {q:'(A \\land B) \\lor (A \\land \\neg B) \\lor (A \\land C)', canon:'A', hint:'Склеивание → поглощение'},
+    {q:'(A \\lor B) \\land (\\neg A \\lor B)', canon:'B', hint:'Склеивание'},
+    {q:'((A \\land B) \\lor (\\neg A \\land B)) \\land ((A \\land \\neg B) \\lor (A \\land B))', canon:'A ∧ B', hint:'Склеивание дважды'}
   ],
   4: [
-    {q:'\\neg(\\neg A \\lor \\neg A) \\lor (B \\land \\neg B)', canon:'A', hint:'Двойное отрицание'},
-    {q:'(A \\land B) \\lor (A \\land \\neg B) \\lor (A \\land C)', canon:'A', hint:'Склеивание → поглощение'},
-    {q:'\\neg(\\neg A \\land \\neg B) \\land (A \\lor B)', canon:'A ∨ B', hint:'Де Морган → идемпотентность'},
-    {q:'(A \\lor B \\lor C) \\land (A \\lor B \\lor \\neg C) \\land \\neg A', canon:'¬A ∧ B', hint:'Склеивание → распределительный'},
-    {q:'(A \\land (B \\lor C)) \\lor (\\neg A \\land (B \\lor C))', canon:'B ∨ C', hint:'Склеивание'}
+    {q:'A \\land (\\neg A \\lor B)', canon:'A ∧ B', hint:'Закон исключения'},
+    {q:'(A \\land B) \\lor (\\neg A \\land \\neg B)', canon:'A ↔ B', hint:'Эквивалентность (↔)'},
+    {q:'(A \\land B \\land C) \\lor (A \\land B \\land \\neg C)', canon:'A ∧ B', hint:'Склеивание'},
+    {q:'(A \\lor B \\lor C) \\land (A \\lor B \\lor \\neg C)', canon:'A ∨ B', hint:'Склеивание'},
+    {q:'\\neg(A \\lor B) \\lor (A \\land B)', canon:'A ↔ B', hint:'Де Морган → распределительный'}
   ]
 };
 
