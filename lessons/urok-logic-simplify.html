@@ -917,28 +917,41 @@ async function gradePractice(){
   if (lessonState.pracDone){ toast('⚠️ Практика уже сдана.'); return; }
   var v = document.getElementById('pracVariant').value;
   var qs = PRACTICE_QUESTIONS[v];
-  var answers = [];
-  var localResults = [];
   
+  var localResults = [];
+  var serverAnswers = [];
+  
+  // 1. Проверяем локально каждое задание
   qs.forEach(function(q, i){
     var el = document.getElementById('prac'+i);
     var raw = (el.value||'').trim();
-    answers.push(raw);
-    try { localResults.push(analyseAnswer(raw, q.canon, 0).ok); }
-    catch(e){ localResults.push(false); }
+    
+    var ok = false;
+    try {
+      var r = analyseAnswer(raw, q.canon, 0);
+      ok = r.ok;
+      if (!ok) console.log('Задание ' + (i+1) + ' неверно:', r);
+    } catch(e) {
+      console.log('Задание ' + (i+1) + ' ошибка парсинга:', e);
+      ok = false;
+    }
+    
+    localResults.push(ok);
+    serverAnswers.push(ok ? 'ok' : 'fail'); // Отправляем строку 'ok' или 'fail'
   });
 
   var btn = document.getElementById('pracCheckBtn');
   btn.disabled = true; btn.textContent = 'Проверка...';
 
-  var serverAnswers = localResults.map(function(r){ return r ? 'ok' : 'fail'; });
-
+  // 2. Отправляем на сервер
   var data = await askServer('checkPractice', { variant: v, answers: JSON.stringify(serverAnswers) });
 
   btn.disabled = false; btn.textContent = '📊 Проверить практику';
 
   if (data.error === 'network') { toast('⚠️ Ошибка соединения.'); return; }
+  if (data.error) { toast('⚠️ ' + data.error); return; }
 
+  // 3. Выставляем оценки на основе локальной проверки (сервер просто фиксирует попытки)
   var correct = 0;
   qs.forEach(function(q, i){
     var el = document.getElementById('prac'+i);
@@ -959,6 +972,7 @@ async function gradePractice(){
 
   qs.forEach(function(_, i){ document.getElementById('prac'+i).disabled = true; });
   btn.style.display = 'none';
+  
   savePracticeState();
   toast('Практика: ' + correct + '/' + qs.length + ', оценка ' + lessonState.pracMark);
 }
