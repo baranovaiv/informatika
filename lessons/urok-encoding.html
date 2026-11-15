@@ -494,7 +494,6 @@ table.codes td.sym{font-size:1.15rem}
       <button class="btn b-red" onclick="exitStandalone()">← Выйти из работы</button>
     </div>
 
-    <!-- БЛОК ССЫЛКИ НА ФОРМУ -->
     <div style="margin-top:30px; padding:25px; border-top:2px dashed #e8e3f5; background:#fbfaff; border-radius:16px; text-align:center;">
       <h3 style="color:#4c1d95; margin:0 0 10px; font-size:1.2rem;">
         📎 Сдача работы
@@ -567,12 +566,13 @@ table.codes td.sym{font-size:1.15rem}
 /* =========================================================
    НАСТРОЙКИ
    ========================================================= */
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbwN6I_2aENZQFGBm7g8xcN7qPz73mhb69fSkkVcz2iJ03c6fWvhkpyNAd7mAawqV77c/exec'; // <--- ЗАМЕНИТЕ НА СВОЙ URL
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbxpfBD8So5oK5Ld2U2aSH3kkGoYJvxG_7IRhcCgajA2Os9P3iL4cQoYvP-LyrtGdVHg/exec'; // <--- ЗАМЕНИТЕ НА ВАШ URL
 var RESOURCE_ID = 'urok-encoding';
 var SA_MINUTES = 15;
+var SA_TASK_COUNT = 5;
 
 /* =========================================================
-   ЗАПРОС НА СЕРВЕР (ОБХОД CORS)
+   ЗАПРОС НА СЕРВЕР
    ========================================================= */
 async function askServer(action, payload) {
   var fullPayload = Object.assign({
@@ -620,7 +620,7 @@ function percentToMark(pct){
 }
 
 /* =========================================================
-   РАБОЧАЯ ТЕТРАДЬ (СЕРВЕРНАЯ ПРОВЕРКА, ПЕРВАЯ ПОПЫТКА)
+   РАБОЧАЯ ТЕТРАДЬ
    ========================================================= */
 async function checkW(inputId, fbId){
   var input = document.getElementById(inputId);
@@ -644,6 +644,7 @@ async function checkW(inputId, fbId){
 
   if (data.error === 'network') { showFb(fbId, '⚠️ Ошибка соединения.', 'no'); return; }
   if (data.blocked) { showFb(fbId, '⛔ ' + (data.message || 'Превышено число попыток.'), 'no'); return; }
+  if (data.error) { showFb(fbId, '⚠️ ' + data.error, 'no'); return; }
 
   if (data.correct){
     input.disabled = true;
@@ -686,6 +687,7 @@ async function checkWRadio(name, fbId){
 
   if (data.error === 'network') { showFb(fbId, '⚠️ Ошибка соединения.', 'no'); return; }
   if (data.blocked) { showFb(fbId, '⛔ ' + (data.message || 'Превышено число попыток.'), 'no'); return; }
+  if (data.error) { showFb(fbId, '⚠️ ' + data.error, 'no'); return; }
 
   radios.forEach(function(r){ r.disabled = true; });
   if (btn) btn.style.display = 'none';
@@ -731,7 +733,7 @@ function calcWorkbook(){
 }
 
 /* =========================================================
-   ПРАКТИКА (5 РАЗНЫХ ЗАДАНИЙ В КАЖДОМ ВАРИАНТЕ)
+   ПРАКТИКА
    ========================================================= */
 var PRACTICE_QUESTIONS = {
   1: [
@@ -739,28 +741,28 @@ var PRACTICE_QUESTIONS = {
     'Сколько байт занимает слово «Текст» (5 символов) в кодировке Windows-1251?',
     'Сколько байт занимает слово «Текст» (5 символов) в кодировке UTF-8 (каждая буква — 2 байта)?',
     'Символ «A» в ASCII имеет код 65. Какой код у символа «B»?',
-    'Используя Alt и цифровую клавиатуру, раскодируйте коды: 145 170 174 224 174 255 170 160 173 168 170 227 171 235 33 33 33. Введите полученную фразу.'
+    'Используя Alt и цифровую клавиатуру, раскодируйте коды: 138 174 164 168 224 174 162 170 160 33. Введите полученную фразу.'
   ],
   2: [
     'Алфавит содержит 64 символа. Каков вес одного символа в битах?',
     'Сколько байт занимает слово «Байт» (4 символа) в Windows-1251?',
     'Сколько байт занимает слово «Байт» (4 символа) в UTF-8 (каждая буква — 2 байта)?',
     'Символ «a» в ASCII имеет код 97. Какой код у символа «c»?',
-    'Используя Alt и цифровую клавиатуру, раскодируйте коды: 145 170 174 224 174 255 170 160 173 168 170 227 171 235 33 33 33. Введите полученную фразу.'
+    'Используя Alt и цифровую клавиатуру, раскодируйте коды: 129 160 169 242 32 168 32 161 168 242. Введите полученную фразу.'
   ],
   3: [
     'Алфавит содержит 256 символов. Каков вес одного символа в байтах?',
     'Сколько байт занимает слово «Мир» (3 символа) в Windows-1251?',
     'Сколько байт занимает слово «Мир» (3 символа) в UTF-8?',
     'Символ «0» в ASCII имеет код 48. Какой код у символа «1»?',
-    'Используя Alt и цифровую клавиатуру, раскодируйте коды: 145 170 174 224 174 255 170 160 173 168 170 227 171 235 33 33 33. Введите полученную фразу.'
+    'Используя Alt и цифровую клавиатуру, раскодируйте коды: 254 173 168 170 174 164. Введите полученную фразу.'
   ],
   4: [
     'Алфавит содержит 32 символа. Каков вес одного символа в битах?',
     'Сколько байт занимает слово «Код» (3 символа) в Windows-1251?',
     'Сколько байт занимает слово «Код» (3 символа) в UTF-8?',
     'Символ «Z» в ASCII имеет код 90. Какой код у символа «Y»?',
-    'Используя Alt и цифровую клавиатуру, раскодируйте коды: 145 170 174 224 174 255 170 160 173 168 170 227 171 235 33 33 33. Введите полученную фразу.'
+    'Используя Alt и цифровую клавиатуру, раскодируйте коды: 194 174 225 165 172 252 32 161 168 242. Введите полученную фразу.'
   ]
 };
 
@@ -813,6 +815,7 @@ async function gradePractice(){
   btn.disabled = false; btn.textContent = '📊 Проверить практику';
 
   if (data.error === 'network') { toast('⚠️ Ошибка соединения.'); return; }
+  if (data.error) { toast('⚠️ ' + data.error); return; }
 
   var correct = data.totalCorrect;
   var results = data.results;
@@ -950,27 +953,9 @@ function applyPenalty() {
 }
 
 /* =========================================================
-   САМОСТОЯТЕЛЬНАЯ (РАЗНЫЕ ЗАДАНИЯ + СЕРВЕРНАЯ ПРОВЕРКА)
+   САМОСТОЯТЕЛЬНАЯ — ЗАГРУЗКА С СЕРВЕРА
    ========================================================= */
 var saTimer = null, saLeft = 0, saTasks = [], saStarted = false, saDone = false;
-
-function genStandalone(){
-  function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
-  function pick(arr){ return arr[rnd(0,arr.length-1)]; }
-  var pows = [2,3,4,5,6,7,8]; var Ks = [8,16,24,32,40,48,56,64,72,80,96,120]; var tasks = [];
-
-  var i1 = pick(pows), N1 = Math.pow(2, i1), K1 = pick(Ks) * 8;
-  tasks.push({ type:'I', params: { N: N1, K: K1 }, text:'Сообщение записано в алфавите мощностью $N = ' + N1 + '$ символов и содержит $K = ' + K1 + '$ символов. Найдите информационный объём сообщения <b>в байтах</b>.', unit:'байт' });
-  var i2 = pick(pows), K2 = pick(Ks) * 8, I2 = (K2 * i2) / 8;
-  tasks.push({ type:'i', params: { I: I2, K: K2 }, text:'Информационный объём сообщения равен $I = ' + I2 + '$ байт. Сообщение содержит $K = ' + K2 + '$ символов. Найдите информационный вес одного символа <b>в битах</b>.', unit:'бит' });
-  var i3 = pick([2,4,8,16]), kb3 = pick([1,2,3,4,5]);
-  tasks.push({ type:'K', params: { I: kb3, i: i3 }, text:'Информационный объём сообщения равен $I = ' + kb3 + '$ Кбайт, информационный вес одного символа $i = ' + i3 + '$ бит. Найдите количество символов в сообщении.', unit:'символов' });
-  var kb4 = pick([2,3,4,5,6,8,10,12]);
-  tasks.push({ type:'unit_bits', params: { I: kb4 }, text:'Объём файла равен $' + kb4 + '$ Кбайт. Сначала переведите его в байты, затем полученное значение — в биты. В ответе укажите объём <b>в битах</b>.', unit:'бит' });
-  var kb5 = pick([2,3,4,5,6,8]); var bits5 = kb5 * 1024 * 8;
-  tasks.push({ type:'unit_kb', params: { I: bits5 }, text:'Сообщение занимает $' + bits5 + '$ бит. Переведите объём в байты, а затем — в килобайты. В ответе укажите объём <b>в килобайтах</b>.', unit:'Кбайт' });
-  return tasks;
-}
 
 function scrollToGate(){ document.getElementById('standaloneGate').scrollIntoView({behavior:'smooth', block:'center'}); document.getElementById('saPass').focus(); }
 function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
@@ -985,37 +970,29 @@ async function unlockStandalone(){
   var inp = document.getElementById('saPass'); var msg = document.getElementById('saMsg'); var btn = document.getElementById('saBtn'); var pass = inp.value.trim();
   if (!pass){ msg.className = 'pmsg'; msg.textContent = 'Введите пароль.'; return; }
   
-  msg.className = 'pmsg info'; msg.textContent = 'Проверка…'; btn.disabled = true;
+  msg.className = 'pmsg info'; msg.textContent = 'Проверка пароля…'; btn.disabled = true;
 
-  try {
-    var data = await askServer('password', { type: 'standalone', password: pass });
-    btn.disabled = false;
-    
-    if (data.error === 'network'){ 
-      msg.className = 'pmsg'; 
-      msg.textContent = '⚠️ Ошибка соединения. Проверьте интернет.'; 
-      return; 
-    }
-    if (!data.ok){ 
-      msg.className = 'pmsg'; 
-      msg.textContent = '❌ Неверный пароль.'; 
-      inp.value = ''; 
-      inp.focus(); 
-      return; 
-    }
-  } catch (e) {
-    console.error(e);
-    btn.disabled = false;
-    msg.className = 'pmsg'; 
-    msg.textContent = '⚠️ Ошибка при проверке пароля.'; 
-    return;
-  }
-  
-  msg.textContent = ''; inp.value = ''; startStandalone();
+  // 1. Проверка пароля
+  var pwdData = await askServer('password', { type: 'standalone', password: pass });
+  if (pwdData.error === 'network'){ btn.disabled = false; msg.className = 'pmsg'; msg.textContent = '⚠️ Ошибка соединения.'; return; }
+  if (!pwdData.ok){ btn.disabled = false; msg.className = 'pmsg'; msg.textContent = '❌ Неверный пароль.'; inp.value = ''; inp.focus(); return; }
+
+  // 2. Загрузка заданий с сервера
+  msg.textContent = 'Загрузка заданий…';
+  var data = await askServer('getStandalone', { count: SA_TASK_COUNT });
+  btn.disabled = false;
+
+  if (data.error === 'network'){ msg.className = 'pmsg'; msg.textContent = '⚠️ Ошибка загрузки.'; return; }
+  if (data.error){ msg.className = 'pmsg'; msg.textContent = '⚠️ ' + data.error; return; }
+  if (!data.tasks || !data.tasks.length){ msg.className = 'pmsg'; msg.textContent = '⚠️ Нет шаблонов для этого урока.'; return; }
+
+  msg.textContent = ''; inp.value = '';
+  saTasks = data.tasks;
+  startStandalone();
 }
 
 function startStandalone(){
-  saTasks = genStandalone(); saDone = false; saStarted = true; saLeft = SA_MINUTES*60;
+  saDone = false; saStarted = true; saLeft = SA_MINUTES*60;
   document.body.classList.add('exam');
   var who = getFullName() + (getKlass() ? ', ' + getKlass() : '');
   document.getElementById('examWho').textContent = who || 'Ученик не указан';
@@ -1024,10 +1001,19 @@ function startStandalone(){
   if (fp) fp.textContent = getFileName() + '_самостоятельная';
 
   var host = document.getElementById('examTasks'); var html = '';
-  saTasks.forEach(function(t, i){ html += '<div class="s-task" id="st'+i+'"><p class="stext"><span class="sn">'+(i+1)+'</span>'+t.text+'<span class="s-flag">'+t.unit+'</span></p><input type="text" inputmode="numeric" id="sa'+i+'" placeholder="ответ" autocomplete="off"></div>'; });
-  host.innerHTML = html; renderMath(host);
-  document.getElementById('examResult').classList.remove('show'); window.scrollTo({top:0,behavior:'smooth'});
-  if (saTimer) clearInterval(saTimer); updateTimer();
+  saTasks.forEach(function(t, i){
+    html += '<div class="s-task" id="st'+i+'">' +
+            '<p class="stext"><span class="sn">'+(i+1)+'</span>'+
+            t.text + '<span class="s-flag">'+t.unit+'</span></p>' +
+            '<input type="text" inputmode="text" id="sa'+i+'" placeholder="ответ" autocomplete="off">' +
+            '</div>';
+  });
+  host.innerHTML = html;
+  renderMath(host);
+  document.getElementById('examResult').classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if (saTimer) clearInterval(saTimer);
+  updateTimer();
   saTimer = setInterval(function(){ saLeft--; updateTimer(); if (saLeft <= 0){ clearInterval(saTimer); saTimer=null; toast('⏰ Время вышло!'); finishStandalone(true); } }, 1000);
   toast('📝 Работа началась. 15 минут пошли!');
 }
@@ -1046,12 +1032,13 @@ async function finishStandalone(auto){
   if (btn) { btn.disabled = true; btn.textContent = 'Проверка...'; }
 
   var answers = [];
-  saTasks.forEach(function(t,i){ var el = document.getElementById('sa'+i); answers.push({ type: t.type, params: t.params, answer: el ? el.value.trim() : '' }); });
+  saTasks.forEach(function(t,i){ var el = document.getElementById('sa'+i); answers.push({ key: t.key, answer: el ? el.value.trim() : '' }); });
 
   var data = await askServer('checkStandalone', { tasks: JSON.stringify(answers) });
 
   if (btn) { btn.disabled = false; btn.textContent = '✅ Сдать работу'; }
   if (data.error === 'network') { toast('⚠️ Ошибка соединения.'); return; }
+  if (data.error) { toast('⚠️ ' + data.error); return; }
 
   saDone = true; var correct = data.totalCorrect; var results = data.results;
   saTasks.forEach(function(t,i){
@@ -1192,7 +1179,7 @@ function finishLesson(){
 }
 
 /* =========================================================
-   ТАБЛИЦА КОДОВ (для теории)
+   ТАБЛИЦА КОДОВ
    ========================================================= */
 var CODE_TABLE = [];
 (function buildCodeTable(){
