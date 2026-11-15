@@ -402,18 +402,28 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
 </section>
 
 <div class="mbg" id="lawsModal">
-  <div class="modal">
-    <h3>📖 Законы</h3>
-    <table class="laws">
-      <tr><th>Закон</th><th>Формула</th></tr>
-      <tr><td>де Моргана</td><td>\(\neg(A \land B) = \neg A \lor \neg B\)<br>\(\neg(A \lor B) = \neg A \land \neg B\)</td></tr>
-      <tr><td>Двойное отр.</td><td>\(\neg(\neg A) = A\)</td></tr>
-      <tr><td>Поглощение</td><td>\(A \lor (A \land B) = A\)<br>\(A \land (A \lor B) = A\)</td></tr>
-      <tr><td>Исключение</td><td>\(A \lor (\neg A \land B) = A \lor B\)<br>\(A \land (\neg A \lor B) = A \land B\)</td></tr>
-      <tr><td>Склеивание</td><td>\((A \land B) \lor (A \land \neg B) = A\)<br>\((A \lor B) \land (A \lor \neg B) = A\)</td></tr>
-      <tr><td>Распределит.</td><td>\(A \lor (B \land C) = (A \lor B) \land (A \lor C)\)<br>\(A \land (B \lor C) = (A \land B) \lor (A \land C)\)</td></tr>
-      <tr><td>Константы</td><td>\(A \lor \neg A = 1\), \(A \land \neg A = 0\)<br>\(A \lor 0 = A\), \(A \land 1 = A\)</td></tr>
-    </table>
+  <div class="modal" style="max-width: 800px;">
+    <h3>📖 Законы алгебры логики</h3>
+    <p class="muted" style="margin-bottom: 12px; font-size: 0.9rem;">Полный справочник для самостоятельной работы</p>
+    <div style="max-height: 60vh; overflow-y: auto; padding-right: 5px;">
+      <table class="laws">
+        <tr><th>Закон</th><th>Формула</th></tr>
+        <tr><td>Переместительный</td><td>\(A \land B = B \land A\), &nbsp; \(A \lor B = B \lor A\)</td></tr>
+        <tr><td>Сочетательный</td><td>\((A \land B) \land C = A \land (B \land C)\), &nbsp; \((A \lor B) \lor C = A \lor (B \lor C)\)</td></tr>
+        <tr><td>Распределительный</td><td>\(A \lor (B \land C) = (A \lor B) \land (A \lor C)\)<br>\(A \land (B \lor C) = (A \land B) \lor (A \land C)\)</td></tr>
+        <tr><td>Правило де Моргана</td><td>\(\neg(A \land B) = \neg A \lor \neg B\)<br>\(\neg(A \lor B) = \neg A \land \neg B\)</td></tr>
+        <tr><td>Двойное отрицание</td><td>\(\neg(\neg A) = A\)</td></tr>
+        <tr><td>Идемпотентность</td><td>\(A \land A = A\), &nbsp; \(A \lor A = A\)</td></tr>
+        <tr><td>Поглощение</td><td>\(A \lor (A \land B) = A\)<br>\(A \land (A \lor B) = A\)</td></tr>
+        <tr><td>Исключение</td><td>\(A \lor (\neg A \land B) = A \lor B\)<br>\(A \land (\neg A \lor B) = A \land B\)</td></tr>
+        <tr><td>Склеивание</td><td>\((A \land B) \lor (A \land \neg B) = A\)<br>\((A \lor B) \land (A \lor \neg B) = A\)<br>\((A \land B) \lor (\neg A \land B) = B\)<br>\((A \lor B) \land (\neg A \lor B) = B\)</td></tr>
+        <tr><td>Исключённое третье</td><td>\(A \lor \neg A = 1\)</td></tr>
+        <tr><td>Противоречие</td><td>\(A \land \neg A = 0\)</td></tr>
+        <tr><td>Свойства констант</td><td>\(A \lor 1 = 1\)<br>\(A \land 1 = A\)<br>\(A \lor 0 = A\)<br>\(A \land 0 = 0\)</td></tr>
+        <tr><td>Импликация</td><td>\(A \to B = \neg A \lor B\)</td></tr>
+        <tr><td>Эквивалентность</td><td>\(A \leftrightarrow B = (A \land B) \lor (\neg A \land \neg B)\)</td></tr>
+      </table>
+    </div>
     <div style="text-align:right;margin-top:18px">
       <button class="btn b-green" onclick="closeLaws()">Готово</button>
     </div>
