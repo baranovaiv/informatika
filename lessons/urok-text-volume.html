@@ -14,11 +14,13 @@ window.MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <link rel="stylesheet" href="../assets/css/style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23ede9fe'/><text x='16' y='23' font-size='17' font-family='Georgia' font-weight='bold' fill='%236d28d9' text-anchor='middle'>I</text></svg>">
 
 <style>
+/* (Стили оставляем без изменений, они уже хорошие) */
 .student{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:16px;position:relative;z-index:2}
 .student .f{display:flex;flex-direction:column;gap:4px}
 .student label{font-size:.78rem;font-weight:800;color:#4c4660;text-transform:uppercase;letter-spacing:.4px}
@@ -83,19 +85,11 @@ body.exam #standalone{display:block}
   overflow:auto;padding:24px;box-shadow:0 24px 70px rgba(60,55,90,.4)}
 .modal h3{margin:0 0 4px;font-size:1.12rem}
 .mhint{color:var(--muted);font-size:.87rem;margin:0 0 14px}
-.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
-.tab{background:#f5f3ff;border:none;border-radius:10px;padding:7px 14px;cursor:pointer;
-  font-weight:700;color:#6d28d9;font-family:inherit;font-size:.86rem}
-.tab.on{background:var(--purple);color:#4c1d95}
-.pane{display:none}
-.pane.on{display:block}
 .keys{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}
 .key{background:#fbfaff;border:1.5px solid #ece8f8;border-radius:10px;padding:10px 6px;
-  cursor:pointer;font-size:1rem;font-weight:700;color:#5b4b8a;font-family:Cambria,Georgia,serif;
-  line-height:1.3;transition:.15s}
+  cursor:pointer;font-size:1.2rem;font-weight:700;color:#5b4b8a;font-family:inherit;
+  line-height:1.3;transition:.15s; text-align:center;}
 .key:hover{background:var(--purple);border-color:var(--pd);transform:translateY(-1px)}
-.key small{display:block;font-size:.6rem;color:var(--muted);font-weight:600;margin-top:3px;
-  font-family:Consolas,monospace}
 
 .calc{max-width:340px}
 .calc-screen{background:#1e1b2e;color:#e9e6f5;border-radius:14px;padding:14px 16px;margin-bottom:12px;
@@ -111,6 +105,7 @@ body.exam #standalone{display:block}
 .cbtn.eq{background:var(--green);color:#047857;grid-column:span 2}
 .cbtn.del{background:var(--orange);color:#c2410c}
 .cbtn.clr{background:#fee2e2;color:#b91c1c}
+.cbtn.comma{background:#e0e7ff;color:#3730a3}
 
 .bar{background:#fff;border-radius:var(--r);padding:16px;border:1px solid #f2f0fa;
   box-shadow:0 -4px 24px rgba(120,110,160,.16);display:flex;flex-wrap:wrap;gap:10px;
@@ -220,7 +215,7 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
       </details>
       <div class="ans">
         <input type="text" id="w1" placeholder="число" inputmode="numeric">
-        <button class="btn b-green" onclick="checkW('w1','2048','w1fb')">Проверить</button>
+        <button class="btn b-green" onclick="checkW('w1','w1fb')">Проверить</button>
       </div>
       <div class="fb" id="w1fb"></div>
     </div>
@@ -234,7 +229,7 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
       </details>
       <div class="ans">
         <input type="text" id="w2" placeholder="число" inputmode="numeric">
-        <button class="btn b-green" onclick="checkW('w2','16','w2fb')">Проверить</button>
+        <button class="btn b-green" onclick="checkW('w2','w2fb')">Проверить</button>
       </div>
       <div class="fb" id="w2fb"></div>
     </div>
@@ -249,7 +244,7 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
       </details>
       <div class="ans">
         <input type="text" id="w3" placeholder="число" inputmode="numeric">
-        <button class="btn b-green" onclick="checkW('w3','10','w3fb')">Проверить</button>
+        <button class="btn b-green" onclick="checkW('w3','w3fb')">Проверить</button>
       </div>
       <div class="fb" id="w3fb"></div>
     </div>
@@ -265,7 +260,7 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
       <label class="opt"><input type="radio" name="w4" value="b"> на 500 байт</label>
       <label class="opt"><input type="radio" name="w4" value="c"> на 1000 байт</label>
       <label class="opt"><input type="radio" name="w4" value="d"> на 2000 байт</label>
-      <button class="btn b-green" onclick="checkWRadio('w4','b','w4fb')" style="margin-top:10px">Проверить</button>
+      <button class="btn b-green" onclick="checkWRadio('w4','w4fb')" style="margin-top:10px">Проверить</button>
       <div class="fb" id="w4fb"></div>
     </div>
 
@@ -280,7 +275,7 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
       </details>
       <div class="ans">
         <input type="text" id="w5" placeholder="число" inputmode="numeric">
-        <button class="btn b-green" onclick="checkW('w5','3579','w5fb')">Проверить</button>
+        <button class="btn b-green" onclick="checkW('w5','w5fb')">Проверить</button>
       </div>
       <div class="fb" id="w5fb"></div>
     </div>
@@ -385,10 +380,13 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
 </div><!-- /wrap -->
 
 <div class="bar no-print">
-  <button class="btn b-purple" onclick="openMath()">⌨ Математическая раскладка</button>
+  <button class="btn b-teal" onclick="scrollToTop()">⬆ В начало</button>
+  <button class="btn b-purple" onclick="openMath()">⌨ Раскладка</button>
   <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
   <button class="btn b-yellow" onclick="scrollToGate()">📝 Самостоятельная</button>
   <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
+  <button class="btn b-blue" onclick="saveLessonScreenshot()">📸 Скриншот</button>
+  <button class="btn b-red" onclick="finishLesson()">🏁 Завершить урок</button>
 </div>
 
 <section id="standalone">
@@ -428,76 +426,63 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
       <button class="btn b-teal" onclick="saveStandaloneJPG()">🖼 Сохранить JPG</button>
       <button class="btn b-red" onclick="exitStandalone()">← Выйти из работы</button>
     </div>
-    <p style="color:var(--muted);font-size:.85rem;margin:10px 0 0">
-      Файл сохраняется как <b id="filePreview">Фамилия_Имя_Класс_самостоятельная</b>.
-    </p>
+
+    <div style="margin-top:30px; padding:25px; border-top:2px dashed #e8e3f5; background:#fbfaff; border-radius:16px; text-align:center;">
+      <h3 style="color:#4c1d95; margin:0 0 10px; font-size:1.2rem;">
+        📎 Сдача работы
+      </h3>
+      <p style="font-size:15px; margin-bottom:20px; color:#333; line-height: 1.5;">
+        1. Нажмите кнопку <b>«🖼 Сохранить JPG»</b>.<br>
+        2. Файл скачается на компьютер или телефон.<br>
+        3. Нажмите кнопку ниже и прикрепите этот скачанный файл в форму.
+      </p>
+      
+      <a href="https://forms.yandex.ru/u/6af8a45ab9e5cac56e35b097" target="_blank" class="btn b-purple" style="font-size:1.1rem; padding:14px 28px; text-decoration:none; display:inline-block;">
+        📤 Прикрепить файл в форму
+      </a>
+    </div>
+
+    <p style="display:none;"><b id="filePreview"></b></p>
   </div>
 </section>
 
+<!-- Модалки -->
 <div class="mbg" id="mathModal">
   <div class="modal" role="dialog">
-    <h3>⌨ Математическая раскладка</h3>
-    <p class="mhint">Щёлкните в поле — оно подсветится — затем символ.</p>
-    <div class="tabs">
-      <button class="tab on" data-tab="frac">Дроби</button>
-      <button class="tab" data-tab="pow">Степени</button>
-      <button class="tab" data-tab="ops">Операции</button>
+    <h3>⌨ Раскладка</h3>
+    <div class="keys">
+      <button class="key" onclick="insertMath('+')">+</button><button class="key" onclick="insertMath('-')">−</button>
+      <button class="key" onclick="insertMath('*')">×</button><button class="key" onclick="insertMath('/')">÷</button>
+      <button class="key" onclick="insertMath('=')">=</button><button class="key" onclick="insertMath('≠')">≠</button>
+      <button class="key" onclick="insertMath('≈')">≈</button><button class="key" onclick="insertMath('≤')">≤</button>
+      <button class="key" onclick="insertMath('≥')">≥</button><button class="key" onclick="insertMath('²')">²</button>
+      <button class="key" onclick="insertMath('³')">³</button><button class="key" onclick="insertMath('^')">^</button>
+      <button class="key" onclick="insertMath('√')">√</button><button class="key" onclick="insertMath('(')">(</button>
+      <button class="key" onclick="insertMath(')')">)</button><button class="key" onclick="insertMath(',')">,</button>
+      <button class="key" onclick="insertMath('N')">N</button><button class="key" onclick="insertMath('I')">I</button>
+      <button class="key" onclick="insertMath('K')">K</button><button class="key" onclick="insertMath('i')">i</button>
     </div>
-    <div class="pane on" id="pane-frac"><div class="keys">
-      <button class="key" data-tex="\frac{1}{2}">½</button>
-      <button class="key" data-tex="\frac{a}{b}">a⁄b</button>
-      <button class="key" data-tex="\frac{I}{K}">I⁄K</button>
-      <button class="key" data-tex="\frac{I}{i}">I⁄i</button>
-    </div></div>
-    <div class="pane" id="pane-pow"><div class="keys">
-      <button class="key" data-tex="2^{i}">2ⁱ</button>
-      <button class="key" data-tex="2^{4}">2⁴</button>
-      <button class="key" data-tex="2^{8}">2⁸</button>
-      <button class="key" data-tex="2^{10}">2¹⁰</button>
-    </div></div>
-    <div class="pane" id="pane-ops"><div class="keys">
-      <button class="key" data-tex="\cdot">·</button>
-      <button class="key" data-tex="=">=</button>
-      <button class="key" data-tex="+">+</button>
-      <button class="key" data-tex="-">−</button>
-    </div></div>
-    <div style="text-align:right;margin-top:18px">
-      <button class="btn b-green" onclick="closeMath()">Готово</button>
-    </div>
+    <div style="text-align:right;margin-top:18px"><button class="btn b-green" onclick="closeMath()">Готово</button></div>
   </div>
 </div>
 
 <div class="mbg" id="calcModal">
   <div class="modal calc" role="dialog">
     <h3 style="margin-bottom:12px">🧮 Калькулятор</h3>
-    <div class="calc-screen">
-      <div class="calc-expr" id="calcExpr"></div>
-      <div class="calc-out" id="calcOut">0</div>
-    </div>
+    <div class="calc-screen"><div class="calc-expr" id="calcExpr"></div><div class="calc-out" id="calcOut">0</div></div>
     <div class="calc-grid">
-      <button class="cbtn clr" onclick="calcClear()">C</button>
-      <button class="cbtn del" onclick="calcBack()">⌫</button>
-      <button class="cbtn op" onclick="calcOp('^')">xʸ</button>
-      <button class="cbtn op" onclick="calcOp('/')">÷</button>
-      <button class="cbtn" onclick="calcNum('7')">7</button>
-      <button class="cbtn" onclick="calcNum('8')">8</button>
-      <button class="cbtn" onclick="calcNum('9')">9</button>
-      <button class="cbtn op" onclick="calcOp('*')">×</button>
-      <button class="cbtn" onclick="calcNum('4')">4</button>
-      <button class="cbtn" onclick="calcNum('5')">5</button>
-      <button class="cbtn" onclick="calcNum('6')">6</button>
-      <button class="cbtn op" onclick="calcOp('-')">−</button>
-      <button class="cbtn" onclick="calcNum('1')">1</button>
-      <button class="cbtn" onclick="calcNum('2')">2</button>
-      <button class="cbtn" onclick="calcNum('3')">3</button>
-      <button class="cbtn op" onclick="calcOp('+')">+</button>
-      <button class="cbtn" onclick="calcNum('0')">0</button>
-      <button class="cbtn" onclick="calcNum('00')">00</button>
+      <button class="cbtn clr" onclick="calcClear()">C</button><button class="cbtn del" onclick="calcBack()">⌫</button>
+      <button class="cbtn op" onclick="calcOp('^')">xʸ</button><button class="cbtn op" onclick="calcOp('/')">÷</button>
+      <button class="cbtn" onclick="calcNum('7')">7</button><button class="cbtn" onclick="calcNum('8')">8</button>
+      <button class="cbtn" onclick="calcNum('9')">9</button><button class="cbtn op" onclick="calcOp('*')">×</button>
+      <button class="cbtn" onclick="calcNum('4')">4</button><button class="cbtn" onclick="calcNum('5')">5</button>
+      <button class="cbtn" onclick="calcNum('6')">6</button><button class="cbtn op" onclick="calcOp('-')">−</button>
+      <button class="cbtn" onclick="calcNum('1')">1</button><button class="cbtn" onclick="calcNum('2')">2</button>
+      <button class="cbtn" onclick="calcNum('3')">3</button><button class="cbtn op" onclick="calcOp('+')">+</button>
+      <button class="cbtn" onclick="calcNum('0')">0</button><button class="cbtn comma" onclick="calcNum(',')">,</button>
       <button class="cbtn eq" onclick="calcEquals()">=</button>
     </div>
-    <div style="text-align:right;margin-top:16px">
-      <button class="btn b-red" onclick="closeCalc()">Закрыть</button>
-    </div>
+    <div style="text-align:right;margin-top:16px"><button class="btn b-red" onclick="closeCalc()">Закрыть</button></div>
   </div>
 </div>
 
@@ -507,101 +492,48 @@ table.formulas tr:nth-child(even) td{background:#fbfaff}
 
 <script>
 /* =========================================================
-   0. НАСТРОЙКИ GOOGLE APPS SCRIPT
+   НАСТРОЙКИ
    ========================================================= */
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbzRiIsJ8Sbn1HP1n9cTnVE652h1Ohrd8Q6wH3raYPLfGnIu7u-rsYG7BAp0VT7eXgs8/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbxpfBD8So5oK5Ld2U2aSH3kkGoYJvxG_7IRhcCgajA2Os9P3iL4cQoYvP-LyrtGdVHg/exec'; // <--- ВАШ URL
 var RESOURCE_ID = 'urok-text-volume';
 var SA_MINUTES = 20;
-var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
+var SA_TASK_COUNT = 5;
 
 /* =========================================================
-   1. ПРОВЕРКА ПАРОЛЯ ЧЕРЕЗ GOOGLE APPS SCRIPT
+   ЗАПРОС НА СЕРВЕР
    ========================================================= */
-async function checkPasswordRemote(resourceId, type, password){
+async function askServer(action, payload) {
+  var fullPayload = Object.assign({
+    action: action,
+    lessonId: RESOURCE_ID,
+    studentName: getFullName(),
+    studentClass: getKlass()
+  }, payload);
+
   try {
     var response = await fetch(GAS_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({
-        resource: resourceId,
-        type: type,
-        password: password
-      })
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(fullPayload)
     });
-    var data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
-    return { ok: false, error: 'network' };
+    console.error('Ошибка запроса:', error);
+    return { error: 'network' };
   }
 }
 
 /* =========================================================
-   2. СОСТОЯНИЕ
+   СОСТОЯНИЕ
    ========================================================= */
 var lessonState = {
   wb: { w1:false, w2:false, w3:false, w4:false, w5:false },
   wbCorrect: 0, wbMark: 0,
-  pracDone: false, pracCorrect: 0, pracMark: 0
+  pracDone: false, pracCorrect: 0, pracMark: 0,
+  penaltyApplied: false,
+  finalCalculated: false
 };
-
-function savePracticeState(){
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
-    var d = JSON.parse(raw);
-    d.pracDone = lessonState.pracDone;
-    d.pracCorrect = lessonState.pracCorrect;
-    d.pracMark = lessonState.pracMark;
-    d.pracVariant = document.getElementById('pracVariant')?.value || '1';
-    d.pracAnswers = [];
-    if (lessonState.pracDone){
-      var v = document.getElementById('pracVariant').value;
-      var qs = PRACTICE_VARIANTS[v];
-      qs.forEach(function(_, i){
-        var el = document.getElementById('prac'+i);
-        d.pracAnswers.push(el ? el.value : '');
-      });
-    }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
-  } catch(e){}
-}
-
-function loadPracticeState(){
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return false;
-    var d = JSON.parse(raw);
-    if (!d.pracDone) return false;
-
-    lessonState.pracDone = true;
-    lessonState.pracCorrect = d.pracCorrect || 0;
-    lessonState.pracMark = d.pracMark || 0;
-
-    document.getElementById('practiceLock').style.display = 'none';
-    document.getElementById('practiceBody').style.display = 'block';
-    document.getElementById('pracVariant').value = d.pracVariant || '1';
-    renderPractice();
-
-    (d.pracAnswers || []).forEach(function(ans, i){
-      var el = document.getElementById('prac'+i);
-      if (el){
-        el.value = ans;
-        el.disabled = true;
-        el.style.background = '#f3f4f6';
-      }
-    });
-
-    document.getElementById('pracCorrect').textContent = d.pracCorrect;
-    document.getElementById('pracMark').textContent = d.pracMark;
-    document.getElementById('pracResult').classList.add('show');
-
-    var checkBtn = document.getElementById('pracCheckBtn');
-    if (checkBtn) checkBtn.style.display = 'none';
-    var h2 = document.querySelector('#practice h2');
-    if (h2) h2.innerHTML = h2.innerHTML + ' <span class="badge" style="background:#fee2e2;color:#b91c1c">сдано</span>';
-
-    return true;
-  } catch(e){ return false; }
-}
+var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
 
 function getSurname(){ return (document.getElementById('surname')?.value || '').trim(); }
 function getFirstname(){ return (document.getElementById('firstname')?.value || '').trim(); }
@@ -619,35 +551,107 @@ function percentToMark(pct){
 }
 
 /* =========================================================
-   3. РАБОЧАЯ ТЕТРАДЬ
+   РАБОЧАЯ ТЕТРАДЬ (СЕРВЕРНАЯ ПРОВЕРКА)
    ========================================================= */
-function checkW(inputId, answer, fbId){
-  if (lessonState.wb[inputId]){ showFb(fbId,'✔ Уже решено.','hint'); return; }
-  var v = (document.getElementById(inputId).value||'').trim().replace(/\s+/g,'');
-  if (v === answer){
-    lessonState.wb[inputId] = true;
-    showFb(fbId,'✅ Верно!','ok');
+async function checkW(inputId, fbId){
+  var input = document.getElementById(inputId);
+  var btn = input.nextElementSibling;
+  
+  if (input.disabled) {
+    showFb(fbId, '✔ Задание уже проверено.', 'hint');
+    return;
+  }
+  
+  var v = (input.value||'').trim().replace(/\s+/g,'');
+  if (!v) { showFb(fbId, 'Введите ответ.', 'hint'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Проверка...';
+
+  var data = await askServer('checkAnswer', { taskId: inputId, answer: v });
+
+  btn.disabled = false;
+  btn.textContent = 'Проверить';
+
+  if (data.error === 'network') { showFb(fbId, '⚠️ Ошибка соединения.', 'no'); return; }
+  if (data.blocked) { showFb(fbId, '⛔ ' + (data.message || 'Превышено число попыток.'), 'no'); return; }
+  if (data.error) { showFb(fbId, '⚠️ ' + data.error, 'no'); return; }
+
+  if (data.correct){
+    input.disabled = true;
+    if (btn) btn.style.display = 'none';
+    
+    if (data.firstTry) {
+      input.style.background = '#f0fdf4';
+      input.style.borderColor = '#10b981';
+      lessonState.wb[inputId] = true;
+      showFb(fbId,'✅ Верно! (с первой попытки)','ok');
+    } else {
+      input.style.background = '#fef9c3';
+      input.style.borderColor = '#f59e0b';
+      lessonState.wb[inputId] = false;
+      showFb(fbId,'⚠️ Верно, но не с первой попытки. Балл не начислен.','hint');
+    }
   } else {
     showFb(fbId,'❌ Неверно. Смотрите подсказку.','no');
   }
 }
-function checkWRadio(name, answer, fbId){
-  if (lessonState.wb[name]){ showFb(fbId,'✔ Уже решено.','hint'); return; }
+
+async function checkWRadio(name, fbId){
+  var radios = document.querySelectorAll('input[name="'+name+'"]');
+  if (radios[0].disabled) {
+    showFb(fbId, '✔ Задание уже проверено.', 'hint');
+    return;
+  }
+  
   var sel = document.querySelector('input[name="'+name+'"]:checked');
   if (!sel){ showFb(fbId,'Выберите вариант.','hint'); return; }
+
+  var btn = radios[0].closest('.task').querySelector('button');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Проверка...';
+
+  var data = await askServer('checkAnswer', { taskId: name, answer: sel.value });
+
+  btn.disabled = false;
+  btn.textContent = 'Проверить';
+
+  if (data.error === 'network') { showFb(fbId, '⚠️ Ошибка соединения.', 'no'); return; }
+  if (data.blocked) { showFb(fbId, '⛔ ' + (data.message || 'Превышено число попыток.'), 'no'); return; }
+  if (data.error) { showFb(fbId, '⚠️ ' + data.error, 'no'); return; }
+
+  radios.forEach(function(r){ r.disabled = true; });
+  if (btn) btn.style.display = 'none';
+
   document.querySelectorAll('input[name="'+name+'"]').forEach(function(r){
     var lab = r.closest('.opt');
+    if (!lab) return;
     lab.classList.remove('correct','wrong');
-    if (r.value === answer) lab.classList.add('correct');
-    if (r.checked && r.value !== answer) lab.classList.add('wrong');
+    lab.style.background = '';
+    if (r.value === sel.value) {
+      if (data.correct && data.firstTry) {
+        lab.classList.add('correct');
+      } else if (data.correct && !data.firstTry) {
+        lab.style.background = '#fef9c3';
+      } else {
+        lab.classList.add('wrong');
+      }
+    }
   });
-  if (sel.value === answer){
-    lessonState.wb[name] = true;
-    showFb(fbId,'✅ Верно!','ok');
+
+  if (data.correct){
+    if (data.firstTry) {
+      lessonState.wb[name] = true;
+      showFb(fbId,'✅ Верно! (с первой попытки)','ok');
+    } else {
+      lessonState.wb[name] = false;
+      showFb(fbId,'⚠️ Верно, но не с первой попытки. Балл не начислен.','hint');
+    }
   } else {
     showFb(fbId,'❌ Неверно.','no');
   }
 }
+
 function calcWorkbook(){
   var correct = ['w1','w2','w3','w4','w5'].filter(function(k){ return lessonState.wb[k]; }).length;
   var pct = Math.round(correct / 5 * 100);
@@ -660,36 +664,36 @@ function calcWorkbook(){
 }
 
 /* =========================================================
-   4. ПРАКТИКА
+   ПРАКТИКА
    ========================================================= */
-var PRACTICE_VARIANTS = {
+var PRACTICE_QUESTIONS = {
   1: [
-    {q:'Текст записан в кодировке, где каждый символ весит 8 бит. Сколько символов содержит текст, если его объём равен 1 Кбайт?', ans:'1024'},
-    {q:'Информационный объём сообщения равен 2 Кбайт, и оно содержит 2048 символов. Какова мощность алфавита?', ans:'256'},
-    {q:'Статья содержит 10 страниц, на каждой 40 строк, в каждой строке 50 символов. Каждый символ — 8 бит. Найдите объём статьи в байтах.', ans:'20000'},
-    {q:'Текст из 800 символов сохранён в Windows-1251 (1 байт на символ) и UTF-8 (2 байта на символ). На сколько байт UTF-8 больше?', ans:'800'},
-    {q:'Книга содержит 100 страниц, на каждой 30 строк, в каждой строке 40 символов. Каждый символ — 2 байта. Сколько таких книг поместится на флешку 1 Гбайт? (1 Гбайт = 1024·1024 Кбайт). Ответ округлите вниз.', ans:'447'}
+    'Текст записан в кодировке, где каждый символ весит 8 бит. Сколько символов содержит текст, если его объём равен 1 Кбайт?',
+    'Информационный объём сообщения равен 2 Кбайт, и оно содержит 2048 символов. Какова мощность алфавита?',
+    'Статья содержит 10 страниц, на каждой 40 строк, в каждой строке 50 символов. Каждый символ — 8 бит. Найдите объём статьи в байтах.',
+    'Текст из 800 символов сохранён в Windows-1251 (1 байт на символ) и UTF-8 (2 байта на символ). На сколько байт UTF-8 больше?',
+    'Книга содержит 100 страниц, на каждой 30 строк, в каждой строке 40 символов. Каждый символ — 2 байта. Сколько таких книг поместится на флешку 1 Гбайт? (1 Гбайт = 1024·1024 Кбайт). Ответ округлите вниз.'
   ],
   2: [
-    {q:'Текст записан в кодировке 16 бит на символ. Сколько символов содержит текст, если его объём равен 2 Кбайт?', ans:'1024'},
-    {q:'Информационный объём сообщения равен 4 Кбайт, и оно содержит 4096 символов. Какова мощность алфавита?', ans:'256'},
-    {q:'Статья содержит 20 страниц, на каждой 30 строк, в каждой строке 60 символов. Каждый символ — 8 бит. Найдите объём статьи в байтах.', ans:'36000'},
-    {q:'Текст из 600 символов сохранён в Windows-1251 (1 байт) и UTF-16 (2 байта). На сколько байт UTF-16 больше?', ans:'600'},
-    {q:'Книга содержит 200 страниц, на каждой 25 строк, в каждой строке 50 символов. Каждый символ — 2 байта. Сколько таких книг поместится на флешку 2 Гбайт? Ответ округлите вниз.', ans:'838'}
+    'Текст записан в кодировке 16 бит на символ. Сколько символов содержит текст, если его объём равен 2 Кбайт?',
+    'Информационный объём сообщения равен 4 Кбайт, и оно содержит 4096 символов. Какова мощность алфавита?',
+    'Статья содержит 20 страниц, на каждой 30 строк, в каждой строке 60 символов. Каждый символ — 8 бит. Найдите объём статьи в байтах.',
+    'Текст из 600 символов сохранён в Windows-1251 (1 байт) и UTF-16 (2 байта). На сколько байт UTF-16 больше?',
+    'Книга содержит 200 страниц, на каждой 25 строк, в каждой строке 50 символов. Каждый символ — 2 байта. Сколько таких книг поместится на флешку 2 Гбайт? Ответ округлите вниз.'
   ],
   3: [
-    {q:'Текст записан в кодировке, где каждый символ весит 4 бита. Сколько символов содержит текст, если его объём равен 512 байт?', ans:'1024'},
-    {q:'Информационный объём сообщения равен 3 Кбайт, и оно содержит 3072 символа. Какова мощность алфавита?', ans:'256'},
-    {q:'Статья содержит 5 страниц, на каждой 50 строк, в каждой строке 40 символов. Каждый символ — 16 бит. Найдите объём статьи в байтах.', ans:'20000'},
-    {q:'Текст из 1000 символов сохранён в Windows-1251 (1 байт) и UTF-8 (2 байта). На сколько байт UTF-8 больше?', ans:'1000'},
-    {q:'Книга содержит 150 страниц, на каждой 40 строк, в каждой строке 50 символов. Каждый символ — 2 байта. Сколько таких книг поместится на флешку 4 Гбайт? Ответ округлите вниз.', ans:'1398'}
+    'Текст записан в кодировке, где каждый символ весит 4 бита. Сколько символов содержит текст, если его объём равен 512 байт?',
+    'Информационный объём сообщения равен 3 Кбайт, и оно содержит 3072 символа. Какова мощность алфавита?',
+    'Статья содержит 5 страниц, на каждой 50 строк, в каждой строке 40 символов. Каждый символ — 16 бит. Найдите объём статьи в байтах.',
+    'Текст из 1000 символов сохранён в Windows-1251 (1 байт) и UTF-8 (2 байта). На сколько байт UTF-8 больше?',
+    'Книга содержит 150 страниц, на каждой 40 строк, в каждой строке 50 символов. Каждый символ — 2 байта. Сколько таких книг поместится на флешку 4 Гбайт? Ответ округлите вниз.'
   ],
   4: [
-    {q:'Текст записан в кодировке, где каждый символ весит 8 бит. Сколько символов содержит текст, если его объём равен 4 Кбайт?', ans:'4096'},
-    {q:'Информационный объём сообщения равен 1,5 Кбайт, и оно содержит 3072 символа. Какова мощность алфавита?', ans:'16'},
-    {q:'Статья содержит 8 страниц, на каждой 40 строк, в каждой строке 64 символа. Каждый символ — 16 бит. Найдите объём статьи в байтах.', ans:'40960'},
-    {q:'Текст из 1500 символов сохранён в Windows-1251 (1 байт) и UTF-8 (2 байта). На сколько байт UTF-8 больше?', ans:'1500'},
-    {q:'Книга содержит 250 страниц, на каждой 40 строк, в каждой строке 60 символов. Каждый символ — 2 байта. Сколько таких книг поместится на флешку 4 Гбайт? Ответ округлите вниз.', ans:'3579'}
+    'Текст записан в кодировке, где каждый символ весит 8 бит. Сколько символов содержит текст, если его объём равен 4 Кбайт?',
+    'Информационный объём сообщения равен 1,5 Кбайт, и оно содержит 3072 символа. Какова мощность алфавита?',
+    'Статья содержит 8 страниц, на каждой 40 строк, в каждой строке 64 символа. Каждый символ — 16 бит. Найдите объём статьи в байтах.',
+    'Текст из 1500 символов сохранён в Windows-1251 (1 байт) и UTF-8 (2 байта). На сколько байт UTF-8 больше?',
+    'Книга содержит 250 страниц, на каждой 40 строк, в каждой строке 60 символов. Каждый символ — 2 байта. Сколько таких книг поместится на флешку 4 Гбайт? Ответ округлите вниз.'
   ]
 };
 
@@ -699,32 +703,14 @@ async function unlockPractice(){
   var btn = document.getElementById('pracBtn');
   var pass = inp.value.trim();
 
-  if (!pass){
-    msg.className = 'pmsg';
-    msg.textContent = 'Введите пароль.';
-    return;
-  }
+  if (!pass){ msg.className = 'pmsg'; msg.textContent = 'Введите пароль.'; return; }
+  msg.className = 'pmsg info'; msg.textContent = 'Проверка…'; btn.disabled = true;
 
-  msg.className = 'pmsg info';
-  msg.textContent = 'Проверка…';
-  btn.disabled = true;
-
-  var data = await checkPasswordRemote(RESOURCE_ID, 'practice', pass);
+  var data = await askServer('password', { type: 'practice', password: pass });
 
   btn.disabled = false;
-
-  if (data.error === 'network'){
-    msg.className = 'pmsg';
-    msg.textContent = '⚠️ Ошибка соединения. Проверьте интернет.';
-    return;
-  }
-  if (!data.ok){
-    msg.className = 'pmsg';
-    msg.textContent = '❌ Неверный пароль.';
-    inp.value = '';
-    inp.focus();
-    return;
-  }
+  if (data.error === 'network'){ msg.className = 'pmsg'; msg.textContent = '⚠️ Ошибка соединения.'; return; }
+  if (!data.ok){ msg.className = 'pmsg'; msg.textContent = '❌ Неверный пароль.'; inp.value = ''; inp.focus(); return; }
 
   msg.textContent = '';
   inp.value = '';
@@ -736,521 +722,350 @@ async function unlockPractice(){
 
 function renderPractice(){
   var v = document.getElementById('pracVariant').value;
-  var qs = PRACTICE_VARIANTS[v];
+  var qs = PRACTICE_QUESTIONS[v];
   var html = '';
   qs.forEach(function(q, i){
-    html += '<div class="task"><p><b>'+(i+1)+'.</b> '+q.q+'</p>'+
-      '<input type="text" id="prac'+i+'" placeholder="ответ" inputmode="numeric">'+
-      '</div>';
+    html += '<div class="task"><p><b>'+(i+1)+'.</b> '+q+'</p><input type="text" id="prac'+i+'" placeholder="ответ" inputmode="numeric"></div>';
   });
   document.getElementById('pracArea').innerHTML = html;
   renderMath(document.getElementById('pracArea'));
 }
 
-function gradePractice(){
-  if (lessonState.pracDone){
-    toast('⚠️ Практическая работа уже сдана. Повторная сдача не разрешена.');
-    return;
-  }
+async function gradePractice(){
+  if (lessonState.pracDone){ toast('⚠️ Практическая работа уже сдана.'); return; }
   var v = document.getElementById('pracVariant').value;
-  var qs = PRACTICE_VARIANTS[v];
-  var correct = 0;
-  qs.forEach(function(q, i){
+  var qs = PRACTICE_QUESTIONS[v];
+  var answers = [];
+  qs.forEach(function(_, i){ answers.push(document.getElementById('prac'+i).value.trim().replace(/\s+/g,'')); });
+
+  var btn = document.getElementById('pracCheckBtn');
+  btn.disabled = true; btn.textContent = 'Проверка...';
+
+  var data = await askServer('checkPractice', { variant: v, answers: JSON.stringify(answers) });
+
+  btn.disabled = false; btn.textContent = '📊 Проверить практику';
+
+  if (data.error === 'network') { toast('⚠️ Ошибка соединения.'); return; }
+  if (data.error) { toast('⚠️ ' + data.error); return; }
+
+  var correct = data.totalCorrect;
+  var results = data.results;
+
+  qs.forEach(function(_, i){
     var el = document.getElementById('prac'+i);
-    var val = (el.value||'').trim().replace(/\s+/g,'');
-    var ok = val === q.ans;
-    if (ok) correct++;
-    el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
-    el.style.background = ok ? '#f0fdf4' : '#fef2f2';
+    el.style.borderColor = results[i] ? 'var(--ok)' : 'var(--bad)';
+    el.style.background = results[i] ? '#f0fdf4' : '#fef2f2';
   });
+
   var pct = Math.round(correct / qs.length * 100);
   lessonState.pracCorrect = correct;
   lessonState.pracMark = percentToMark(pct);
   lessonState.pracDone = true;
+
   document.getElementById('pracCorrect').textContent = correct;
   document.getElementById('pracMark').textContent = lessonState.pracMark;
   document.getElementById('pracResult').classList.add('show');
 
-  qs.forEach(function(_, i){
-    var el = document.getElementById('prac'+i);
-    if (el){ el.disabled = true; el.style.background = '#f3f4f6'; }
-  });
-  var checkBtn = document.getElementById('pracCheckBtn');
-  if (checkBtn) checkBtn.style.display = 'none';
-
+  qs.forEach(function(_, i){ document.getElementById('prac'+i).disabled = true; });
+  btn.style.display = 'none';
   savePracticeState();
   toast('Практика: ' + correct + '/' + qs.length + ', оценка ' + lessonState.pracMark);
 }
 
+function savePracticeState(){
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
+    var d = JSON.parse(raw);
+    d.pracDone = lessonState.pracDone; d.pracCorrect = lessonState.pracCorrect;
+    d.pracMark = lessonState.pracMark; d.pracVariant = document.getElementById('pracVariant')?.value || '1';
+    d.finalCalculated = lessonState.finalCalculated;
+    d.penaltyApplied = lessonState.penaltyApplied;
+    d.wbMark = lessonState.wbMark;
+    d.finalTotal = document.getElementById('fTotal')?.textContent;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  } catch(e){}
+}
+
+function loadPracticeState(){
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY); if (!raw) return false;
+    var d = JSON.parse(raw); 
+    
+    if (d.pracDone) {
+      lessonState.pracDone = true; lessonState.pracCorrect = d.pracCorrect || 0; lessonState.pracMark = d.pracMark || 0;
+      document.getElementById('practiceLock').style.display = 'none';
+      document.getElementById('practiceBody').style.display = 'block';
+      document.getElementById('pracVariant').value = d.pracVariant || '1';
+      renderPractice();
+      document.getElementById('pracCorrect').textContent = d.pracCorrect;
+      document.getElementById('pracMark').textContent = d.pracMark;
+      document.getElementById('pracResult').classList.add('show');
+      document.getElementById('pracCheckBtn').style.display = 'none';
+    }
+
+    if (d.finalCalculated) {
+      lessonState.finalCalculated = true;
+      lessonState.penaltyApplied = d.penaltyApplied || false;
+      lessonState.wbMark = d.wbMark || 0;
+      
+      document.getElementById('fWb').textContent = lessonState.wbMark || '—';
+      document.getElementById('fPrac').textContent = lessonState.pracMark || '—';
+      document.getElementById('fTotal').textContent = d.finalTotal || '—';
+      document.getElementById('finalResult').classList.add('show');
+      document.getElementById('finalMsg').textContent = d.penaltyApplied ? 
+        '📉 Оценка снижена на 1 балл. Итог: ' + d.finalTotal : 
+        'Итог сохранён.';
+    }
+    return true;
+  } catch(e){ return false; }
+}
+
 /* =========================================================
-   5. ИТОГ
+   ИТОГ
    ========================================================= */
 function calcFinalMark(){
-  if (!lessonState.wbMark && !lessonState.pracDone){
-    toast('Сначала выполните тетрадь и практику');
-    return;
-  }
+  if (lessonState.finalCalculated) { toast('Итог уже подведён.'); return; }
+  if (!lessonState.wbMark && !lessonState.pracDone){ toast('Сначала выполните тетрадь и практику'); return; }
+
   var wb = lessonState.wbMark || 0;
   var pr = lessonState.pracMark || 0;
   var total = Math.round((wb + pr) / 2);
+  
   document.getElementById('fWb').textContent = wb || '—';
   document.getElementById('fPrac').textContent = pr || '—';
   document.getElementById('fTotal').textContent = total;
   document.getElementById('finalResult').classList.add('show');
   document.getElementById('finalMsg').textContent =
-    total === 5 ? '🌟 Отличная работа!' :
-    total === 4 ? '👏 Хорошо, но есть над чем поработать.' :
-    total === 3 ? '📖 Удовлетворительно. Повторите формулы.' :
-                  '📚 Стоит вернуться к теории.';
+    total === 5 ? '🌟 Отличная работа!' : total === 4 ? '👏 Хорошо.' : total === 3 ? '📖 Удовлетворительно.' : '📚 Стоит вернуться к теории.';
+  
+  lessonState.finalCalculated = true;
+  savePracticeState();
 }
 
 /* =========================================================
-   6. САМОСТОЯТЕЛЬНАЯ
+   САМОСТОЯТЕЛЬНАЯ — ЗАГРУЗКА С СЕРВЕРА
    ========================================================= */
 var saTimer = null, saLeft = 0, saTasks = [], saStarted = false, saDone = false;
 
-function genStandalone(){
-  function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
-  function pick(arr){ return arr[rnd(0,arr.length-1)]; }
-
-  var tasks = [];
-
-  var kb1 = pick([1,2,3,4,5]);
-  var i1  = pick([4,8,16]);
-  tasks.push({
-    text:'Текст записан в кодировке, где каждый символ весит $i = ' + i1 +
-         '$ бит. Сколько символов содержит текст, если его объём равен $' + kb1 + '$ Кбайт?',
-    ans: (kb1 * 1024 * 8) / i1, unit:'символов'
-  });
-
-  var kb2 = pick([1,2,3,4]);
-  var iNeeded = pick([4,8,16]);
-  var k2 = (kb2 * 1024 * 8) / iNeeded;
-  tasks.push({
-    text:'Информационный объём сообщения равен $' + kb2 +
-         '$ Кбайт, и оно содержит $K = ' + k2 + '$ символов. Какова мощность алфавита?',
-    ans: Math.pow(2, iNeeded), unit:'символов'
-  });
-
-  var pages3 = pick([5,10,15,20]);
-  var lines3 = pick([30,40,50]);
-  var sym3   = pick([40,50,60]);
-  var bytes3 = pick([1,2]);
-  tasks.push({
-    text:'Статья содержит $' + pages3 + '$ страниц, на каждой $' + lines3 +
-         '$ строк, в каждой строке $' + sym3 + '$ символов. Каждый символ кодируется ' +
-         bytes3 + ' байт(ами). Найдите объём статьи в байтах.',
-    ans: pages3 * lines3 * sym3 * bytes3, unit:'байт'
-  });
-
-  var sym4 = pick([500,800,1000,1500]);
-  tasks.push({
-    text:'Текст из $' + sym4 + '$ символов сохранён в Windows-1251 (1 байт на символ) ' +
-         'и UTF-8 (2 байта на символ). На сколько байт файл в UTF-8 больше?',
-    ans: sym4, unit:'байт'
-  });
-
-  var k5 = pick([256,512,1024,2048]);
-  var i5 = pick([4,8,16]);
-  tasks.push({
-    text:'Сообщение содержит $K = ' + k5 + '$ символов, вес каждого — $i = ' + i5 +
-         '$ бит. Найдите информационный объём сообщения в байтах.',
-    ans: (k5 * i5) / 8, unit:'байт'
-  });
-
-  var kb6 = pick([1,2,3,4,5,6,8]);
-  tasks.push({
-    text:'Объём файла равен $' + kb6 + '$ Кбайт. Переведите его в биты.',
-    ans: kb6 * 1024 * 8, unit:'бит'
-  });
-
-  var pages7 = pick([10,20,30]);
-  var lines7 = pick([40,50,60]);
-  var sym7   = pick([40,50,60]);
-  tasks.push({
-    text:'Книга содержит $' + pages7 + '$ страниц, на каждой $' + lines7 +
-         '$ строк, в каждой строке $' + sym7 + '$ символов. Каждый символ — 2 байта. ' +
-         'Найдите объём книги в Кбайтах (округлите вниз).',
-    ans: Math.floor(pages7 * lines7 * sym7 * 2 / 1024), unit:'Кбайт'
-  });
-
-  var b8 = pick([1,2,3,4,5,6,8]);
-  tasks.push({
-    text:'Сколько бит в $' + b8 + '$ байтах?',
-    ans: b8 * 8, unit:'бит'
-  });
-
-  return tasks;
-}
-
-function scrollToGate(){
-  document.getElementById('standaloneGate')
-    .scrollIntoView({behavior:'smooth', block:'center'});
-  document.getElementById('saPass').focus();
-}
+function scrollToGate(){ document.getElementById('standaloneGate').scrollIntoView({behavior:'smooth', block:'center'}); document.getElementById('saPass').focus(); }
+function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 
 async function unlockStandalone(){
-  if (!getSurname() || !getFirstname() || !getKlass()){
-    document.getElementById('saMsg').className = 'pmsg';
-    document.getElementById('saMsg').textContent = 'Сначала заполните фамилию, имя и класс в шапке.';
-    return;
+  if (!getSurname() || !getFirstname() || !getKlass()){ 
+    document.getElementById('saMsg').className = 'pmsg'; 
+    document.getElementById('saMsg').textContent = 'Сначала заполните ФИО в шапке.'; 
+    return; 
   }
-  var inp = document.getElementById('saPass');
-  var msg = document.getElementById('saMsg');
-  var btn = document.getElementById('saBtn');
-  var pass = inp.value.trim();
+  
+  var inp = document.getElementById('saPass'); var msg = document.getElementById('saMsg'); var btn = document.getElementById('saBtn'); var pass = inp.value.trim();
+  if (!pass){ msg.className = 'pmsg'; msg.textContent = 'Введите пароль.'; return; }
+  
+  msg.className = 'pmsg info'; msg.textContent = 'Проверка пароля…'; btn.disabled = true;
 
-  if (!pass){
-    msg.className = 'pmsg';
-    msg.textContent = 'Введите пароль.';
-    return;
-  }
+  var pwdData = await askServer('password', { type: 'standalone', password: pass });
+  if (pwdData.error === 'network'){ btn.disabled = false; msg.className = 'pmsg'; msg.textContent = '⚠️ Ошибка соединения.'; return; }
+  if (!pwdData.ok){ btn.disabled = false; msg.className = 'pmsg'; msg.textContent = '❌ Неверный пароль.'; inp.value = ''; inp.focus(); return; }
 
-  msg.className = 'pmsg info';
-  msg.textContent = 'Проверка…';
-  btn.disabled = true;
-
-  var data = await checkPasswordRemote(RESOURCE_ID, 'standalone', pass);
-
+  msg.textContent = 'Загрузка заданий…';
+  var data = await askServer('getStandalone', { count: SA_TASK_COUNT });
   btn.disabled = false;
 
-  if (data.error === 'network'){
-    msg.className = 'pmsg';
-    msg.textContent = '⚠️ Ошибка соединения. Проверьте интернет.';
-    return;
-  }
-  if (!data.ok){
-    msg.className = 'pmsg';
-    msg.textContent = '❌ Неверный пароль учителя.';
-    inp.value = '';
-    inp.focus();
-    return;
-  }
+  if (data.error === 'network'){ msg.className = 'pmsg'; msg.textContent = '⚠️ Ошибка загрузки.'; return; }
+  if (data.error){ msg.className = 'pmsg'; msg.textContent = '⚠️ ' + data.error; return; }
+  if (!data.tasks || !data.tasks.length){ msg.className = 'pmsg'; msg.textContent = '⚠️ Нет шаблонов для этого урока.'; return; }
 
-  msg.textContent=''; inp.value='';
+  msg.textContent = ''; inp.value = '';
+  saTasks = data.tasks;
   startStandalone();
 }
 
 function startStandalone(){
-  saTasks = genStandalone();
   saDone = false; saStarted = true; saLeft = SA_MINUTES*60;
-
   document.body.classList.add('exam');
   var who = getFullName() + (getKlass() ? ', ' + getKlass() : '');
   document.getElementById('examWho').textContent = who || 'Ученик не указан';
-  document.getElementById('filePreview').textContent = getFileName() + '_самостоятельная';
+  
+  var fp = document.getElementById('filePreview');
+  if (fp) fp.textContent = getFileName() + '_самостоятельная';
 
-  var host = document.getElementById('examTasks');
-  var html = '';
+  var host = document.getElementById('examTasks'); var html = '';
   saTasks.forEach(function(t, i){
-    html += '<div class="s-task" id="st'+i+'">';
-    html += '<p class="stext"><span class="sn">'+(i+1)+'</span>'+t.text+
-            '<span class="s-flag">'+t.unit+'</span></p>';
-    html += '<input type="text" inputmode="numeric" id="sa'+i+
-            '" placeholder="ответ" autocomplete="off">';
-    html += '</div>';
+    html += '<div class="s-task" id="st'+i+'">' +
+            '<p class="stext"><span class="sn">'+(i+1)+'</span>' +
+            t.text +
+            '<span class="s-flag">'+t.unit+'</span></p>' +
+            '<input type="text" inputmode="text" id="sa'+i+'" placeholder="ответ" autocomplete="off">' +
+            '</div>';
   });
   host.innerHTML = html;
   renderMath(host);
-
   document.getElementById('examResult').classList.remove('show');
   window.scrollTo({top:0,behavior:'smooth'});
-
   if (saTimer) clearInterval(saTimer);
   updateTimer();
-  saTimer = setInterval(function(){
-    saLeft--;
-    updateTimer();
-    if (saLeft <= 0){
-      clearInterval(saTimer); saTimer=null;
-      toast('⏰ Время вышло! Работа сдаётся автоматически.');
-      finishStandalone(true);
-    }
-  }, 1000);
-
-  toast('📝 Работа началась. 15 минут пошли!');
+  saTimer = setInterval(function(){ saLeft--; updateTimer(); if (saLeft <= 0){ clearInterval(saTimer); saTimer=null; toast('⏰ Время вышло!'); finishStandalone(true); } }, 1000);
+  toast('📝 Работа началась.');
 }
 
 function updateTimer(){
-  var m = Math.floor(saLeft/60), s = saLeft % 60;
-  var el = document.getElementById('examTimer');
+  var m = Math.floor(saLeft/60), s = saLeft % 60; var el = document.getElementById('examTimer');
   el.textContent = (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
   el.className = 'timer' + (saLeft<=60?' danger' : saLeft<=300?' warn':'');
 }
 
-function finishStandalone(auto){
+async function finishStandalone(auto){
   if (!saStarted) return;
   if (!auto && !confirm('Сдать работу? Изменить ответы будет нельзя.')) return;
   if (saTimer){ clearInterval(saTimer); saTimer=null; }
-  saDone = true;
+  var btn = document.querySelector('#standalone .exam-head .b-green');
+  if (btn) { btn.disabled = true; btn.textContent = 'Проверка...'; }
 
-  var correct = 0;
+  var answers = [];
+  saTasks.forEach(function(t,i){ var el = document.getElementById('sa'+i); answers.push({ key: t.key, answer: el ? el.value.trim().replace(/\s+/g,'') : '' }); });
+
+  var data = await askServer('checkStandalone', { tasks: JSON.stringify(answers) });
+
+  if (btn) { btn.disabled = false; btn.textContent = '✅ Сдать работу'; }
+  if (data.error === 'network') { toast('⚠️ Ошибка соединения.'); return; }
+  if (data.error) { toast('⚠️ ' + data.error); return; }
+
+  saDone = true; var correct = data.totalCorrect; var results = data.results;
   saTasks.forEach(function(t,i){
-    var el = document.getElementById('sa'+i);
-    var v = (el ? el.value : '').trim().replace(/\s+/g,'');
-    var ok = v !== '' && Number(v) === t.ans;
-    if (ok) correct++;
-    if (el){
-      el.disabled = true;
-      el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
-      el.style.background  = ok ? '#f0fdf4' : '#fef2f2';
-    }
-    var card = document.getElementById('st'+i);
-    if (card) card.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
+    var el = document.getElementById('sa'+i); var ok = results[i];
+    if (el){ el.disabled = true; el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)'; el.style.background = ok ? '#f0fdf4' : '#fef2f2'; }
+    var card = document.getElementById('st'+i); if (card) card.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
   });
 
   var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
-  var used = SA_MINUTES*60 - Math.max(saLeft,0);
-  var um = Math.floor(used/60), us = used%60;
-
+  var used = SA_MINUTES*60 - Math.max(saLeft,0); var um = Math.floor(used/60), us = used%60;
   document.getElementById('exCorrect').textContent = correct + ' / 5';
   document.getElementById('exMark').textContent = mark;
   document.getElementById('exTime').textContent = um+' мин '+(us<10?'0':'')+us+' с';
-  document.getElementById('exMsg').textContent =
-    correct>=5 ? '🌟 Отлично! Все пять задач решены верно.' :
-    correct===4 ? '👏 Хорошо! Одна задача с ошибкой.' :
-    correct===3 ? '📖 Удовлетворительно. Повторите формулы.' :
-                  '📚 Стоит ещё раз разобрать теорию.';
-  document.getElementById('examResult').classList.add('show');
-  document.getElementById('examResult').scrollIntoView({behavior:'smooth'});
+  document.getElementById('exMsg').textContent = correct>=5 ? '🌟 Отлично!' : correct===4 ? '👏 Хорошо!' : correct===3 ? '📖 Удовлетворительно.' : '📚 Стоит повторить.';
+  document.getElementById('examResult').classList.add('show'); document.getElementById('examResult').scrollIntoView({behavior:'smooth'});
   toast('Работа сдана: '+correct+' из 5, оценка '+mark);
 }
 
 function exitStandalone(){
-  if (saStarted && !saDone && !confirm('Выйти без сохранения результата?')) return;
+  if (saStarted && !saDone && !confirm('Выйти без сохранения?')) return;
   if (saTimer){ clearInterval(saTimer); saTimer=null; }
-  document.body.classList.remove('exam');
-  saStarted = false;
-  window.scrollTo({top:0,behavior:'smooth'});
+  document.body.classList.remove('exam'); saStarted = false; window.scrollTo({top:0,behavior:'smooth'});
 }
 
-/* ---------- PDF ---------- */
+/* ---------- PDF / JPG ---------- */
 function saveStandalonePDF(){
   if (!saDone){ toast('Сначала сдайте работу'); return; }
   if (!(window.jspdf && window.jspdf.jsPDF)){ toast('jsPDF не загрузился'); return; }
-
-  var doc = new window.jspdf.jsPDF({unit:'mm', format:'a4'});
-  var fio = getFullName() || 'Ученик';
-  var correct = 0;
-  saTasks.forEach(function(t,i){
-    var el = document.getElementById('sa'+i);
-    var g = el ? el.value.trim() : '';
-    if (Number(g) === t.ans) correct++;
-  });
+  var doc = new window.jspdf.jsPDF({unit:'mm', format:'a4'}); var fio = getFullName() || 'Ученик'; var correct = 0;
+  saTasks.forEach(function(t,i){ var el = document.getElementById('sa'+i); if (el && el.style.background.indexOf('240, 253, 244') !== -1) correct++; });
   var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
-
-  doc.setFontSize(16);
-  doc.text('Samostoyatelnaya rabota', 105, 18, {align:'center'});
-  doc.setFontSize(11);
-  doc.text('Informacionnyj ob`em teksta', 105, 25, {align:'center'});
-  doc.text('Uchenik: ' + fio + '   Klass: ' + (getKlass()||'-'), 20, 36);
-
-  var y = 50;
-  saTasks.forEach(function(t,i){
-    var el = document.getElementById('sa'+i);
-    var g = el ? el.value.trim() : '';
-    doc.setFontSize(10);
-    doc.text((i+1) + '. ' + t.text.replace(/\$/g,'').replace(/[^\x00-\x7F]/g,'?'), 20, y);
-    y += 6;
-    doc.text('   Otvet: ' + (g||'-') + '   Pravilno: ' + t.ans + ' ' + t.unit, 22, y);
-    y += 9;
-  });
-
-  doc.setFontSize(13);
-  doc.text('Verno: ' + correct + ' iz 5.   Ocenka: ' + mark, 20, y+6);
-  doc.save(getFileName() + '_samostoyatelnaya.pdf');
-  toast('📄 PDF сохранён');
+  doc.setFontSize(16); doc.text('Samostoyatelnaya rabota', 105, 18, {align:'center'});
+  doc.setFontSize(11); doc.text('Informacionnyj ob`em teksta, 7 klass', 105, 25, {align:'center'});
+  doc.text('Uchenik: ' + fio + '   Klass: ' + (getKlass()||'-'), 20, 36); doc.text('Data: ' + new Date().toLocaleDateString('ru-RU'), 20, 43);
+  var y = 55;
+  saTasks.forEach(function(t,i){ var el = document.getElementById('sa'+i); var g = el ? el.value.trim() : ''; doc.setFontSize(10); doc.text((i+1) + '. ' + t.text.replace(/\$/g,'').replace(/[^\x00-\x7F]/g,'?'), 20, y); y += 6; doc.text('   Otvet: ' + (g||'-'), 22, y); y += 9; });
+  doc.setFontSize(13); doc.text('Verno: ' + correct + ' iz 5.   Ocenka: ' + mark, 20, y+6);
+  doc.save(getFileName() + '_samostoyatelnaya.pdf'); toast('📄 PDF сохранён');
 }
 
-/* ---------- JPG ---------- */
 function buildResultHTML(){
-  var fio = getFullName() || 'Ученик не указан';
-  var klass = getKlass() || '—';
-  var rows = '';
-  var correct = 0;
-
-  saTasks.forEach(function(t,i){
-    var el = document.getElementById('sa'+i);
-    var given = el ? el.value.trim() : '';
-    var ok = Number(given) === t.ans;
-    if (ok) correct++;
-    rows += '<tr>' +
-      '<td style="padding:6px 8px;border:1px solid #ccc;text-align:center">'+(i+1)+'</td>' +
-      '<td style="padding:6px 8px;border:1px solid #ccc">'+t.text.replace(/\$/g,'')+'</td>' +
-      '<td style="padding:6px 8px;border:1px solid #ccc;text-align:center">'+(given||'—')+'</td>' +
-      '<td style="padding:6px 8px;border:1px solid #ccc;text-align:center">'+t.ans+' '+t.unit+'</td>' +
-      '<td style="padding:6px 8px;border:1px solid #ccc;text-align:center">'+(ok?'✅':'❌')+'</td>' +
-      '</tr>';
-  });
-
+  var fio = getFullName() || 'Ученик не указан'; var klass = getKlass() || '—'; var rows = ''; var correct = 0;
+  saTasks.forEach(function(t,i){ var el = document.getElementById('sa'+i); var given = el ? el.value.trim() : ''; var ok = el && el.style.background.indexOf('240, 253, 244') !== -1; if (ok) correct++; rows += '<tr><td style="padding:6px 8px;border:1px solid #ccc;text-align:center">'+(i+1)+'</td><td style="padding:6px 8px;border:1px solid #ccc">'+t.text.replace(/\$/g,'')+'</td><td style="padding:6px 8px;border:1px solid #ccc;text-align:center">'+(given||'—')+'</td><td style="padding:6px 8px;border:1px solid #ccc;text-align:center">'+(ok?'✅':'❌')+'</td></tr>'; });
   var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
-
-  return '<div style="font-family:Georgia,serif;color:#222;padding:8px">' +
-    '<h1 style="text-align:center;font-size:20px;margin:0 0 4px">Самостоятельная работа</h1>' +
-    '<p style="text-align:center;margin:0 0 14px;font-size:13px">Информационный объём текста · 7 класс</p>' +
-    '<table style="width:100%;font-size:14px;margin-bottom:14px">' +
-    '<tr><td><b>Ученик:</b> '+fio+'</td><td><b>Класс:</b> '+klass+'</td></tr>' +
-    '</table>' +
-    '<table style="width:100%;border-collapse:collapse;font-size:12px">' +
-    '<tr style="background:#ede9fe">' +
-    '<th style="padding:8px;border:1px solid #ccc">№</th>' +
-    '<th style="padding:8px;border:1px solid #ccc">Задание</th>' +
-    '<th style="padding:8px;border:1px solid #ccc">Ответ</th>' +
-    '<th style="padding:8px;border:1px solid #ccc">Верно</th>' +
-    '<th style="padding:8px;border:1px solid #ccc">✓</th></tr>' +
-    rows + '</table>' +
-    '<p style="margin-top:16px;font-size:16px"><b>Верно решено:</b> '+correct+' из 5</p>' +
-    '<p style="font-size:20px;margin:6px 0"><b>Оценка: '+mark+'</b></p>' +
-    '</div>';
+  var used = SA_MINUTES*60 - Math.max(saLeft,0); var um = Math.floor(used/60), us = used%60;
+  return '<div style="font-family:Georgia,serif;color:#222;padding:8px"><h1 style="text-align:center;font-size:20px;margin:0 0 4px">Самостоятельная работа</h1><p style="text-align:center;margin:0 0 14px;font-size:13px">Информационный объём текста · 7 класс</p><table style="width:100%;font-size:14px;margin-bottom:14px"><tr><td><b>Ученик:</b> '+fio+'</td><td><b>Класс:</b> '+klass+'</td></tr><tr><td><b>Дата:</b> '+new Date().toLocaleDateString('ru-RU')+'</td><td><b>Время:</b> '+um+' мин '+(us<10?'0':'')+us+' с</td></tr></table><table style="width:100%;border-collapse:collapse;font-size:12px"><tr style="background:#ede9fe"><th style="padding:8px;border:1px solid #ccc">№</th><th style="padding:8px;border:1px solid #ccc">Задание</th><th style="padding:8px;border:1px solid #ccc">Ответ</th><th style="padding:8px;border:1px solid #ccc">✓</th></tr>'+rows+'</table><p style="margin-top:16px;font-size:16px"><b>Верно решено:</b> '+correct+' из 5</p><p style="font-size:20px;margin:6px 0"><b>Оценка: '+mark+'</b></p></div>';
 }
 
 function saveStandaloneJPG(){
   if (!saDone){ toast('Сначала сдайте работу'); return; }
-  var holder = document.createElement('div');
-  holder.style.cssText = 'position:fixed;left:-99999px;top:0;width:900px;background:#fff';
-  holder.innerHTML = buildResultHTML();
-  document.body.appendChild(holder);
+  var holder = document.createElement('div'); holder.style.cssText = 'position:fixed;left:-99999px;top:0;width:900px;background:#fff'; holder.innerHTML = buildResultHTML(); document.body.appendChild(holder);
+  window.html2canvas(holder, {backgroundColor:'#ffffff', scale:2}).then(function(canvas){ var a = document.createElement('a'); a.download = getFileName() + '_самостоятельная.jpg'; a.href = canvas.toDataURL('image/jpeg', 0.93); a.click(); holder.remove(); toast('🖼 JPG сохранён'); }).catch(function(){ holder.remove(); toast('Не удалось создать JPG'); });
+}
 
-  if (!window.html2canvas){
-    var s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    s.onload = shot;
-    s.onerror = function(){ holder.remove(); toast('html2canvas не загрузился'); };
-    document.head.appendChild(s);
-  } else { shot(); }
-
-  function shot(){
-    window.html2canvas(holder, {backgroundColor:'#ffffff', scale:2})
-      .then(function(canvas){
-        var a = document.createElement('a');
-        a.download = getFileName() + '_самостоятельная.jpg';
-        a.href = canvas.toDataURL('image/jpeg', 0.93);
-        a.click();
-        holder.remove();
-        toast('🖼 JPG сохранён');
-      })
-      .catch(function(){ holder.remove(); toast('Не удалось создать JPG'); });
-  }
+function saveLessonScreenshot() {
+  var holder = document.createElement('div'); holder.style.cssText = 'position:fixed;left:-99999px;top:0;width:1200px;background:#fff;padding:20px;';
+  var fio = getFullName() || 'Ученик не указан'; var klass = getKlass() || '—';
+  var wbMark = document.getElementById('fWb').textContent; var pracMark = document.getElementById('fPrac').textContent; var totalMark = document.getElementById('fTotal').textContent;
+  if (totalMark === '—') { wbMark = lessonState.wbMark || '—'; pracMark = lessonState.pracMark || '—'; totalMark = '—'; }
+  var wbTasks = [];
+  ['w1','w2','w3','w4','w5'].forEach(function(id, index) { var input = document.getElementById(id); var val = input ? input.value : '—'; var isCorrect = lessonState.wb[id] || false; wbTasks.push({ num: index + 1, answer: val, correct: isCorrect }); });
+  var html = '<div style="font-family:Georgia,serif;color:#222;padding:8px;"><h1 style="text-align:center;font-size:24px;margin:0 0 4px;">Информационный объём текста</h1><p style="text-align:center;margin:0 0 16px;font-size:14px;color:#666;">Урок информатики · 7 класс</p><table style="width:100%;font-size:14px;margin-bottom:20px;border-collapse:collapse;"><tr><td style="padding:4px;"><b>Ученик:</b> ' + fio + '</td><td style="padding:4px;"><b>Класс:</b> ' + klass + '</td></tr><tr><td style="padding:4px;"><b>Дата:</b> ' + new Date().toLocaleDateString('ru-RU') + '</td><td style="padding:4px;"><b>Время:</b> ' + new Date().toLocaleTimeString('ru-RU') + '</td></tr></table><h2 style="font-size:18px;margin:20px 0 10px;color:#4c1d95;">1. Рабочая тетрадь</h2><table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px;"><tr style="background:#ede9fe;"><th style="padding:6px;border:1px solid #ccc;">№</th><th style="padding:6px;border:1px solid #ccc;">Ответ</th><th style="padding:6px;border:1px solid #ccc;">Засчитано</th></tr>';
+  wbTasks.forEach(function(t) { html += '<tr><td style="padding:6px;border:1px solid #ccc;text-align:center;">' + t.num + '</td><td style="padding:6px;border:1px solid #ccc;text-align:center;">' + (t.answer || '—') + '</td><td style="padding:6px;border:1px solid #ccc;text-align:center;">' + (t.correct ? '✅' : '❌') + '</td></tr>'; });
+  html += '</table><p style="font-size:14px;"><b>Результат тетради:</b> ' + document.getElementById('wbCorrect').textContent + ' из 5, оценка: <b>' + document.getElementById('wbMark').textContent + '</b></p>';
+  if (lessonState.pracDone) { html += '<h2 style="font-size:18px;margin:20px 0 10px;color:#4c1d95;">2. Практическая работа</h2><p style="font-size:14px;"><b>Вариант:</b> ' + (document.getElementById('pracVariant')?.value || '—') + '</p><p style="font-size:14px;"><b>Результат:</b> ' + lessonState.pracCorrect + ' из 5, оценка: <b>' + lessonState.pracMark + '</b></p>'; } else { html += '<h2 style="font-size:18px;margin:20px 0 10px;color:#4c1d95;">2. Практическая работа</h2><p style="font-size:14px;color:#999;">Не выполнялась</p>'; }
+  html += '<h2 style="font-size:18px;margin:20px 0 10px;color:#4c1d95;">3. Итоговая оценка</h2><table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:16px;"><tr style="background:#ede9fe;"><th style="padding:6px;border:1px solid #ccc;">Тетрадь</th><th style="padding:6px;border:1px solid #ccc;">Практика</th><th style="padding:6px;border:1px solid #ccc;">Итог</th></tr><tr><td style="padding:6px;border:1px solid #ccc;text-align:center;">' + (wbMark || '—') + '</td><td style="padding:6px;border:1px solid #ccc;text-align:center;">' + (pracMark || '—') + '</td><td style="padding:6px;border:1px solid #ccc;text-align:center;font-weight:bold;">' + totalMark + '</td></tr></table>';
+  if (lessonState.penaltyApplied) { html += '<p style="font-size:14px;color:#b91c1c;"><b>📉 Снижено на 1 балл из-за отсутствия классной работы в тетради</b></p>'; }
+  html += '<p style="font-size:14px;margin-top:20px;color:#666;text-align:center;">Скриншот создан ' + new Date().toLocaleString('ru-RU') + '</p></div>';
+  holder.innerHTML = html; document.body.appendChild(holder);
+  window.html2canvas(holder, { backgroundColor: '#ffffff', scale: 2 }).then(function(canvas) { var a = document.createElement('a'); a.download = getFileName() + '_урок.jpg'; a.href = canvas.toDataURL('image/jpeg', 0.93); a.click(); holder.remove(); toast('📸 Скриншот сохранён'); }).catch(function() { holder.remove(); toast('Не удалось создать скриншот'); });
 }
 
 /* =========================================================
-   7. ПЕЧАТЬ ДЗ
+   ДЗ, РАСКЛАДКА, КАЛЬКУЛЯТОР
    ========================================================= */
 function printHomework(){
   var fio = getFullName() + (getKlass() ? ', ' + getKlass() : '');
   var hw = document.getElementById('hwBlock').innerHTML;
-  var w = window.open('', '_blank');
-  if (!w){ alert('Разрешите всплывающие окна.'); return; }
-  w.document.write(
-    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Домашнее задание</title>'+
-    '<script>window.MathJax={tex:{inlineMath:[["$","$"]]}};<\/script>'+
-    '<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>'+
-    '<style>body{font-family:Georgia,serif;padding:14mm;font-size:12pt;line-height:1.6;max-width:190mm;margin:0 auto}'+
-    'h1{text-align:center;font-size:16pt}.hw{border:1pt solid #bbb;padding:3mm 4mm;margin:4mm 0;page-break-inside:avoid}'+
-    '.lvl{font-weight:800;font-size:10pt;display:block;margin-bottom:2mm}'+
-    '@page{margin:14mm}</style></head><body>'+
-    '<h1>Домашнее задание</h1>'+
-    '<p style="text-align:center;margin:0 0 1mm;font-size:11pt">Информационный объём текста · 7 класс</p>'+
-    '<p style="text-align:center;margin:0 0 6mm">'+
-    (fio ? 'Ученик: <b>'+fio+'</b>' : 'Ученик: ____________________')+'</p>'+
-    hw + '</body></html>'
-  );
-  w.document.close();
-  setTimeout(function(){ try{ w.print(); }catch(e){} }, 600);
+  var w = window.open('', '_blank'); if (!w){ alert('Разрешите всплывающие окна.'); return; }
+  w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>ДЗ</title><script>window.MathJax={tex:{inlineMath:[["$","$"]]}};<\/script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script><style>body{font-family:Georgia,serif;padding:14mm;font-size:12pt;line-height:1.6;max-width:190mm;margin:0 auto}h1{text-align:center;font-size:16pt}.hw{border:1pt solid #bbb;padding:3mm 4mm;margin:4mm 0;page-break-inside:avoid}.lvl{font-weight:800;font-size:10pt;display:block;margin-bottom:2mm}@page{margin:14mm}</style></head><body><h1>Домашнее задание</h1><p style="text-align:center;margin:0 0 1mm;font-size:11pt">Информационный объём текста · 7 класс</p><p style="text-align:center;margin:0 0 6mm">'+ (fio ? 'Ученик: <b>'+fio+'</b>' : 'Ученик: ____________________')+'</p>'+ hw + '</body></html>');
+  w.document.close(); setTimeout(function(){ try{ w.print(); }catch(e){} }, 600);
 }
 
-/* =========================================================
-   8. МАТЕМАТИЧЕСКАЯ РАСКЛАДКА
-   ========================================================= */
 var activeField = null;
 function openMath(){ document.getElementById('mathModal').classList.add('open'); }
 function closeMath(){ document.getElementById('mathModal').classList.remove('open'); }
-function insertMath(tex){
-  var t = activeField || document.querySelector('input[type=text]');
-  if (!t){ toast('Сначала щёлкните в поле'); return; }
-  var snip = '$' + tex + '$';
-  var s = t.selectionStart || 0, e = t.selectionEnd || 0;
-  t.value = t.value.slice(0,s) + snip + t.value.slice(e);
-  t.focus();
-  var p = s + snip.length;
-  try{ t.setSelectionRange(p,p); }catch(err){}
-  t.dispatchEvent(new Event('input',{bubbles:true}));
+function insertMath(text){
+  var t = activeField || document.querySelector('input[type=text]'); if (!t){ toast('Сначала щёлкните в поле'); return; }
+  var s = t.selectionStart || 0, e = t.selectionEnd || 0; t.value = t.value.slice(0,s) + text + t.value.slice(e); t.focus();
+  var p = s + text.length; try{ t.setSelectionRange(p,p); }catch(err){} t.dispatchEvent(new Event('input',{bubbles:true}));
 }
-document.addEventListener('focusin', function(e){
-  if (e.target.matches('input[type=text],input[type=password],textarea')){
-    activeField = e.target;
-  }
-});
-document.querySelectorAll('.key[data-tex]').forEach(function(b){
-  b.addEventListener('click', function(){ insertMath(b.dataset.tex); });
-});
-document.querySelectorAll('.tab').forEach(function(t){
-  t.addEventListener('click', function(){
-    document.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('on'); });
-    document.querySelectorAll('.pane').forEach(function(x){ x.classList.remove('on'); });
-    t.classList.add('on');
-    var p = document.getElementById('pane-'+t.dataset.tab);
-    if (p) p.classList.add('on');
-  });
-});
-document.getElementById('mathModal').addEventListener('click', function(e){
-  if (e.target === this) closeMath();
-});
+document.addEventListener('focusin', function(e){ if (e.target.matches('input[type=text],input[type=password],textarea')){ activeField = e.target; } });
+document.getElementById('mathModal').addEventListener('click', function(e){ if (e.target === this) closeMath(); });
 
-/* =========================================================
-   9. КАЛЬКУЛЯТОР
-   ========================================================= */
 var calcBuf = '';
 function openCalc(){ document.getElementById('calcModal').classList.add('open'); calcRender(); }
 function closeCalc(){ document.getElementById('calcModal').classList.remove('open'); }
 function calcNum(d){
-  if (calcBuf === '0' && d !== '0') calcBuf = '';
-  calcBuf += d; calcRender();
-}
-function calcOp(op){
-  if (!calcBuf){ if (op === '-'){ calcBuf = '-'; calcRender(); } return; }
-  if ('+-*/^'.indexOf(calcBuf.slice(-1)) !== -1) calcBuf = calcBuf.slice(0,-1);
-  calcBuf += op; calcRender();
-}
-function calcClear(){ calcBuf = ''; calcRender(); }
-function calcBack(){ calcBuf = calcBuf.slice(0,-1); calcRender(); }
-function calcRender(){
-  document.getElementById('calcExpr').textContent = calcBuf;
-  document.getElementById('calcOut').textContent = calcEval(calcBuf) ?? '0';
-}
-function calcEval(s){
-  if (!s) return 0;
-  try { return Function('"use strict";return (' + s.replace(/\^/g,'**') + ')')(); }
-  catch(e){ return '…'; }
-}
-function calcEquals(){
-  var v = calcEval(calcBuf);
-  calcBuf = String(v);
+  if (calcBuf === '0' && d !== '0' && d !== ',') calcBuf = '';
+  if (d === ',') { if (calcBuf.includes(',')) return; if (calcBuf === '') calcBuf = '0'; calcBuf += ','; } else { calcBuf += d; }
   calcRender();
 }
-document.getElementById('calcModal').addEventListener('click', function(e){
-  if (e.target === this) closeCalc();
-});
+function calcOp(op){ if (!calcBuf){ if (op === '-'){ calcBuf = '-'; calcRender(); } return; } if ('+-*/^'.indexOf(calcBuf.slice(-1)) !== -1) calcBuf = calcBuf.slice(0,-1); calcBuf += op; calcRender(); }
+function calcClear(){ calcBuf = ''; calcRender(); }
+function calcBack(){ calcBuf = calcBuf.slice(0,-1); calcRender(); }
+function calcRender(){ document.getElementById('calcExpr').textContent = calcBuf; document.getElementById('calcOut').textContent = calcEval(calcBuf) ?? '0'; }
+function calcEval(s){ if (!s) return 0; try { var expr = s.replace(/\^/g,'**').replace(/,/g,'.'); return Function('"use strict";return (' + expr + ')')(); } catch(e){ return '…'; } }
+function calcEquals(){ var v = calcEval(calcBuf); calcBuf = String(v).replace('.', ','); calcRender(); }
+document.getElementById('calcModal').addEventListener('click', function(e){ if (e.target === this) closeCalc(); });
 
-/* =========================================================
-   10. ПОМОЩНИКИ
-   ========================================================= */
-function showFb(id, html, kind){
-  var el = document.getElementById(id);
-  if (!el) return;
-  el.innerHTML = html;
-  el.className = 'fb show ' + kind;
+function showFb(id, html, kind){ var el = document.getElementById(id); if (!el) return; el.innerHTML = html; el.className = 'fb show ' + kind; }
+function renderMath(el){ if (!el || !window.MathJax) return; if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){}); }
+window.addEventListener('load', function(){ setTimeout(function(){ renderMath(document.body); }, 600); });
+document.addEventListener('DOMContentLoaded', function(){ loadPracticeState(); });
+
+function finishLesson(){
+  if (!confirm('Завершить урок и сбросить ВСЕ результаты?')) return;
+  if (typeof saTimer !== 'undefined' && saTimer){ clearInterval(saTimer); saTimer = null; }
+  
+  lessonState = { 
+    wb: { w1:false, w2:false, w3:false, w4:false, w5:false }, 
+    wbCorrect: 0, wbMark: 0, 
+    pracDone: false, pracCorrect: 0, pracMark: 0, 
+    penaltyApplied: false,
+    finalCalculated: false 
+  };
+
+  ['w1','w2','w3','w4','w5'].forEach(function(id){ var el = document.getElementById(id); if (el){ el.value = ''; el.style.borderColor = ''; el.style.background = ''; el.disabled = false; } var fb = document.getElementById(id + 'fb'); if (fb){ fb.innerHTML = ''; fb.className = 'fb'; } var btn = document.querySelector('button[onclick*="checkW(\''+id+'\'"]'); if (btn) btn.style.display = ''; });
+  document.querySelectorAll('input[name="w4"]').forEach(function(r){ r.checked = false; r.disabled = false; var lab = r.closest('.opt'); if (lab) lab.classList.remove('correct','wrong'); });
+  document.getElementById('w4fb').innerHTML = ''; document.getElementById('w4fb').className = 'fb'; document.querySelector('button[onclick*="checkWRadio"]').style.display = '';
+  document.getElementById('wbResult').classList.remove('show'); document.getElementById('wbCorrect').textContent = '0'; document.getElementById('wbMark').textContent = '—';
+  document.getElementById('practiceLock').style.display = ''; document.getElementById('practiceBody').style.display = 'none'; document.getElementById('pracPass').value = ''; document.getElementById('pracMsg').textContent = ''; document.getElementById('pracArea').innerHTML = ''; document.getElementById('pracVariant').value = '1'; document.getElementById('pracResult').classList.remove('show'); document.getElementById('pracCorrect').textContent = '0'; document.getElementById('pracMark').textContent = '—'; document.getElementById('pracCheckBtn').style.display = ''; document.querySelector('#practice h2').innerHTML = '<span class="num">3</span> Практическая работа <span class="badge">по паролю</span>';
+  document.getElementById('finalResult').classList.remove('show'); ['fWb','fPrac','fTotal'].forEach(function(id){ document.getElementById(id).textContent = '—'; }); document.getElementById('finalMsg').textContent = '';
+  saStarted = false; saDone = false; saTasks = []; saLeft = 0; document.body.classList.remove('exam'); document.getElementById('saPass').value = ''; document.getElementById('saMsg').textContent = ''; document.getElementById('examTasks').innerHTML = ''; document.getElementById('examResult').classList.remove('show'); document.getElementById('exCorrect').textContent = '0'; document.getElementById('exMark').textContent = '—'; document.getElementById('exTime').textContent = '—'; document.getElementById('exMsg').textContent = ''; document.getElementById('examTimer').textContent = '20:00'; document.getElementById('examTimer').className = 'timer';
+  ['surname','firstname','klass'].forEach(function(id){ document.getElementById(id).value = ''; });
+  try { localStorage.removeItem(STORAGE_KEY); } catch(e){}
+  window.scrollTo({top:0, behavior:'smooth'}); toast('🏁 Урок завершён. Все результаты сброшены.');
 }
-function renderMath(el){
-  if (!el || !window.MathJax) return;
-  if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){});
-}
-document.addEventListener('DOMContentLoaded', function(){
-  loadPracticeState();
-});
-window.addEventListener('load', function(){
-  setTimeout(function(){ renderMath(document.body); }, 600);
-});
 </script>
 </body>
 </html>
