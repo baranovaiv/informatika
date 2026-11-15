@@ -712,12 +712,14 @@ async function checkW(inputId, canon, fbId){
   btn.disabled = true;
   btn.innerHTML = '⏳ Проверка...';
 
-  // 1. Локальная проверка парсером
+  // 1. Локальная проверка
   var localCorrect = false;
   var parseError = null;
   try {
     var r = analyseAnswer(raw, canon, 0);
     localCorrect = r.ok;
+    console.log("Локальная проверка:", r); // Для отладки
+    
     if (!r.ok && r.reason === 'nops') {
       parseError = 'Равносильно, но не упрощено: у вас ' + r.ops + ' операций, нужно ' + r.limit + '.';
     } else if (!r.ok) {
@@ -725,11 +727,15 @@ async function checkW(inputId, canon, fbId){
     }
   } catch(e) {
     parseError = 'Ошибка парсинга: ' + e.message;
+    console.error("Ошибка парсера:", e);
   }
 
-  // 2. Отправляем на сервер РЕЗУЛЬТАТ проверки, чтобы он зафиксировал попытку
+  // 2. Отправляем на сервер статус (ok или fail)
   var serverAnswer = localCorrect ? 'ok' : 'fail';
+  console.log("Отправляем на сервер:", serverAnswer); // Для отладки
+
   var data = await askServer('checkAnswer', { taskId: inputId, answer: serverAnswer });
+  console.log("Ответ сервера:", data); // Для отладки
 
   btn.disabled = false;
   btn.textContent = 'Проверить';
@@ -737,30 +743,32 @@ async function checkW(inputId, canon, fbId){
   if (data.error === 'network') { showFb(fbId, '⚠️ Ошибка соединения.', 'no'); return; }
   if (data.blocked) { showFb(fbId, '⛔ ' + (data.message || 'Превышено число попыток.'), 'no'); return; }
 
-  // 3. Если ответ неверный — показываем ошибку (независимо от сервера)
+  // 3. Если локально неверно — показываем ошибку
   if (!localCorrect) {
     showFb(fbId, '❌ ' + parseError, 'no');
     return;
   }
 
-  // 4. Если ответ верный — сервер уже знает, первая это попытка или нет
-  if (data.correct){
-    input.disabled = true;
-    if (btn) btn.style.display = 'none';
-    
-    if (data.firstTry) {
-      input.style.background = '#f0fdf4';
-      input.style.borderColor = '#10b981';
-      lessonState.wb[inputId] = true;
-      showFb(fbId,'✅ Верно! (с первой попытки)','ok');
-    } else {
-      input.style.background = '#fef9c3';
-      input.style.borderColor = '#f59e0b';
-      lessonState.wb[inputId] = false;
-      showFb(fbId,'⚠️ Верно, но не с первой попытки. Балл не начислен.','hint');
-    }
+  // 4. Если локально верно, но сервер сказал нет — значит в таблице не 'ok'
+  if (!data.correct) {
+    showFb(fbId, '❌ Ошибка в настройках: в таблице Google в ячейке "' + inputId + '" должно быть написано "ok".', 'no');
+    return;
+  }
+
+  // 5. Всё совпало
+  input.disabled = true;
+  if (btn) btn.style.display = 'none';
+  
+  if (data.firstTry) {
+    input.style.background = '#f0fdf4';
+    input.style.borderColor = '#10b981';
+    lessonState.wb[inputId] = true;
+    showFb(fbId,'✅ Верно! (с первой попытки)','ok');
   } else {
-    showFb(fbId,'❌ Неверно.','no');
+    input.style.background = '#fef9c3';
+    input.style.borderColor = '#f59e0b';
+    lessonState.wb[inputId] = false;
+    showFb(fbId,'⚠️ Верно, но не с первой попытки. Балл не начислен.','hint');
   }
 }
 
