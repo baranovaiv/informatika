@@ -1171,7 +1171,73 @@ document.getElementById('calcModal').addEventListener('click', function(e){ if (
 function showFb(id, html, kind){ var el = document.getElementById(id); if (!el) return; el.innerHTML = html; el.className = 'fb show ' + kind; }
 function renderMath(el){ if (!el || !window.MathJax) return; if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){}); }
 window.addEventListener('load', function(){ setTimeout(function(){ renderMath(document.body); }, 600); });
-document.addEventListener('DOMContentLoaded', function(){ loadPracticeState(); });
+/* =========================================================
+   СИМУЛЯТОР ФОРМАТОВ
+   ========================================================= */
+function setFormat(fmt){
+  var simImg = document.getElementById('simImg');
+  var simSize = document.getElementById('simSize');
+  var simQuality = document.getElementById('simQuality');
+  
+  if (!simImg) return;
+  
+  document.getElementById('btnBmp').classList.remove('active');
+  document.getElementById('btnPng').classList.remove('active');
+  document.getElementById('btnJpg').classList.remove('active');
+  
+  if (fmt === 'bmp'){
+    document.getElementById('btnBmp').classList.add('active');
+    simSize.textContent = '≈ 1 400 Кбайт';
+    simQuality.textContent = 'Идеальное (без потерь)';
+    simImg.style.filter = 'none';
+    simImg.style.opacity = '1';
+  } else if (fmt === 'png'){
+    document.getElementById('btnPng').classList.add('active');
+    simSize.textContent = '≈ 250 Кбайт';
+    simQuality.textContent = 'Идеальное (без потерь)';
+    simImg.style.filter = 'none';
+    simImg.style.opacity = '1';
+  } else if (fmt === 'jpg'){
+    document.getElementById('btnJpg').classList.add('active');
+    simSize.textContent = '≈ 80 Кбайт';
+    simQuality.textContent = 'Заметны артефакты (потери)';
+    simImg.style.filter = 'blur(1.5px) contrast(0.9)';
+    simImg.style.opacity = '0.9';
+  }
+}
+
+/* =========================================================
+   ЖИВОЙ РАСЧЁТ ОБЪЁМА
+   ========================================================= */
+function calcLive(){
+  var w = parseInt(document.getElementById('liveW').value) || 0;
+  var h = parseInt(document.getElementById('liveH').value) || 0;
+  var i = parseInt(document.getElementById('liveI').value) || 0;
+  
+  var resEl = document.getElementById('liveResult');
+  if (!resEl) return;
+
+  if (w <= 0 || h <= 0) {
+    resEl.textContent = 'Введите размеры > 0';
+    return;
+  }
+  
+  var K = w * h;
+  var I = K * i;
+  var bytes = I / 8;
+  var kb = bytes / 1024;
+  
+  resEl.innerHTML = 
+    'K = ' + K.toLocaleString('ru-RU') + ' px<br>' +
+    'I = ' + I.toLocaleString('ru-RU') + ' бит<br>' +
+    '= ' + bytes.toLocaleString('ru-RU') + ' байт<br>' +
+    '≈ ' + kb.toFixed(2) + ' Кбайт';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  loadPracticeState();
+  setFormat('bmp'); // запускаем симулятор
+  calcLive();       // запускаем расчёт
+});
 
 function finishLesson(){
   if (!confirm('Завершить урок и сбросить ВСЕ результаты?')) return;
