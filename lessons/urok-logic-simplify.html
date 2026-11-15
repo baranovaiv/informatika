@@ -836,7 +836,8 @@ var PRACTICE_QUESTIONS = {
     {q:'A \\land (A \\lor B)', canon:'A', hint:'Закон поглощения'},
     {q:'\\neg(A \\lor B) \\land A', canon:'0', hint:'Де Морган → противоречие'},
     {q:'(A \\lor B) \\land (A \\lor \\neg B)', canon:'A', hint:'Склеивание'},
-    {q:'(A \\land B) \\lor (\\neg A \\land C) \\lor (B \\land C)', canon:'(A ∧ B) ∨ (¬A ∧ C)', hint:'Распределительный'},
+    // НОВОЕ ЗАДАНИЕ ВМЕСТО СПОРНОГО
+    {q:'\\neg(\\neg A \\lor B) \\lor (A \\land \\neg B)', canon:'A ∧ ¬B', hint:'Закон исключения'},
     {q:'\\neg(\\neg A \\land B) \\land (A \\lor B)', canon:'A ∨ B', hint:'Де Морган → идемпотентность'}
   ],
   3: [
