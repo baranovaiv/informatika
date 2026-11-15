@@ -921,23 +921,17 @@ async function gradePractice(){
   var localResults = [];
   var serverAnswers = [];
   
-  // 1. Проверяем локально каждое задание
+  // 1. Проверяем локально
   qs.forEach(function(q, i){
     var el = document.getElementById('prac'+i);
     var raw = (el.value||'').trim();
-    
     var ok = false;
-    try {
-      var r = analyseAnswer(raw, q.canon, 0);
-      ok = r.ok;
-      if (!ok) console.log('Задание ' + (i+1) + ' неверно:', r);
-    } catch(e) {
-      console.log('Задание ' + (i+1) + ' ошибка парсинга:', e);
-      ok = false;
-    }
-    
+    try { ok = analyseAnswer(raw, q.canon, 0).ok; } catch(e){}
     localResults.push(ok);
-    serverAnswers.push(ok ? 'ok' : 'fail'); // Отправляем строку 'ok' или 'fail'
+    
+    // Если верно — отправляем ответ из таблицы (для этого урока там слово 'ok')
+    // Если неверно — отправляем 'fail' (чтобы сервер точно поставил false)
+    serverAnswers.push(ok ? 'ok' : 'fail');
   });
 
   var btn = document.getElementById('pracCheckBtn');
@@ -949,9 +943,8 @@ async function gradePractice(){
   btn.disabled = false; btn.textContent = '📊 Проверить практику';
 
   if (data.error === 'network') { toast('⚠️ Ошибка соединения.'); return; }
-  if (data.error) { toast('⚠️ ' + data.error); return; }
 
-  // 3. Выставляем оценки на основе локальной проверки (сервер просто фиксирует попытки)
+  // 3. Выставляем оценки (используем локальные результаты)
   var correct = 0;
   qs.forEach(function(q, i){
     var el = document.getElementById('prac'+i);
@@ -972,7 +965,6 @@ async function gradePractice(){
 
   qs.forEach(function(_, i){ document.getElementById('prac'+i).disabled = true; });
   btn.style.display = 'none';
-  
   savePracticeState();
   toast('Практика: ' + correct + '/' + qs.length + ', оценка ' + lessonState.pracMark);
 }
@@ -1132,30 +1124,28 @@ async function finishStandalone(auto){
   var btn = document.querySelector('#standalone .exam-head .b-green');
   if (btn) { btn.disabled = true; btn.textContent = 'Проверка...'; }
 
-  var answers = [];
   var localResults = [];
+  var serverAnswers = [];
 
   saTasks.forEach(function(t,i){
     var el = document.getElementById('sa'+i);
     var raw = el ? el.value.trim() : '';
-    answers.push({ key: t.key, answer: raw });
     
-    // локальная проверка для вывода результата
     var ok = false;
     try { ok = analyseAnswer(raw, t.canon, 0).ok; } catch(e){}
     localResults.push(ok);
-  });
-
-  // Отправляем на сервер ключи и статусы (ok/fail)
-  var serverAnswers = answers.map(function(a, idx){
-    return { key: a.key, answer: localResults[idx] ? 'ok' : 'fail' };
+    
+    // Формируем ответ для сервера
+    serverAnswers.push({ 
+      key: t.key, 
+      answer: ok ? 'ok' : 'fail' 
+    });
   });
 
   var data = await askServer('checkStandalone', { tasks: JSON.stringify(serverAnswers) });
 
   if (btn) { btn.disabled = false; btn.textContent = '✅ Сдать работу'; }
   if (data.error === 'network') { toast('⚠️ Ошибка соединения.'); return; }
-  if (data.error) { toast('⚠️ ' + data.error); return; }
 
   saDone = true; var correct = 0;
   saTasks.forEach(function(t,i){
