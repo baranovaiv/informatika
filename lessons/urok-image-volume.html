@@ -14,6 +14,7 @@ window.MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <link rel="stylesheet" href="../assets/css/style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23ede9fe'/><text x='16' y='23' font-size='17' font-family='Georgia' font-weight='bold' fill='%236d28d9' text-anchor='middle'>I</text></svg>">
@@ -89,6 +90,7 @@ body.exam #standalone{display:block}
 .s-task{background:#fff;border-radius:18px;padding:18px 20px;margin:14px 0;border:2px solid #e8e3f5;box-shadow:0 4px 18px rgba(120,110,160,.09)}
 .s-task .sn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--purple);color:#5b21b6;font-weight:800;font-size:.85rem;margin-right:8px}
 .s-task .stext{margin:0 0 12px;font-size:1rem;line-height:1.65}
+.s-flag{font-size:.78rem;font-weight:800;padding:2px 10px;border-radius:999px;background:var(--blue);color:#1d4ed8;margin-left:6px}
 
 .no-calc-warn{background:var(--yellow);border-left:4px solid var(--yd);border-radius:12px;padding:12px 16px;margin:0 0 16px;font-size:.92rem;font-weight:600;color:#b45309}
 .bar{background:#fff;border-radius:var(--r);padding:16px;border:1px solid #f2f0fa;box-shadow:0 -4px 24px rgba(120,110,160,.16);display:flex;flex-wrap:wrap;gap:10px;position:sticky;bottom:10px;z-index:30;margin-top:24px}
@@ -99,11 +101,14 @@ table.laws th{background:var(--blue);color:#1d4ed8;font-weight:800;font-size:.86
 table.laws tr:nth-child(even) td{background:#fbfaff}
 table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
 
-/* --- Калькулятор --- */
 .mbg{display:none;position:fixed;inset:0;background:rgba(60,55,90,.48);z-index:200;align-items:center;justify-content:center;padding:16px}
 .mbg.open{display:flex}
 .modal{background:#fff;border-radius:22px;max-width:660px;width:100%;max-height:88vh;overflow:auto;padding:24px;box-shadow:0 24px 70px rgba(60,55,90,.4)}
 .modal h3{margin:0 0 4px;font-size:1.12rem}
+
+.keys{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}
+.key{background:#fbfaff;border:1.5px solid #ece8f8;border-radius:10px;padding:10px 6px;cursor:pointer;font-size:1.2rem;font-weight:700;color:#5b4b8a;font-family:inherit;line-height:1.3;transition:.15s; text-align:center;}
+.key:hover{background:var(--purple);border-color:var(--pd);transform:translateY(-1px)}
 
 .calc{max-width:340px}
 .calc-screen{background:#1e1b2e;color:#e9e6f5;border-radius:14px;padding:14px 16px;margin-bottom:12px;text-align:right;font-family:Consolas,monospace;overflow:hidden}
@@ -117,6 +122,7 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
 .cbtn.eq{background:var(--green);color:#047857;grid-column:span 2}
 .cbtn.del{background:var(--orange);color:#c2410c}
 .cbtn.clr{background:#fee2e2;color:#b91c1c}
+.cbtn.comma{background:#e0e7ff;color:#3730a3}
 
 @media(max-width:720px){
   #surname,#firstname,#klass{width:100%}
@@ -268,10 +274,10 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
       </div>
       <div class="calc-row">
         <span>Ответ в Кбайтах:</span>
-        <input type="text" id="q1ans" placeholder="число">
-        <button class="btn b-green" onclick="checkQ1()">Проверить</button>
+        <input type="text" id="w1" placeholder="число">
+        <button class="btn b-green" onclick="checkW('w1','w1fb')">Проверить</button>
       </div>
-      <div class="fb" id="q1fb"></div>
+      <div class="fb" id="w1fb"></div>
     </div>
 
     <div class="task">
@@ -279,59 +285,55 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
       <p><b>Задание 2.</b> Изображение 640 × 480 пикселей, глубина 24 бита. Найдите объём в Кбайтах.</p>
       <div class="calc-row">
         <span>Ответ в Кбайтах:</span>
-        <input type="text" id="q2ans" placeholder="число">
-        <button class="btn b-green" onclick="checkQ2()">Проверить</button>
+        <input type="text" id="w2" placeholder="число">
+        <button class="btn b-green" onclick="checkW('w2','w2fb')">Проверить</button>
       </div>
-      <div class="fb" id="q2fb"></div>
+      <div class="fb" id="w2fb"></div>
     </div>
 
     <div class="task q">
       <span class="lvl l1">базовый · выбор</span>
       <p><b>Задание 3.</b> Какой формат хранит изображение <b>без сжатия</b>?</p>
-      <label class="opt"><input type="radio" name="q3" value="a"> JPEG</label>
-      <label class="opt"><input type="radio" name="q3" value="b"> PNG</label>
-      <label class="opt"><input type="radio" name="q3" value="c"> BMP</label>
-      <label class="opt"><input type="radio" name="q3" value="d"> GIF</label>
-      <button class="btn b-green" onclick="checkQ3()" style="margin-top:10px">Проверить</button>
-      <div class="fb" id="q3fb"></div>
+      <label class="opt"><input type="radio" name="w3" value="a"> JPEG</label>
+      <label class="opt"><input type="radio" name="w3" value="b"> PNG</label>
+      <label class="opt"><input type="radio" name="w3" value="c"> BMP</label>
+      <label class="opt"><input type="radio" name="w3" value="d"> GIF</label>
+      <button class="btn b-green" onclick="checkWRadio('w3','w3fb')" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="w3fb"></div>
     </div>
 
     <div class="task q">
       <span class="lvl l1">базовый · выбор</span>
       <p><b>Задание 4.</b> В каком формате сжатие идёт <b>с потерями</b> качества?</p>
-      <label class="opt"><input type="radio" name="q4" value="a"> BMP</label>
-      <label class="opt"><input type="radio" name="q4" value="b"> PNG</label>
-      <label class="opt"><input type="radio" name="q4" value="c"> JPEG</label>
-      <label class="opt"><input type="radio" name="q4" value="d"> GIF</label>
-      <button class="btn b-green" onclick="checkQ4()" style="margin-top:10px">Проверить</button>
-      <div class="fb" id="q4fb"></div>
+      <label class="opt"><input type="radio" name="w4" value="a"> BMP</label>
+      <label class="opt"><input type="radio" name="w4" value="b"> PNG</label>
+      <label class="opt"><input type="radio" name="w4" value="c"> JPEG</label>
+      <label class="opt"><input type="radio" name="w4" value="d"> GIF</label>
+      <button class="btn b-green" onclick="checkWRadio('w4','w4fb')" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="w4fb"></div>
     </div>
 
     <div class="task">
       <span class="lvl l2">средний · соответствие</span>
       <p><b>Задание 5.</b> Установите соответствие между форматом и его характеристикой.</p>
       <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;">
-        <div>BMP → <select class="match-select" id="q5m1"><option value="">--</option><option value="no">Без сжатия</option><option value="lossy">Сжатие с потерями</option><option value="lossless">Сжатие без потерь</option></select></div>
-        <div>PNG → <select class="match-select" id="q5m2"><option value="">--</option><option value="no">Без сжатия</option><option value="lossy">Сжатие с потерями</option><option value="lossless">Сжатие без потерь</option></select></div>
-        <div>JPEG → <select class="match-select" id="q5m3"><option value="">--</option><option value="no">Без сжатия</option><option value="lossy">Сжатие с потерями</option><option value="lossless">Сжатие без потерь</option></select></div>
+        <div>BMP → <select class="match-select" id="w5m1"><option value="">--</option><option value="no">Без сжатия</option><option value="lossy">Сжатие с потерями</option><option value="lossless">Сжатие без потерь</option></select></div>
+        <div>PNG → <select class="match-select" id="w5m2"><option value="">--</option><option value="no">Без сжатия</option><option value="lossy">Сжатие с потерями</option><option value="lossless">Сжатие без потерь</option></select></div>
+        <div>JPEG → <select class="match-select" id="w5m3"><option value="">--</option><option value="no">Без сжатия</option><option value="lossy">Сжатие с потерями</option><option value="lossless">Сжатие без потерь</option></select></div>
       </div>
-      <button class="btn b-green" onclick="checkQ5()" style="margin-top:10px">Проверить</button>
-      <div class="fb" id="q5fb"></div>
+      <button class="btn b-green" onclick="checkW5()" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="w5fb"></div>
     </div>
 
     <div class="task">
       <span class="lvl l2">средний · глубина</span>
       <p><b>Задание 6.</b> Изображение 640 × 480 пикселей имеет объём 900 Кбайт. Определите глубину кодирования цвета (в битах).</p>
-      <div class="tgrid">
-        <span class="k">ДАНО:</span><span>Ширина = 640, Высота = 480, $I = 900$ Кбайт</span>
-        <span class="k">НАЙТИ:</span><span>$i$ — ? (бит)</span>
-      </div>
       <div class="calc-row">
         <span>Ответ в битах:</span>
-        <input type="text" id="q6ans" placeholder="число">
-        <button class="btn b-green" onclick="checkQ6()">Проверить</button>
+        <input type="text" id="w6" placeholder="число">
+        <button class="btn b-green" onclick="checkW('w6','w6fb')">Проверить</button>
       </div>
-      <div class="fb" id="q6fb"></div>
+      <div class="fb" id="w6fb"></div>
     </div>
 
     <div class="task">
@@ -339,10 +341,10 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
       <p><b>Задание 7.</b> Изображение 3000 × 2000 пикселей, глубина 24 бита. Найдите объём в Мбайтах (округлите до целого).</p>
       <div class="calc-row">
         <span>Ответ в Мбайтах:</span>
-        <input type="text" id="q7ans" placeholder="число">
-        <button class="btn b-green" onclick="checkQ7()">Проверить</button>
+        <input type="text" id="w7" placeholder="число">
+        <button class="btn b-green" onclick="checkW('w7','w7fb')">Проверить</button>
       </div>
-      <div class="fb" id="q7fb"></div>
+      <div class="fb" id="w7fb"></div>
     </div>
 
     <div class="task">
@@ -350,32 +352,32 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
       <p><b>Задание 8.</b> Изображение 200 × 200 пикселей сохранено с глубиной 8 бит. Сколько цветов в палитре?</p>
       <div class="calc-row">
         <span>Ответ (число цветов):</span>
-        <input type="text" id="q8ans" placeholder="число">
-        <button class="btn b-green" onclick="checkQ8()">Проверить</button>
+        <input type="text" id="w8" placeholder="число">
+        <button class="btn b-green" onclick="checkW('w8','w8fb')">Проверить</button>
       </div>
-      <div class="fb" id="q8fb"></div>
+      <div class="fb" id="w8fb"></div>
     </div>
 
     <div class="task">
       <span class="lvl l3">повышенный · подбор степени</span>
-      <p><b>Задание 9.</b> Палитра содержит 64 цвета. Какова глубина кодирования (в битах)? <br><span class="muted" style="font-size:.9rem">Подсказка: вспомните, в какую степень нужно возвести 2, чтобы получить 64.</span></p>
+      <p><b>Задание 9.</b> Палитра содержит 64 цвета. Какова глубина кодирования (в битах)?</p>
       <div class="calc-row">
         <span>Ответ в битах:</span>
-        <input type="text" id="q9ans" placeholder="число">
-        <button class="btn b-green" onclick="checkQ9()">Проверить</button>
+        <input type="text" id="w9" placeholder="число">
+        <button class="btn b-green" onclick="checkW('w9','w9fb')">Проверить</button>
       </div>
-      <div class="fb" id="q9fb"></div>
+      <div class="fb" id="w9fb"></div>
     </div>
 
     <div class="task q">
       <span class="lvl l3">повышенный · выбор</span>
       <p><b>Задание 10.</b> Вы хотите разместить фотографию на сайте так, чтобы она занимала <b>как можно меньше места</b>, но качество было приемлемым. Какой формат выбрать?</p>
-      <label class="opt"><input type="radio" name="q10" value="a"> BMP</label>
-      <label class="opt"><input type="radio" name="q10" value="b"> PNG</label>
-      <label class="opt"><input type="radio" name="q10" value="c"> JPEG</label>
-      <label class="opt"><input type="radio" name="q10" value="d"> GIF</label>
-      <button class="btn b-green" onclick="checkQ10()" style="margin-top:10px">Проверить</button>
-      <div class="fb" id="q10fb"></div>
+      <label class="opt"><input type="radio" name="w10" value="a"> BMP</label>
+      <label class="opt"><input type="radio" name="w10" value="b"> PNG</label>
+      <label class="opt"><input type="radio" name="w10" value="c"> JPEG</label>
+      <label class="opt"><input type="radio" name="w10" value="d"> GIF</label>
+      <button class="btn b-green" onclick="checkWRadio('w10','w10fb')" style="margin-top:10px">Проверить</button>
+      <div class="fb" id="w10fb"></div>
     </div>
 
     <div class="task">
@@ -383,10 +385,10 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
       <p><b>Задание 11.</b> Изображение 512 × 512 пикселей, глубина 8 бит. Найдите объём в байтах.</p>
       <div class="calc-row">
         <span>Ответ в байтах:</span>
-        <input type="text" id="q11ans" placeholder="число">
-        <button class="btn b-green" onclick="checkQ11()">Проверить</button>
+        <input type="text" id="w11" placeholder="число">
+        <button class="btn b-green" onclick="checkW('w11','w11fb')">Проверить</button>
       </div>
-      <div class="fb" id="q11fb"></div>
+      <div class="fb" id="w11fb"></div>
     </div>
 
     <div class="controls">
@@ -436,7 +438,6 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
     <p class="muted">Складывается из рабочей тетради и практической работы.</p>
     <div class="controls">
       <button class="btn b-purple" onclick="calcFinalMark()">🎯 Подвести итог</button>
-      <button class="btn b-red" onclick="resetPractice()">🔄 Сбросить практику</button>
     </div>
     <div class="res" id="finalResult">
       <h3>Итог урока</h3>
@@ -479,9 +480,13 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
 </div><!-- /wrap -->
 
 <div class="bar no-print">
+  <button class="btn b-teal" onclick="scrollToTop()">⬆ В начало</button>
+  <button class="btn b-purple" onclick="openMath()">⌨ Раскладка</button>
   <button class="btn b-teal" onclick="openCalc()">🧮 Калькулятор</button>
   <button class="btn b-yellow" onclick="scrollToGate()">📝 Самостоятельная</button>
   <button class="btn b-orange" onclick="printHomework()">🖨 Печать ДЗ</button>
+  <button class="btn b-blue" onclick="saveLessonScreenshot()">📸 Скриншот</button>
+  <button class="btn b-red" onclick="finishLesson()">🏁 Завершить</button>
 </div>
 
 <section id="standalone">
@@ -516,42 +521,63 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
     </div>
 
     <div class="controls no-print" style="margin-top:16px">
+      <button class="btn b-orange" onclick="saveStandalonePDF()">📄 Сохранить PDF</button>
+      <button class="btn b-teal" onclick="saveStandaloneJPG()">🖼 Сохранить JPG</button>
       <button class="btn b-red" onclick="exitStandalone()">← Выйти из работы</button>
     </div>
+
+    <div style="margin-top:30px; padding:25px; border-top:2px dashed #e8e3f5; background:#fbfaff; border-radius:16px; text-align:center;">
+      <h3 style="color:#4c1d95; margin:0 0 10px; font-size:1.2rem;">📎 Сдача работы</h3>
+      <p style="font-size:15px; margin-bottom:20px; color:#333; line-height: 1.5;">
+        1. Нажмите кнопку <b>«🖼 Сохранить JPG»</b>.<br>
+        2. Файл скачается на компьютер или телефон.<br>
+        3. Нажмите кнопку ниже и прикрепите этот скачанный файл в форму.
+      </p>
+      <a href="https://forms.yandex.ru/u/6af8a45ab9e5cac56e35b097" target="_blank" class="btn b-purple" style="font-size:1.1rem; padding:14px 28px; text-decoration:none; display:inline-block;">
+        📤 Прикрепить файл в форму
+      </a>
+    </div>
+    <p style="display:none;"><b id="filePreview"></b></p>
   </div>
 </section>
 
+<!-- Модалки -->
+<div class="mbg" id="mathModal">
+  <div class="modal" role="dialog">
+    <h3>⌨ Раскладка</h3>
+    <div class="keys">
+      <button class="key" onclick="insertMath('+')">+</button><button class="key" onclick="insertMath('-')">−</button>
+      <button class="key" onclick="insertMath('*')">×</button><button class="key" onclick="insertMath('/')">÷</button>
+      <button class="key" onclick="insertMath('=')">=</button><button class="key" onclick="insertMath('≠')">≠</button>
+      <button class="key" onclick="insertMath('≈')">≈</button><button class="key" onclick="insertMath('≤')">≤</button>
+      <button class="key" onclick="insertMath('≥')">≥</button><button class="key" onclick="insertMath('²')">²</button>
+      <button class="key" onclick="insertMath('³')">³</button><button class="key" onclick="insertMath('^')">^</button>
+      <button class="key" onclick="insertMath('√')">√</button><button class="key" onclick="insertMath('(')">(</button>
+      <button class="key" onclick="insertMath(')')">)</button><button class="key" onclick="insertMath(',')">,</button>
+      <button class="key" onclick="insertMath('N')">N</button><button class="key" onclick="insertMath('I')">I</button>
+      <button class="key" onclick="insertMath('K')">K</button><button class="key" onclick="insertMath('i')">i</button>
+    </div>
+    <div style="text-align:right;margin-top:18px"><button class="btn b-green" onclick="closeMath()">Готово</button></div>
+  </div>
+</div>
+
 <div class="mbg" id="calcModal">
   <div class="modal calc" role="dialog">
-    <h3>🧮 Калькулятор</h3>
-    <div class="calc-screen">
-      <div class="calc-expr" id="calcExpr"></div>
-      <div class="calc-out" id="calcOut">0</div>
-    </div>
+    <h3 style="margin-bottom:12px">🧮 Калькулятор</h3>
+    <div class="calc-screen"><div class="calc-expr" id="calcExpr"></div><div class="calc-out" id="calcOut">0</div></div>
     <div class="calc-grid">
-      <button class="cbtn clr" onclick="calcClear()">C</button>
-      <button class="cbtn del" onclick="calcBack()">⌫</button>
-      <button class="cbtn op" onclick="calcOp('^')">xʸ</button>
-      <button class="cbtn op" onclick="calcOp('/')">÷</button>
-      <button class="cbtn" onclick="calcNum('7')">7</button>
-      <button class="cbtn" onclick="calcNum('8')">8</button>
-      <button class="cbtn" onclick="calcNum('9')">9</button>
-      <button class="cbtn op" onclick="calcOp('*')">×</button>
-      <button class="cbtn" onclick="calcNum('4')">4</button>
-      <button class="cbtn" onclick="calcNum('5')">5</button>
-      <button class="cbtn" onclick="calcNum('6')">6</button>
-      <button class="cbtn op" onclick="calcOp('-')">−</button>
-      <button class="cbtn" onclick="calcNum('1')">1</button>
-      <button class="cbtn" onclick="calcNum('2')">2</button>
-      <button class="cbtn" onclick="calcNum('3')">3</button>
-      <button class="cbtn op" onclick="calcOp('+')">+</button>
-      <button class="cbtn" onclick="calcNum('0')">0</button>
-      <button class="cbtn" onclick="calcNum('00')">00</button>
+      <button class="cbtn clr" onclick="calcClear()">C</button><button class="cbtn del" onclick="calcBack()">⌫</button>
+      <button class="cbtn op" onclick="calcOp('^')">xʸ</button><button class="cbtn op" onclick="calcOp('/')">÷</button>
+      <button class="cbtn" onclick="calcNum('7')">7</button><button class="cbtn" onclick="calcNum('8')">8</button>
+      <button class="cbtn" onclick="calcNum('9')">9</button><button class="cbtn op" onclick="calcOp('*')">×</button>
+      <button class="cbtn" onclick="calcNum('4')">4</button><button class="cbtn" onclick="calcNum('5')">5</button>
+      <button class="cbtn" onclick="calcNum('6')">6</button><button class="cbtn op" onclick="calcOp('-')">−</button>
+      <button class="cbtn" onclick="calcNum('1')">1</button><button class="cbtn" onclick="calcNum('2')">2</button>
+      <button class="cbtn" onclick="calcNum('3')">3</button><button class="cbtn op" onclick="calcOp('+')">+</button>
+      <button class="cbtn" onclick="calcNum('0')">0</button><button class="cbtn comma" onclick="calcNum(',')">,</button>
       <button class="cbtn eq" onclick="calcEquals()">=</button>
     </div>
-    <div style="text-align:right;margin-top:16px">
-      <button class="btn b-red" onclick="closeCalc()">Закрыть</button>
-    </div>
+    <div style="text-align:right;margin-top:16px"><button class="btn b-red" onclick="closeCalc()">Закрыть</button></div>
   </div>
 </div>
 
@@ -561,44 +587,48 @@ table.laws td:first-child{white-space:nowrap;font-weight:700;color:#5b4b8a}
 
 <script>
 /* =========================================================
-   0. НАСТРОЙКИ GOOGLE APPS SCRIPT
+   НАСТРОЙКИ
    ========================================================= */
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbzRiIsJ8Sbn1HP1n9cTnVE652h1Ohrd8Q6wH3raYPLfGnIu7u-rsYG7BAp0VT7eXgs8/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbwN6I_2aENZQFGBm7g8xcN7qPz73mhb69fSkkVcz2iJ03c6fWvhkpyNAd7mAawqV77c/exec'; // <--- ЗАМЕНИТЕ
 var RESOURCE_ID = 'urok-image-volume';
 var SA_MINUTES = 15;
-var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
+var SA_TASK_COUNT = 5;
 
 /* =========================================================
-   1. ПРОВЕРКА ПАРОЛЯ ЧЕРЕЗ GOOGLE APPS SCRIPT
+   ЗАПРОС НА СЕРВЕР
    ========================================================= */
-async function checkPasswordRemote(resourceId, type, password){
+async function askServer(action, payload) {
+  var fullPayload = Object.assign({
+    action: action,
+    lessonId: RESOURCE_ID,
+    studentName: getFullName(),
+    studentClass: getKlass()
+  }, payload);
+
   try {
     var response = await fetch(GAS_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({
-        resource: resourceId,
-        type: type,
-        password: password
-      })
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(fullPayload)
     });
-    var data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
-    return { ok: false, error: 'network' };
+    console.error('Ошибка запроса:', error);
+    return { error: 'network' };
   }
 }
 
 /* =========================================================
-   2. СОСТОЯНИЕ
+   СОСТОЯНИЕ
    ========================================================= */
 var lessonState = {
-  wb: { q1:false, q2:false, q3:false, q4:false, q5:false, q6:false, q7:false, q8:false, q9:false, q10:false, q11:false },
+  wb: { w1:false, w2:false, w3:false, w4:false, w5:false, w6:false, w7:false, w8:false, w9:false, w10:false, w11:false },
   wbCorrect: 0, wbMark: 0,
-  pracDone: false, pracCorrect: 0, pracMark: 0
+  pracDone: false, pracCorrect: 0, pracMark: 0,
+  finalCalculated: false
 };
+var STORAGE_KEY = 'lesson_' + location.pathname.split('/').pop().replace('.html','');
 
-/* ---------- ФИО ---------- */
 function getSurname(){ return (document.getElementById('surname')?.value || '').trim(); }
 function getFirstname(){ return (document.getElementById('firstname')?.value || '').trim(); }
 function getKlass(){ return (document.getElementById('klass')?.value || '').trim(); }
@@ -615,209 +645,155 @@ function percentToMark(pct){
 }
 
 /* =========================================================
-   3. УТИЛИТЫ
+   РАБОЧАЯ ТЕТРАДЬ (СЕРВЕРНАЯ ПРОВЕРКА)
    ========================================================= */
-function showFb(id, html, kind){
-  var el = document.getElementById(id);
-  el.innerHTML = html;
-  el.className = 'fb show ' + kind;
-}
-function renderMath(el){
-  if (!el || !window.MathJax) return;
-  if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){});
-}
-
-/* =========================================================
-   4. СИМУЛЯТОР ФОРМАТОВ
-   ========================================================= */
-var simImg = document.getElementById('simImg');
-var simSize = document.getElementById('simSize');
-var simQuality = document.getElementById('simQuality');
-var currentFormat = 'bmp';
-
-function setFormat(fmt){
-  currentFormat = fmt;
-  document.getElementById('btnBmp').classList.remove('active');
-  document.getElementById('btnPng').classList.remove('active');
-  document.getElementById('btnJpg').classList.remove('active');
+async function checkW(inputId, fbId){
+  var input = document.getElementById(inputId);
+  var btn = input.nextElementSibling;
   
-  if (fmt === 'bmp'){
-    document.getElementById('btnBmp').classList.add('active');
-    simSize.textContent = '≈ 1 400 Кбайт';
-    simQuality.textContent = 'Идеальное (без потерь)';
-    simImg.style.filter = 'none';
-    simImg.style.opacity = '1';
-  } else if (fmt === 'png'){
-    document.getElementById('btnPng').classList.add('active');
-    simSize.textContent = '≈ 250 Кбайт';
-    simQuality.textContent = 'Идеальное (без потерь)';
-    simImg.style.filter = 'none';
-    simImg.style.opacity = '1';
-  } else if (fmt === 'jpg'){
-    document.getElementById('btnJpg').classList.add('active');
-    simSize.textContent = '≈ 80 Кбайт';
-    simQuality.textContent = 'Заметны артефакты (потери)';
-    simImg.style.filter = 'blur(1.5px) contrast(0.9)';
-    simImg.style.opacity = '0.9';
-  }
-}
-
-/* =========================================================
-   5. ЖИВОЙ РАСЧЁТ
-   ========================================================= */
-function calcLive(){
-  var w = parseInt(document.getElementById('liveW').value) || 0;
-  var h = parseInt(document.getElementById('liveH').value) || 0;
-  var i = parseInt(document.getElementById('liveI').value) || 0;
-  
-  if (w <= 0 || h <= 0) {
-    document.getElementById('liveResult').textContent = 'Введите размеры > 0';
+  if (input.disabled) {
+    showFb(fbId, '✔ Задание уже проверено.', 'hint');
     return;
   }
   
-  var K = w * h;
-  var I = K * i;
-  var bytes = I / 8;
-  var kb = bytes / 1024;
+  var v = (input.value||'').trim().replace(/\s+/g,'');
+  if (!v) { showFb(fbId, 'Введите ответ.', 'hint'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Проверка...';
+
+  var data = await askServer('checkAnswer', { taskId: inputId, answer: v });
+
+  btn.disabled = false;
+  btn.textContent = 'Проверить';
+
+  if (data.error === 'network') { showFb(fbId, '⚠️ Ошибка соединения.', 'no'); return; }
+  if (data.blocked) { showFb(fbId, '⛔ ' + (data.message || 'Превышено число попыток.'), 'no'); return; }
+  if (data.error) { showFb(fbId, '⚠️ ' + data.error, 'no'); return; }
+
+  if (data.correct){
+    input.disabled = true;
+    if (btn) btn.style.display = 'none';
+    
+    if (data.firstTry) {
+      input.style.background = '#f0fdf4';
+      input.style.borderColor = '#10b981';
+      lessonState.wb[inputId] = true;
+      showFb(fbId,'✅ Верно! (с первой попытки)','ok');
+    } else {
+      input.style.background = '#fef9c3';
+      input.style.borderColor = '#f59e0b';
+      lessonState.wb[inputId] = false;
+      showFb(fbId,'⚠️ Верно, но не с первой попытки. Балл не начислен.','hint');
+    }
+  } else {
+    showFb(fbId,'❌ Неверно. Смотрите подсказку.','no');
+  }
+}
+
+async function checkWRadio(name, fbId){
+  var radios = document.querySelectorAll('input[name="'+name+'"]');
+  if (radios[0].disabled) {
+    showFb(fbId, '✔ Задание уже проверено.', 'hint');
+    return;
+  }
   
-  document.getElementById('liveResult').innerHTML = 
-    'K = ' + K.toLocaleString('ru-RU') + ' px<br>' +
-    'I = ' + I.toLocaleString('ru-RU') + ' бит<br>' +
-    '= ' + bytes.toLocaleString('ru-RU') + ' байт<br>' +
-    '≈ ' + kb.toFixed(2) + ' Кбайт';
-}
+  var sel = document.querySelector('input[name="'+name+'"]:checked');
+  if (!sel){ showFb(fbId,'Выберите вариант.','hint'); return; }
 
-/* =========================================================
-   6. РАБОЧАЯ ТЕТРАДЬ
-   ========================================================= */
-function checkQ1(){
-  if (lessonState.wb.q1) return;
-  var v = document.getElementById('q1ans').value.trim().replace(/\s+/g, '');
-  if (v === '1536') {
-    lessonState.wb.q1 = true;
-    showFb('q1fb', '✅ Верно! $1024 \cdot 768 \cdot 16 = 12\,582\,912$ бит $= 1536$ Кбайт.', 'ok');
+  var btn = radios[0].closest('.task').querySelector('button');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Проверка...';
+
+  var data = await askServer('checkAnswer', { taskId: name, answer: sel.value });
+
+  btn.disabled = false;
+  btn.textContent = 'Проверить';
+
+  if (data.error === 'network') { showFb(fbId, '⚠️ Ошибка соединения.', 'no'); return; }
+  if (data.blocked) { showFb(fbId, '⛔ ' + (data.message || 'Превышено число попыток.'), 'no'); return; }
+  if (data.error) { showFb(fbId, '⚠️ ' + data.error, 'no'); return; }
+
+  radios.forEach(function(r){ r.disabled = true; });
+  if (btn) btn.style.display = 'none';
+
+  document.querySelectorAll('input[name="'+name+'"]').forEach(function(r){
+    var lab = r.closest('.opt');
+    if (!lab) return;
+    lab.classList.remove('correct','wrong');
+    lab.style.background = '';
+    if (r.value === sel.value) {
+      if (data.correct && data.firstTry) {
+        lab.classList.add('correct');
+      } else if (data.correct && !data.firstTry) {
+        lab.style.background = '#fef9c3';
+      } else {
+        lab.classList.add('wrong');
+      }
+    }
+  });
+
+  if (data.correct){
+    if (data.firstTry) {
+      lessonState.wb[name] = true;
+      showFb(fbId,'✅ Верно! (с первой попытки)','ok');
+    } else {
+      lessonState.wb[name] = false;
+      showFb(fbId,'⚠️ Верно, но не с первой попытки. Балл не начислен.','hint');
+    }
   } else {
-    showFb('q1fb', '❌ Неверно. $I = 1024 \cdot 768 \cdot 16$ бит. Переведите в Кбайты (÷8, ÷1024).', 'no');
+    showFb(fbId,'❌ Неверно.','no');
   }
 }
 
-function checkQ2(){
-  if (lessonState.wb.q2) return;
-  var v = document.getElementById('q2ans').value.trim().replace(/\s+/g, '');
-  if (v === '900') {
-    lessonState.wb.q2 = true;
-    showFb('q2fb', '✅ Верно! $640 \cdot 480 \cdot 24 = 7\,372\,800$ бит $= 900$ Кбайт.', 'ok');
-  } else {
-    showFb('q2fb', '❌ Неверно. Проверьте перевод: биты ÷ 8 = байты, байты ÷ 1024 = Кбайты.', 'no');
+async function checkW5(){
+  if (lessonState.wb.w5) {
+    showFb('w5fb', '✔ Задание уже проверено.', 'hint');
+    return;
   }
-}
-
-function checkQ3(){
-  if (lessonState.wb.q3) return;
-  var sel = document.querySelector('input[name="q3"]:checked');
-  if (!sel) return;
-  if (sel.value === 'c') {
-    lessonState.wb.q3 = true;
-    showFb('q3fb', '✅ Верно! BMP хранит изображение без сжатия.', 'ok');
-  } else {
-    showFb('q3fb', '❌ Неверно. Без сжатия хранится только один формат из списка.', 'no');
+  var v1 = document.getElementById('w5m1').value;
+  var v2 = document.getElementById('w5m2').value;
+  var v3 = document.getElementById('w5m3').value;
+  if (!v1 || !v2 || !v3) {
+    showFb('w5fb', 'Выберите варианты во всех трёх списках.', 'hint');
+    return;
   }
-}
+  
+  var answer = v1 + '|' + v2 + '|' + v3;
+  
+  var btn = document.querySelector('button[onclick="checkW5()"]');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Проверка...';
 
-function checkQ4(){
-  if (lessonState.wb.q4) return;
-  var sel = document.querySelector('input[name="q4"]:checked');
-  if (!sel) return;
-  if (sel.value === 'c') {
-    lessonState.wb.q4 = true;
-    showFb('q4fb', '✅ Верно! JPEG использует сжатие с потерями.', 'ok');
-  } else {
-    showFb('q4fb', '❌ Неверно. Сжатие с потерями — это когда часть данных отбрасывается.', 'no');
-  }
-}
+  var data = await askServer('checkAnswer', { taskId: 'w5', answer: answer });
 
-function checkQ5(){
-  if (lessonState.wb.q5) return;
-  var m1 = document.getElementById('q5m1').value;
-  var m2 = document.getElementById('q5m2').value;
-  var m3 = document.getElementById('q5m3').value;
-  if (m1 === 'no' && m2 === 'lossless' && m3 === 'lossy') {
-    lessonState.wb.q5 = true;
-    showFb('q5fb', '✅ Верно! BMP — без сжатия, PNG — без потерь, JPEG — с потерями.', 'ok');
-  } else {
-    showFb('q5fb', '❌ Неверно. Вспомните таблицу форматов в теории.', 'no');
-  }
-}
+  btn.disabled = false;
+  btn.textContent = 'Проверить';
 
-function checkQ6(){
-  if (lessonState.wb.q6) return;
-  var v = document.getElementById('q6ans').value.trim().replace(/\s+/g, '');
-  if (v === '24') {
-    lessonState.wb.q6 = true;
-    showFb('q6fb', '✅ Верно! $900 \cdot 1024 \cdot 8 = 7\,372\,800$ бит. $K = 307\,200$. $i = 24$.', 'ok');
-  } else {
-    showFb('q6fb', '❌ Неверно. Переведите Кбайты в биты, затем разделите на количество пикселей.', 'no');
-  }
-}
+  if (data.error === 'network') { showFb('w5fb', '⚠️ Ошибка соединения.', 'no'); return; }
+  if (data.blocked) { showFb('w5fb', '⛔ ' + (data.message || 'Превышено число попыток.'), 'no'); return; }
+  if (data.error) { showFb('w5fb', '⚠️ ' + data.error, 'no'); return; }
 
-function checkQ7(){
-  if (lessonState.wb.q7) return;
-  var v = document.getElementById('q7ans').value.trim().replace(/\s+/g, '');
-  if (v === '17') {
-    lessonState.wb.q7 = true;
-    showFb('q7fb', '✅ Верно! Объём ≈ 17,17 Мбайт. Округляем до целого — 17 Мбайт.', 'ok');
+  if (data.correct){
+    document.getElementById('w5m1').disabled = true;
+    document.getElementById('w5m2').disabled = true;
+    document.getElementById('w5m3').disabled = true;
+    if (btn) btn.style.display = 'none';
+    
+    if (data.firstTry) {
+      lessonState.wb.w5 = true;
+      showFb('w5fb', '✅ Верно! (с первой попытки)', 'ok');
+    } else {
+      lessonState.wb.w5 = false;
+      showFb('w5fb', '⚠️ Верно, но не с первой попытки. Балл не начислен.', 'hint');
+    }
   } else {
-    showFb('q7fb', '❌ Неверно. $I = 3000 \cdot 2000 \cdot 24$ бит. Переведите в Мбайты (÷8, ÷1024, ÷1024).', 'no');
-  }
-}
-
-function checkQ8(){
-  if (lessonState.wb.q8) return;
-  var v = document.getElementById('q8ans').value.trim().replace(/\s+/g, '');
-  if (v === '256') {
-    lessonState.wb.q8 = true;
-    showFb('q8fb', '✅ Верно! $N = 2^8 = 256$ цветов.', 'ok');
-  } else {
-    showFb('q8fb', '❌ Неверно. Подставьте глубину в формулу $N = 2^i$.', 'no');
-  }
-}
-
-function checkQ9(){
-  if (lessonState.wb.q9) return;
-  var v = document.getElementById('q9ans').value.trim().replace(/\s+/g, '');
-  if (v === '6') {
-    lessonState.wb.q9 = true;
-    showFb('q9fb', '✅ Верно! $2^6 = 64$, значит $i = 6$ бит.', 'ok');
-  } else {
-    showFb('q9fb', '❌ Неверно. Найдите, в какую степень возвести 2, чтобы получить 64.', 'no');
-  }
-}
-
-function checkQ10(){
-  if (lessonState.wb.q10) return;
-  var sel = document.querySelector('input[name="q10"]:checked');
-  if (!sel) return;
-  if (sel.value === 'c') {
-    lessonState.wb.q10 = true;
-    showFb('q10fb', '✅ Верно! JPEG даёт маленький файл при приемлемом качестве.', 'ok');
-  } else {
-    showFb('q10fb', '❌ Неверно. Для сайта из фотографий обычно выбирают JPEG.', 'no');
-  }
-}
-
-function checkQ11(){
-  if (lessonState.wb.q11) return;
-  var v = document.getElementById('q11ans').value.trim().replace(/\s+/g, '');
-  if (v === '262144') {
-    lessonState.wb.q11 = true;
-    showFb('q11fb', '✅ Верно! $512 \cdot 512 \cdot 8 = 2\,097\,152$ бит $= 262\,144$ байт.', 'ok');
-  } else {
-    showFb('q11fb', '❌ Неверно. $I = 512 \cdot 512 \cdot 8$ бит. Переведите в байты (÷8).', 'no');
+    showFb('w5fb', '❌ Неверно.', 'no');
   }
 }
 
 function calcWorkbook(){
-  var keys = ['q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','q11'];
+  var keys = ['w1','w2','w3','w4','w5','w6','w7','w8','w9','w10','w11'];
   var correct = keys.filter(function(k){ return lessonState.wb[k]; }).length;
   var pct = Math.round(correct / keys.length * 100);
   lessonState.wbCorrect = correct;
@@ -829,32 +805,32 @@ function calcWorkbook(){
 }
 
 /* =========================================================
-   7. ПРАКТИКА
+   ПРАКТИКА
    ========================================================= */
-var PRACTICE_VARIANTS = {
+var PRACTICE_QUESTIONS = {
   1: [
-    {type:'input', text:'Изображение 100 × 100 пикселей, глубина 8 бит. Найдите объём в байтах.', ans:'10000'},
-    {type:'input', text:'Сколько цветов в палитре, если глубина цвета 4 бита?', ans:'16'},
-    {type:'select', text:'Какой формат использует сжатие без потерь?', opts:['JPEG', 'PNG', 'BMP'], ans:'PNG'},
-    {type:'input', text:'Изображение 200 × 200 пикселей, глубина 24 бита. Найдите объём в байтах.', ans:'120000'}
+    'Изображение 100 × 100 пикселей, глубина 8 бит. Найдите объём в байтах.',
+    'Сколько цветов в палитре, если глубина цвета 4 бита?',
+    'Какой формат использует сжатие без потерь? (BMP / PNG / JPEG)',
+    'Изображение 200 × 200 пикселей, глубина 24 бита. Найдите объём в байтах.'
   ],
   2: [
-    {type:'input', text:'Изображение 50 × 40 пикселей, глубина 24 бита. Найдите объём в байтах.', ans:'6000'},
-    {type:'input', text:'Сколько бит нужно для 128 цветов?', ans:'7'},
-    {type:'select', text:'Какой формат использует сжатие с потерями?', opts:['JPEG', 'PNG', 'BMP'], ans:'JPEG'},
-    {type:'input', text:'Изображение 100 × 50 пикселей, глубина 16 бит. Найдите объём в байтах.', ans:'10000'}
+    'Изображение 50 × 40 пикселей, глубина 24 бита. Найдите объём в байтах.',
+    'Сколько бит нужно для 128 цветов?',
+    'Какой формат использует сжатие с потерями? (BMP / PNG / JPEG)',
+    'Изображение 100 × 50 пикселей, глубина 16 бит. Найдите объём в байтах.'
   ],
   3: [
-    {type:'input', text:'Изображение 20 × 30 пикселей, глубина 16 бит. Найдите объём в байтах.', ans:'1200'},
-    {type:'input', text:'Сколько цветов при глубине 5 бит?', ans:'32'},
-    {type:'select', text:'Какой формат не использует сжатие?', opts:['JPEG', 'PNG', 'BMP'], ans:'BMP'},
-    {type:'input', text:'Изображение 64 × 64 пикселей, глубина 8 бит. Найдите объём в байтах.', ans:'4096'}
+    'Изображение 20 × 30 пикселей, глубина 16 бит. Найдите объём в байтах.',
+    'Сколько цветов при глубине 5 бит?',
+    'Какой формат не использует сжатие? (BMP / PNG / JPEG)',
+    'Изображение 64 × 64 пикселей, глубина 8 бит. Найдите объём в байтах.'
   ],
   4: [
-    {type:'input', text:'Изображение 80 × 50 пикселей, глубина 32 бита. Найдите объём в байтах.', ans:'16000'},
-    {type:'input', text:'Сколько бит нужно для 256 цветов?', ans:'8'},
-    {type:'select', text:'Какой формат лучше для фотографии на сайте?', opts:['BMP', 'JPEG', 'GIF'], ans:'JPEG'},
-    {type:'input', text:'Изображение 10 × 10 пикселей, глубина 24 бита. Найдите объём в байтах.', ans:'300'}
+    'Изображение 80 × 50 пикселей, глубина 32 бита. Найдите объём в байтах.',
+    'Сколько бит нужно для 256 цветов?',
+    'Какой формат лучше для фотографии на сайте? (BMP / JPEG / GIF)',
+    'Изображение 10 × 10 пикселей, глубина 24 бита. Найдите объём в байтах.'
   ]
 };
 
@@ -864,32 +840,14 @@ async function unlockPractice(){
   var btn = document.getElementById('pracBtn');
   var pass = inp.value.trim();
 
-  if (!pass){
-    msg.className = 'pmsg';
-    msg.textContent = 'Введите пароль.';
-    return;
-  }
+  if (!pass){ msg.className = 'pmsg'; msg.textContent = 'Введите пароль.'; return; }
+  msg.className = 'pmsg info'; msg.textContent = 'Проверка…'; btn.disabled = true;
 
-  msg.className = 'pmsg info';
-  msg.textContent = 'Проверка…';
-  btn.disabled = true;
-
-  var data = await checkPasswordRemote(RESOURCE_ID, 'practice', pass);
+  var data = await askServer('password', { type: 'practice', password: pass });
 
   btn.disabled = false;
-
-  if (data.error === 'network'){
-    msg.className = 'pmsg';
-    msg.textContent = '⚠️ Ошибка соединения. Проверьте интернет.';
-    return;
-  }
-  if (!data.ok){
-    msg.className = 'pmsg';
-    msg.textContent = '❌ Неверный пароль.';
-    inp.value = '';
-    inp.focus();
-    return;
-  }
+  if (data.error === 'network'){ msg.className = 'pmsg'; msg.textContent = '⚠️ Ошибка соединения.'; return; }
+  if (!data.ok){ msg.className = 'pmsg'; msg.textContent = '❌ Неверный пароль.'; inp.value = ''; inp.focus(); return; }
 
   msg.textContent = '';
   inp.value = '';
@@ -901,54 +859,51 @@ async function unlockPractice(){
 
 function renderPractice(){
   var v = document.getElementById('pracVariant').value;
-  var qs = PRACTICE_VARIANTS[v];
+  var qs = PRACTICE_QUESTIONS[v];
   var html = '';
   qs.forEach(function(q, i){
-    html += '<div class="task"><p><b>'+(i+1)+'.</b> '+q.text+'</p>';
-    if (q.type === 'select'){
-      html += '<div class="calc-row"><select class="match-select" id="prac'+i+'">';
-      html += '<option value="">-- выберите --</option>';
-      q.opts.forEach(function(o){ html += '<option value="'+o+'">'+o+'</option>'; });
-      html += '</select></div>';
-    } else {
-      html += '<div class="calc-row"><input type="text" id="prac'+i+'" placeholder="ваш ответ" style="max-width:100%"></div>';
-    }
-    html += '</div>';
+    html += '<div class="task"><p><b>'+(i+1)+'.</b> '+q+'</p><input type="text" id="prac'+i+'" placeholder="ответ" style="width:100%;max-width:300px;border:2px solid #e6e3f1;border-radius:8px;padding:6px 10px;"></div>';
   });
   document.getElementById('pracArea').innerHTML = html;
 }
 
-function gradePractice(){
-  if (lessonState.pracDone){
-    toast('⚠️ Практическая работа уже сдана.');
-    return;
-  }
+async function gradePractice(){
+  if (lessonState.pracDone){ toast('⚠️ Практическая работа уже сдана.'); return; }
   var v = document.getElementById('pracVariant').value;
-  var qs = PRACTICE_VARIANTS[v];
-  var correct = 0;
-  
-  qs.forEach(function(q, i){
+  var qs = PRACTICE_QUESTIONS[v];
+  var answers = [];
+  qs.forEach(function(_, i){ answers.push(document.getElementById('prac'+i).value.trim().replace(/\s+/g,'')); });
+
+  var btn = document.getElementById('pracCheckBtn');
+  btn.disabled = true; btn.textContent = 'Проверка...';
+
+  var data = await askServer('checkPractice', { variant: v, answers: JSON.stringify(answers) });
+
+  btn.disabled = false; btn.textContent = '📊 Проверить практику';
+
+  if (data.error === 'network') { toast('⚠️ Ошибка соединения.'); return; }
+  if (data.error) { toast('⚠️ ' + data.error); return; }
+
+  var correct = data.totalCorrect;
+  var results = data.results;
+
+  qs.forEach(function(_, i){
     var el = document.getElementById('prac'+i);
-    var val = (el.value||'').trim().toLowerCase();
-    var ok = val === q.ans.toLowerCase();
-    if (ok) correct++;
-    el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
-    el.style.background = ok ? '#f0fdf4' : '#fef2f2';
+    el.style.borderColor = results[i] ? 'var(--ok)' : 'var(--bad)';
+    el.style.background = results[i] ? '#f0fdf4' : '#fef2f2';
   });
 
   var pct = Math.round(correct / qs.length * 100);
   lessonState.pracCorrect = correct;
   lessonState.pracMark = percentToMark(pct);
   lessonState.pracDone = true;
-  
+
   document.getElementById('pracCorrect').textContent = correct;
   document.getElementById('pracMark').textContent = lessonState.pracMark;
   document.getElementById('pracResult').classList.add('show');
 
-  document.querySelectorAll('#pracArea input, #pracArea select').forEach(function(el){ el.disabled = true; });
-  var checkBtn = document.getElementById('pracCheckBtn');
-  if (checkBtn) checkBtn.style.display = 'none';
-
+  qs.forEach(function(_, i){ document.getElementById('prac'+i).disabled = true; });
+  btn.style.display = 'none';
   savePracticeState();
   toast('Практика: ' + correct + '/' + qs.length + ', оценка ' + lessonState.pracMark);
 }
@@ -957,349 +912,300 @@ function savePracticeState(){
   try {
     var raw = localStorage.getItem(STORAGE_KEY) || '{}';
     var d = JSON.parse(raw);
-    d.pracDone = lessonState.pracDone;
-    d.pracCorrect = lessonState.pracCorrect;
-    d.pracMark = lessonState.pracMark;
+    d.pracDone = lessonState.pracDone; d.pracCorrect = lessonState.pracCorrect;
+    d.pracMark = lessonState.pracMark; d.pracVariant = document.getElementById('pracVariant')?.value || '1';
+    d.finalCalculated = lessonState.finalCalculated;
+    d.wbMark = lessonState.wbMark;
+    d.finalTotal = document.getElementById('fTotal')?.textContent;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
   } catch(e){}
 }
+
 function loadPracticeState(){
   try {
-    var raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
-    var d = JSON.parse(raw);
-    if (!d.pracDone) return;
-    lessonState.pracDone = true;
-    lessonState.pracCorrect = d.pracCorrect || 0;
-    lessonState.pracMark = d.pracMark || 0;
-    document.getElementById('practiceLock').style.display = 'none';
-    document.getElementById('practiceBody').style.display = 'block';
-    renderPractice();
-    document.getElementById('pracCorrect').textContent = d.pracCorrect;
-    document.getElementById('pracMark').textContent = d.pracMark;
-    document.getElementById('pracResult').classList.add('show');
-    var checkBtn = document.getElementById('pracCheckBtn');
-    if (checkBtn) checkBtn.style.display = 'none';
-  } catch(e){}
-}
-function resetPractice(){
-  if (!confirm('Сбросить практику?')) return;
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY) || '{}';
-    var d = JSON.parse(raw);
-    delete d.pracDone; delete d.pracCorrect; delete d.pracMark;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
-  } catch(e){}
-  location.reload();
+    var raw = localStorage.getItem(STORAGE_KEY); if (!raw) return false;
+    var d = JSON.parse(raw); 
+    
+    if (d.pracDone) {
+      lessonState.pracDone = true; lessonState.pracCorrect = d.pracCorrect || 0; lessonState.pracMark = d.pracMark || 0;
+      document.getElementById('practiceLock').style.display = 'none';
+      document.getElementById('practiceBody').style.display = 'block';
+      document.getElementById('pracVariant').value = d.pracVariant || '1';
+      renderPractice();
+      document.getElementById('pracCorrect').textContent = d.pracCorrect;
+      document.getElementById('pracMark').textContent = d.pracMark;
+      document.getElementById('pracResult').classList.add('show');
+      document.getElementById('pracCheckBtn').style.display = 'none';
+    }
+
+    if (d.finalCalculated) {
+      lessonState.finalCalculated = true;
+      lessonState.wbMark = d.wbMark || 0;
+      document.getElementById('fWb').textContent = lessonState.wbMark || '—';
+      document.getElementById('fPrac').textContent = lessonState.pracMark || '—';
+      document.getElementById('fTotal').textContent = d.finalTotal || '—';
+      document.getElementById('finalResult').classList.add('show');
+      document.getElementById('finalMsg').textContent = 'Итог сохранён.';
+    }
+    return true;
+  } catch(e){ return false; }
 }
 
 /* =========================================================
-   8. ИТОГ
+   ИТОГ
    ========================================================= */
 function calcFinalMark(){
-  if (!lessonState.wbMark && !lessonState.pracDone){
-    toast('Сначала выполните тетрадь и практику');
-    return;
-  }
+  if (lessonState.finalCalculated) { toast('Итог уже подведён.'); return; }
+  if (!lessonState.wbMark && !lessonState.pracDone){ toast('Сначала выполните тетрадь и практику'); return; }
+
   var wb = lessonState.wbMark || 0;
   var pr = lessonState.pracMark || 0;
   var total = Math.round((wb + pr) / 2);
+  
   document.getElementById('fWb').textContent = wb || '—';
   document.getElementById('fPrac').textContent = pr || '—';
   document.getElementById('fTotal').textContent = total;
   document.getElementById('finalResult').classList.add('show');
   document.getElementById('finalMsg').textContent =
-    total === 5 ? '🌟 Отличная работа!' :
-    total === 4 ? '👏 Хорошо!' :
-    total === 3 ? '📖 Удовлетворительно.' : '📚 Стоит повторить тему.';
+    total === 5 ? '🌟 Отличная работа!' : total === 4 ? '👏 Хорошо.' : total === 3 ? '📖 Удовлетворительно.' : '📚 Стоит вернуться к теории.';
+  
+  lessonState.finalCalculated = true;
+  savePracticeState();
 }
 
 /* =========================================================
-   9. САМОСТОЯТЕЛЬНАЯ
+   САМОСТОЯТЕЛЬНАЯ — ЗАГРУЗКА С СЕРВЕРА
    ========================================================= */
 var saTimer = null, saLeft = 0, saTasks = [], saStarted = false, saDone = false;
 
-function genStandalone(){
-  function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
-  function pickN(arr, n){
-    var copy = arr.slice(), res = [];
-    for (var i = 0; i < n && copy.length; i++){
-      var idx = rnd(0, copy.length-1);
-      res.push(copy.splice(idx, 1)[0]);
-    }
-    return res;
-  }
-
-  var pool = [
-    {q:'Сколько бит нужно для кодирования 32 цветов?', ans:'5'},
-    {q:'Сколько цветов можно закодировать при глубине 3 бита?', ans:'8'},
-    {q:'Изображение 10×10 пикселей, глубина 24 бита. Найдите объём в байтах.', ans:'300'},
-    {q:'Изображение 20×20 пикселей, глубина 8 бит. Найдите объём в байтах.', ans:'400'},
-    {q:'Сколько цветов при глубине 1 бит?', ans:'2'},
-    {q:'Сколько бит нужно для 64 цветов?', ans:'6'},
-    {q:'Изображение 100×100 пикселей, глубина 16 бит. Найдите объём в Кбайтах.', ans:'20'},
-    {q:'Изображение 50×50 пикселей, глубина 24 бита. Найдите объём в байтах.', ans:'7500'}
-  ];
-
-  var selected = pickN(pool, 5);
-
-  return selected.map(function(t){
-    return { text: t.q, canon: t.ans };
-  });
-}
-
-function scrollToGate(){
-  document.getElementById('standaloneGate').scrollIntoView({behavior:'smooth', block:'center'});
-  document.getElementById('saPass').focus();
-}
+function scrollToGate(){ document.getElementById('standaloneGate').scrollIntoView({behavior:'smooth', block:'center'}); document.getElementById('saPass').focus(); }
+function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 
 async function unlockStandalone(){
-  if (!getSurname() || !getFirstname() || !getKlass()){
-    document.getElementById('saMsg').className = 'pmsg';
-    document.getElementById('saMsg').textContent = 'Заполните ФИО и класс.';
-    return;
+  if (!getSurname() || !getFirstname() || !getKlass()){ 
+    document.getElementById('saMsg').className = 'pmsg'; 
+    document.getElementById('saMsg').textContent = 'Сначала заполните ФИО в шапке.'; 
+    return; 
   }
-  var inp = document.getElementById('saPass');
-  var msg = document.getElementById('saMsg');
-  var btn = document.getElementById('saBtn');
-  var pass = inp.value.trim();
+  
+  var inp = document.getElementById('saPass'); var msg = document.getElementById('saMsg'); var btn = document.getElementById('saBtn'); var pass = inp.value.trim();
+  if (!pass){ msg.className = 'pmsg'; msg.textContent = 'Введите пароль.'; return; }
+  
+  msg.className = 'pmsg info'; msg.textContent = 'Проверка пароля…'; btn.disabled = true;
 
-  if (!pass){
-    msg.className = 'pmsg';
-    msg.textContent = 'Введите пароль.';
-    return;
-  }
+  var pwdData = await askServer('password', { type: 'standalone', password: pass });
+  if (pwdData.error === 'network'){ btn.disabled = false; msg.className = 'pmsg'; msg.textContent = '⚠️ Ошибка соединения.'; return; }
+  if (!pwdData.ok){ btn.disabled = false; msg.className = 'pmsg'; msg.textContent = '❌ Неверный пароль.'; inp.value = ''; inp.focus(); return; }
 
-  msg.className = 'pmsg info';
-  msg.textContent = 'Проверка…';
-  btn.disabled = true;
-
-  var data = await checkPasswordRemote(RESOURCE_ID, 'standalone', pass);
-
+  msg.textContent = 'Загрузка заданий…';
+  var data = await askServer('getStandalone', { count: SA_TASK_COUNT });
   btn.disabled = false;
 
-  if (data.error === 'network'){
-    msg.className = 'pmsg';
-    msg.textContent = '⚠️ Ошибка соединения. Проверьте интернет.';
-    return;
-  }
-  if (!data.ok){
-    msg.className = 'pmsg';
-    msg.textContent = '❌ Неверный пароль.';
-    inp.value = '';
-    inp.focus();
-    return;
-  }
+  if (data.error === 'network'){ msg.className = 'pmsg'; msg.textContent = '⚠️ Ошибка загрузки.'; return; }
+  if (data.error){ msg.className = 'pmsg'; msg.textContent = '⚠️ ' + data.error; return; }
+  if (!data.tasks || !data.tasks.length){ msg.className = 'pmsg'; msg.textContent = '⚠️ Нет шаблонов для этого урока.'; return; }
 
-  msg.textContent = '';
-  inp.value = '';
+  msg.textContent = ''; inp.value = '';
+  saTasks = data.tasks;
   startStandalone();
 }
 
 function startStandalone(){
-  saTasks = genStandalone();
   saDone = false; saStarted = true; saLeft = SA_MINUTES*60;
-
   document.body.classList.add('exam');
   var who = getFullName() + (getKlass() ? ', ' + getKlass() : '');
-  document.getElementById('examWho').textContent = who || 'Ученик';
+  document.getElementById('examWho').textContent = who || 'Ученик не указан';
+  
+  var fp = document.getElementById('filePreview');
+  if (fp) fp.textContent = getFileName() + '_самостоятельная';
 
-  var host = document.getElementById('examTasks');
-  var html = '';
+  var host = document.getElementById('examTasks'); var html = '';
   saTasks.forEach(function(t, i){
-    html += '<div class="s-task" id="st'+i+'">';
-    html += '<p class="stext"><span class="sn">'+(i+1)+'</span>'+t.text+'</p>';
-    html += '<input type="text" id="sa'+i+'" placeholder="ваш ответ" autocomplete="off">';
-    html += '</div>';
+    html += '<div class="s-task" id="st'+i+'">' +
+            '<p class="stext"><span class="sn">'+(i+1)+'</span>' +
+            t.text +
+            '<span class="s-flag">'+t.unit+'</span></p>' +
+            '<input type="text" inputmode="text" id="sa'+i+'" placeholder="ответ" autocomplete="off">' +
+            '</div>';
   });
   host.innerHTML = html;
-
+  renderMath(host);
   document.getElementById('examResult').classList.remove('show');
   window.scrollTo({top:0,behavior:'smooth'});
-
   if (saTimer) clearInterval(saTimer);
   updateTimer();
-  saTimer = setInterval(function(){
-    saLeft--;
-    updateTimer();
-    if (saLeft <= 0){
-      clearInterval(saTimer); saTimer=null;
-      toast('⏰ Время вышло!');
-      finishStandalone(true);
-    }
-  }, 1000);
+  saTimer = setInterval(function(){ saLeft--; updateTimer(); if (saLeft <= 0){ clearInterval(saTimer); saTimer=null; toast('⏰ Время вышло!'); finishStandalone(true); } }, 1000);
+  toast('📝 Работа началась. 15 минут пошли!');
 }
 
 function updateTimer(){
-  var m = Math.floor(saLeft/60), s = saLeft % 60;
-  var el = document.getElementById('examTimer');
+  var m = Math.floor(saLeft/60), s = saLeft % 60; var el = document.getElementById('examTimer');
   el.textContent = (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
   el.className = 'timer' + (saLeft<=60?' danger' : saLeft<=300?' warn':'');
 }
 
-function finishStandalone(auto){
+async function finishStandalone(auto){
   if (!saStarted) return;
-  if (!auto && !confirm('Сдать работу?')) return;
+  if (!auto && !confirm('Сдать работу? Изменить ответы будет нельзя.')) return;
   if (saTimer){ clearInterval(saTimer); saTimer=null; }
-  saDone = true;
+  var btn = document.querySelector('#standalone .exam-head .b-green');
+  if (btn) { btn.disabled = true; btn.textContent = 'Проверка...'; }
 
-  var correct = 0;
+  var answers = [];
+  saTasks.forEach(function(t,i){ var el = document.getElementById('sa'+i); answers.push({ key: t.key, answer: el ? el.value.trim().replace(/\s+/g,'') : '' }); });
+
+  var data = await askServer('checkStandalone', { tasks: JSON.stringify(answers) });
+
+  if (btn) { btn.disabled = false; btn.textContent = '✅ Сдать работу'; }
+  if (data.error === 'network') { toast('⚠️ Ошибка соединения.'); return; }
+  if (data.error) { toast('⚠️ ' + data.error); return; }
+
+  saDone = true; var correct = data.totalCorrect; var results = data.results;
   saTasks.forEach(function(t,i){
-    var el = document.getElementById('sa'+i);
-    var v = (el ? el.value : '').trim().toLowerCase().replace(/\s+/g,'');
-    var ans = t.canon.toLowerCase().replace(/\s+/g,'');
-    var ok = v === ans;
-    if (ok) correct++;
-    if (el){
-      el.disabled = true;
-      el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
-      el.style.background  = ok ? '#f0fdf4' : '#fef2f2';
-    }
+    var el = document.getElementById('sa'+i); var ok = results[i];
+    if (el){ el.disabled = true; el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)'; el.style.background = ok ? '#f0fdf4' : '#fef2f2'; }
+    var card = document.getElementById('st'+i); if (card) card.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
   });
 
   var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
+  var used = SA_MINUTES*60 - Math.max(saLeft,0); var um = Math.floor(used/60), us = used%60;
   document.getElementById('exCorrect').textContent = correct + ' / 5';
   document.getElementById('exMark').textContent = mark;
-  document.getElementById('exTime').textContent = '—';
-  document.getElementById('exMsg').textContent =
-    correct>=5 ? '🌟 Отлично!' :
-    correct===4 ? '👏 Хорошо!' :
-    correct===3 ? '📖 Удовлетворительно.' : '📚 Стоит повторить.';
-  document.getElementById('examResult').classList.add('show');
+  document.getElementById('exTime').textContent = um+' мин '+(us<10?'0':'')+us+' с';
+  document.getElementById('exMsg').textContent = correct>=5 ? '🌟 Отлично!' : correct===4 ? '👏 Хорошо!' : correct===3 ? '📖 Удовлетворительно.' : '📚 Стоит повторить.';
+  document.getElementById('examResult').classList.add('show'); document.getElementById('examResult').scrollIntoView({behavior:'smooth'});
+  toast('Работа сдана: '+correct+' из 5, оценка '+mark);
 }
 
 function exitStandalone(){
-  if (saStarted && !saDone && !confirm('Выйти?')) return;
+  if (saStarted && !saDone && !confirm('Выйти без сохранения?')) return;
   if (saTimer){ clearInterval(saTimer); saTimer=null; }
-  document.body.classList.remove('exam');
-  saStarted = false;
+  document.body.classList.remove('exam'); saStarted = false; window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- PDF / JPG ---------- */
+function saveStandalonePDF(){
+  if (!saDone){ toast('Сначала сдайте работу'); return; }
+  if (!(window.jspdf && window.jspdf.jsPDF)){ toast('jsPDF не загрузился'); return; }
+  var doc = new window.jspdf.jsPDF({unit:'mm', format:'a4'}); var fio = getFullName() || 'Ученик'; var correct = 0;
+  saTasks.forEach(function(t,i){ var el = document.getElementById('sa'+i); if (el && el.style.background.indexOf('240, 253, 244') !== -1) correct++; });
+  var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
+  doc.setFontSize(16); doc.text('Samostoyatelnaya rabota', 105, 18, {align:'center'});
+  doc.setFontSize(11); doc.text('Ob`em graficheskih dannyh, 7 klass', 105, 25, {align:'center'});
+  doc.text('Uchenik: ' + fio + '   Klass: ' + (getKlass()||'-'), 20, 36); doc.text('Data: ' + new Date().toLocaleDateString('ru-RU'), 20, 43);
+  var y = 55;
+  saTasks.forEach(function(t,i){ var el = document.getElementById('sa'+i); var g = el ? el.value.trim() : ''; doc.setFontSize(10); doc.text((i+1) + '. ' + t.text.replace(/\$/g,'').replace(/[^\x00-\x7F]/g,'?'), 20, y); y += 6; doc.text('   Otvet: ' + (g||'-'), 22, y); y += 9; });
+  doc.setFontSize(13); doc.text('Verno: ' + correct + ' iz 5.   Ocenka: ' + mark, 20, y+6);
+  doc.save(getFileName() + '_samostoyatelnaya.pdf'); toast('📄 PDF сохранён');
+}
+
+function buildResultHTML(){
+  var fio = getFullName() || 'Ученик не указан'; var klass = getKlass() || '—'; var rows = ''; var correct = 0;
+  saTasks.forEach(function(t,i){ var el = document.getElementById('sa'+i); var given = el ? el.value.trim() : ''; var ok = el && el.style.background.indexOf('240, 253, 244') !== -1; if (ok) correct++; rows += '<tr><td style="padding:6px 8px;border:1px solid #ccc;text-align:center">'+(i+1)+'</td><td style="padding:6px 8px;border:1px solid #ccc">'+t.text.replace(/\$/g,'')+'</td><td style="padding:6px 8px;border:1px solid #ccc;text-align:center">'+(given||'—')+'</td><td style="padding:6px 8px;border:1px solid #ccc;text-align:center">'+(ok?'✅':'❌')+'</td></tr>'; });
+  var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
+  var used = SA_MINUTES*60 - Math.max(saLeft,0); var um = Math.floor(used/60), us = used%60;
+  return '<div style="font-family:Georgia,serif;color:#222;padding:8px"><h1 style="text-align:center;font-size:20px;margin:0 0 4px">Самостоятельная работа</h1><p style="text-align:center;margin:0 0 14px;font-size:13px">Объём графических данных · 7 класс</p><table style="width:100%;font-size:14px;margin-bottom:14px"><tr><td><b>Ученик:</b> '+fio+'</td><td><b>Класс:</b> '+klass+'</td></tr><tr><td><b>Дата:</b> '+new Date().toLocaleDateString('ru-RU')+'</td><td><b>Время:</b> '+um+' мин '+(us<10?'0':'')+us+' с</td></tr></table><table style="width:100%;border-collapse:collapse;font-size:12px"><tr style="background:#ede9fe"><th style="padding:8px;border:1px solid #ccc">№</th><th style="padding:8px;border:1px solid #ccc">Задание</th><th style="padding:8px;border:1px solid #ccc">Ответ</th><th style="padding:8px;border:1px solid #ccc">✓</th></tr>'+rows+'</table><p style="margin-top:16px;font-size:16px"><b>Верно решено:</b> '+correct+' из 5</p><p style="font-size:20px;margin:6px 0"><b>Оценка: '+mark+'</b></p></div>';
+}
+
+function saveStandaloneJPG(){
+  if (!saDone){ toast('Сначала сдайте работу'); return; }
+  var holder = document.createElement('div'); holder.style.cssText = 'position:fixed;left:-99999px;top:0;width:900px;background:#fff'; holder.innerHTML = buildResultHTML(); document.body.appendChild(holder);
+  window.html2canvas(holder, {backgroundColor:'#ffffff', scale:2}).then(function(canvas){ var a = document.createElement('a'); a.download = getFileName() + '_самостоятельная.jpg'; a.href = canvas.toDataURL('image/jpeg', 0.93); a.click(); holder.remove(); toast('🖼 JPG сохранён'); }).catch(function(){ holder.remove(); toast('Не удалось создать JPG'); });
+}
+
+function saveLessonScreenshot() {
+  var holder = document.createElement('div'); holder.style.cssText = 'position:fixed;left:-99999px;top:0;width:1200px;background:#fff;padding:20px;';
+  var fio = getFullName() || 'Ученик не указан'; var klass = getKlass() || '—';
+  var wbMark = document.getElementById('fWb').textContent; var pracMark = document.getElementById('fPrac').textContent; var totalMark = document.getElementById('fTotal').textContent;
+  if (totalMark === '—') { wbMark = lessonState.wbMark || '—'; pracMark = lessonState.pracMark || '—'; totalMark = '—'; }
+  var wbTasks = [];
+  ['w1','w2','w3','w4','w5','w6','w7','w8','w9','w10','w11'].forEach(function(id, index) { var input = document.getElementById(id); var val = input ? input.value : '—'; var isCorrect = lessonState.wb[id] || false; wbTasks.push({ num: index + 1, answer: val, correct: isCorrect }); });
+  var html = '<div style="font-family:Georgia,serif;color:#222;padding:8px;"><h1 style="text-align:center;font-size:24px;margin:0 0 4px;">Объём графических данных</h1><p style="text-align:center;margin:0 0 16px;font-size:14px;color:#666;">Урок информатики · 7 класс</p><table style="width:100%;font-size:14px;margin-bottom:20px;border-collapse:collapse;"><tr><td style="padding:4px;"><b>Ученик:</b> ' + fio + '</td><td style="padding:4px;"><b>Класс:</b> ' + klass + '</td></tr><tr><td style="padding:4px;"><b>Дата:</b> ' + new Date().toLocaleDateString('ru-RU') + '</td><td style="padding:4px;"><b>Время:</b> ' + new Date().toLocaleTimeString('ru-RU') + '</td></tr></table><h2 style="font-size:18px;margin:20px 0 10px;color:#4c1d95;">1. Рабочая тетрадь</h2><table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px;"><tr style="background:#ede9fe;"><th style="padding:6px;border:1px solid #ccc;">№</th><th style="padding:6px;border:1px solid #ccc;">Ответ</th><th style="padding:6px;border:1px solid #ccc;">Засчитано</th></tr>';
+  wbTasks.forEach(function(t) { html += '<tr><td style="padding:6px;border:1px solid #ccc;text-align:center;">' + t.num + '</td><td style="padding:6px;border:1px solid #ccc;text-align:center;">' + (t.answer || '—') + '</td><td style="padding:6px;border:1px solid #ccc;text-align:center;">' + (t.correct ? '✅' : '❌') + '</td></tr>'; });
+  html += '</table><p style="font-size:14px;"><b>Результат тетради:</b> ' + document.getElementById('wbCorrect').textContent + ' из 11, оценка: <b>' + document.getElementById('wbMark').textContent + '</b></p>';
+  if (lessonState.pracDone) { html += '<h2 style="font-size:18px;margin:20px 0 10px;color:#4c1d95;">2. Практическая работа</h2><p style="font-size:14px;"><b>Вариант:</b> ' + (document.getElementById('pracVariant')?.value || '—') + '</p><p style="font-size:14px;"><b>Результат:</b> ' + lessonState.pracCorrect + ' из 4, оценка: <b>' + lessonState.pracMark + '</b></p>'; } else { html += '<h2 style="font-size:18px;margin:20px 0 10px;color:#4c1d95;">2. Практическая работа</h2><p style="font-size:14px;color:#999;">Не выполнялась</p>'; }
+  html += '<h2 style="font-size:18px;margin:20px 0 10px;color:#4c1d95;">3. Итоговая оценка</h2><table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:16px;"><tr style="background:#ede9fe;"><th style="padding:6px;border:1px solid #ccc;">Тетрадь</th><th style="padding:6px;border:1px solid #ccc;">Практика</th><th style="padding:6px;border:1px solid #ccc;">Итог</th></tr><tr><td style="padding:6px;border:1px solid #ccc;text-align:center;">' + (wbMark || '—') + '</td><td style="padding:6px;border:1px solid #ccc;text-align:center;">' + (pracMark || '—') + '</td><td style="padding:6px;border:1px solid #ccc;text-align:center;font-weight:bold;">' + totalMark + '</td></tr></table>';
+  html += '<p style="font-size:14px;margin-top:20px;color:#666;text-align:center;">Скриншот создан ' + new Date().toLocaleString('ru-RU') + '</p></div>';
+  holder.innerHTML = html; document.body.appendChild(holder);
+  window.html2canvas(holder, { backgroundColor: '#ffffff', scale: 2 }).then(function(canvas) { var a = document.createElement('a'); a.download = getFileName() + '_урок.jpg'; a.href = canvas.toDataURL('image/jpeg', 0.93); a.click(); holder.remove(); toast('📸 Скриншот сохранён'); }).catch(function() { holder.remove(); toast('Не удалось создать скриншот'); });
 }
 
 /* =========================================================
-   10. ПЕЧАТЬ ДЗ
+   ДЗ, РАСКЛАДКА, КАЛЬКУЛЯТОР
    ========================================================= */
 function printHomework(){
   var fio = getFullName() + (getKlass() ? ', ' + getKlass() : '');
   var hw = document.getElementById('hwBlock').innerHTML;
-  var w = window.open('', '_blank');
-  if (!w){ alert('Разрешите окна.'); return; }
-  w.document.write(
-    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>ДЗ</title>'+
-    '<script>window.MathJax={tex:{inlineMath:[["$","$"]]}};<\/script>'+
-    '<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>'+
-    '<style>body{font-family:Georgia,serif;padding:14mm;font-size:12pt}.hw{border:1pt solid #bbb;padding:3mm;margin:4mm 0}'+
-    '@page{margin:14mm}</style></head><body>'+
-    '<h1>Домашнее задание</h1>'+
-    '<p>'+(fio ? 'Ученик: <b>'+fio+'</b>' : 'Ученик: _______')+'</p>'+ hw +'</body></html>'
-  );
-  w.document.close();
-  setTimeout(function(){ w.print(); }, 600);
+  var w = window.open('', '_blank'); if (!w){ alert('Разрешите всплывающие окна.'); return; }
+  w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>ДЗ</title><script>window.MathJax={tex:{inlineMath:[["$","$"]]}};<\/script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script><style>body{font-family:Georgia,serif;padding:14mm;font-size:12pt;line-height:1.6;max-width:190mm;margin:0 auto}h1{text-align:center;font-size:16pt}.hw{border:1pt solid #bbb;padding:3mm 4mm;margin:4mm 0;page-break-inside:avoid}.lvl{font-weight:800;font-size:10pt;display:block;margin-bottom:2mm}@page{margin:14mm}</style></head><body><h1>Домашнее задание</h1><p style="text-align:center;margin:0 0 1mm;font-size:11pt">Объём графических данных · 7 класс</p><p style="text-align:center;margin:0 0 6mm">'+ (fio ? 'Ученик: <b>'+fio+'</b>' : 'Ученик: ____________________')+'</p>'+ hw + '</body></html>');
+  w.document.close(); setTimeout(function(){ try{ w.print(); }catch(e){} }, 600);
 }
 
-/* =========================================================
-   11. КАЛЬКУЛЯТОР
-   ========================================================= */
+var activeField = null;
+function openMath(){ document.getElementById('mathModal').classList.add('open'); }
+function closeMath(){ document.getElementById('mathModal').classList.remove('open'); }
+function insertMath(text){
+  var t = activeField || document.querySelector('input[type=text]'); if (!t){ toast('Сначала щёлкните в поле'); return; }
+  var s = t.selectionStart || 0, e = t.selectionEnd || 0; t.value = t.value.slice(0,s) + text + t.value.slice(e); t.focus();
+  var p = s + text.length; try{ t.setSelectionRange(p,p); }catch(err){} t.dispatchEvent(new Event('input',{bubbles:true}));
+}
+document.addEventListener('focusin', function(e){ if (e.target.matches('input[type=text],input[type=password],textarea')){ activeField = e.target; } });
+document.getElementById('mathModal').addEventListener('click', function(e){ if (e.target === this) closeMath(); });
+
 var calcBuf = '';
 function openCalc(){ document.getElementById('calcModal').classList.add('open'); calcRender(); }
 function closeCalc(){ document.getElementById('calcModal').classList.remove('open'); }
 function calcNum(d){
-  if (calcBuf === '0' && d !== '0') calcBuf = '';
-  calcBuf += d; calcRender();
-}
-function calcOp(op){
-  if (!calcBuf){
-    if (op === '-'){ calcBuf = '-'; calcRender(); }
-    return;
-  }
-  var last = calcBuf.slice(-1);
-  if ('+-*/^'.indexOf(last) !== -1) calcBuf = calcBuf.slice(0,-1);
-  calcBuf += op; calcRender();
-}
-function calcClear(){ calcBuf = ''; calcRender(); }
-function calcBack(){ calcBuf = calcBuf.slice(0,-1); calcRender(); }
-
-function calcRender(){
-  document.getElementById('calcExpr').textContent = calcBuf || '';
-  document.getElementById('calcOut').textContent = calcPreview();
-}
-
-function calcPreview(){
-  if (!calcBuf) return '0';
-  try {
-    var v = calcEval(calcBuf);
-    if (v === null) return '…';
-    if (!isFinite(v)) return '∞';
-    return (Math.round(v*1e10)/1e10).toString();
-  } catch(e){ return '…'; }
-}
-
-function calcEval(str){
-  var s = str.replace(/\s+/g,'');
-  if (!/^[0-9+\-*/^]+$/.test(s)) return null;
-
-  var pos = 0;
-  function peek(){ return s[pos]; }
-  function parseExpr(){
-    var v = parseTerm();
-    while (peek()==='+' || peek()==='-'){
-      var op = s[pos++];
-      var r = parseTerm();
-      v = op==='+' ? v+r : v-r;
-    }
-    return v;
-  }
-  function parseTerm(){
-    var v = parsePow();
-    while (peek()==='*' || peek()==='/'){
-      var op = s[pos++];
-      var r = parsePow();
-      v = op==='*' ? v*r : v/r;
-    }
-    return v;
-  }
-  function parsePow(){
-    var v = parseUnary();
-    if (peek()==='^'){
-      pos++;
-      var e = parsePow();
-      return Math.pow(v,e);
-    }
-    return v;
-  }
-  function parseUnary(){
-    if (peek()==='-'){ pos++; return -parseUnary(); }
-    if (peek()==='+'){ pos++; return parseUnary(); }
-    return parseAtom();
-  }
-  function parseAtom(){
-    var start = pos;
-    while (pos<s.length && /[0-9]/.test(s[pos])) pos++;
-    if (start===pos) throw new Error('bad');
-    return parseFloat(s.slice(start,pos));
-  }
-
-  try{
-    var res = parseExpr();
-    if (pos !== s.length) return null;
-    return res;
-  } catch(e){ return null; }
-}
-
-function calcEquals(){
-  var v = calcEval(calcBuf);
-  if (v === null || !isFinite(v)){ toast('Проверьте выражение'); return; }
-  calcBuf = (Math.round(v*1e10)/1e10).toString();
+  if (calcBuf === '0' && d !== '0' && d !== ',') calcBuf = '';
+  if (d === ',') { if (calcBuf.includes(',')) return; if (calcBuf === '') calcBuf = '0'; calcBuf += ','; } else { calcBuf += d; }
   calcRender();
 }
+function calcOp(op){ if (!calcBuf){ if (op === '-'){ calcBuf = '-'; calcRender(); } return; } if ('+-*/^'.indexOf(calcBuf.slice(-1)) !== -1) calcBuf = calcBuf.slice(0,-1); calcBuf += op; calcRender(); }
+function calcClear(){ calcBuf = ''; calcRender(); }
+function calcBack(){ calcBuf = calcBuf.slice(0,-1); calcRender(); }
+function calcRender(){ document.getElementById('calcExpr').textContent = calcBuf; document.getElementById('calcOut').textContent = calcEval(calcBuf) ?? '0'; }
+function calcEval(s){ if (!s) return 0; try { var expr = s.replace(/\^/g,'**').replace(/,/g,'.'); return Function('"use strict";return (' + expr + ')')(); } catch(e){ return '…'; } }
+function calcEquals(){ var v = calcEval(calcBuf); calcBuf = String(v).replace('.', ','); calcRender(); }
+document.getElementById('calcModal').addEventListener('click', function(e){ if (e.target === this) closeCalc(); });
 
-/* =========================================================
-   12. СТАРТ
-   ========================================================= */
-document.addEventListener('DOMContentLoaded', function(){
-  loadPracticeState();
-  setFormat('bmp');
-  calcLive();
-});
+function showFb(id, html, kind){ var el = document.getElementById(id); if (!el) return; el.innerHTML = html; el.className = 'fb show ' + kind; }
+function renderMath(el){ if (!el || !window.MathJax) return; if (MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(function(){}); }
+window.addEventListener('load', function(){ setTimeout(function(){ renderMath(document.body); }, 600); });
+document.addEventListener('DOMContentLoaded', function(){ loadPracticeState(); });
+
+function finishLesson(){
+  if (!confirm('Завершить урок и сбросить ВСЕ результаты?')) return;
+  if (typeof saTimer !== 'undefined' && saTimer){ clearInterval(saTimer); saTimer = null; }
+  
+  lessonState = { 
+    wb: { w1:false, w2:false, w3:false, w4:false, w5:false, w6:false, w7:false, w8:false, w9:false, w10:false, w11:false }, 
+    wbCorrect: 0, wbMark: 0, 
+    pracDone: false, pracCorrect: 0, pracMark: 0, 
+    finalCalculated: false 
+  };
+
+  ['w1','w2','w3','w4','w5','w6','w7','w8','w9','w10','w11'].forEach(function(id){ 
+    var el = document.getElementById(id); 
+    if (el){ el.value = ''; el.style.borderColor = ''; el.style.background = ''; el.disabled = false; } 
+    var fb = document.getElementById(id + 'fb'); 
+    if (fb){ fb.innerHTML = ''; fb.className = 'fb'; } 
+    var btn = document.querySelector('button[onclick*="checkW(\''+id+'\'"]'); 
+    if (btn) btn.style.display = ''; 
+  });
+  document.querySelectorAll('input[type=radio]').forEach(function(r){ r.checked = false; r.disabled = false; var lab = r.closest('.opt'); if (lab) lab.classList.remove('correct','wrong'); });
+  ['w5m1','w5m2','w5m3'].forEach(function(id){ var el = document.getElementById(id); if (el){ el.value = ''; el.disabled = false; } });
+  document.querySelector('button[onclick="checkW5()"]').style.display = '';
+  document.getElementById('wbResult').classList.remove('show'); document.getElementById('wbCorrect').textContent = '0'; document.getElementById('wbMark').textContent = '—';
+  
+  document.getElementById('practiceLock').style.display = ''; document.getElementById('practiceBody').style.display = 'none'; document.getElementById('pracPass').value = ''; document.getElementById('pracMsg').textContent = ''; document.getElementById('pracArea').innerHTML = ''; document.getElementById('pracVariant').value = '1'; document.getElementById('pracResult').classList.remove('show'); document.getElementById('pracCorrect').textContent = '0'; document.getElementById('pracMark').textContent = '—'; document.getElementById('pracCheckBtn').style.display = ''; document.querySelector('#practice h2').innerHTML = '<span class="num">3</span> Практическая работа <span class="badge">по паролю</span>';
+  
+  document.getElementById('finalResult').classList.remove('show'); ['fWb','fPrac','fTotal'].forEach(function(id){ document.getElementById(id).textContent = '—'; }); document.getElementById('finalMsg').textContent = '';
+  
+  saStarted = false; saDone = false; saTasks = []; saLeft = 0; document.body.classList.remove('exam'); document.getElementById('saPass').value = ''; document.getElementById('saMsg').textContent = ''; document.getElementById('examTasks').innerHTML = ''; document.getElementById('examResult').classList.remove('show'); document.getElementById('exCorrect').textContent = '0'; document.getElementById('exMark').textContent = '—'; document.getElementById('exTime').textContent = '—'; document.getElementById('exMsg').textContent = ''; document.getElementById('examTimer').textContent = '15:00'; document.getElementById('examTimer').className = 'timer';
+  ['surname','firstname','klass'].forEach(function(id){ document.getElementById(id).value = ''; });
+  try { localStorage.removeItem(STORAGE_KEY); } catch(e){}
+  window.scrollTo({top:0, behavior:'smooth'}); toast('🏁 Урок завершён. Все результаты сброшены.');
+}
 </script>
 </body>
 </html>
