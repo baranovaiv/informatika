@@ -709,24 +709,27 @@ async function checkW(inputId, canon, fbId){
   var raw = input.value.trim();
   if (!raw){ showFb(fbId,'Введите ответ.','hint'); return; }
 
-  // 1. Локальная проверка парсером
-  try {
-    var r = analyseAnswer(raw, canon, 0);
-    if (!r.ok) {
-      if (r.reason === 'nops') showFb(fbId,'❌ Равносильно, но не упрощено: у вас '+r.ops+' операций, нужно '+r.limit+'.','no');
-      else showFb(fbId,'❌ Неверно. Проверьте таблицу истинности.','no');
-      return;
-    }
-  } catch(e){
-    showFb(fbId,'⚠️ Ошибка парсинга: '+e.message,'hint');
-    return;
-  }
-
-  // 2. Отправка на сервер для фиксации попытки
   btn.disabled = true;
   btn.innerHTML = '⏳ Проверка...';
 
-  var data = await askServer('checkAnswer', { taskId: inputId, answer: 'ok' }); // отправляем 'ok' как маркер
+  // 1. Локальная проверка парсером
+  var localCorrect = false;
+  var parseError = null;
+  try {
+    var r = analyseAnswer(raw, canon, 0);
+    localCorrect = r.ok;
+    if (!r.ok && r.reason === 'nops') {
+      parseError = 'Равносильно, но не упрощено: у вас ' + r.ops + ' операций, нужно ' + r.limit + '.';
+    } else if (!r.ok) {
+      parseError = 'Неверно. Проверьте таблицу истинности.';
+    }
+  } catch(e) {
+    parseError = 'Ошибка парсинга: ' + e.message;
+  }
+
+  // 2. Отправляем на сервер РЕЗУЛЬТАТ проверки, чтобы он зафиксировал попытку
+  var serverAnswer = localCorrect ? 'ok' : 'fail';
+  var data = await askServer('checkAnswer', { taskId: inputId, answer: serverAnswer });
 
   btn.disabled = false;
   btn.textContent = 'Проверить';
@@ -734,6 +737,13 @@ async function checkW(inputId, canon, fbId){
   if (data.error === 'network') { showFb(fbId, '⚠️ Ошибка соединения.', 'no'); return; }
   if (data.blocked) { showFb(fbId, '⛔ ' + (data.message || 'Превышено число попыток.'), 'no'); return; }
 
+  // 3. Если ответ неверный — показываем ошибку (независимо от сервера)
+  if (!localCorrect) {
+    showFb(fbId, '❌ ' + parseError, 'no');
+    return;
+  }
+
+  // 4. Если ответ верный — сервер уже знает, первая это попытка или нет
   if (data.correct){
     input.disabled = true;
     if (btn) btn.style.display = 'none';
@@ -750,7 +760,7 @@ async function checkW(inputId, canon, fbId){
       showFb(fbId,'⚠️ Верно, но не с первой попытки. Балл не начислен.','hint');
     }
   } else {
-    showFb(fbId,'❌ Неверно (по данным сервера).','no');
+    showFb(fbId,'❌ Неверно.','no');
   }
 }
 
