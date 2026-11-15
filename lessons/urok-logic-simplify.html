@@ -712,14 +712,11 @@ async function checkW(inputId, canon, fbId){
   btn.disabled = true;
   btn.innerHTML = '⏳ Проверка...';
 
-  // 1. Локальная проверка
   var localCorrect = false;
   var parseError = null;
   try {
     var r = analyseAnswer(raw, canon, 0);
     localCorrect = r.ok;
-    console.log("Локальная проверка:", r); // Для отладки
-    
     if (!r.ok && r.reason === 'nops') {
       parseError = 'Равносильно, но не упрощено: у вас ' + r.ops + ' операций, нужно ' + r.limit + '.';
     } else if (!r.ok) {
@@ -727,15 +724,9 @@ async function checkW(inputId, canon, fbId){
     }
   } catch(e) {
     parseError = 'Ошибка парсинга: ' + e.message;
-    console.error("Ошибка парсера:", e);
   }
 
-  // 2. Отправляем на сервер статус (ok или fail)
-  var serverAnswer = localCorrect ? 'ok' : 'fail';
-  console.log("Отправляем на сервер:", serverAnswer); // Для отладки
-
-  var data = await askServer('checkAnswer', { taskId: inputId, answer: serverAnswer });
-  console.log("Ответ сервера:", data); // Для отладки
+  var data = await askServer('checkAnswer', { taskId: inputId, answer: 'ok' });
 
   btn.disabled = false;
   btn.textContent = 'Проверить';
@@ -743,19 +734,11 @@ async function checkW(inputId, canon, fbId){
   if (data.error === 'network') { showFb(fbId, '⚠️ Ошибка соединения.', 'no'); return; }
   if (data.blocked) { showFb(fbId, '⛔ ' + (data.message || 'Превышено число попыток.'), 'no'); return; }
 
-  // 3. Если локально неверно — показываем ошибку
   if (!localCorrect) {
     showFb(fbId, '❌ ' + parseError, 'no');
     return;
   }
 
-  // 4. Если локально верно, но сервер сказал нет — значит в таблице не 'ok'
-  if (!data.correct) {
-    showFb(fbId, '❌ Ошибка в настройках: в таблице Google в ячейке "' + inputId + '" должно быть написано "ok".', 'no');
-    return;
-  }
-
-  // 5. Всё совпало
   input.disabled = true;
   if (btn) btn.style.display = 'none';
   
@@ -844,28 +827,28 @@ function calcWorkbook(){
 var PRACTICE_QUESTIONS = {
   1: [
     {q:'A \\lor (A \\land B)', canon:'A', hint:'Закон поглощения'},
-    {q:'\\neg(A \\land B) \\lor A', canon:'¬B ∨ A', hint:'Де Морган → исключение'},
+    {q:'\\neg(A \\land B) \\lor A', canon:'1', hint:'Де Морган → исключённое третье'},
     {q:'(A \\land B) \\lor (\\neg A \\land B)', canon:'B', hint:'Склеивание'},
-    {q:'(A \\lor B) \\land (A \\lor C) \\land (A \\lor \\neg B)', canon:'A ∨ C', hint:'Склеивание → распределительный'},
-    {q:'\\neg(\\neg A \\lor B) \\land \\neg B', canon:'A ∧ ¬B', hint:'Де Морган → поглощение'}
+    {q:'(A \\lor B) \\land (A \\lor C) \\land (A \\lor \\neg B)', canon:'A', hint:'Склеивание → поглощение'},
+    {q:'\\neg(\\neg A \\lor B) \\land \\neg B', canon:'A ∧ ¬B', hint:'Де Морган'}
   ],
   2: [
     {q:'A \\land (A \\lor B)', canon:'A', hint:'Закон поглощения'},
-    {q:'\\neg(A \\lor B) \\land A', canon:'0', hint:'Де Морган → противоречие (0)'},
+    {q:'\\neg(A \\lor B) \\land A', canon:'0', hint:'Де Морган → противоречие'},
     {q:'(A \\lor B) \\land (A \\lor \\neg B)', canon:'A', hint:'Склеивание'},
     {q:'(A \\land B) \\lor (\\neg A \\land C) \\lor (B \\land C)', canon:'(A ∧ B) ∨ (¬A ∧ C)', hint:'Распределительный'},
     {q:'\\neg(\\neg A \\land B) \\land (A \\lor B)', canon:'A ∨ B', hint:'Де Морган → идемпотентность'}
   ],
   3: [
     {q:'A \\lor (\\neg A \\land B)', canon:'A ∨ B', hint:'Закон исключения'},
-    {q:'\\neg(\\neg A \\land B) \\lor A', canon:'1', hint:'Де Морган → исключённое третье (1)'},
+    {q:'\\neg(\\neg A \\land B) \\lor A', canon:'1', hint:'Де Морган → исключённое третье'},
     {q:'(A \\land B) \\lor (A \\land \\neg B) \\lor (A \\land C)', canon:'A', hint:'Склеивание → поглощение'},
     {q:'(A \\lor B) \\land (\\neg A \\lor B)', canon:'B', hint:'Склеивание'},
     {q:'((A \\land B) \\lor (\\neg A \\land B)) \\land ((A \\land \\neg B) \\lor (A \\land B))', canon:'A ∧ B', hint:'Склеивание дважды'}
   ],
   4: [
     {q:'A \\land (\\neg A \\lor B)', canon:'A ∧ B', hint:'Закон исключения'},
-    {q:'(A \\land B) \\lor (\\neg A \\land \\neg B)', canon:'A ↔ B', hint:'Эквивалентность (↔)'},
+    {q:'(A \\land B) \\lor (\\neg A \\land \\neg B)', canon:'A ↔ B', hint:'Эквивалентность'},
     {q:'(A \\land B \\land C) \\lor (A \\land B \\land \\neg C)', canon:'A ∧ B', hint:'Склеивание'},
     {q:'(A \\lor B \\lor C) \\land (A \\lor B \\lor \\neg C)', canon:'A ∨ B', hint:'Склеивание'},
     {q:'\\neg(A \\lor B) \\lor (A \\land B)', canon:'A ↔ B', hint:'Де Морган → распределительный'}
@@ -942,7 +925,7 @@ async function gradePractice(){
   var correct = 0;
   qs.forEach(function(q, i){
     var el = document.getElementById('prac'+i);
-    var ok = localResults[i]; // Берем локальный результат!
+    var ok = localResults[i];
     if (ok) correct++;
     el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
     el.style.background = ok ? '#f0fdf4' : '#fef2f2';
@@ -1124,9 +1107,11 @@ async function finishStandalone(auto){
   saTasks.forEach(function(t,i){
     var el = document.getElementById('sa'+i);
     var raw = el ? el.value.trim() : '';
+    
     var ok = false;
     try { ok = analyseAnswer(raw, t.canon, 0).ok; } catch(e){}
     localResults.push(ok);
+    
     serverAnswers.push({ key: t.key, answer: ok ? 'ok' : 'fail' });
   });
 
@@ -1137,14 +1122,14 @@ async function finishStandalone(auto){
 
   saDone = true; var correct = 0;
   saTasks.forEach(function(t,i){
-    var el = document.getElementById('sa'+i); 
-    var ok = localResults[i]; // Берем локальный результат!
+    var el = document.getElementById('sa'+i); var ok = localResults[i];
     if (ok) correct++;
     if (el){ el.disabled = true; el.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)'; el.style.background = ok ? '#f0fdf4' : '#fef2f2'; }
     var card = document.getElementById('st'+i); if (card) card.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)';
   });
 
   var mark = correct>=5?5 : correct===4?4 : correct===3?3 : 2;
+  var used = SA_MINUTES*60 - Math.max(saLeft,0); var um = Math.floor(used/60), us = used%60;
   document.getElementById('exCorrect').textContent = correct + ' / 5';
   document.getElementById('exMark').textContent = mark;
   document.getElementById('examResult').classList.add('show'); document.getElementById('examResult').scrollIntoView({behavior:'smooth'});
