@@ -427,7 +427,7 @@ body.teacher #finalPenaltyBtn, body.teacher #resetPenaltyBtn { display: inline-f
   <section class="card" id="problem">
     <h2><span class="num">⚡</span> Проблемная ситуация</h2>
     <p>Школьный сайт выгружает данные в таком виде:</p>
-    <pre class="py">email = "ivanov@school318.ru"
+    <pre class="py">email = "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="28415e4946475e685b4b404747441b1910065a5d">[email&#160;protected]</a>"
 code  = "MSK-2026-0042"
 date  = "15.03.2026"</pre>
     <p>Нужно получить <b>домен</b> из почты, <b>номер</b> из кода и <b>год</b> из даты.
@@ -490,7 +490,7 @@ date  = "15.03.2026"</pre>
       <tr><td>s[:3]</td><td>с начала до 3-го (не включая)</td><td><code class="inl">Инф</code></td></tr>
       <tr><td>s[-3:]</td><td>последние 3 символа</td><td><code class="inl">ика</code></td></tr>
       <tr><td>s[::2]</td><td>через один, с начала</td><td><code class="inl">Ифраиа</code></td></tr>
-      <tr><td>s[::-1]</td><td>строка задом наперёд</td><td><code class="inl">акитамрофнИ</code></td></tr>
+      <tr><td>s[::-1]</td><td>строка задом наперёд</td><td><code class="inl">акитаморфнИ</code></td></tr>
       <tr><td>s[20:]</td><td>за пределами строки</td><td><code class="inl">''</code> (пусто, без ошибки)</td></tr>
     </table>
 
@@ -596,7 +596,7 @@ print(s)          # Кот</pre>
     <div class="task">
       <p><b>6.</b> Что выведет <code class="inl">print(s[::-1])</code>?</p>
       <div class="ans"><label>Ответ:</label><input type="text" id="w6" placeholder="строка">
-        <button class="btn b-green" data-chk="text" data-id="w6" data-ans="акитаморфнИ"
+        <button class="btn b-green" data-chk="text" data-id="w6" data-ans="акитамрофнИ"
                 data-insens="1" data-key="W6">Проверить</button></div>
       <div class="fb"></div>
     </div>
@@ -1264,7 +1264,31 @@ print(s)          # Кот</pre>
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* =========================================================
+   0. НАСТРОЙКИ
+   ========================================================= */
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbwN6I_2aENZQFGBm7g8xcN7qPz73mhb69fSkkVcz2iJ03c6fWvhkpyNAd7mAawqV77c/exec';
+var RESOURCE_ID = 'urok-8-strings-03';
+var SA_MINUTES = 15;
+
+/* =========================================================
+   1. ПАРОЛЬ
+   ========================================================= */
+async function checkPasswordRemote(resourceId, type, password){
+  try {
+    var response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ resource: resourceId, type: type, password: password })
+    });
+    var data = await response.json();
+    return data;
+  } catch (error) {
+    return { ok: false, error: 'network' };
+  }
+}
+
 /* ============================================================
    ОБЩИЕ УТИЛИТЫ
    ============================================================ */
@@ -1294,8 +1318,6 @@ const RES = {};
 const STORAGE_KEY = 'string03_res_v1';
 const PENALTY_KEY = 'string03_penalty_v1';
 let penaltyPoints = 0;
-const PASS = '318a';
-const PASS_IND = '318';
 
 function saveRes() {
   try {
@@ -1335,9 +1357,17 @@ function showFb(el, cls, msg) {
   el.className = 'fb show ' + cls;
   el.textContent = msg;
 }
-function passOK(v) {
-  const x = norm(v).toLowerCase();
-  return x === PASS || x === PASS_IND;
+async function passOK(type, v, msgEl, btn) {
+  const pass = norm(v);
+  if (!pass) { if (msgEl) msgEl.textContent = 'Введи пароль.'; return false; }
+  if (msgEl) msgEl.textContent = 'Проверка пароля…';
+  if (btn) btn.disabled = true;
+  const data = await checkPasswordRemote(RESOURCE_ID, type, pass);
+  if (btn) btn.disabled = false;
+  if (data.error === 'network') { if (msgEl) msgEl.textContent = '⚠️ Ошибка соединения. Попробуй ещё раз.'; return false; }
+  if (!data.ok) { if (msgEl) msgEl.textContent = 'Неверный пароль. Уточни у учителя.'; return false; }
+  if (msgEl) msgEl.textContent = '';
+  return true;
 }
 
 /* ============================================================
@@ -1566,29 +1596,29 @@ function paintZachet() {
 document.addEventListener('DOMContentLoaded', () => {
   const pw = document.getElementById('pwInput');
   const pwBtn = document.getElementById('pwBtn');
-  pwBtn.addEventListener('click', () => {
-    if (passOK(pw.value)) {
+  pwBtn.addEventListener('click', async () => {
+    if (await passOK('practice', pw.value, document.getElementById('pwMsg'), pwBtn)) {
       document.getElementById('pwGate').style.display = 'none';
       document.getElementById('pwBody').style.display = 'block';
       refreshPractice();
       toast('Варианты открыты');
     } else {
-      document.getElementById('pwMsg').textContent = 'Неверный пароль. Уточни у учителя.';
+      pw.value = ''; pw.focus();
     }
   });
   pw.addEventListener('keydown', e => { if (e.key === 'Enter') pwBtn.click(); });
 
   const ip = document.getElementById('ipPw');
   const ipBtn = document.getElementById('ipBtn');
-  ipBtn.addEventListener('click', () => {
+  ipBtn.addEventListener('click', async () => {
     const sn = (document.getElementById('surname')?.value || '').trim();
     const fn = (document.getElementById('firstname')?.value || '').trim();
     if (!sn || !fn) {
       document.getElementById('ipMsg').textContent = 'Сначала заполни фамилию и имя в шапке.';
       return;
     }
-    if (!passOK(ip.value)) {
-      document.getElementById('ipMsg').textContent = 'Неверный пароль.';
+    if (!(await passOK('standalone', ip.value, document.getElementById('ipMsg'), ipBtn))) {
+      ip.value = ''; ip.focus();
       return;
     }
     document.getElementById('standaloneGate').style.display = 'none';
@@ -1600,7 +1630,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (el) el.disabled = true;
     });
     window.scrollTo({top: 0, behavior: 'smooth'});
-    startTimer(15 * 60);
+    startTimer(SA_MINUTES * 60);
     toast('Самостоятельная работа началась');
   });
   ip.addEventListener('keydown', e => { if (e.key === 'Enter') ipBtn.click(); });
@@ -1619,9 +1649,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.body.classList.contains('teacher')) { setTeacher(false); toast('Режим учителя выключен'); }
     else { pin.value = ''; document.getElementById('tPinMsg').textContent = ''; mbg.classList.add('open'); pin.focus(); }
   });
-  pinOk.addEventListener('click', () => {
-    if (passOK(pin.value)) { mbg.classList.remove('open'); setTeacher(true); toast('Режим учителя включён'); }
-    else document.getElementById('tPinMsg').textContent = 'Неверный пароль.';
+  pinOk.addEventListener('click', async () => {
+    if (await passOK('teacher', pin.value, document.getElementById('tPinMsg'), pinOk)) { mbg.classList.remove('open'); setTeacher(true); toast('Режим учителя включён'); }
+    else { pin.value = ''; pin.focus(); }
   });
   pin.addEventListener('keydown', e => { if (e.key === 'Enter') pinOk.click(); });
 
@@ -1659,7 +1689,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ipResult').classList.add('show');
     document.getElementById('ipResN').textContent = n;
     document.getElementById('ipResM').textContent = mark5(n, 5);
-    const used = Math.max(0, 15 * 60 - Math.max(0, ipLeft));
+    const used = Math.max(0, SA_MINUTES * 60 - Math.max(0, ipLeft));
     document.getElementById('ipResT').textContent =
       String(Math.floor(used / 60)).padStart(2, '0') + ':' + String(used % 60).padStart(2, '0');
     if (ipTick) clearInterval(ipTick);
