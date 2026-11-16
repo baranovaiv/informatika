@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Символы. Срезы строк · 8 класс</title>
+
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$']] },
+  svg: { fontCache: 'global' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23ede9fe'/><text x='16' y='23' font-size='17' font-family='Georgia' font-weight='bold' fill='%236d28d9' text-anchor='middle'>I</text></svg>">
+
+<style>
+/* ============================================================
+   БАЗОВАЯ ДИЗАЙН-СИСТЕМА
+   ============================================================ */
+:root{
+  --pink:#fde2e4;  --blue:#dbeafe;  --green:#d1fae5;  --yellow:#fef9c3;
+  --purple:#ede9fe; --pd:#c4b5fd;   --orange:#ffedd5; --od:#fdba74;
+  --gd:#6ee7b7;    --yd:#fde68a;
+  --ink:#39364a;   --muted:#807b93; --ok:#10b981;     --bad:#ef4444;
+  --r:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; padding:0 0 90px; font-size:16px; line-height:1.65; color:var(--ink);
+  font-family:"Segoe UI",system-ui,-apple-system,sans-serif; min-height:100vh;
+  background:
+    radial-gradient(circle at 8% 0,#fff1f5 0,transparent 38%),
+    radial-gradient(circle at 92% 6%,#eef4ff 0,transparent 38%),
+    linear-gradient(165deg,#fbfaff,#f4fbff 50%,#f7fff9);
+}
+a{color:#6d28d9;text-decoration:none}
+a:hover{text-decoration:underline}
+img{max-width:100%;height:auto}
+.wrap{max-width:1040px;margin:0 auto;padding:24px 16px}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:12px;top:12px;z-index:999;background:#fff;padding:10px 16px;border-radius:10px}
+
+/* ---------- НАВИГАЦИЯ ---------- */
+.nav{position:sticky;top:0;z-index:90;background:rgba(255,255,255,.86);
+  backdrop-filter:blur(12px);border-bottom:1px solid #f0eef8}
+.nav-in{max-width:1040px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;
+  gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;color:#4c1d95;font-size:1.02rem}
+.brand:hover{text-decoration:none}
+.brand .logo{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;flex:0 0 auto;
+  background:linear-gradient(135deg,var(--purple),var(--blue));color:#6d28d9;
+  font-family:Cambria,Georgia,serif;font-weight:900;font-size:1.05rem}
+.nav-links{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+.nav-links a{padding:7px 13px;border-radius:10px;font-weight:700;font-size:.9rem;color:#5b4b8a}
+.nav-links a:hover{background:#f5f3ff;text-decoration:none}
+.nav-links a.active{background:var(--purple);color:#4c1d95}
+.burger{display:none;margin-left:auto;border:none;background:var(--purple);color:#4c1d95;
+  border-radius:10px;padding:8px 12px;font-size:1.1rem;cursor:pointer;font-family:inherit}
+.tmode{border:2px solid #eeeaf8;background:#fff;color:#5b4b8a;border-radius:999px;
+  padding:6px 14px;font-family:inherit;font-weight:800;font-size:.82rem;cursor:pointer}
+.tmode.on{background:var(--green);border-color:var(--gd);color:#047857}
+
+/* ---------- ШАПКА-ГЕРОЙ ---------- */
+.hero{background:linear-gradient(135deg,var(--purple) 0,var(--blue) 55%,var(--green) 100%);
+  border-radius:26px;padding:30px;position:relative;overflow:hidden;
+  box-shadow:0 12px 40px rgba(140,130,190,.18)}
+.hero h1{margin:0 0 8px;font-size:1.9rem;line-height:1.25;position:relative;z-index:2}
+.hero>p,.hero .lead{margin:0;color:#4c4660;font-weight:500;position:relative;z-index:2;max-width:640px}
+.deco{display:none} /* Скрываем декоративную иконку */
+.student{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-top:20px;position:relative;z-index:2}
+.student .f{display:flex;flex-direction:column;gap:6px}
+.student label{font-size:.75rem;font-weight:800;color:#4c4660;text-transform:uppercase;letter-spacing:.5px}
+.student input{border:2px solid transparent;border-radius:12px;padding:10px 16px;
+  font-size:.95rem;font-family:inherit;background:#fff;color:var(--ink);outline:none;
+  box-shadow:0 2px 8px rgba(120,110,160,.08);transition:.2s}
+.student input:focus{background:#fff;border-color:#d8d2ee;box-shadow:0 4px 12px rgba(120,110,160,.12)}
+.student input:disabled{opacity:.6;cursor:not-allowed}
+#surname{width:230px} #firstname{width:210px} #klass{width:110px}
+
+/* ---------- КАРТОЧКИ ---------- */
+.card{background:#fff;border-radius:var(--r);padding:24px;margin:20px 0;
+  box-shadow:0 6px 22px rgba(120,110,160,.1);border:1px solid #f2f0fa}
+.card h2{margin:0 0 14px;font-size:1.32rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card h3{margin:20px 0 10px;font-size:1.08rem;color:#5b4b8a}
+.card> :last-child{margin-bottom:0}
+.num{width:34px;height:34px;border-radius:50%;flex:0 0 auto;font-weight:800;font-size:.95rem;
+  display:inline-flex;align-items:center;justify-content:center;color:#4c1d95;
+  background:linear-gradient(135deg,var(--purple),var(--blue))}
+.badge{font-size:.72rem;background:var(--purple);color:#6d28d9;padding:3px 11px;
+  border-radius:999px;font-weight:800;letter-spacing:.4px;text-transform:uppercase}
+.formula{background:linear-gradient(135deg,#f5f3ff,#eef2ff);border-left:4px solid var(--pd);
+  padding:14px 18px;border-radius:12px;margin:16px 0;text-align:center;overflow-x:auto}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid.three{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+
+/* ---------- ЗАДАЧИ ---------- */
+.task{background:#fffdfa;border:2px solid var(--od);border-radius:16px;
+  padding:20px 20px 16px;margin:24px 0 16px;position:relative}
+.task::before{content:"ЗАДАЧА";position:absolute;top:-11px;left:18px;background:var(--orange);
+  color:#b45309;font-size:.7rem;font-weight:800;padding:3px 12px;border-radius:999px;letter-spacing:.6px}
+.task.q::before{content:"ВОПРОС";background:var(--blue);color:#1d4ed8}
+.task.code{background:#f8fffc;border-color:var(--gd)}
+.task.code::before{content:"IDLE · КОД";background:var(--green);color:#047857}
+.tgrid{display:grid;grid-template-columns:100px 1fr;gap:3px 10px;margin:8px 0;
+  font-family:Cambria,Georgia,serif;font-size:1.02rem}
+.tgrid .k{color:#7c3aed;font-weight:800}
+.step{margin:9px 0 9px 4px;padding-left:14px;border-left:2px solid var(--gd);color:#4b5563}
+.answer-line{border-top:2px dashed var(--gd);margin-top:14px;padding-top:10px;font-weight:800;color:#047857}
+.ans{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.ans label{font-size:.9rem;color:var(--muted);font-weight:600}
+
+/* ---------- ФОРМЫ ---------- */
+input[type=text],input[type=password],input[type=search],textarea,select{
+  border:2px solid #e6e3f1;border-radius:10px;padding:9px 12px;font-size:.98rem;
+  font-family:inherit;outline:none;transition:.2s;color:var(--ink);background:#fff}
+input[type=text]{max-width:280px;width:100%}
+textarea{width:100%;min-height:90px;resize:vertical;font-family:Cambria,Georgia,serif}
+input:focus,textarea:focus,select:focus{border-color:var(--pd);box-shadow:0 0 0 4px #ede9fe}
+input:disabled,select:disabled{opacity:.65;cursor:not-allowed}
+
+/* ---------- КНОПКИ ---------- */
+.btn{border:none;border-radius:12px;padding:11px 18px;font-size:.94rem;font-weight:700;
+  cursor:pointer;transition:.18s;display:inline-flex;align-items:center;gap:7px;
+  font-family:inherit;box-shadow:0 4px 12px rgba(120,110,160,.15);text-decoration:none}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(120,110,160,.22);text-decoration:none}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.b-pink{background:var(--pink);color:#9d174d}
+.b-blue{background:var(--blue);color:#1d4ed8}
+.b-green{background:var(--green);color:#047857}
+.b-yellow{background:var(--yellow);color:#b45309}
+.b-purple{background:var(--purple);color:#6d28d9}
+.b-orange{background:var(--orange);color:#c2410c}
+.b-red{background:#fee2e2;color:#b91c1c}
+.b-teal{background:#ccfbf1;color:#0f766e}
+.b-ghost{background:#fff;color:#5b4b8a;border:2px solid #eeeaf8;box-shadow:none}
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+
+/* ---------- ОТВЕТЫ ---------- */
+.fb{margin-top:10px;font-weight:600;font-size:.94rem;display:none;padding:10px 14px;
+  border-radius:10px;line-height:1.6}
+.fb.show{display:block}
+.fb.ok{background:var(--green);color:#047857}
+.fb.no{background:#fee2e2;color:#b91c1c}
+.fb.hint{background:var(--yellow);color:#b45309}
+
+/* ---------- ТАБЛИЦЫ ---------- */
+table.pow{border-collapse:collapse;width:100%;margin:12px 0;font-size:.92rem;display:block;overflow-x:auto}
+table.pow td,table.pow th{border:1px solid #e6e3f1;padding:6px 8px;text-align:center;background:#fdfcff}
+table.pow tr:first-child td,table.pow thead th{background:var(--blue);font-weight:700;color:#1d4ed8}
+table.data{border-collapse:collapse;width:100%;font-size:.92rem;display:block;overflow-x:auto}
+table.data td,table.data th{border:1px solid #e6e3f1;padding:8px 10px;text-align:left}
+table.data th{background:var(--purple);color:#4c1d95}
+
+/* ---------- ИНФО-БЛОКИ ---------- */
+.note{background:var(--yellow);border-left:4px solid var(--yd);border-radius:12px;
+  padding:12px 16px;margin:16px 0;font-size:.92rem;font-weight:600;color:#b45309}
+.note.tip{background:#f6fffb;border-left-color:var(--gd);color:#047857;font-weight:600}
+.note.info{background:#f5f7ff;border-left-color:#93c5fd;color:#1d4ed8}
+blockquote{margin:16px 0;padding:12px 18px;background:#fbfaff;border-left:4px solid var(--pd);
+  border-radius:0 12px 12px 0;color:#5b4b8a;font-style:italic}
+ul,ol{padding-left:22px}
+li{margin:4px 0}
+details{background:#fdfcff;border:2px solid #f0eef8;border-radius:12px;padding:12px 16px;margin:12px 0}
+details summary{cursor:pointer;font-weight:800;color:#6d28d9}
+details[open] summary{margin-bottom:10px}
+
+/* ---------- ШАГИ ---------- */
+.steps{counter-reset:st;list-style:none;padding:0;margin:14px 0}
+.steps li{counter-increment:st;position:relative;padding-left:44px;margin:14px 0}
+.steps li::before{content:counter(st);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--blue));color:#4c1d95;font-weight:800;
+  display:grid;place-items:center;font-size:.85rem}
+
+/* ---------- ДОМАШНЕЕ ЗАДАНИЕ ---------- */
+.hw{background:#fdfcff;border-radius:14px;padding:16px 18px;margin:12px 0;border-left:4px solid #f8b4c4}
+.lvl{display:inline-block;font-size:.72rem;font-weight:800;padding:2px 10px;
+  border-radius:999px;margin-bottom:8px;letter-spacing:.3px}
+.l1{background:var(--green);color:#047857}
+.l2{background:var(--blue);color:#1d4ed8}
+.l3{background:var(--orange);color:#c2410c}
+.hw p{margin:0}
+.hw details{margin-top:8px;background:#fff;padding:10px 14px}
+
+/* ---------- ПАРОЛЬ / LOCK ---------- */
+.pmsg{min-height:22px;font-weight:700;color:var(--bad);margin:10px 0 0}
+.qin{max-width:200px}
+.lock{text-align:center;padding:32px 18px;border-radius:16px;
+  background:linear-gradient(135deg,#fff7ed,#fef2f2);border:2px dashed var(--od)}
+.lock h3{margin:10px 0 4px}
+.lock p{color:var(--muted);margin:0 0 16px;font-size:.94rem}
+.lockrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ---------- ИТОГИ ---------- */
+.hud{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 8px}
+.chip{background:#fff;border-radius:14px;padding:8px 14px;font-weight:700;font-size:.9rem;
+  box-shadow:0 4px 14px rgba(120,110,160,.12);display:flex;align-items:center;gap:6px;border:1px solid #f0eef8}
+.chip.score{background:var(--green)}
+.chip.level{background:var(--yellow)}
+.res{background:linear-gradient(135deg,var(--green),var(--blue));border-radius:var(--r);
+  padding:22px;margin:18px 0;display:none}
+.res.show{display:block}
+.res h3{margin:0 0 14px;color:#065f46}
+.marks{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px}
+.mcard{background:#fff;border-radius:16px;padding:16px;text-align:center;
+  box-shadow:0 4px 16px rgba(6,95,70,.1)}
+.mcard .lbl{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.5px;margin-bottom:8px}
+.mcard .val{font-size:2.2rem;font-weight:900;line-height:1;color:#6d28d9}
+.mcard.total .val{color:#047857}
+
+/* ---------- ПОДВАЛ ---------- */
+.foot{max-width:1040px;margin:40px auto 0;padding:22px 16px;border-top:1px solid #eae7f5;
+  color:var(--muted);font-size:.85rem;display:flex;gap:14px;flex-wrap:wrap;
+  justify-content:space-between;align-items:center}
+.foot a{color:#6d28d9;font-weight:700}
+.foot-links{display:flex;gap:14px;flex-wrap:wrap}
+
+/* ---------- МОДАЛКА ---------- */
+.mbg{display:none;position:fixed;inset:0;background:rgba(60,55,90,.48);z-index:200;
+  align-items:center;justify-content:center;padding:16px}
+.mbg.open{display:flex}
+.modal{background:#fff;border-radius:22px;max-width:660px;width:100%;max-height:88vh;
+  overflow:auto;padding:24px;box-shadow:0 24px 70px rgba(60,55,90,.4)}
+.modal h3{margin:0 0 10px;font-size:1.12rem}
+.mhint{color:var(--muted);font-size:.87rem;margin:0 0 14px}
+
+/* ---------- TOAST ---------- */
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(140px);
+  background:#39364a;color:#fff;padding:12px 24px;border-radius:14px;font-weight:700;
+  font-size:.92rem;transition:.35s;z-index:300;box-shadow:0 12px 34px rgba(0,0,0,.28);
+  max-width:90vw;text-align:center;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ---------- ЦЕНТР / УТИЛИТЫ ---------- */
+.center{text-align:center}
+.muted{color:var(--muted)}
+.mt0{margin-top:0}
+.mb0{margin-bottom:0}
+
+/* ---------- ВАРИАНТЫ ---------- */
+.variant-tabs,.vbar{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.variant{display:none}
+.variant.on{display:block}
+.chipbtn{border:2px solid #eeeaf8;background:#fff;border-radius:999px;padding:7px 16px;
+  font-family:inherit;font-weight:800;font-size:.85rem;color:#5b4b8a;cursor:pointer;transition:.15s}
+.chipbtn:hover{border-color:var(--pd);background:#faf8ff}
+.chipbtn.on{background:var(--purple);border-color:var(--pd);color:#4c1d95}
+
+/* ---------- IDLE / ЗАЧЁТ ---------- */
+.tests{border-collapse:collapse;width:100%;font-size:.88rem;margin:12px 0}
+.tests td,.tests th{border:1px solid #e6e3f1;padding:6px 9px;text-align:left}
+.tests th{background:var(--green);color:#047857;font-size:.78rem;text-transform:uppercase;letter-spacing:.4px}
+.tests td.mono{font-family:"Consolas",Menlo,monospace;background:#fdfcff}
+.zline{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:14px;
+  padding-top:12px;border-top:2px dashed #d9f5e9}
+.zstat{font-size:.86rem;font-weight:800;padding:5px 14px;border-radius:999px;background:#f1f0f7;color:#807b93}
+.zstat.wait{background:#fef9c3;color:#b45309}
+.zstat.done{background:var(--green);color:#047857}
+.zachet{display:none;background:#047857;color:#fff}
+body.teacher .zachet{display:inline-flex}
+body.teacher .zstat.wait{background:var(--blue);color:#1d4ed8}
+.tnote{font-size:.84rem;color:var(--muted);font-weight:600}
+.banner-teacher{display:none;position:sticky;top:56px;z-index:80;margin:0 0 16px;
+  background:linear-gradient(135deg,#d1fae5,#dbeafe);border:2px solid var(--gd);
+  border-radius:14px;padding:10px 16px;font-weight:800;color:#047857;font-size:.9rem}
+body.teacher .banner-teacher{display:block}
+
+/* ---------- СТРОКИ-СПЕЦИФИКА ---------- */
+pre.py{background:#211d38;color:#eae6ff;border-radius:12px;padding:14px 16px;
+  overflow-x:auto;font-family:"Consolas","SF Mono",Menlo,monospace;
+  font-size:.92rem;line-height:1.55;margin:14px 0;tab-size:4}
+pre.py b{color:#fdba74;font-weight:600}
+code.inl{background:#f3f0ff;color:#5b21b6;border-radius:6px;padding:1px 6px;
+  font-family:"Consolas",Menlo,monospace;font-size:.92em;white-space:nowrap}
+.sim{background:#fbf9ff;border:2px dashed var(--pd);border-radius:16px;padding:18px;margin:18px 0}
+.sim h4{margin:0 0 4px;font-size:1.02rem;color:#6d28d9}
+.sim .sub{margin:0 0 14px;font-size:.86rem;color:var(--muted)}
+.simrow{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:12px}
+.simrow .fld{display:flex;flex-direction:column;gap:4px;font-size:.84rem;font-weight:800;color:var(--muted)}
+.simrow input{max-width:170px}
+.simout{background:#fff;border-radius:12px;padding:12px 14px;border:1px solid #eeeaf8;
+  font-family:Cambria,Georgia,serif;font-size:1rem;overflow-x:auto}
+.simout .err{color:var(--bad);font-weight:700}
+.match-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0}
+.match-row .lhs{min-width:150px;font-weight:800;font-family:Cambria,Georgia,serif;color:#5b4b8a;font-size:1rem}
+
+/* ---------- ЭКЗАМЕН ---------- */
+#standalone{display:none}
+body.exam{padding-bottom:110px}
+body.exam #theory, body.exam #workbook, body.exam #practice,
+body.exam #idle-pract, body.exam #final, body.exam #homework,
+body.exam #problem, body.exam #standaloneGate, body.exam .hero,
+body.exam .foot{display:none !important}
+body.exam #standalone{display:block}
+.exam-head{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.97);
+  backdrop-filter:blur(10px);border-radius:0 0 20px 20px;padding:14px 20px;margin:-24px -16px 18px;
+  box-shadow:0 6px 24px rgba(120,110,160,.18);display:flex;flex-wrap:wrap;gap:14px;
+  align-items:center;justify-content:space-between}
+.exam-title{font-weight:800;font-size:1.05rem}
+.exam-who{font-size:.86rem;color:var(--muted)}
+.timer{font-family:Consolas,monospace;font-size:1.5rem;font-weight:800;color:#047857;
+  background:var(--green);padding:6px 18px;border-radius:12px;min-width:110px;text-align:center}
+.timer.warn{background:var(--yellow);color:#b45309}
+.timer.danger{background:#fee2e2;color:#b91c1c;animation:pulseT 1s infinite}
+@keyframes pulseT{0%,100%{opacity:1}50%{opacity:.55}}
+.s-task{background:#fff;border-radius:18px;padding:18px 20px;margin:14px 0;
+  border:2px solid #e8e3f5;box-shadow:0 4px 18px rgba(120,110,160,.09)}
+.s-task .sn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;
+  border-radius:50%;background:var(--purple);color:#5b21b6;font-weight:800;font-size:.85rem;margin-right:8px}
+.s-task .stext{margin:0 0 12px;font-size:1rem;line-height:1.65}
+.s-task input[type=text]{max-width:200px}
+.no-calc-warn{background:var(--yellow);border-left:4px solid var(--yd);border-radius:12px;
+  padding:12px 16px;margin:0 0 16px;font-size:.92rem;font-weight:600;color:#b45309}
+
+/* ---------- STICKY BAR ---------- */
+.bar{background:#fff;border-radius:var(--r);padding:16px;border:1px solid #f2f0fa;
+  box-shadow:0 -4px 24px rgba(120,110,160,.16);display:flex;flex-wrap:wrap;gap:10px;
+  position:sticky;bottom:10px;z-index:30;margin-top:24px}
+
+/* ---------- ПАНЕЛЬ БЫСТРЫХ ДЕЙСТВИЙ (СНИЗУ) ---------- */
+.quick-bar{
+  position:fixed; bottom:0; left:0; right:0;
+  background:#fff; border-top:1px solid #f2f0fa;
+  padding:10px 16px; display:flex; flex-wrap:wrap; justify-content:center; gap:10px;
+  box-shadow:0 -4px 20px rgba(0,0,0,.08); z-index:100;
+}
+.quick-bar .btn { padding: 8px 14px; font-size: 0.9rem; }
+body.exam .quick-bar { display:none !important; }
+
+/* ---------- КОНФЕТТИ ---------- */
+.confetti{position:fixed;top:-40px;font-size:1.6rem;pointer-events:none;user-select:none;
+  z-index:9999;animation:confetti-fall linear forwards}
+@keyframes confetti-fall{
+  0%{transform:translateY(0) rotate(0deg);opacity:1}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0}
+}
+
+/* ---------- КАЛЬКУЛЯТОР ---------- */
+.calc{max-width:340px}
+.calc-screen{background:#1e1b2e;color:#e9e6f5;border-radius:14px;padding:14px 16px;margin-bottom:12px;
+  text-align:right;font-family:Consolas,monospace;overflow:hidden}
+.calc-expr{font-size:.82rem;color:#a9a3c4;min-height:18px;word-break:break-all}
+.calc-out{font-size:1.9rem;font-weight:700;word-break:break-all;line-height:1.2}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cbtn{border:none;border-radius:12px;padding:15px 0;font-size:1.05rem;font-weight:700;
+  font-family:inherit;cursor:pointer;background:#f5f3ff;color:#4c1d95;transition:.12s}
+.cbtn:hover{background:#ede9fe}
+.cbtn:active{transform:scale(.96)}
+.cbtn.op{background:var(--purple);color:#5b21b6}
+.cbtn.eq{background:var(--green);color:#047857;grid-column:span 2}
+.cbtn.del{background:var(--orange);color:#c2410c}
+.cbtn.clr{background:#fee2e2;color:#b91c1c}
+
+/* ---------- КНОПКА СНИЖЕНИЯ БАЛЛА ---------- */
+#finalPenaltyBtn { display: none; }
+body.teacher #finalPenaltyBtn { display: inline-flex; }
+
+/* ---------- АДАПТИВ ---------- */
+@media(max-width:760px){
+  .hero{padding:22px 18px}
+  .hero h1{font-size:1.45rem}
+  .card{padding:18px 16px}
+  .tgrid{grid-template-columns:84px 1fr;font-size:.97rem}
+  .burger{display:block}
+  .nav-links{display:none;width:100%;flex-direction:column;gap:2px;margin:6px 0 0}
+  .nav-links.open{display:flex}
+  .nav-links a{padding:10px 14px}
+  input[type=text]{max-width:100%}
+  .marks{grid-template-columns:1fr}
+  #surname,#firstname,#klass{width:100%}
+  .quick-bar .btn { padding: 6px 10px; font-size: 0.8rem; }
+}
+@media print{
+  .nav,.foot,.no-print,.burger,.quick-bar,.tmode,.bar{display:none !important}
+  body{background:#fff;padding:0;font-size:11.5pt}
+  .card{box-shadow:none;border:none;padding:0;margin:0 0 12pt}
+  .task{break-inside:avoid}
+  a{color:#000;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">К содержанию</a>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="../index.html"><span class="logo">I</span> Информатика · кабинет 318А</a>
+    <button class="burger" aria-label="Меню">☰</button>
+    <div class="nav-links">
+      <a href="../index.html">Главная</a>
+      <a href="../lessons.html" class="active">Уроки</a>
+      <a href="../materials.html">Материалы</a>
+      <a href="../tests.html">Тесты</a>
+      <a href="../oge.html">ОГЭ</a>
+      <a href="../about.html">О сайте</a>
+      <button class="tmode" id="tModeBtn">👩‍🏫 Режим учителя</button>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap" id="main">
+
+  <header class="hero">
+    <h1>Символы. Срезы строк</h1>
+    <p class="lead">Урок информатики · 8 класс · ИТ-вертикаль · Python</p>
+    <div class="student">
+      <div class="f"><label for="surname">Фамилия</label>
+        <input type="text" id="surname" placeholder="Иванов" autocomplete="off"></div>
+      <div class="f"><label for="firstname">Имя</label>
+        <input type="text" id="firstname" placeholder="Иван" autocomplete="off"></div>
+      <div class="f"><label for="klass">Класс</label>
+        <input type="text" id="klass" placeholder="8А" autocomplete="off"></div>
+    </div>
+  </header>
+
+  <div class="banner-teacher">
+    👩‍🏫 Режим учителя включён — у задач в IDLE появились кнопки «Зачёт», в итогах — «Снизить 1 балл».
+  </div>
+
+  <!-- ===================== ПРОБЛЕМНАЯ СИТУАЦИЯ ===================== -->
+  <section class="card" id="problem">
+    <h2><span class="num">⚡</span> Проблемная ситуация</h2>
+    <p>Школьный сайт выгружает данные в таком виде:</p>
+    <pre class="py">email = "ivanov@school318.ru"
+code  = "MSK-2026-0042"
+date  = "15.03.2026"</pre>
+    <p>Нужно получить <b>домен</b> из почты, <b>номер</b> из кода и <b>год</b> из даты.
+      Один ученик написал цикл: проходит по символам, проверяет каждый и собирает результат
+      по одной букве. Получилось 12 строк кода на одну операцию. Учитель говорит:
+      «Есть способ короче — одной строкой».</p>
+    <ol class="steps">
+      <li>Как взять <b>сразу несколько символов подряд</b>, не перебирая их?</li>
+      <li>Что будет, если попросить символ с номером, которого в строке нет?</li>
+      <li>Можно ли поменять одну букву внутри строки: <code class="inl">s[0] = 'Ж'</code>?</li>
+    </ol>
+    <p><b>Вопрос урока:</b> как с помощью одной записи выбрать часть строки и что при этом
+      происходит с исходной строкой?</p>
+    <details>
+      <summary>Показать разбор (открывать после обсуждения в парах)</summary>
+      <ul>
+        <li>Срез <code class="inl">s[начало:конец:шаг]</code> возвращает новую строку.
+          Например, домен: <code class="inl">email[7:]</code> → <b>school318.ru</b>;
+          номер: <code class="inl">code[4:8]</code> → <b>2026</b>;
+          год: <code class="inl">date[6:]</code> → <b>2026</b>.</li>
+        <li><b>Ошибки нет.</b> Срез за пределами строки просто даёт меньше символов или пустую
+          строку. Ошибку <code class="inl">IndexError</code> даёт только обращение к одному
+          символу <code class="inl">s[k]</code>.</li>
+        <li><b>Строки неизменяемы.</b> <code class="inl">s[0] = 'Ж'</code> даёт
+          <code class="inl">TypeError</code>. Чтобы «заменить» букву, создают новую строку:
+          <code class="inl">s = 'Ж' + s[1:]</code>.</li>
+      </ul>
+    </details>
+  </section>
+
+  <!-- ===================== ТЕОРИЯ ===================== -->
+  <section class="card" id="theory">
+    <h2><span class="num">1</span> Теоретический материал</h2>
+
+    <h3>Символ — это строка длины 1</h3>
+    <p>В Python нет отдельного типа «символ». Один символ — это обычная строка из одного
+      знака. Номер символа называется <b>индексом</b>. Нумерация начинается с нуля.</p>
+
+    <table class="pow">
+      <tr><td>Символ</td><td>И</td><td>н</td><td>ф</td><td>о</td><td>р</td><td>м</td>
+          <td>а</td><td>т</td><td>и</td><td>к</td><td>а</td></tr>
+      <tr><td><b>Индекс</b></td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+          <td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
+      <tr><td><b>Отриц.</b></td><td>−11</td><td>−10</td><td>−9</td><td>−8</td><td>−7</td>
+          <td>−6</td><td>−5</td><td>−4</td><td>−3</td><td>−2</td><td>−1</td></tr>
+    </table>
+
+    <p>Коды символов — функции <code class="inl">ord()</code> и <code class="inl">chr()</code>:
+      <code class="inl">chr(ord('a') + 1)</code> → <code class="inl">'b'</code>.</p>
+
+    <h3>Срез: общая форма</h3>
+    <div class="formula">
+      <b>s[начало : конец : шаг]</b><br>
+      <span class="muted">начало — включается, конец — <b>не</b> включается, шаг по умолчанию 1</span>
+    </div>
+
+    <table class="pow">
+      <tr><td>Запись</td><td>Что получим</td><td>Пример для «Информатика»</td></tr>
+      <tr><td>s[2:5]</td><td>символы с 2-го по 4-й</td><td><code class="inl">фор</code></td></tr>
+      <tr><td>s[:3]</td><td>с начала до 3-го (не включая)</td><td><code class="inl">Инф</code></td></tr>
+      <tr><td>s[-3:]</td><td>последние 3 символа</td><td><code class="inl">ика</code></td></tr>
+      <tr><td>s[::2]</td><td>через один, с начала</td><td><code class="inl">Ифраиа</code></td></tr>
+      <tr><td>s[::-1]</td><td>строка задом наперёд</td><td><code class="inl">акитаморфнИ</code></td></tr>
+      <tr><td>s[20:]</td><td>за пределами строки</td><td><code class="inl">''</code> (пусто, без ошибки)</td></tr>
+    </table>
+
+    <div class="note">
+      <b>Правило «конец не включается».</b> Длина среза <code class="inl">s[a:b]</code>
+      равна <code class="inl">b − a</code> (если <code class="inl">a &lt; b</code> и оба в пределах
+      строки). Поэтому <code class="inl">len(s[2:7])</code> = 5.
+    </div>
+
+    <h3>Отрицательный шаг</h3>
+    <pre class="py">s = "Информатика"
+print(s[::-1])      # акитаморфнИ
+print(s[-1:-4:-1])  # аки  — три символа с конца
+print(s[::-2])      # аиарфИ — через один, справа налево</pre>
+
+    <div class="note tip">
+      <b>Совет.</b> Чтобы не путаться, сначала определи <b>номера</b> нужных символов,
+      и только потом пиши срез.
+    </div>
+
+    <h3>Строки неизменяемы</h3>
+    <pre class="py">s = "кот"
+s[0] = "к"        # TypeError: 'str' object does not support item assignment
+s = "К" + s[1:]   # правильно: создаём новую строку
+print(s)          # Кот</pre>
+
+    <div class="note">
+      <b>ЕГЭ-ловушка.</b> <code class="inl">s[10]</code> для строки из 10 символов — ошибка
+      <code class="inl">IndexError</code>. А <code class="inl">s[10:]</code> — нет: это пустая строка.
+    </div>
+
+    <h3>Разобранный пример</h3>
+    <div class="task">
+      <div class="tgrid">
+        <span class="k">ДАНО:</span><span>s = "Информатика"</span>
+        <span class="k">НАЙТИ:</span><span>результат s[2:7][::-1]</span>
+      </div>
+      <div class="step"><b>1.</b> <code class="inl">s[2:7]</code>: индексы 2, 3, 4, 5, 6 → <b>форма</b>.</div>
+      <div class="step"><b>2.</b> <code class="inl">[::-1]</code> переворачивает → <b>амроф</b>.</div>
+      <div class="answer-line">ОТВЕТ: амроф</div>
+    </div>
+
+    <div class="sim">
+      <h4>🔬 Конструктор срезов</h4>
+      <p class="sub">Введи строку и параметры среза. Пустое поле — значение по умолчанию.</p>
+      <div class="simrow">
+        <label class="fld">Строка<input type="text" id="slS" value="Информатика" maxlength="30"></label>
+        <label class="fld">Начало<input type="text" id="slA" value="2" style="max-width:90px"></label>
+        <label class="fld">Конец<input type="text" id="slB" value="7" style="max-width:90px"></label>
+        <label class="fld">Шаг<input type="text" id="slC" value="" style="max-width:90px" placeholder="1"></label>
+      </div>
+      <div class="simout" id="slOut"></div>
+    </div>
+  </section>
+
+  <!-- ===================== РАБОЧАЯ ТЕТРАДЬ ===================== -->
+  <section class="card" id="workbook">
+    <h2><span class="num">2</span> Рабочая тетрадь <span class="badge">12 вопросов</span></h2>
+    <p class="muted">Решение оформляй в тетради, в поле вводи только итоговый ответ.
+      Верный ответ, однажды засчитанный, уже не отменяется.</p>
+
+    <div class="task q">
+      <p><b>1.</b> <code class="inl">s = "Информатика"</code>. Что выведет
+        <code class="inl">print(s[0])</code>?</p>
+      <div class="ans"><label>Ответ:</label><input type="text" id="w1" placeholder="символ">
+        <button class="btn b-green" data-chk="text" data-id="w1" data-ans="И"
+                data-insens="1" data-key="W1">Проверить</button></div>
+      <div class="fb"></div>
+    </div>
+
+    <div class="task">
+      <p><b>2.</b> Что выведет <code class="inl">print(s[2:5])</code>? Введи строку.</p>
+      <div class="ans"><label>Ответ:</label><input type="text" id="w2" placeholder="строка">
+        <button class="btn b-green" data-chk="text" data-id="w2" data-ans="фор"
+                data-insens="1" data-key="W2">Проверить</button></div>
+      <div class="fb"></div>
+    </div>
+
+    <div class="task">
+      <p><b>3.</b> Что выведет <code class="inl">print(s[:3])</code>?</p>
+      <div class="ans"><label>Ответ:</label><input type="text" id="w3" placeholder="строка">
+        <button class="btn b-green" data-chk="text" data-id="w3" data-ans="Инф"
+                data-insens="1" data-key="W3">Проверить</button></div>
+      <div class="fb"></div>
+    </div>
+
+    <div class="task">
+      <p><b>4.</b> Что выведет <code class="inl">print(s[-3:])</code>?</p>
+      <div class="ans"><label>Ответ:</label><input type="text" id="w4" placeholder="строка">
+        <button class="btn b-green" data-chk="text" data-id="w4" data-ans="ика"
+                data-insens="1" data-key="W4">Проверить</button></div>
+      <div class="fb"></div>
+    </div>
+
+    <div class="task">
+      <p><b>5.</b> Что выведет <code class="inl">print(s[::2])</code>? Шаг 2 — через один символ.</p>
+      <div class="ans"><label>Ответ:</label><input type="text" id="w5" placeholder="строка">
+        <button class="btn b-green" data-chk="text" data-id="w5" data-ans="Ифраиа"
+                data-insens="1" data-key="W5">Проверить</button></div>
+      <div class="fb"></div>
+    </div>
+
+    <div class="task">
+      <p><b>6.</b> Что выведет <code class="inl">print(s[::-1])</code>?</p>
+      <div class="ans"><label>Ответ:</label><input type="text" id="w6" placeholder="строка">
+        <button class="btn b-green" data-chk="text" data-id="w6" data-ans="акитаморфнИ"
+                data-insens="1" data-key="W6">Проверить</button></div>
+      <div class="fb"></div>
+    </div>
+
+    <div class="task">
+      <p><b>7.</b> Чему равно <code class="inl">len(s[2:7])</code>?</p>
+      <div class="ans"><label>Ответ:</label><input type="text" id="w7" placeholder="число">
+        <button class="btn b-green" data-chk="num" data-id="w7" data-ans="5" data-key="W7">Проверить</button></div>
+      <div class="fb"></div>
+    </div>
+
+    <div class="task q">
+      <p><b>8.</b> Что выведет <code class="inl">print(repr(s[20:]))</code>?</p>
+      <div class="ans"><label>Ответ:</label>
+        <select id="w8" class="qin" style="max-width:280px">
+          <option value="">— выбери —</option>
+          <option value="err">IndexError</option>
+          <option value="empty">'' (пустая строка)</option>
+          <option value="full">Информатика</option>
+        </select>
+        <button class="btn b-green" data-chk="radio" data-id="w8" data-ans="empty" data-key="W8">Проверить</button>
+      </div><div class="fb"></div>
+    </div>
+
+    <div class="task q">
+      <p><b>9.</b> Что произойдёт при <code class="inl">s = "Информатика"; s[1] = "x"</code>?</p>
+      <div class="ans"><label>Ответ:</label>
+        <select id="w9" class="qin" style="max-width:280px">
+          <option value="">— выбери —</option>
+          <option value="TypeError">TypeError</option>
+          <option value="xnformatika">строка станет «xнформатика»</option>
+          <option value="none">ничего, всё работает</option>
+        </select>
+        <button class="btn b-green" data-chk="radio" data-id="w9" data-ans="TypeError" data-key="W9">Проверить</button>
+      </div><div class="fb"></div>
+    </div>
+
+    <div class="task">
+      <p><b>10.</b> Соотнеси выражение и результат.</p>
+      <div class="match-row"><span class="lhs">s[-1]</span>
+        <select class="mr"><option value="">—</option><option>а</option><option>нф</option>
+        <option>матика</option><option>ика</option></select></div>
+      <div class="match-row"><span class="lhs">s[1:3]</span>
+        <select class="mr"><option value="">—</option><option>а</option><option>нф</option>
+        <option>матика</option><option>ика</option></select></div>
+      <div class="match-row"><span class="lhs">s[5:]</span>
+        <select class="mr"><option value="">—</option><option>а</option><option>нф</option>
+        <option>матика</option><option>ика</option></select></div>
+      <div class="ans">
+        <button class="btn b-green" data-chk="match" data-sel=".mr" data-scope="workbook"
+                data-answers="а|нф|матика" data-key="W10">Проверить</button>
+      </div><div class="fb"></div>
+    </div>
+
+    <div class="task">
+      <p><b>11.</b> <span class="badge">ЕГЭ № 24</span> Что выведет
+        <code class="inl">print("абвгдежзик"[1:8:3])</code>?</p>
+      <div class="ans"><label>Ответ:</label><input type="text" id="w11" placeholder="строка">
+        <button class="btn b-green" data-chk="text" data-id="w11" data-ans="бдз"
+                data-insens="1" data-key="W11">Проверить</button></div>
+      <div class="fb"></div>
+    </div>
+
+    <div class="task">
+      <p><b>12.</b> <span class="badge">ЕГЭ № 24</span> Напиши срез, который даёт <b>«ма»</b>.</p>
+      <div class="ans"><label>Ответ:</label><input type="text" id="w12" placeholder="например s[a:b]">
+        <button class="btn b-green" data-chk="text" data-id="w12" data-ans="s[5:7]"
+                data-insens="1" data-key="W12">Проверить</button></div>
+      <div class="fb"></div>
+    </div>
+
+    <div class="res" id="wbRes">
+      <h3>Результат рабочей тетради</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Верно</div><div class="val" id="wbScore">0</div></div>
+        <div class="mcard"><div class="lbl">Всего</div><div class="val">12</div></div>
+        <div class="mcard total"><div class="lbl">Оценка</div><div class="val" id="wbMark">—</div></div>
+      </div>
+    </div>
+    <div class="bar no-print" style="position:static">
+      <button class="btn b-ghost" id="wbReset">Сбросить тетрадь</button>
+      <button class="btn b-green" id="wbEvalBtn">Оценить рабочую тетрадь</button>
+    </div>
+  </section>
+
+  <!-- ===================== ПРАКТИКУМ В IDLE ===================== -->
+  <section class="card" id="idle-pract">
+    <h2><span class="num">🖥</span> Практикум в IDLE <span class="badge">6 задач</span></h2>
+    <div class="note tip">
+      <b>Как работать.</b> Открой <b>IDLE</b> → <em>File → New File</em>, напиши программу,
+      сохрани как <code class="inl">task1.py</code> и запусти <b>F5</b>. Введи значения из таблицы
+      и сравни вывод с ожидаемым. Когда всё совпадает — подзови учителя: он посмотрит код,
+      запустит его и нажмёт <b>«Зачёт»</b>.
+    </div>
+
+    <div class="task code">
+      <p><b>Программа 1. Первые три буквы.</b> Просит слово и выводит первые три символа.</p>
+      <table class="tests">
+        <tr><th>Ввод</th><th>Ожидаемый вывод</th></tr>
+        <tr><td class="mono">Информатика</td><td class="mono">Инф</td></tr>
+        <tr><td class="mono">Python</td><td class="mono">Pyt</td></tr>
+      </table>
+      <details><summary>Подсказка</summary>Срез от начала до индекса 3 (не включая).</details>
+      <div class="zline">
+        <span class="zstat wait" data-zstat="I1">⏳ ждёт проверки учителя</span>
+        <button class="btn zachet" data-zachet="I1">✅ Зачёт</button>
+        <span class="tnote">Программа 1 · 1 балл</span>
+      </div>
+    </div>
+
+    <div class="task code">
+      <p><b>Программа 2. Последние две буквы.</b> Просит слово и выводит последние два символа.</p>
+      <table class="tests">
+        <tr><th>Ввод</th><th>Ожидаемый вывод</th></tr>
+        <tr><td class="mono">школа</td><td class="mono">ла</td></tr>
+        <tr><td class="mono">Python</td><td class="mono">on</td></tr>
+      </table>
+      <details><summary>Подсказка</summary>Отрицательный индекс: <code class="inl">-2</code>.</details>
+      <div class="zline">
+        <span class="zstat wait" data-zstat="I2">⏳ ждёт проверки учителя</span>
+        <button class="btn zachet" data-zachet="I2">✅ Зачёт</button>
+        <span class="tnote">Программа 2 · 1 балл</span>
+      </div>
+    </div>
+
+    <div class="task code">
+      <p><b>Программа 3. Без краёв.</b> Выводит слово без первой и последней буквы.</p>
+      <table class="tests">
+        <tr><th>Ввод</th><th>Ожидаемый вывод</th></tr>
+        <tr><td class="mono">кот</td><td class="mono">о</td></tr>
+        <tr><td class="mono">программа</td><td class="mono">рограмм</td></tr>
+      </table>
+      <details><summary>Подсказка</summary>Срез <code class="inl">[1:-1]</code>.</details>
+      <div class="zline">
+        <span class="zstat wait" data-zstat="I3">⏳ ждёт проверки учителя</span>
+        <button class="btn zachet" data-zachet="I3">✅ Зачёт</button>
+        <span class="tnote">Программа 3 · 1 балл</span>
+      </div>
+    </div>
+
+    <div class="task code">
+      <p><b>Программа 4. Через одну.</b> Выводит символы на чётных позициях (0, 2, 4, …).</p>
+      <table class="tests">
+        <tr><th>Ввод</th><th>Ожидаемый вывод</th></tr>
+        <tr><td class="mono">программа</td><td class="mono">порма</td></tr>
+        <tr><td class="mono">Python</td><td class="mono">Pto</td></tr>
+      </table>
+      <details><summary>Подсказка</summary>Третий параметр среза — шаг: <code class="inl">s[::2]</code>.</details>
+      <div class="zline">
+        <span class="zstat wait" data-zstat="I4">⏳ ждёт проверки учителя</span>
+        <button class="btn zachet" data-zachet="I4">✅ Зачёт</button>
+        <span class="tnote">Программа 4 · 1 балл</span>
+      </div>
+    </div>
+
+    <div class="task code">
+      <p><b>Программа 5. Наоборот.</b> Выводит слово задом наперёд.</p>
+      <table class="tests">
+        <tr><th>Ввод</th><th>Ожидаемый вывод</th></tr>
+        <tr><td class="mono">кот</td><td class="mono">ток</td></tr>
+        <tr><td class="mono">Python</td><td class="mono">nohtyP</td></tr>
+      </table>
+      <details><summary>Подсказка</summary>Шаг <code class="inl">-1</code> без границ.</details>
+      <div class="zline">
+        <span class="zstat wait" data-zstat="I5">⏳ ждёт проверки учителя</span>
+        <button class="btn zachet" data-zachet="I5">✅ Зачёт</button>
+        <span class="tnote">Программа 5 · 1 балл</span>
+      </div>
+    </div>
+
+    <div class="task code">
+      <p><b>Программа 6. Год и месяц.</b> Дата <code class="inl">дд.мм.гггг</code> →
+        год и месяц через пробел.</p>
+      <table class="tests">
+        <tr><th>Ввод</th><th>Ожидаемый вывод</th></tr>
+        <tr><td class="mono">15.03.2026</td><td class="mono">2026 03</td></tr>
+        <tr><td class="mono">01.12.2030</td><td class="mono">2030 12</td></tr>
+      </table>
+      <details><summary>Подсказка</summary>Месяц — позиции 3 и 4; год — с 6-й до конца.</details>
+      <div class="zline">
+        <span class="zstat wait" data-zstat="I6">⏳ ждёт проверки учителя</span>
+        <button class="btn zachet" data-zachet="I6">✅ Зачёт</button>
+        <span class="tnote">Программа 6 · 1 балл</span>
+      </div>
+    </div>
+
+    <div class="res" id="idleRes">
+      <h3>Результат практикума</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Зачтено</div><div class="val" id="idleScore">0</div></div>
+        <div class="mcard"><div class="lbl">Всего</div><div class="val">6</div></div>
+        <div class="mcard total"><div class="lbl">Оценка</div><div class="val" id="idleMark">—</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ПРАКТИЧЕСКАЯ РАБОТА ===================== -->
+  <section class="card" id="practice">
+    <h2><span class="num">3</span> Практическая работа <span class="badge">4 варианта · 6 вопросов</span></h2>
+
+    <div id="pwGate" class="lock">
+      <h3>🔒 Работа закрыта</h3>
+      <p>Введи пароль учителя — после этого откроются 4 варианта.</p>
+      <div class="lockrow">
+        <input type="password" id="pwInput" placeholder="пароль учителя">
+        <button class="btn b-purple" id="pwBtn">Открыть</button>
+      </div>
+      <p class="pmsg" id="pwMsg"></p>
+    </div>
+
+    <div id="pwBody" style="display:none">
+      <div class="variant-tabs">
+        <button class="chipbtn on" data-var="v1">Вариант 1</button>
+        <button class="chipbtn" data-var="v2">Вариант 2</button>
+        <button class="chipbtn" data-var="v3">Вариант 3</button>
+        <button class="chipbtn" data-var="v4">Вариант 4</button>
+      </div>
+
+      <!-- ВАРИАНТ 1 -->
+      <div class="variant on" id="v1">
+        <div class="task q">
+          <p><b>1.</b> Что выведет <code class="inl">print("Python"[1:4])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <select id="v1q1" class="qin"><option value="">—</option><option>yth</option>
+              <option>ytho</option><option>Pyt</option><option>hon</option></select>
+            <button class="btn b-green" data-chk="radio" data-id="v1q1" data-ans="yth" data-key="V1Q1">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task">
+          <p><b>2.</b> Что выведет <code class="inl">print("Программа"[-4:])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <input type="text" id="v1q2" placeholder="строка">
+            <button class="btn b-green" data-chk="text" data-id="v1q2" data-ans="амма"
+                    data-insens="1" data-key="V1Q2">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task">
+          <p><b>3.</b> Чему равно <code class="inl">len("абвгдеёжз"[2:])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <input type="text" id="v1q3" placeholder="число">
+            <button class="btn b-green" data-chk="num" data-id="v1q3" data-ans="7" data-key="V1Q3">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task q">
+          <p><b>4.</b> Что выведет <code class="inl">print("ОКНО"[::-1])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <select id="v1q4" class="qin"><option value="">—</option><option>ОНКО</option>
+              <option>ОКНО</option><option>НОКО</option></select>
+            <button class="btn b-green" data-chk="radio" data-id="v1q4" data-ans="ОНКО" data-key="V1Q4">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task">
+          <p><b>5.</b> Соотнеси для <code class="inl">s = "сказка"</code>.</p>
+          <div class="match-row"><span class="lhs">s[0]</span>
+            <select class="mr"><option value="">—</option><option>с</option><option>ка</option>
+            <option>сак</option><option>кз</option></select></div>
+          <div class="match-row"><span class="lhs">s[1:3]</span>
+            <select class="mr"><option value="">—</option><option>с</option><option>ка</option>
+            <option>сак</option><option>кз</option></select></div>
+          <div class="match-row"><span class="lhs">s[::2]</span>
+            <select class="mr"><option value="">—</option><option>с</option><option>ка</option>
+            <option>сак</option><option>кз</option></select></div>
+          <div class="ans">
+            <button class="btn b-green" data-chk="match" data-sel=".mr" data-scope="v1"
+                    data-answers="с|ка|сак" data-key="V1Q5">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task">
+          <p><b>6.</b> Чему равно <code class="inl">len("Python"[::2])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <input type="text" id="v1q6" placeholder="число">
+            <button class="btn b-green" data-chk="num" data-id="v1q6" data-ans="3" data-key="V1Q6">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+      </div>
+
+      <!-- ВАРИАНТ 2 -->
+      <div class="variant" id="v2">
+        <div class="task">
+          <p><b>1.</b> Что выведет <code class="inl">print("Школа"[:2])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <input type="text" id="v2q1" placeholder="строка">
+            <button class="btn b-green" data-chk="text" data-id="v2q1" data-ans="Шк"
+                    data-insens="1" data-key="V2Q1">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task q">
+          <p><b>2.</b> Что выведет <code class="inl">print("abcdef"[::-2])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <select id="v2q2" class="qin"><option value="">—</option><option>fdb</option>
+              <option>ace</option><option>fedcba</option><option>bdf</option></select>
+            <button class="btn b-green" data-chk="radio" data-id="v2q2" data-ans="fdb" data-key="V2Q2">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task">
+          <p><b>3.</b> Что выведет <code class="inl">print("ОСЕНЬ"[1:4])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <input type="text" id="v2q3" placeholder="строка">
+            <button class="btn b-green" data-chk="text" data-id="v2q3" data-ans="СЕН"
+                    data-insens="1" data-key="V2Q3">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task">
+          <p><b>4.</b> Что выведет <code class="inl">print("2026"[::3])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <input type="text" id="v2q4" placeholder="строка">
+            <button class="btn b-green" data-chk="text" data-id="v2q4" data-ans="26" data-key="V2Q4">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task">
+          <p><b>5.</b> Соотнеси для <code class="inl">s = "кабачок"</code>.</p>
+          <div class="match-row"><span class="lhs">s[-1]</span>
+            <select class="mr"><option value="">—</option><option>к</option><option>ба</option>
+            <option>каб</option><option>ач</option></select></div>
+          <div class="match-row"><span class="lhs">s[2:4]</span>
+            <select class="mr"><option value="">—</option><option>к</option><option>ба</option>
+            <option>каб</option><option>ач</option></select></div>
+          <div class="match-row"><span class="lhs">s[:-4]</span>
+            <select class="mr"><option value="">—</option><option>к</option><option>ба</option>
+            <option>каб</option><option>ач</option></select></div>
+          <div class="ans">
+            <button class="btn b-green" data-chk="match" data-sel=".mr" data-scope="v2"
+                    data-answers="к|ба|каб" data-key="V2Q5">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task">
+          <p><b>6.</b> Чему равно <code class="inl">len("Информатика"[::3])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <input type="text" id="v2q6" placeholder="число">
+            <button class="btn b-green" data-chk="num" data-id="v2q6" data-ans="4" data-key="V2Q6">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+      </div>
+
+      <!-- ВАРИАНТ 3 -->
+      <div class="variant" id="v3">
+        <div class="task q">
+          <p><b>1.</b> Что выведет <code class="inl">print("ЁЖ"[1] * 2)</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <select id="v3q1" class="qin"><option value="">—</option><option>ЖЖ</option>
+              <option>Ж</option><option>ЁЖЁЖ</option></select>
+            <button class="btn b-green" data-chk="radio" data-id="v3q1" data-ans="ЖЖ" data-key="V3Q1">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task">
+          <p><b>2.</b> Что выведет <code class="inl">print("x" * 3 + "abc"[1:])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <input type="text" id="v3q2" placeholder="строка">
+            <button class="btn b-green" data-chk="text" data-id="v3q2" data-ans="xxxbc"
+                    data-insens="1" data-key="V3Q2">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task q">
+          <p><b>3.</b> Что выведет <code class="inl">print("abcdef"[-1:-4:-1])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <select id="v3q3" class="qin"><option value="">—</option><option>fed</option>
+              <option>dcb</option><option>fedc</option></select>
+            <button class="btn b-green" data-chk="radio" data-id="v3q3" data-ans="fed" data-key="V3Q3">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task">
+          <p><b>4.</b> Чему равно <code class="inl">len("Hello world"[::2])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <input type="text" id="v3q4" placeholder="число">
+            <button class="btn b-green" data-chk="num" data-id="v3q4" data-ans="6" data-key="V3Q4">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task">
+          <p><b>5.</b> Соотнеси для <code class="inl">s = "тетрадь"</code>.</p>
+          <div class="match-row"><span class="lhs">s[0]</span>
+            <select class="mr"><option value="">—</option><option>т</option><option>ь</option>
+            <option>етр</option><option>тет</option></select></div>
+          <div class="match-row"><span class="lhs">s[-1]</span>
+            <select class="mr"><option value="">—</option><option>т</option><option>ь</option>
+            <option>етр</option><option>тет</option></select></div>
+          <div class="match-row"><span class="lhs">s[1:4]</span>
+            <select class="mr"><option value="">—</option><option>т</option><option>ь</option>
+            <option>етр</option><option>тет</option></select></div>
+          <div class="ans">
+            <button class="btn b-green" data-chk="match" data-sel=".mr" data-scope="v3"
+                    data-answers="т|ь|етр" data-key="V3Q5">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task">
+          <p><b>6.</b> Что выведет <code class="inl">print("Python"[:-2])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <input type="text" id="v3q6" placeholder="строка">
+            <button class="btn b-green" data-chk="text" data-id="v3q6" data-ans="Pyth"
+                    data-insens="1" data-key="V3Q6">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+      </div>
+
+      <!-- ВАРИАНТ 4 -->
+      <div class="variant" id="v4">
+        <div class="task q">
+          <p><b>1.</b> Что выведет <code class="inl">print("level" == "level"[::-1])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <select id="v4q1" class="qin"><option value="">—</option><option>True</option>
+              <option>False</option></select>
+            <button class="btn b-green" data-chk="radio" data-id="v4q1" data-ans="True" data-key="V4Q1">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task">
+          <p><b>2.</b> Что выведет <code class="inl">print("информатика"[::-1][:3])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <input type="text" id="v4q2" placeholder="строка">
+            <button class="btn b-green" data-chk="text" data-id="v4q2" data-ans="аки"
+                    data-insens="1" data-key="V4Q2">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task">
+          <p><b>3.</b> Чему равно <code class="inl">len("0123456789"[2:8:2])</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <input type="text" id="v4q3" placeholder="число">
+            <button class="btn b-green" data-chk="num" data-id="v4q3" data-ans="3" data-key="V4Q3">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task q">
+          <p><b>4.</b> Что выведет <code class="inl">print("ИНФОРМАТИКА"[0].lower())</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <select id="v4q4" class="qin"><option value="">—</option><option>и</option>
+              <option>И</option><option>ИН</option></select>
+            <button class="btn b-green" data-chk="radio" data-id="v4q4" data-ans="и" data-key="V4Q4">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task">
+          <p><b>5.</b> Соотнеси для <code class="inl">s = "компьютер"</code>.</p>
+          <div class="match-row"><span class="lhs">s[0]</span>
+            <select class="mr"><option value="">—</option><option>к</option><option>тер</option>
+            <option>кпт</option><option>ком</option></select></div>
+          <div class="match-row"><span class="lhs">s[-3:]</span>
+            <select class="mr"><option value="">—</option><option>к</option><option>тер</option>
+            <option>кпт</option><option>ком</option></select></div>
+          <div class="match-row"><span class="lhs">s[::3]</span>
+            <select class="mr"><option value="">—</option><option>к</option><option>тер</option>
+            <option>кпт</option><option>ком</option></select></div>
+          <div class="ans">
+            <button class="btn b-green" data-chk="match" data-sel=".mr" data-scope="v4"
+                    data-answers="к|тер|кпт" data-key="V4Q5">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+        <div class="task">
+          <p><b>6.</b> Что выведет <code class="inl">print("Ура" * 2 + "!")</code>?</p>
+          <div class="ans"><label>Ответ:</label>
+            <input type="text" id="v4q6" placeholder="строка">
+            <button class="btn b-green" data-chk="text" data-id="v4q6" data-ans="УраУра!"
+                    data-insens="1" data-key="V4Q6">Проверить</button>
+          </div><div class="fb"></div>
+        </div>
+      </div>
+
+      <div class="res" id="prRes">
+        <h3>Результат практической работы</h3>
+        <div class="marks">
+          <div class="mcard"><div class="lbl">Верно из 6</div><div class="val" id="prScore">0</div></div>
+          <div class="mcard total"><div class="lbl">Оценка</div><div class="val" id="prMark">—</div></div>
+        </div>
+        <p class="muted">Считается только выбранный вариант. Итог берёт лучший вариант.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ИТОГ ===================== -->
+  <section class="card" id="final">
+    <h2><span class="num">4</span> Итоговая оценка за урок</h2>
+    <p>Складывается из рабочей тетради, практикума в IDLE и практической работы.</p>
+        <div class="bar no-print" style="position:static">
+      <button class="btn b-purple" id="finalBtn">Подвести итог</button>
+      <button class="btn b-red" id="finalPenaltyBtn">Снизить 1 балл</button>
+      <button class="btn b-ghost" id="resetPenaltyBtn">Сбросить штрафы</button>
+    </div>
+    <div class="res" id="finalRes">
+      <h3>Итог урока</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Тетрадь</div><div class="val" id="fWb">—</div></div>
+        <div class="mcard"><div class="lbl">Практикум</div><div class="val" id="fIdle">—</div></div>
+        <div class="mcard"><div class="lbl">Практика</div><div class="val" id="fPr">—</div></div>
+        <div class="mcard total"><div class="lbl">Итог</div><div class="val" id="fAll">—</div></div>
+      </div>
+      <p class="muted" id="penaltyInfo" style="margin-top:10px;display:none;"></p>
+    </div>
+  </section>
+
+  <!-- ===================== САМОСТОЯТЕЛЬНАЯ ===================== -->
+  <section class="card" id="standaloneGate">
+    <h2><span class="num">5</span> Самостоятельная работа <span class="badge">5 заданий · 15 минут</span></h2>
+    <div class="lock">
+      <h3>🔓 Работа открывается по паролю учителя</h3>
+      <p>Перед началом заполни фамилию, имя и класс в шапке.</p>
+      <div class="lockrow">
+        <input type="password" id="ipPw" placeholder="пароль учителя">
+        <button class="btn b-orange" id="ipBtn">Начать работу</button>
+      </div>
+      <p class="pmsg" id="ipMsg"></p>
+    </div>
+  </section>
+
+  <section id="standalone">
+    <div class="exam-head">
+      <div>
+        <div class="exam-title">Самостоятельная работа · Срезы строк</div>
+        <div class="exam-who" id="examWho">—</div>
+      </div>
+      <div class="timer" id="ipTimer">15:00</div>
+    </div>
+
+    <div class="bar no-print" style="margin-bottom:14px;position:static">
+      <button class="btn b-ghost" id="ipExit">Вернуться к уроку</button>
+    </div>
+
+    <div class="no-calc-warn">⚠️ Во время работы теория и примеры недоступны. Вводи только итоговые ответы.</div>
+
+    <div class="hud">
+      <div class="chip score">Верно: <span id="ipScore">0</span> из 5</div>
+      <div class="chip level">Оценка: <span id="ipMark">—</span></div>
+    </div>
+
+    <div class="s-task">
+      <p class="stext"><span class="sn">1</span> Чему равно <code class="inl">len("Пингвин"[2:5])</code>?</p>
+      <div class="ans"><label>Ответ:</label><input type="text" id="s1" placeholder="число">
+        <button class="btn b-green" data-chk="num" data-id="s1" data-ans="3" data-key="S1">Проверить</button></div>
+      <div class="fb"></div>
+    </div>
+    <div class="s-task">
+      <p class="stext"><span class="sn">2</span> Что выведет <code class="inl">print("Пингвин"[2:5])</code>?</p>
+      <div class="ans"><label>Ответ:</label><input type="text" id="s2" placeholder="строка">
+        <button class="btn b-green" data-chk="text" data-id="s2" data-ans="нгв" data-insens="1" data-key="S2">Проверить</button></div>
+      <div class="fb"></div>
+    </div>
+    <div class="s-task">
+      <p class="stext"><span class="sn">3</span> Что выведет <code class="inl">print("хорошо"[::2])</code>?</p>
+      <div class="ans"><label>Ответ:</label>
+        <select id="s3" class="qin"><option value="">—</option><option>хрш</option>
+          <option>оош</option><option>хорошо</option></select>
+        <button class="btn b-green" data-chk="radio" data-id="s3" data-ans="хрш" data-key="S3">Проверить</button></div>
+      <div class="fb"></div>
+    </div>
+    <div class="s-task">
+      <p class="stext"><span class="sn">4</span> Что выведет <code class="inl">print("Кот"[::-1])</code>?</p>
+      <div class="ans"><label>Ответ:</label><input type="text" id="s4" placeholder="строка">
+        <button class="btn b-green" data-chk="text" data-id="s4" data-ans="тоК" data-insens="1" data-key="S4">Проверить</button></div>
+      <div class="fb"></div>
+    </div>
+    <div class="s-task">
+      <p class="stext"><span class="sn">5</span> Что выведет <code class="inl">print("123456"[4:] + "123456"[:2])</code>?</p>
+      <div class="ans"><label>Ответ:</label><input type="text" id="s5" placeholder="строка">
+        <button class="btn b-green" data-chk="text" data-id="s5" data-ans="5612" data-key="S5">Проверить</button></div>
+      <div class="fb"></div>
+    </div>
+
+    <div class="bar no-print" style="position:static">
+      <button class="btn b-teal" id="ipFinish">Сдать работу</button>
+    </div>
+    <div class="res" id="ipResult">
+      <h3>Работа сдана</h3>
+      <div class="marks">
+        <div class="mcard"><div class="lbl">Верно</div><div class="val" id="ipResN">0</div></div>
+        <div class="mcard"><div class="lbl">Оценка</div><div class="val" id="ipResM">—</div></div>
+        <div class="mcard"><div class="lbl">Время</div><div class="val" id="ipResT">—</div></div>
+      </div>
+      <div class="bar no-print" style="position:static">
+        <button class="btn b-ghost" onclick="window.print()">Сохранить / печать</button>
+        <button class="btn b-ghost" id="ipExit2">Вернуться к уроку</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ДОМАШНЕЕ ЗАДАНИЕ ===================== -->
+  <section class="card" id="homework">
+    <h2><span class="num">6</span> Домашнее задание</h2>
+    <div class="bar no-print" style="position:static"><button class="btn b-yellow" id="hwPrint">Печать только ДЗ</button></div>
+
+    <div class="hw">
+      <span class="lvl l1">обязательная часть (на «4»)</span>
+      <p><b>№ 1.</b> Для <code class="inl">s = "Информатика"</code> запиши срезы, дающие
+        «Инф», «тика» и «атик». Проверь в IDLE.</p>
+      <details><summary>Подсказка</summary>«тика» — с индекса 7. «атик» — индексы с 6 по 9, конец 10.</details>
+    </div>
+    <div class="hw">
+      <span class="lvl l1">обязательная часть (на «4»)</span>
+      <p><b>№ 2.</b> Без компьютера: сколько символов в срезе
+        <code class="inl">"абвгдеёжзик"[3:9]</code>? Какими буквами заканчивается?</p>
+      <details><summary>Подсказка</summary>Индексы 3, 4, 5, 6, 7, 8.</details>
+    </div>
+    <div class="hw">
+      <span class="lvl l3">дополнительная часть (на «5»)</span>
+      <p><b>№ 3.</b> Напиши программу в IDLE: слово → <code class="inl">ДА</code>, если читается
+        одинаково в обе стороны, иначе <code class="inl">НЕТ</code>. Проверь «казак», «урок», «Шалаш».</p>
+      <details><summary>Подсказка</summary><code class="inl">s == s[::-1]</code>, регистр — <code class="inl">lower()</code>.</details>
+    </div>
+    <div class="hw">
+      <span class="lvl l3">дополнительная часть (на «5»)</span>
+      <p><b>№ 4.</b> <span class="badge">Олимпиада</span> Программа просит строку нечётной длины
+        и выводит средний символ. Для «программа» — «р»? Проверь и объясни срез.</p>
+      <details><summary>Подсказка</summary>Средний индекс <code class="inl">len(s) // 2</code>.</details>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div>© <span data-year>2026</span> · Информатика · кабинет 318А</div>
+    <div class="foot-links">
+      <a href="../index.html">Главная</a><a href="../lessons.html">Все уроки</a>
+    </div>
+  </footer>
+</div>
+
+<!-- ===================== ПАНЕЛЬ БЫСТРЫХ ДЕЙСТВИЙ (СНИЗУ) ===================== -->
+<div class="quick-bar no-print">
+  <button class="btn b-teal" id="fabUp">⬆ В начало</button>
+  <button class="btn b-purple" id="fabPad">⌨ Раскладка</button>
+  <button class="btn b-green" id="fabCalc">🧮 Калькулятор</button>
+  <button class="btn b-yellow" id="fabIndep">📝 Самостоятельная</button>
+  <button class="btn b-orange" id="hwPrint">🖨 Печать ДЗ</button>
+  <button class="btn b-blue" id="fabScreen">📸 Скриншот</button>
+  <button class="btn b-red" id="fabFinish">🏁 Завершить</button>
+</div>
+
+<!-- ===================== TOAST ===================== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===================== МОДАЛКИ ===================== -->
+<div class="mbg" id="tPinMbg">
+  <div class="modal">
+    <h3>👩‍🏫 Режим учителя</h3>
+    <p class="mhint">Введи пароль — появятся кнопки «Зачёт» у задач в IDLE и «Снизить 1 балл».</p>
+    <div class="lockrow">
+      <input type="password" id="tPin" placeholder="пароль учителя">
+      <button class="btn b-green" id="tPinOk">Включить</button>
+    </div>
+    <p class="pmsg" id="tPinMsg"></p>
+    <div class="bar no-print" style="position:static">
+      <button class="btn b-ghost" data-close>Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="mbg" id="hintMbg">
+  <div class="modal">
+    <h3>⌨ Подсказки по срезам</h3>
+    <p class="mhint">Быстрая шпаргалка</p>
+    <div class="note info">
+      <b>s[a:b]</b> — с a по b−1 · <b>s[:b]</b> — с начала · <b>s[a:]</b> — до конца<br>
+      <b>s[::2]</b> — через один · <b>s[::-1]</b> — задом наперёд · <b>s[-3:]</b> — последние три<br>
+      <b>s[k]</b> — один символ, <code class="inl">IndexError</code> за пределами ·
+      срез за пределами — просто пусто
+    </div>
+    <div class="bar no-print" style="position:static">
+      <button class="btn b-ghost" data-close>Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="mbg" id="calcMbg">
+  <div class="modal calc">
+    <h3>🧮 Калькулятор</h3>
+    <div class="calc-screen">
+      <div class="calc-expr" id="calcExpr"></div>
+      <div class="calc-out" id="calcOut">0</div>
+    </div>
+    <div class="calc-grid" id="calcKeys"></div>
+    <div class="bar no-print" style="position:static">
+      <button class="btn b-ghost" data-close>Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   ОБЩИЕ УТИЛИТЫ
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  const burger = document.querySelector('.burger');
+  const links = document.querySelector('.nav-links');
+  if (burger && links) {
+    burger.addEventListener('click', () => links.classList.toggle('open'));
+    links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+  }
+  document.querySelectorAll('[data-year]').forEach(el => el.textContent = new Date().getFullYear());
+});
+
+function toast(msg, ms = 2200) {
+  const el = document.getElementById('toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), ms);
+}
+
+/* ============================================================
+   РЕЕСТР РЕЗУЛЬТАТОВ + localStorage + ШТРАФ
+   ============================================================ */
+const RES = {};
+const STORAGE_KEY = 'string03_res_v1';
+const PENALTY_KEY = 'string03_penalty_v1';
+let penaltyPoints = 0;
+const PASS = '318a';
+const PASS_IND = '318';
+
+function saveRes() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(RES));
+    localStorage.setItem(PENALTY_KEY, String(penaltyPoints));
+  } catch (e) {}
+}
+function loadRes() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) Object.assign(RES, JSON.parse(raw));
+    const pen = localStorage.getItem(PENALTY_KEY);
+    if (pen) penaltyPoints = parseInt(pen, 10) || 0;
+  } catch (e) {}
+}
+function setRes(key, ok) {
+  if (!key) return;
+  if (ok) RES[key] = true;
+  else if (RES[key] !== true) RES[key] = false;
+  saveRes();
+}
+function cnt(keys) { return keys.filter(k => RES[k] === true).length; }
+function mark5(n, total) {
+  if (n >= total) return 5;
+  if (n >= Math.ceil(total * 0.8)) return 4;
+  if (n >= Math.ceil(total * 0.5)) return 3;
+  return 2;
+}
+function norm(s, insens) {
+  let v = String(s == null ? '' : s).trim();
+  v = v.replace(/^[«"']+|[»"']+$/g, '').replace(/\s+/g, ' ');
+  if (insens) v = v.toLowerCase();
+  return v;
+}
+function showFb(el, cls, msg) {
+  if (!el) return;
+  el.className = 'fb show ' + cls;
+  el.textContent = msg;
+}
+function passOK(v) {
+  const x = norm(v).toLowerCase();
+  return x === PASS || x === PASS_IND;
+}
+
+/* ============================================================
+   ПРОВЕРКА ЗАДАНИЙ
+   ============================================================ */
+function handleSingle(btn) {
+  const kind = btn.dataset.chk;
+  const inp = document.getElementById(btn.dataset.id);
+  if (!inp) return;
+  const fb = btn.closest('.task, .s-task')?.querySelector('.fb');
+  const key = btn.dataset.key;
+  const ins = btn.dataset.insens === '1';
+  const right = norm(btn.dataset.ans, ins);
+  let val = '', ok = false;
+
+  if (kind === 'radio') {
+    val = norm(inp.value);
+    if (!val) { showFb(fb, 'hint', 'Сначала выбери вариант ответа.'); return; }
+    ok = val === norm(btn.dataset.ans);
+  } else if (kind === 'num') {
+    val = norm(inp.value).replace(',', '.').replace(/\s/g, '');
+    if (val === '') { showFb(fb, 'hint', 'Введи число.'); return; }
+    ok = !isNaN(val) && parseFloat(val) === parseFloat(btn.dataset.ans);
+  } else {
+    val = norm(inp.value, ins);
+    if (!val) { showFb(fb, 'hint', 'Введи ответ.'); return; }
+    ok = val === right;
+  }
+
+  const already = RES[key] === true;
+  setRes(key, ok);
+  if (ok) {
+    showFb(fb, 'ok', already ? '✅ Уже засчитано — этот ответ верный.' : '✅ Верно! Засчитано.');
+    if (inp.tagName === 'SELECT') inp.disabled = true;
+    burst(6);
+  } else {
+    showFb(fb, 'no', already
+      ? '❌ Сейчас введено неверно, но верный ответ уже засчитан.'
+      : '❌ Пока неверно. Перечитай правило и попробуй ещё — попытки не ограничены.');
+  }
+  refreshAll();
+}
+
+function handleMatch(btn) {
+  const root = document.getElementById(btn.dataset.scope) || document;
+  const sels = Array.from(root.querySelectorAll(btn.dataset.sel));
+  const answers = btn.dataset.answers.split('|');
+  const fb = btn.closest('.task')?.querySelector('.fb');
+  const vals = sels.map(e => e.value);
+  if (vals.some(v => !v)) { showFb(fb, 'hint', 'Заполни все строки соответствия.'); return; }
+  const marks = vals.map((v, i) => norm(v) === norm(answers[i]));
+  const ok = marks.every(Boolean);
+  const key = btn.dataset.key;
+  const already = RES[key] === true;
+  setRes(key, ok);
+  if (ok) {
+    showFb(fb, 'ok', already ? '✅ Уже засчитано.' : '✅ Все соответствия верные!');
+    burst(8);
+  } else {
+    showFb(fb, 'no', '❌ Есть ошибки: ' + marks.map(m => m ? '✔' : '✘').join(' ') +
+      ' — исправь и проверь снова.');
+  }
+  refreshAll();
+}
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-chk]');
+  if (!b) return;
+  if (b.dataset.chk === 'match') handleMatch(b);
+  else handleSingle(b);
+});
+
+/* ============================================================
+   СЧЁТЧИКИ
+   ============================================================ */
+const WB_KEYS = Array.from({length: 12}, (_, i) => 'W' + (i + 1));
+const IDLE_KEYS = Array.from({length: 6}, (_, i) => 'I' + (i + 1));
+const IND_KEYS = ['S1', 'S2', 'S3', 'S4', 'S5'];
+let CURRENT_VAR = 'v1';
+function practiceKeys(v) {
+  const n = v.replace(/\D/g, '');
+  return Array.from({length: 6}, (_, i) => 'V' + n + 'Q' + (i + 1));
+}
+
+function refreshWorkbook() {
+  const n = cnt(WB_KEYS);
+  const el1 = document.getElementById('wbScore');
+  const el2 = document.getElementById('wbMark');
+  const res = document.getElementById('wbRes');
+  if (el1) el1.textContent = n;
+  if (el2) el2.textContent = n ? mark5(n, 12) : '—';
+  if (res && n > 0) res.classList.add('show');
+  return n;
+}
+function refreshIdle() {
+  const n = cnt(IDLE_KEYS);
+  const el1 = document.getElementById('idleScore');
+  const el2 = document.getElementById('idleMark');
+  const res = document.getElementById('idleRes');
+  if (el1) el1.textContent = n;
+  if (el2) el2.textContent = n ? mark5(n, 6) : '—';
+  if (res && n > 0) res.classList.add('show');
+  return n;
+}
+function refreshPractice() {
+  const n = cnt(practiceKeys(CURRENT_VAR));
+  const el1 = document.getElementById('prScore');
+  const el2 = document.getElementById('prMark');
+  const res = document.getElementById('prRes');
+  if (el1) el1.textContent = n;
+  if (el2) el2.textContent = n ? mark5(n, 6) : '—';
+  if (res && n > 0) res.classList.add('show');
+  return n;
+}
+function bestPractice() {
+  return Math.max(...['v1','v2','v3','v4'].map(v => cnt(practiceKeys(v))));
+}
+function refreshIndep() {
+  const n = cnt(IND_KEYS);
+  const el1 = document.getElementById('ipScore');
+  const el2 = document.getElementById('ipMark');
+  if (el1) el1.textContent = n;
+  if (el2) el2.textContent = n ? mark5(n, 5) : '—';
+  return n;
+}
+function refreshAll() {
+  refreshWorkbook(); refreshIdle(); refreshPractice(); refreshIndep();
+}
+
+/* ============================================================
+   ВАРИАНТЫ, ТЕТРАДЬ, ЗАЧЁТ, ОЦЕНКА ТЕТРАДИ, ШТРАФ
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  loadRes();
+
+  document.querySelectorAll('[data-var]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-var]').forEach(x => x.classList.remove('on'));
+      btn.classList.add('on');
+      document.querySelectorAll('.variant').forEach(v => v.classList.remove('on'));
+      document.getElementById(btn.dataset.var).classList.add('on');
+      CURRENT_VAR = btn.dataset.var;
+      refreshPractice();
+    });
+  });
+
+  document.getElementById('wbReset').addEventListener('click', () => {
+    WB_KEYS.forEach(k => delete RES[k]);
+    const wb = document.getElementById('workbook');
+    wb.querySelectorAll('input[type=text], select').forEach(el => { el.value = ''; el.disabled = false; });
+    wb.querySelectorAll('.fb').forEach(f => f.classList.remove('show'));
+    document.getElementById('wbRes').classList.remove('show');
+    saveRes();
+    refreshWorkbook();
+    toast('Тетрадь очищена — можно решать заново');
+  });
+
+  // ОЦЕНКА РАБОЧЕЙ ТЕТРАДИ
+  document.getElementById('wbEvalBtn').addEventListener('click', () => {
+    const n = refreshWorkbook();
+    const mark = n ? mark5(n, 12) : 0;
+    const wbRes = document.getElementById('wbRes');
+    const wbMark = document.getElementById('wbMark');
+    if (wbMark) wbMark.textContent = mark || '—';
+    if (wbRes && n > 0) wbRes.classList.add('show');
+    if (mark >= 4) burst(8);
+    toast(n === 0 ? 'Пока нет верных ответов' : `Оценка за тетрадь: ${mark}`);
+  });
+
+  // ЗАЧЁТЫ В IDLE
+  document.querySelectorAll('[data-zachet]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.zachet;
+      if (RES[key] === true) { delete RES[key]; toast('Зачёт снят'); }
+      else { RES[key] = true; toast('✅ Зачёт поставлен'); burst(8); }
+      saveRes();
+      paintZachet(); refreshAll();
+    });
+  });
+
+  // СНИЖЕНИЕ БАЛЛА
+  document.getElementById('finalPenaltyBtn')?.addEventListener('click', () => {
+    penaltyPoints++;
+    saveRes();
+    toast(`Штраф: −${penaltyPoints} балл(а) к итоговой оценке`, 3000);
+    const finalRes = document.getElementById('finalRes');
+    if (finalRes && finalRes.classList.contains('show')) {
+      document.getElementById('finalBtn').click();
+    }
+  });
+  // СБРОС ШТРАФОВ
+  document.getElementById('resetPenaltyBtn')?.addEventListener('click', () => {
+    if (penaltyPoints === 0) {
+      toast('Штрафов нет — сбрасывать нечего');
+      return;
+    }
+    penaltyPoints = 0;
+    saveRes();
+    toast('Штрафы сброшены (0 баллов)', 3000);
+    const finalRes = document.getElementById('finalRes');
+    if (finalRes && finalRes.classList.contains('show')) {
+      document.getElementById('finalBtn').click(); // пересчитать итог
+    }
+  });
+  refreshAll(); paintZachet();
+});
+
+function paintZachet() {
+  const teacher = document.body.classList.contains('teacher');
+  document.querySelectorAll('[data-zstat]').forEach(el => {
+    const done = RES[el.dataset.zstat] === true;
+    el.className = 'zstat ' + (done ? 'done' : 'wait');
+    el.textContent = done ? '✅ зачтено учителем'
+      : (teacher ? '⏳ ждёт проверки — нажми «Зачёт»' : '⏳ ждёт проверки учителя');
+  });
+  document.querySelectorAll('[data-zachet]').forEach(btn => {
+    btn.textContent = RES[btn.dataset.zachet] === true ? '↩ Снять зачёт' : '✅ Зачёт';
+  });
+}
+
+/* ============================================================
+   ПАРОЛИ, УЧИТЕЛЬ, САМОСТОЯТЕЛЬНАЯ
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  const pw = document.getElementById('pwInput');
+  const pwBtn = document.getElementById('pwBtn');
+  pwBtn.addEventListener('click', () => {
+    if (passOK(pw.value)) {
+      document.getElementById('pwGate').style.display = 'none';
+      document.getElementById('pwBody').style.display = 'block';
+      refreshPractice();
+      toast('Варианты открыты');
+    } else {
+      document.getElementById('pwMsg').textContent = 'Неверный пароль. Уточни у учителя.';
+    }
+  });
+  pw.addEventListener('keydown', e => { if (e.key === 'Enter') pwBtn.click(); });
+
+  const ip = document.getElementById('ipPw');
+  const ipBtn = document.getElementById('ipBtn');
+  ipBtn.addEventListener('click', () => {
+    const sn = (document.getElementById('surname')?.value || '').trim();
+    const fn = (document.getElementById('firstname')?.value || '').trim();
+    if (!sn || !fn) {
+      document.getElementById('ipMsg').textContent = 'Сначала заполни фамилию и имя в шапке.';
+      return;
+    }
+    if (!passOK(ip.value)) {
+      document.getElementById('ipMsg').textContent = 'Неверный пароль.';
+      return;
+    }
+    document.getElementById('standaloneGate').style.display = 'none';
+    document.body.classList.add('exam');
+    const kl = (document.getElementById('klass')?.value || '').trim();
+    document.getElementById('examWho').textContent = [sn, fn, kl].filter(Boolean).join(' · ');
+    ['surname','firstname','klass'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = true;
+    });
+    window.scrollTo({top: 0, behavior: 'smooth'});
+    startTimer(15 * 60);
+    toast('Самостоятельная работа началась');
+  });
+  ip.addEventListener('keydown', e => { if (e.key === 'Enter') ipBtn.click(); });
+
+  const tm = document.getElementById('tModeBtn');
+  const mbg = document.getElementById('tPinMbg');
+  const pin = document.getElementById('tPin');
+  const pinOk = document.getElementById('tPinOk');
+  function setTeacher(on) {
+    document.body.classList.toggle('teacher', on);
+    tm.classList.toggle('on', on);
+    tm.textContent = on ? '👩‍🏫 Режим учителя: ВКЛ' : '👩‍🏫 Режим учителя';
+    paintZachet();
+  }
+  tm.addEventListener('click', () => {
+    if (document.body.classList.contains('teacher')) { setTeacher(false); toast('Режим учителя выключен'); }
+    else { pin.value = ''; document.getElementById('tPinMsg').textContent = ''; mbg.classList.add('open'); pin.focus(); }
+  });
+  pinOk.addEventListener('click', () => {
+    if (passOK(pin.value)) { mbg.classList.remove('open'); setTeacher(true); toast('Режим учителя включён'); }
+    else document.getElementById('tPinMsg').textContent = 'Неверный пароль.';
+  });
+  pin.addEventListener('keydown', e => { if (e.key === 'Enter') pinOk.click(); });
+
+  // ПОДВЕДЕНИЕ ИТОГА (3 этапа + штраф)
+  document.getElementById('finalBtn').addEventListener('click', () => {
+    const wb = refreshWorkbook(), idl = refreshIdle(), prBest = bestPractice();
+    const mw = wb ? mark5(wb, 12) : 0;
+    const mi = idl ? mark5(idl, 6) : 0;
+    const mp = prBest ? mark5(prBest, 6) : 0;
+    const have = [mw, mi, mp].filter(x => x > 0);
+    let all = have.length ? Math.round(have.reduce((a, x) => a + x, 0) / have.length) : '—';
+    if (typeof all === 'number' && penaltyPoints > 0) {
+      all = Math.max(2, all - penaltyPoints);
+    }
+    document.getElementById('fWb').textContent = mw || '—';
+    document.getElementById('fIdle').textContent = mi || '—';
+    document.getElementById('fPr').textContent = mp || '—';
+    document.getElementById('fAll').textContent = all;
+    const penInfo = document.getElementById('penaltyInfo');
+    if (penInfo) {
+      if (penaltyPoints > 0) {
+        penInfo.style.display = '';
+        penInfo.textContent = `Применён штраф: −${penaltyPoints} балл(а).`;
+      } else {
+        penInfo.style.display = 'none';
+        penInfo.textContent = '';
+      }
+    }
+    document.getElementById('finalRes').classList.add('show');
+    if (all >= 4) burst(16);
+  });
+
+  document.getElementById('ipFinish').addEventListener('click', () => {
+    const n = refreshIndep();
+    document.getElementById('ipResult').classList.add('show');
+    document.getElementById('ipResN').textContent = n;
+    document.getElementById('ipResM').textContent = mark5(n, 5);
+    const used = Math.max(0, 15 * 60 - Math.max(0, ipLeft));
+    document.getElementById('ipResT').textContent =
+      String(Math.floor(used / 60)).padStart(2, '0') + ':' + String(used % 60).padStart(2, '0');
+    if (ipTick) clearInterval(ipTick);
+    toast('Работа сдана');
+  });
+
+  function exitExam() {
+    document.body.classList.remove('exam');
+    document.getElementById('standaloneGate').style.display = '';
+    ['surname','firstname','klass'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = false;
+    });
+    if (ipTick) { clearInterval(ipTick); ipTick = null; }
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+  document.getElementById('ipExit')?.addEventListener('click', exitExam);
+  document.getElementById('ipExit2')?.addEventListener('click', exitExam);
+
+  // Кнопки панели быстрых действий
+  document.getElementById('fabPad')?.addEventListener('click', () =>
+    document.getElementById('hintMbg').classList.add('open'));
+  document.getElementById('fabCalc')?.addEventListener('click', () =>
+    document.getElementById('calcMbg').classList.add('open'));
+  document.getElementById('fabUp')?.addEventListener('click', () =>
+    window.scrollTo({top: 0, behavior: 'smooth'}));
+  document.getElementById('fabIndep')?.addEventListener('click', () =>
+    document.getElementById('standaloneGate').scrollIntoView({behavior: 'smooth'}));
+  document.getElementById('fabScreen')?.addEventListener('click', () => {
+    toast('Функция скриншота добавлена (требуется html2canvas)');
+  });
+  document.getElementById('fabFinish')?.addEventListener('click', () => {
+    if (confirm('Вы уверены, что хотите завершить урок и подвести итоги?')) {
+      document.getElementById('finalBtn').click();
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+  });
+
+  document.querySelectorAll('[data-close]').forEach(b => {
+    b.addEventListener('click', () => (b.closest('.ovl') || b.closest('.mbg'))?.classList.remove('open'));
+  });
+  document.querySelectorAll('.mbg').forEach(o => {
+    o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+  });
+
+  document.getElementById('hwPrint')?.addEventListener('click', () => window.print());
+
+  initCalc();
+});
+
+/* ============================================================
+   ТАЙМЕР
+   ============================================================ */
+let ipLeft = 0, ipTick = null;
+function startTimer(sec) {
+  ipLeft = sec;
+  const el = document.getElementById('ipTimer');
+  if (ipTick) clearInterval(ipTick);
+  const draw = () => {
+    el.textContent = String(Math.floor(ipLeft / 60)).padStart(2, '0') + ':' +
+                     String(ipLeft % 60).padStart(2, '0');
+    el.classList.toggle('warn', ipLeft <= 300 && ipLeft > 120);
+    el.classList.toggle('danger', ipLeft <= 120);
+  };
+  draw();
+  ipTick = setInterval(() => {
+    ipLeft--; draw();
+    if (ipLeft <= 0) { clearInterval(ipTick); toast('Время вышло! Сдай работу.', 4000); }
+  }, 1000);
+}
+
+/* ============================================================
+   КОНСТРУКТОР СРЕЗОВ
+   ============================================================ */
+function adjustIdx(x, len, step, isStart) {
+  if (x === null) return step < 0 ? (isStart ? len - 1 : -1) : (isStart ? 0 : len);
+  if (x < 0) { x += len; if (x < 0) return step < 0 ? -1 : 0; }
+  else if (x >= len) return step < 0 ? len - 1 : len;
+  return x;
+}
+function sliceIdx(len, a, b, step) {
+  const st = adjustIdx(a, len, step, true);
+  const sp = adjustIdx(b, len, step, false);
+  const out = [];
+  for (let i = st; step > 0 ? i < sp : i > sp; i += step) out.push(i);
+  return out;
+}
+function parseOpt(v) {
+  const t = v.trim();
+  if (t === '') return {ok: true, val: null};
+  if (!/^-?\d+$/.test(t)) return {ok: false};
+  return {ok: true, val: parseInt(t, 10)};
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const S = document.getElementById('slS');
+  const A = document.getElementById('slA');
+  const B = document.getElementById('slB');
+  const C = document.getElementById('slC');
+  const out = document.getElementById('slOut');
+  if (!S) return;
+  function run() {
+    const s = S.value;
+    const a = parseOpt(A.value), b = parseOpt(B.value), c = parseOpt(C.value);
+    if (!s) { out.innerHTML = '<span class="err">Введи строку.</span>'; return; }
+    if (!a.ok || !b.ok || !c.ok) { out.innerHTML = '<span class="err">Начало, конец и шаг — целые числа или пусто.</span>'; return; }
+    const step = c.val === null ? 1 : c.val;
+    if (step === 0) { out.innerHTML = '<span class="err">ValueError: slice step cannot be zero</span>'; return; }
+    const idx = sliceIdx(s.length, a.val, b.val, step);
+    const res = idx.map(i => s[i]).join('');
+    const picked = new Set(idx);
+    const chars = Array.from(s).map((ch, i) =>
+      `<span style="display:inline-block;text-align:center;min-width:22px;margin:0 2px">` +
+      `<span style="display:block;font-size:.72rem;color:#807b93">${i}</span>` +
+      `<span style="display:block;padding:2px 4px;border-radius:6px;font-weight:800;` +
+      (picked.has(i) ? 'background:#d1fae5;color:#047857' : 'background:#f3f0ff;color:#5b4b8a') +
+      `">${ch}</span></span>`).join('');
+    const expr = `s[${a.val === null ? '' : a.val}:${b.val === null ? '' : b.val}` +
+                 (C.value.trim() === '' ? '' : ':' + c.val) + ']';
+    out.innerHTML =
+      `<div style="font-size:1.05rem">${expr} → <b>${res === '' ? "'' (пустая строка)" : '«' + res + '»'}</b></div>` +
+      `<div class="muted" style="margin:8px 0">Выбрано символов: ${idx.length}. Индексы: ${idx.length ? idx.join(', ') : 'нет'}</div>` +
+      `<div style="overflow-x:auto;padding:4px 0">${chars}</div>`;
+  }
+  [S, A, B, C].forEach(el => el.addEventListener('input', run));
+  run();
+});
+
+/* ============================================================
+   КАЛЬКУЛЯТОР
+   ============================================================ */
+function initCalc() {
+  const keys = ['C','⌫','÷','×','7','8','9','−','4','5','6','+','1','2','3','=','0','.'];
+  const grid = document.getElementById('calcKeys');
+  const exprEl = document.getElementById('calcExpr');
+  const outEl = document.getElementById('calcOut');
+  if (!grid) return;
+  let expr = '';
+  function render() {
+    exprEl.textContent = expr;
+    outEl.textContent = expr === '' ? '0' : expr;
+  }
+  function evalExpr() {
+    const s = expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-');
+    if (!/^[0-9+\-*/().\s]+$/.test(s)) return 'ошибка';
+    try {
+      const v = Function('"use strict";return (' + s + ')')();
+      return Number.isFinite(v) ? String(v) : 'ошибка';
+    } catch (e) { return 'ошибка'; }
+  }
+  keys.forEach(k => {
+    const b = document.createElement('button');
+    b.className = 'cbtn' + (k==='='?' eq':'') + (['C','⌫'].includes(k)?' clr':'') +
+                  (['÷','×','−','+'].includes(k)?' op':'');
+    b.textContent = k;
+    b.addEventListener('click', () => {
+      if (k === 'C') expr = '';
+      else if (k === '⌫') expr = expr.slice(0,-1);
+      else if (k === '=') expr = evalExpr();
+      else expr += k;
+      render();
+    });
+    grid.appendChild(b);
+  });
+  render();
+}
+
+/* ============================================================
+   КОНФЕТТИ
+   ============================================================ */
+function burst(n = 8) {
+  const chars = ['🎉', '✨', '⭐', '🎊', '💫'];
+  for (let i = 0; i < n; i++) {
+    const s = document.createElement('span');
+    s.className = 'confetti';
+    s.textContent = chars[Math.floor(Math.random() * chars.length)];
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.animationDuration = (1.4 + Math.random()) + 's';
+    s.style.animationDelay = Math.random() * .3 + 's';
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 2600);
+  }
+}
+</script>
+</body>
+</html>
