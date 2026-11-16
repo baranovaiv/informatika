@@ -18,7 +18,7 @@ window.MathJax = {
 
 <style>
 /* ============================================================
-   БАЗОВАЯ ДИЗАЙН-СИСТЕМА
+   БАЗОВАЯ ДИЗАЙН-СИСТЕМА (Идентична уроку 2)
    ============================================================ */
 :root{
   --pink:#fde2e4;  --blue:#dbeafe;  --green:#d1fae5;  --yellow:#fef9c3;
@@ -70,7 +70,7 @@ img{max-width:100%;height:auto}
   box-shadow:0 12px 40px rgba(140,130,190,.18)}
 .hero h1{margin:0 0 8px;font-size:1.9rem;line-height:1.25;position:relative;z-index:2}
 .hero>p,.hero .lead{margin:0;color:#4c4660;font-weight:500;position:relative;z-index:2;max-width:640px}
-.deco{display:none} /* Скрываем декоративную иконку */
+.deco{display:none}
 .student{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-top:20px;position:relative;z-index:2}
 .student .f{display:flex;flex-direction:column;gap:6px}
 .student label{font-size:.75rem;font-weight:800;color:#4c4660;text-transform:uppercase;letter-spacing:.5px}
@@ -323,7 +323,7 @@ body.exam #standalone{display:block}
   box-shadow:0 -4px 24px rgba(120,110,160,.16);display:flex;flex-wrap:wrap;gap:10px;
   position:sticky;bottom:10px;z-index:30;margin-top:24px}
 
-/* ---------- ПАНЕЛЬ БЫСТРЫХ ДЕЙСТВИЙ (СНИЗУ) ---------- */
+/* ---------- ПАНЕЛЬ БЫСТРЫХ ДЕЙСТВИЙ ---------- */
 .quick-bar{
   position:fixed; bottom:0; left:0; right:0;
   background:#fff; border-top:1px solid #f2f0fa;
@@ -357,9 +357,9 @@ body.exam .quick-bar { display:none !important; }
 .cbtn.del{background:var(--orange);color:#c2410c}
 .cbtn.clr{background:#fee2e2;color:#b91c1c}
 
-/* ---------- КНОПКА СНИЖЕНИЯ БАЛЛА ---------- */
-#finalPenaltyBtn { display: none; }
-body.teacher #finalPenaltyBtn { display: inline-flex; }
+/* ---------- КНОПКА СНИЖЕНИЯ / СБРОСА БАЛЛА ---------- */
+#finalPenaltyBtn, #resetPenaltyBtn { display: none; }
+body.teacher #finalPenaltyBtn, body.teacher #resetPenaltyBtn { display: inline-flex; }
 
 /* ---------- АДАПТИВ ---------- */
 @media(max-width:760px){
@@ -420,7 +420,7 @@ body.teacher #finalPenaltyBtn { display: inline-flex; }
   </header>
 
   <div class="banner-teacher">
-    👩‍🏫 Режим учителя включён — у задач в IDLE появились кнопки «Зачёт», в итогах — «Снизить 1 балл».
+    👩‍🏫 Режим учителя включён — у задач в IDLE появились кнопки «Зачёт», в итогах — «Снизить 1 балл» и «Сбросить штрафы».
   </div>
 
   <!-- ===================== ПРОБЛЕМНАЯ СИТУАЦИЯ ===================== -->
@@ -1064,7 +1064,7 @@ print(s)          # Кот</pre>
   <section class="card" id="final">
     <h2><span class="num">4</span> Итоговая оценка за урок</h2>
     <p>Складывается из рабочей тетради, практикума в IDLE и практической работы.</p>
-        <div class="bar no-print" style="position:static">
+    <div class="bar no-print" style="position:static">
       <button class="btn b-purple" id="finalBtn">Подвести итог</button>
       <button class="btn b-red" id="finalPenaltyBtn">Снизить 1 балл</button>
       <button class="btn b-ghost" id="resetPenaltyBtn">Сбросить штрафы</button>
@@ -1204,7 +1204,7 @@ print(s)          # Кот</pre>
   </footer>
 </div>
 
-<!-- ===================== ПАНЕЛЬ БЫСТРЫХ ДЕЙСТВИЙ (СНИЗУ) ===================== -->
+<!-- ===================== ПАНЕЛЬ БЫСТРЫХ ДЕЙСТВИЙ ===================== -->
 <div class="quick-bar no-print">
   <button class="btn b-teal" id="fabUp">⬆ В начало</button>
   <button class="btn b-purple" id="fabPad">⌨ Раскладка</button>
@@ -1222,7 +1222,7 @@ print(s)          # Кот</pre>
 <div class="mbg" id="tPinMbg">
   <div class="modal">
     <h3>👩‍🏫 Режим учителя</h3>
-    <p class="mhint">Введи пароль — появятся кнопки «Зачёт» у задач в IDLE и «Снизить 1 балл».</p>
+    <p class="mhint">Введи пароль — появятся кнопки «Зачёт», «Снизить 1 балл» и «Сбросить штрафы».</p>
     <div class="lockrow">
       <input type="password" id="tPin" placeholder="пароль учителя">
       <button class="btn b-green" id="tPinOk">Включить</button>
@@ -1528,6 +1528,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('finalBtn').click();
     }
   });
+
   // СБРОС ШТРАФОВ
   document.getElementById('resetPenaltyBtn')?.addEventListener('click', () => {
     if (penaltyPoints === 0) {
@@ -1542,6 +1543,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('finalBtn').click(); // пересчитать итог
     }
   });
+
   refreshAll(); paintZachet();
 });
 
